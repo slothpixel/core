@@ -1,0 +1,7 @@
+language: node_js
+cache:
+  directories:
+    - "node_modules"
+before_script:
+  - npm install -g pm2
+script: pm2 start manifest.json
