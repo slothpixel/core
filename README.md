@@ -1,12 +1,13 @@
 core
 ===
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/slothpixel/core.svg)](https://greenkeeper.io/)
-
 <p>
     <a href="https://discord.gg/ND9bJKK">
       <img src="https://discordapp.com/api/guilds/323555112553414667/embed.png" alt="Discord" />
     </a>
+     <a href="https://greenkeeper.io/">
+          <img src="https://badges.greenkeeper.io/slothpixel/core.svg" alt="Greenkeeper" />
+        </a>
     <a href="https://discord.gg/ND9bJKK">
       <img src="https://travis-ci.org/slothpixel/core.svg?branch=master" alt="Travis" />
     </a>
