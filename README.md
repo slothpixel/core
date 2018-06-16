@@ -8,8 +8,8 @@ core
      <a href="https://greenkeeper.io/">
           <img src="https://badges.greenkeeper.io/slothpixel/core.svg" alt="Greenkeeper" />
         </a>
-    <a href="https://discord.gg/ND9bJKK">
-      <img src="https://travis-ci.org/slothpixel/core.svg?branch=master" alt="Travis" />
+    <a href="https://travis-ci.org/slothpixel/core">
+      <img src="https://travis-ci.org/slothpixel/core.svg?branch=master" alt="Build Status" />
     </a>
 </p>
 
