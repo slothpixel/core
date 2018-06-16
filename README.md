@@ -1,6 +1,8 @@
 core
 ===
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/slothpixel/core.svg)](https://greenkeeper.io/)
+
 <p>
     <a href="https://discord.gg/ND9bJKK">
       <img src="https://discordapp.com/api/guilds/323555112553414667/embed.png" alt="Discord" />
