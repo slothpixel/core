@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "script": "svc/web.js",
+      "watch": true,
+      "ignore_watch": [".git", "node_modules"],
+      "group": "web",
+      "exec_mode": "cluster",
+      "instances": 1
+    }
+  ]
+}

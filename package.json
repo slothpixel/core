@@ -1,0 +1,32 @@
+{
+  "name": "slothpixel-core",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node index",
+    "build": "npm install && npm run lintnofix",
+    "lint": "eslint . --ext .js,.jsx --fix",
+    "lintnofix": "eslint . --ext .js,.jsx"
+  },
+  "dependencies": {
+    "async": "^2.6.1",
+    "body-parser": "^1.13.2",
+    "compression": "^1.7.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.13.1",
+    "hypixelconstants": "^2.0.0",
+    "moment": "^2.18.1",
+    "mongoose": "^4.13.14",
+    "morgan": "^1.6.1",
+    "pm2": "^2.10.4",
+    "redis": "^2.7.1",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.11.0"
+  }
+}
