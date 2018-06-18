@@ -1,3 +1,4 @@
+/* eslint-disable max-len, no-use-before-define, one-var */
 // Converted From: https://github.com/HypixelDev/PublicAPI/blob/master/Java/src/main/java/net/hypixel/api/util/ILeveling.java
 
 const BASE = 10000;
@@ -19,9 +20,9 @@ function getTrueLevel(networkExp, networkLevel) {
 }
 
 /**
- * This method returns the level of a player calculated by the current experience gathered.
- * The result is a precise level of the player.
- * The value is not zero-indexed and represents the absolute visible level for the player.
+ * This method returns the level of a player calculated by the current experience gathered. The result is
+ * a precise level of the player The value is not zero-indexed and represents the absolute visible level
+ * for the player.
  * The result can't be smaller than 1 and negative experience results in level 1.
  * <p>
  * Examples:
@@ -35,13 +36,15 @@ function getTrueLevel(networkExp, networkLevel) {
  * @return number level of player (Smallest value is 1.0)
  */
 function getLevel(exp) {
-  return exp <= 1 ? 1 : Math.floor(1 + REVERSE_PQ_PREFIX + Math.sqrt((REVERSE_CONST + GROWTH_DIVIDES_2) * exp));
+  return exp <= 1 ? 1 : (
+    Math.floor(1 + REVERSE_PQ_PREFIX + Math.sqrt((REVERSE_CONST + GROWTH_DIVIDES_2) * exp))
+  );
 }
 
 /**
- * This method returns the level of a player calculated by the current experience gathered.
- * The result is a precise level of the player.
- * The value is not zero-indexed and represents the visible level for the player.
+ * This method returns the level of a player calculated by the current experience gathered. The result is
+ * a precise level of the player The value is not zero-indexed and represents the visible level
+ * for the player.
  * The result can't be smaller than 1 and negative experience results in level 1.
  * <p>
  * Examples:
@@ -77,7 +80,7 @@ function getExactLevel(exp) {
  * @return number to reach the next level with same progress
  */
 function getExpFromLevelToNext(level) {
-  return level < 1 ? BASE : GROWTH * (level - 1) + BASE;
+  return level < 1 ? BASE : (GROWTH * (level - 1)) + BASE;
 }
 
 /**

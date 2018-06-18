@@ -3,7 +3,6 @@
  * Serves web/API requests
  * */
 const config = require('../config');
-const utility = require('../util/utility');
 
 const api = require('../routes/api');
 const compression = require('compression');

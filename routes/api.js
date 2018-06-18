@@ -1,5 +1,4 @@
 const express = require('express');
-const config = require('../config');
 
 const spec = { paths: [] };
 

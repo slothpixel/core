@@ -1,3 +1,7 @@
+/* eslint-disable no-loop-func */
+/*
+* This file require major refactoring
+ */
 const constants = require('hypixelconstants');
 
 module.exports = function parseAchievements(oneTime, tiered) {
@@ -26,22 +30,19 @@ module.exports = function parseAchievements(oneTime, tiered) {
 
     const tieredAchievementArray = Object.getOwnPropertyNames(achievements[gameArray[i]].tiered);
     for (let j = 0; j < tieredAchievementArray.length; j += 1) {
-      for (const key in tiered) { // This for loop gets all tiered achievements
-        if (Object.prototype.hasOwnProperty.call(tiered, key)) {
-          if (key === (`${gameArray[i]}_${tieredAchievementArray[j]}`).toLowerCase()) {
-            const achievement = achievements[gameArray[i]].tiered[tieredAchievementArray[j]];
-            for (let t = 0; t < achievement.tiers.length; t += 1) {
-              if (tiered[key] >= achievement.tiers[[t]].amount) {
-                totalTiered += achievement.tiers[[t]].points;
-                completedTiered += 1;
-              }
+      Object.keys(tiered).forEach((key) => {
+        if (key === (`${gameArray[i]}_${tieredAchievementArray[j]}`).toLowerCase()) {
+          const achievement = achievements[gameArray[i]].tiered[tieredAchievementArray[j]];
+          for (let t = 0; t < achievement.tiers.length; t += 1) {
+            if (tiered[key] >= achievement.tiers[[t]].amount) {
+              totalTiered += achievement.tiers[[t]].points;
+              completedTiered += 1;
             }
           }
         }
-      }
+      });
     }
   }
-
   res.points_oneTime = totalOnetime;
   res.points_oneTime = totalOnetime;
   res.points_tiered = totalTiered;
