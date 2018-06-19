@@ -18,8 +18,9 @@ const defaults = {
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
   MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
-  ENABLE_REDIS_CACHE: false, // set to enable redis cache
+  ENABLE_UUID_CACHE: true, // cache player stats
   ENABLE_DB_CACHE: true, // set to enable MongoDB cache
+  UUID_CACHE_SECONDS: 21600, // number of seconds to cache username-uuid pairs
 };
 
 // ensure that process.env has all values in defaults, but prefer the process.env value
