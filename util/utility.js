@@ -15,7 +15,7 @@ function betterFormatting(i) {
 }
 
 function removeDashes(i) {
-  return (i.replace('-', ''));
+  return (i.replace(/-/g, ''));
 }
 
 /**
