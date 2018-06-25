@@ -161,6 +161,34 @@ function colorNameToCode(color) {
   }
 }
 
+function generateFormattedRank(rank, plusColor, prefix) {
+  if (prefix) {
+    return prefix;
+  }
+  switch (rank) {
+    case 'VIP':
+      return '&a[VIP]';
+    case 'VIP_PLUS':
+      return '&a[VIP&6+&a]';
+    case 'MVP':
+      return '&b[MVP]';
+    case 'MVP_PLUS':
+      return `&b[MVP${plusColor}+&b]`;
+    case 'MVP_PLUS_PLUS':
+      return `&6[MVP${plusColor}++&6]`;
+    case 'HELPER':
+      return '&9[HELPER]';
+    case 'MODERATOR':
+      return '&2[MOD]';
+    case 'ADMIN':
+      return '&c[ADMIN]';
+    case 'YOUTUBER':
+      return '&c[&fYOUTUBER&c]';
+    default:
+      return '&7';
+  }
+}
+
 module.exports = {
   betterFormatting,
   IDToStandardName,
@@ -169,4 +197,5 @@ module.exports = {
   getData,
   removeDashes,
   colorNameToCode,
+  generateFormattedRank,
 };
