@@ -18,7 +18,7 @@
     "express": "^4.13.1",
     "hypixelconstants": "^2.0.0",
     "moment": "^2.18.1",
-    "mongoose": "^5.1.6",
+    "mongoose": "^5.1.7",
     "morgan": "^1.6.1",
     "pm2": "^2.10.4",
     "redis": "^2.7.1",
