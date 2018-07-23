@@ -1,5 +1,3 @@
-const db = require('../store/db');
-
 const {
   Player, Guild,
 } = require('../store/models');
