@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const config = require('../config');
 
+const settings = {
+  useMongoClient: true,
+  autoIndex: false,
+};
+
 const db =
-  mongoose.connect(config.MONGODB_URL, { useMongoClient: true, autoIndex: false }, (err) => {
+  mongoose.connect(config.MONGODB_URL, settings, (err) => {
     console.log('connecting %s', config.MONGODB_URL);
     if (err) {
       console.log('failed db connection: %s', err);
