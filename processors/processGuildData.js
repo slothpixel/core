@@ -28,3 +28,5 @@ function getLevel(exp) {
   level += (EXP_NEEDED[level] || 3000000) / Math.abs(xp);
   return (level - 1).toFixed(2);
 }
+
+module.exports = getLevel;
