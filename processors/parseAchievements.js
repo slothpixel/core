@@ -6,7 +6,7 @@ const { achievements } = constants.achievements;
 * This function parses player achievements into an object containing all achievement related data.
 * TODO: Change response object names to standard names (Tricky since naming is not following rules)
  */
-function parseAchievements(oneTime, tiered) {
+function parseAchievements(oneTime = [], tiered = {}) {
   function getAchievementProperties(a) {
     const split = a.split('_');
     const game = split[0];
@@ -32,9 +32,10 @@ function parseAchievements(oneTime, tiered) {
     };
   });
   // Parse onetime achievements
-  oneTime.forEach((achievement) => {
+  // Temp patch to onetime ach possibly containing an empty array
+  oneTime.filter(elem => typeof elem === 'string').forEach((achievement) => {
     const { game, name } = getAchievementProperties(achievement);
-    const { points } = achievements[game].one_time[name];
+    const { points = 0 } = achievements[game].one_time[name] || 0;
     obj[game].points_one_time += points;
     obj[game].completed_one_time += 1;
     obj[game].one_time.push(name);
@@ -43,13 +44,15 @@ function parseAchievements(oneTime, tiered) {
   Object.entries(tiered).forEach((achievement) => {
     const { game, name } = getAchievementProperties(achievement[0]);
     const ach = achievements[game].tiered[name];
-    for (let t = 0; t < ach.tiers.length; t += 1) {
-      if (achievement[1] >= ach.tiers[t].amount) {
-        obj[game].points_tiered += ach.tiers[t].points;
-        obj[game].completed_tiered += 1;
-      } else {
-        [, obj[game].tiered[name]] = achievement;
-        break;
+    if (ach !== undefined) {
+      for (let t = 0; t < ach.tiers.length; t += 1) {
+        if (achievement[1] >= ach.tiers[t].amount) {
+          obj[game].points_tiered += ach.tiers[t].points;
+          obj[game].completed_tiered += 1;
+        } else {
+          [, obj[game].tiered[name]] = achievement;
+          break;
+        }
       }
     }
   });
@@ -64,19 +67,5 @@ function parseAchievements(oneTime, tiered) {
   obj.achievement_points = achievementPoints;
   return (obj);
 }
-
-/*
-const oneTime = ['vampirez_purchase_sword', 'vampirez_sole_survivor', 'tntgames_wizards_first_win',
-  'halloween2017_tbr_observatory_spin'];
-const tiered = {
-  tntgames_wizards_wins: 130,
-  halloween2017_pumpkinator: 1020,
-  buildbattle_build_battle_score: 1980,
-  buildbattle_guess_the_build_guesses: 547,
-};
-(function test() {
-  console.log((parseAchievements(oneTime, tiered)));
-}());
-*/
 
 module.exports = parseAchievements;
