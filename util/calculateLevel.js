@@ -1,5 +1,4 @@
-/* eslint-disable max-len, no-use-before-define, one-var */
-// Converted From: https://github.com/HypixelDev/PublicAPI/blob/master/Java/src/main/java/net/hypixel/api/util/ILeveling.java
+/* eslint-disable max-len, no-use-before-define */
 
 const BASE = 10000;
 const GROWTH = 2500;
@@ -8,16 +7,9 @@ const GROWTH = 2500;
 const HALF_GROWTH = 0.5 * GROWTH;
 
 /* Constants to look up the level from the total amount of XP */
-const REVERSE_PQ_PREFIX = -((BASE - 0.5) * GROWTH) / GROWTH;
+const REVERSE_PQ_PREFIX = -(BASE - 0.5 * GROWTH) / GROWTH;
 const REVERSE_CONST = REVERSE_PQ_PREFIX * REVERSE_PQ_PREFIX;
 const GROWTH_DIVIDES_2 = 2 / GROWTH;
-
-/**
- * This method returns players network level. Uses direct values from the API.
- */
-function getTrueLevel(networkExp, networkLevel) {
-  return getLevel(networkExp + getTotalExpToLevel(networkLevel + 1));
-}
 
 /**
  * This method returns the level of a player calculated by the current experience gathered. The result is
@@ -36,9 +28,7 @@ function getTrueLevel(networkExp, networkLevel) {
  * @return number level of player (Smallest value is 1.0)
  */
 function getLevel(exp) {
-  return exp <= 1 ? 1 : (
-    Math.floor(1 + REVERSE_PQ_PREFIX + Math.sqrt((REVERSE_CONST + GROWTH_DIVIDES_2) * exp))
-  );
+  return exp <= 1 ? 1 : Math.floor(1 + REVERSE_PQ_PREFIX + Math.sqrt(REVERSE_CONST + GROWTH_DIVIDES_2 * exp));
 }
 
 /**
@@ -80,7 +70,7 @@ function getExactLevel(exp) {
  * @return number to reach the next level with same progress
  */
 function getExpFromLevelToNext(level) {
-  return level < 1 ? BASE : (GROWTH * (level - 1)) + BASE;
+  return level < 1 ? BASE : GROWTH * (level - 1) + BASE;
 }
 
 /**
@@ -102,10 +92,10 @@ function getExpFromLevelToNext(level) {
  * @return The experience required to reach that level and progress
  */
 function getTotalExpToLevel(level) {
-  const lv = Math.floor(level),
+  const lv = Math.floor(level); const
     x0 = getTotalExpToFullLevel(lv);
   if (level === lv) return x0;
-  return ((getTotalExpToFullLevel(lv + 1) - x0) * (level % 1)) + x0;
+  return (getTotalExpToFullLevel(lv + 1) - x0) * (level % 1) + x0;
 }
 
 /**
@@ -116,7 +106,7 @@ function getTotalExpToLevel(level) {
  * @return Experience to reach the given level
  */
 function getTotalExpToFullLevel(level) {
-  return ((HALF_GROWTH * (level - 2)) + BASE) * (level - 1);
+  return (HALF_GROWTH * (level - 2) + BASE) * (level - 1);
 }
 
 /**
@@ -134,14 +124,12 @@ function getTotalExpToFullLevel(level) {
  * @return Current progress to the next level
  */
 function getPercentageToNextLevel(exp) {
-  const lv = getLevel(exp),
-    x0 = getTotalExpToLevel(lv);
+  const lv = getLevel(exp);
+  const x0 = getTotalExpToLevel(lv);
   return (exp - x0) / (getTotalExpToLevel(lv + 1) - x0);
 }
-// xp - getTotalExpToLevel(ILeveling.getLevel(XP))
 
 module.exports = {
-  getTrueLevel,
   getLevel,
   getExactLevel,
   getExpFromLevelToNext,
