@@ -1,3 +1,4 @@
+const utility = require('../util/utility');
 
 /*
 * Returns guild level with 2 decimal places
@@ -25,8 +26,43 @@ function getLevel(exp) {
     level += 1;
   }
   while (xp > 0);
-  level += (EXP_NEEDED[level] || 3000000) / Math.abs(xp);
+  level += ((EXP_NEEDED[level] || 3000000) - xp) / (EXP_NEEDED[level] || 3000000);
   return (level - 1).toFixed(2);
 }
 
-module.exports = getLevel;
+function processGuildData({
+  name,
+  _id,
+  created,
+  joinable = false,
+  publiclyListed = false,
+  tag = null,
+  tagColor = 'GRAY',
+  legacyRanking,
+  exp = 0,
+  discord = null,
+  description = null,
+  preferredGames = [],
+  ranks = [],
+  members = [],
+}) {
+  return {
+    name,
+    id: _id,
+    created,
+    joinable,
+    public: publiclyListed,
+    tag: utility.betterFormatting(tag),
+    tag_color: utility.colorNameToCode(tagColor),
+    legacy_ranking: legacyRanking + 1,
+    exp,
+    level: getLevel(exp),
+    discord,
+    description,
+    preferred_games: preferredGames,
+    ranks,
+    members,
+  };
+}
+
+module.exports = processGuildData;
