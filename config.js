@@ -19,8 +19,10 @@ const defaults = {
   MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
   ENABLE_UUID_CACHE: true, // cache player stats
+  ENABLE_GUILD_CACHE: true, // cache guilds
   ENABLE_DB_CACHE: true, // set to enable MongoDB cache
   UUID_CACHE_SECONDS: 21600, // number of seconds to cache username-uuid pairs
+  GUILD_CACHE_SECONDS: 600, // number of seconds to cache guilds
 };
 
 // ensure that process.env has all values in defaults, but prefer the process.env value

@@ -30,6 +30,24 @@ function getPlayerProfile(uuid, cb) {
   });
 }
 
+function insertGuild(id, guild, cb) {
+  Guild.findOneAndUpdate({ id }, { upsert: true }, guild, (err) => {
+    if (err) {
+      console.log(err);
+    }
+    return cb();
+  });
+}
+
+function getGuild(id, cb) {
+  Guild.findOne({ id }, (err, guild) => {
+    if (err) {
+      console.log(err);
+    }
+    return cb(guild);
+  });
+}
+
 function getGuildByPlayer(uuid, cb) {
   Guild.findOne({ members: { $elemMatch: { uuid } } }, (err, guild) => {
     if (err) {
@@ -43,5 +61,7 @@ module.exports = {
   insertPlayer,
   getPlayer,
   getPlayerProfile,
+  insertGuild,
+  getGuild,
   getGuildByPlayer,
 };
