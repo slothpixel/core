@@ -6,12 +6,11 @@ const settings = {
   autoIndex: false,
 };
 
-const db =
-  mongoose.connect(config.MONGODB_URL, settings, (err) => {
-    console.log('connecting %s', config.MONGODB_URL);
-    if (err) {
-      console.log('failed db connection: %s', err);
-    }
-  });
+const db = mongoose.connect(config.MONGODB_URL, settings, (err) => {
+  console.log('connecting %s', config.MONGODB_URL);
+  if (err) {
+    console.log('failed db connection: %s', err);
+  }
+});
 
 module.exports = db;

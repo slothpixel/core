@@ -2,10 +2,10 @@
  * Provides utility functions.
  * All functions should have external dependencies (DB, etc.) passed as parameters
  * */
-const config = require('../config');
 const constants = require('hypixelconstants');
 const request = require('request');
 const urllib = require('url');
+const config = require('../config');
 
 function betterFormatting(i) {
   if (typeof i !== 'string') {
@@ -112,10 +112,10 @@ function getData(url, cb) {
     ) {
       console.error('[INVALID] status');
       return cb('Request failed', null);
-    } else if (hypixelApi && !body.success) {
+    } if (hypixelApi && !body.success) {
       console.error(`[Hypixel API Error]: ${body.cause}`);
       return cb(`${body.cause}`, null);
-    } else if (mojangApi && body.error) {
+    } if (mojangApi && body.error) {
       console.error(`[Mojang API Error]: ${body.error} : ${body.errorMessage}`);
       return cb(`${body.error} : ${body.errorMessage}`, null);
     }

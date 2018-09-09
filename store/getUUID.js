@@ -23,7 +23,7 @@ function getUUID(name, cb) {
   redis.get(key, (err, reply) => {
     if (err) {
       return cb(err);
-    } else if (reply) {
+    } if (reply) {
       // console.log(`Cache hit for match ${name}`);
       const uuid = JSON.parse(reply);
       return cb(err, uuid);
