@@ -3,7 +3,8 @@ const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const utility = require('../util/utility');
 const redis = require('../store/redis');
-// const queries = require('../store/queries');
+const queries = require('../store/queries');
+
 /*
 * Functions to build/cache guild object
 * Currently doesn't support search by name
@@ -34,6 +35,24 @@ function getGuildID(uuid, cb) {
   });
 }
 
+function cacheGuild(guild, id, key, cb) {
+  if (config.ENABLE_GUILD_CACHE) {
+    return redis.setex(key, config.GUILD_CACHE_SECONDS, JSON.stringify(guild), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  }
+  if (config.ENABLE_DB_CACHE) {
+    queries.insertGuild(id, guild, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+    return cb(guild);
+  }
+}
+
 function buildGuild(uuid, cb) {
   getGuildID(uuid, (err, id) => {
     if (err) {
@@ -46,7 +65,8 @@ function buildGuild(uuid, cb) {
     redis.get(key, (err, reply) => {
       if (err) {
         return cb(err);
-      } if (reply) {
+      }
+      if (reply) {
         const guild = JSON.parse(reply);
         return cb(guild);
       }
@@ -54,14 +74,7 @@ function buildGuild(uuid, cb) {
         if (err) {
           return cb(err);
         }
-        if (config.ENABLE_GUILD_CACHE) {
-          return redis.setex(key, config.GUILD_CACHE_SECONDS, JSON.stringify(guild), (err) => {
-            if (err) {
-              console.error(err);
-            }
-            return cb(null, guild);
-          });
-        }
+        cacheGuild(guild, id, key, guild => cb(null, guild));
       });
     });
   });
