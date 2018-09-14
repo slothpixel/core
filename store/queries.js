@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+const db = require('./db');
 const {
   Player, Guild,
 } = require('../store/models');
@@ -7,7 +9,7 @@ function insertPlayer(uuid, player, cb) {
     if (err) {
       console.log(err);
     }
-    return cb();
+    return cb(err, player);
   });
 }
 
@@ -16,7 +18,7 @@ function getPlayer(uuid, cb) {
     if (err) {
       console.log(err);
     }
-    return cb(player);
+    return cb(err, player);
   });
 }
 
@@ -26,7 +28,7 @@ function getPlayerProfile(uuid, cb) {
     if (err) {
       console.log(err);
     }
-    return cb(player);
+    return cb(err, player);
   });
 }
 
@@ -35,7 +37,7 @@ function insertGuild(id, guild, cb) {
     if (err) {
       console.log(err);
     }
-    return cb();
+    return cb(err, guild);
   });
 }
 
@@ -44,7 +46,7 @@ function getGuild(id, cb) {
     if (err) {
       console.log(err);
     }
-    return cb(guild);
+    return cb(err, guild);
   });
 }
 
@@ -53,7 +55,7 @@ function getGuildByPlayer(uuid, cb) {
     if (err) {
       console.log(err);
     }
-    return cb(guild);
+    return cb(err, guild);
   });
 }
 
