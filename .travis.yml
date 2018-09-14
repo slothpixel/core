@@ -9,4 +9,5 @@ before_script:
   - npm install -g pm2
 script:
  - npm run lint
+ - npm run test
  - pm2 start manifest.json

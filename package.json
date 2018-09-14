@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node index",
+    "test": "mocha --exit",
     "build": "npm install && npm run lintnofix",
     "lint": "eslint . --ext .js,.jsx --fix",
     "lintnofix": "eslint . --ext .js,.jsx"
@@ -20,6 +21,7 @@
     "moment": "^2.18.1",
     "mongoose": "^5.2.14",
     "morgan": "^1.6.1",
+    "nock": "^9.6.1",
     "pm2": "^3.1.2",
     "redis": "^2.7.1",
     "request": "^2.88.0"
@@ -29,7 +31,9 @@
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.1"
+    "eslint-plugin-react": "^7.11.1",
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
   },
   "engines": {
     "node": "10"

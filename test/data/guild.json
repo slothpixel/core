@@ -1,0 +1,803 @@
+{
+  "success": true,
+  "guild": {
+    "_id": "5687d71c0cf245173363d973",
+    "name": "IceSquad",
+    "coins": 15861290,
+    "coinsEver": 18321290,
+    "created": 1451743004798,
+    "members": [
+      {
+        "uuid": "c30ef18f85a6492b8ad6d3df445c4575",
+        "rank": "Ice Cubes",
+        "joined": 1469628116523,
+        "questParticipation": 67
+      },
+      {
+        "uuid": "d052e63b70ba454d825326ca80b0ee0d",
+        "rank": "Ice Cubes",
+        "joined": 1471193139066,
+        "questParticipation": 70
+      },
+      {
+        "uuid": "a1893af379b9422ca22d01545c21b3c2",
+        "rank": "Ice Cubes",
+        "joined": 1475269200804,
+        "questParticipation": 21
+      },
+      {
+        "uuid": "5de30a2f25134c4197ee34a1ac6a0bf7",
+        "rank": "Ice Cubes",
+        "joined": 1484538450925
+      },
+      {
+        "uuid": "fedae8c3970243ecaafb948c282f9327",
+        "rank": "Ice Cubes",
+        "joined": 1484612886043,
+        "questParticipation": 30
+      },
+      {
+        "uuid": "c1d502ec48894ddd9e058cb7825e842e",
+        "rank": "Ice Cubes",
+        "joined": 1487657678455,
+        "questParticipation": 4
+      },
+      {
+        "uuid": "a9c95e0c3fb141eebf1f7c8a7919204b",
+        "rank": "Ice Cubes",
+        "joined": 1496829699290
+      },
+      {
+        "uuid": "b18575d14dcf4548881c273b13deafbb",
+        "rank": "Ice Cubes",
+        "joined": 1499463262673
+      },
+      {
+        "uuid": "2c8bd177dee9433390ea1bb2a111abcd",
+        "rank": "Ice Cubes",
+        "joined": 1499704469033,
+        "questParticipation": 23
+      },
+      {
+        "uuid": "78d4c85f4e074285a546618ef43aa6f6",
+        "rank": "Ice Cubes",
+        "joined": 1502127435590,
+        "questParticipation": 12
+      },
+      {
+        "uuid": "daaa44d3a5814dc8bb44f0e320056100",
+        "rank": "Ice Cubes",
+        "joined": 1503411782174
+      },
+      {
+        "uuid": "ef962ec2df6e48a2ac9d6062c1b84652",
+        "rank": "Ice Cubes",
+        "joined": 1505674194617,
+        "questParticipation": 57
+      },
+      {
+        "uuid": "4ac2f62b3857451398a4d7707f3d608b",
+        "rank": "Ice Cubes",
+        "joined": 1505679031759,
+        "questParticipation": 71
+      },
+      {
+        "uuid": "85da786249644cc49115609df5c1375f",
+        "rank": "Ice Cubes",
+        "joined": 1509035146269
+      },
+      {
+        "uuid": "fb3d96498a5b4d5b91b763db14b195ad",
+        "rank": "Ice Cubes",
+        "joined": 1509124781751
+      },
+      {
+        "uuid": "f4ccb2a0337c44de896e0f23c8faacb3",
+        "rank": "Ice Cubes",
+        "joined": 1509464463411,
+        "questParticipation": 10
+      },
+      {
+        "uuid": "5d2e67191015460183f58bca69ba51e0",
+        "rank": "Ice Cubes",
+        "joined": 1510768257850,
+        "questParticipation": 9
+      },
+      {
+        "uuid": "b1edd4040d2642f4a26f01a0b4ffc466",
+        "rank": "Ice Cubes",
+        "joined": 1513119901895,
+        "questParticipation": 29
+      },
+      {
+        "uuid": "4c49a687ac1c48ad847220f8f1437856",
+        "rank": "Ice Cubes",
+        "joined": 1515849722933,
+        "questParticipation": 3
+      },
+      {
+        "uuid": "67e2fb81a8194111884c55775981c8b6",
+        "rank": "Ice Cubes",
+        "joined": 1516374291386,
+        "questParticipation": 76
+      },
+      {
+        "uuid": "7805692eadb04432939a953363574493",
+        "rank": "Ice Cubes",
+        "joined": 1516414902177,
+        "questParticipation": 26
+      },
+      {
+        "uuid": "5756df3894f14eee840a2e53678daf10",
+        "rank": "Ice Cubes",
+        "joined": 1516729312241,
+        "questParticipation": 89
+      },
+      {
+        "uuid": "fb58e821947b4c948c5e200d8de0419f",
+        "rank": "Ice Cubes",
+        "joined": 1517695266385
+      },
+      {
+        "uuid": "b2e31239d787491a9990858a896ae3b4",
+        "rank": "Ice Cubes",
+        "joined": 1518367858844,
+        "questParticipation": 58
+      },
+      {
+        "uuid": "75cc451aeaa54a5eb9b5a1f83b2441b7",
+        "rank": "Ice Cubes",
+        "joined": 1518526521493,
+        "questParticipation": 164
+      },
+      {
+        "uuid": "a487052a6a3d4ec7a763de2ab9af8a76",
+        "rank": "Ice Cubes",
+        "joined": 1518716045243
+      },
+      {
+        "uuid": "d18781ea31064845b645d73cfbd9d296",
+        "rank": "Ice Cubes",
+        "joined": 1519476969743,
+        "questParticipation": 19
+      },
+      {
+        "uuid": "40918416550b4294b14501e07e93980f",
+        "rank": "Ice Cubes",
+        "joined": 1496963852539,
+        "questParticipation": 109
+      },
+      {
+        "uuid": "6fe069a55d8f40b696dbaeaf21a3c4c1",
+        "rank": "Ice Cubes",
+        "joined": 1521051945007,
+        "questParticipation": 111
+      },
+      {
+        "uuid": "2766269edf9b4184896b86ee0c349013",
+        "rank": "Ice Cubes",
+        "joined": 1521404916053,
+        "questParticipation": 1
+      },
+      {
+        "uuid": "b571fc19f22c49c7a29c14aa1b4bb96b",
+        "rank": "Ice Cubes",
+        "joined": 1521474088419,
+        "questParticipation": 162
+      },
+      {
+        "uuid": "63ab8bdc9d274083ba2562a37533b575",
+        "rank": "Ice Cubes",
+        "joined": 1521997147968,
+        "questParticipation": 140
+      },
+      {
+        "uuid": "6b65230a983346019f0ab60db3c7bc9b",
+        "rank": "Ice Cubes",
+        "joined": 1522019185197,
+        "questParticipation": 2
+      },
+      {
+        "uuid": "97bbdcb4d4e444b59028a27ad4430bc1",
+        "rank": "Ice Cubes",
+        "joined": 1522589254797,
+        "questParticipation": 58
+      },
+      {
+        "uuid": "728db6fac43240b481c9eb81d465824c",
+        "rank": "Ice Cubes",
+        "joined": 1522693741229
+      },
+      {
+        "uuid": "bb4ee21cdeb24d8eb580b0f598e28092",
+        "rank": "Ice Cubes",
+        "joined": 1524165453463,
+        "questParticipation": 43
+      },
+      {
+        "uuid": "581a2fd3830e4ffb829972d056b1f96a",
+        "rank": "Ice Cubes",
+        "joined": 1526664470374,
+        "questParticipation": 92
+      },
+      {
+        "uuid": "9f7bbb1cbbfa45d189d267200bc567f4",
+        "rank": "Ice Cubes",
+        "joined": 1526754882540,
+        "questParticipation": 158
+      },
+      {
+        "uuid": "328af32299c04996beade25ad4ffff04",
+        "rank": "Ice Cubes",
+        "joined": 1518118605077,
+        "questParticipation": 90
+      },
+      {
+        "uuid": "b279605ae2b2439b92ab90d0260f56e5",
+        "rank": "Ice Cubes",
+        "joined": 1526858542025,
+        "questParticipation": 9
+      },
+      {
+        "uuid": "eb10664c9cd24138b8ef64d6a6961e9d",
+        "rank": "Ice Cubes",
+        "joined": 1526863033826,
+        "questParticipation": 3
+      },
+      {
+        "uuid": "4e8f4a8960e3458f86f8cc59ea06d1eb",
+        "rank": "Ice Cubes",
+        "joined": 1526933265669,
+        "questParticipation": 32
+      },
+      {
+        "uuid": "2808c03d2fad4f9784bd42fabb5eceee",
+        "rank": "Ice Cubes",
+        "joined": 1526936249426,
+        "questParticipation": 24
+      },
+      {
+        "uuid": "c623cbfd8d3c493bb1a9716ec2873f6c",
+        "rank": "Ice Cubes",
+        "joined": 1527117035557,
+        "questParticipation": 34
+      },
+      {
+        "uuid": "0257e2ece6124d7d8df97e49bf6c76d3",
+        "rank": "Ice Cubes",
+        "joined": 1527237581034,
+        "questParticipation": 42
+      },
+      {
+        "uuid": "cfa91d31cea9441f895feb28fd3d5e3c",
+        "rank": "Ice Cubes",
+        "joined": 1527528281066,
+        "questParticipation": 10
+      },
+      {
+        "uuid": "387c511d8cbb455a82577c676b6ab110",
+        "rank": "Ice Cubes",
+        "joined": 1527935752155,
+        "questParticipation": 91
+      },
+      {
+        "uuid": "5120855e93e74b39bfcb3794323a5293",
+        "rank": "Ice Cubes",
+        "joined": 1528513106411,
+        "questParticipation": 6
+      },
+      {
+        "uuid": "693345183a2c4152af438cd909862950",
+        "rank": "Ice Cubes",
+        "joined": 1529860510577,
+        "questParticipation": 57
+      },
+      {
+        "uuid": "63fb859c3cae4c629d717b158aa13c31",
+        "rank": "Ice Cubes",
+        "joined": 1530723495981,
+        "questParticipation": 70
+      },
+      {
+        "uuid": "10b8381b7c814d398e444aa85df2f8a1",
+        "rank": "Ice Cubes",
+        "joined": 1532466922907,
+        "questParticipation": 30
+      },
+      {
+        "uuid": "b7c9e836ddd1435dbf528a6effa4c735",
+        "rank": "Ice Cubes",
+        "joined": 1532706578162,
+        "questParticipation": 108
+      },
+      {
+        "uuid": "11b8466e2c724fe994a00cada8112674",
+        "rank": "Ice Cubes",
+        "joined": 1532706778372,
+        "questParticipation": 119
+      },
+      {
+        "uuid": "65fa6989824743049a41c3d87b6e48f5",
+        "rank": "Ice Cubes",
+        "joined": 1533068347055,
+        "questParticipation": 27
+      },
+      {
+        "uuid": "1e0e2cd5b3ce48d8b078e9190c97724f",
+        "rank": "Ice Cubes",
+        "joined": 1533068512022,
+        "questParticipation": 106
+      },
+      {
+        "uuid": "8cf073fba73248eaaa7711ad4ba3c0e5",
+        "rank": "Ice Cubes",
+        "joined": 1527250671735
+      },
+      {
+        "uuid": "da6718796dd04e9f90cdd2cbe0674840",
+        "rank": "Ice Cubes",
+        "joined": 1532786189813,
+        "questParticipation": 81
+      },
+      {
+        "uuid": "696a82ce41f44b51aa31b8709b8686f0",
+        "rank": "Ice Cubes",
+        "joined": 1452275221559
+      },
+      {
+        "uuid": "5768df7cacc74356b956ca0f306dcb08",
+        "rank": "Ice Cubes",
+        "joined": 1532832337028,
+        "questParticipation": 21
+      },
+      {
+        "uuid": "8b8a3bd47ba644f187bda37227bea411",
+        "rank": "Ice Cubes",
+        "joined": 1533251457823,
+        "questParticipation": 163
+      },
+      {
+        "uuid": "9583d18fd58146fa86fabbf65637eb8c",
+        "rank": "Ice Cubes",
+        "joined": 1533406824552,
+        "questParticipation": 25
+      },
+      {
+        "uuid": "4885c9a84e714b21be94fd7d5e3c0171",
+        "rank": "Ice Cubes",
+        "joined": 1533420564874,
+        "questParticipation": 166
+      },
+      {
+        "uuid": "bb6616ab0bf24056a18cf8b777917d18",
+        "rank": "Ice Cubes",
+        "joined": 1533559014852,
+        "questParticipation": 12
+      },
+      {
+        "uuid": "a9c3b02f3eb44d3fb82df3c67ec57d3c",
+        "rank": "Ice Cubes",
+        "joined": 1533704717066,
+        "questParticipation": 168
+      },
+      {
+        "uuid": "6fa3474c11b44681a7bbf7e7ddfa1c6d",
+        "rank": "Ice Cubes",
+        "joined": 1533745427566
+      },
+      {
+        "uuid": "80d649de710b45c48ff6ece0c3ef0c27",
+        "rank": "Ice Cubes",
+        "joined": 1533917934233,
+        "questParticipation": 42
+      },
+      {
+        "uuid": "b6c0406e9cce49478e25776926aafdbb",
+        "rank": "Ice Cubes",
+        "joined": 1534025739906,
+        "questParticipation": 14
+      },
+      {
+        "uuid": "36496a8f6c984b3a8f9522acfb77dbcd",
+        "rank": "Ice Cubes",
+        "joined": 1534127858371,
+        "questParticipation": 138
+      },
+      {
+        "uuid": "4e86f38d16104fa2851513671caca062",
+        "rank": "Ice Cubes",
+        "joined": 1526863514582,
+        "questParticipation": 25
+      },
+      {
+        "uuid": "10d6d7a753b34cf58e3e395ee23f73ea",
+        "rank": "Ice Cubes",
+        "joined": 1534284355571,
+        "questParticipation": 4
+      },
+      {
+        "uuid": "60fb367459ae4f48812e16b28d8d8afa",
+        "rank": "Co-Owner",
+        "joined": 1508082070356,
+        "mutedTill": 0,
+        "questParticipation": 33
+      },
+      {
+        "uuid": "5d9c12ec79824b288b331bdcc961f89c",
+        "rank": "Ice Cubes",
+        "joined": 1534073373697,
+        "mutedTill": 0,
+        "questParticipation": 11
+      },
+      {
+        "uuid": "27a214e4b2644bcea2f5584ea2b994a3",
+        "rank": "Ice Cubes",
+        "joined": 1534413999360,
+        "questParticipation": 61
+      },
+      {
+        "uuid": "b1be2fcea7b84791ab784cded30ba82b",
+        "rank": "Ice Cubes",
+        "joined": 1534866923395,
+        "questParticipation": 40
+      },
+      {
+        "uuid": "fcb4bf7b73c646a8bff5e10904a04d4d",
+        "rank": "Ice Cubes",
+        "joined": 1524608167037,
+        "mutedTill": 0,
+        "questParticipation": 14
+      },
+      {
+        "uuid": "e34409024c644379bcb63fd92f724364",
+        "rank": "Ice Cubes",
+        "joined": 1534922787755,
+        "questParticipation": 61
+      },
+      {
+        "uuid": "0f8fe07938af4120a06495b783e359e9",
+        "rank": "Ice Cubes",
+        "joined": 1535084076925,
+        "questParticipation": 54
+      },
+      {
+        "uuid": "dbb5f49cc2394912b1ca89783632d068",
+        "rank": "Ice Cubes",
+        "joined": 1535098382935,
+        "questParticipation": 79
+      },
+      {
+        "uuid": "d527047841c64ba8a1d9b1307d0315c7",
+        "rank": "Ice Cubes",
+        "joined": 1455454866964
+      },
+      {
+        "uuid": "063a8624a3224ca0917dfe81e97ac2c8",
+        "rank": "Ice Cubes",
+        "joined": 1535229946211,
+        "questParticipation": 46
+      },
+      {
+        "uuid": "28cf27e4ed714bdc8cc0363a486f4821",
+        "rank": "Ice Cubes",
+        "joined": 1535255905263,
+        "questParticipation": 13
+      },
+      {
+        "uuid": "e019e5b4046f4306ab1430fa6a2539c1",
+        "rank": "Ice Cubes",
+        "joined": 1535386916062,
+        "questParticipation": 88
+      },
+      {
+        "uuid": "815132b3a4f94f62af01e40ba1d34828",
+        "rank": "Ice Cubes",
+        "joined": 1535402342469,
+        "questParticipation": 59
+      },
+      {
+        "uuid": "f385df39505b45989f1ea5c0cf158380",
+        "rank": "Ice Cubes",
+        "joined": 1535402398915,
+        "questParticipation": 52
+      },
+      {
+        "uuid": "a76b01c8a4c04f6ab1ab898f97469224",
+        "rank": "Ice Cubes",
+        "joined": 1535402505529,
+        "questParticipation": 62
+      },
+      {
+        "uuid": "48dc9e32b0c44af4becc18080bbfe1a9",
+        "rank": "Ice Cubes",
+        "joined": 1535402571078,
+        "questParticipation": 88
+      },
+      {
+        "uuid": "281aef4684e94e759c7860a055549fe7",
+        "rank": "Ice Cubes",
+        "joined": 1529115094124,
+        "mutedTill": 1535514526168,
+        "questParticipation": 59
+      },
+      {
+        "uuid": "28968ec59cac4c88bb262d43e981655d",
+        "rank": "Ice Cubes",
+        "joined": 1535541663838,
+        "questParticipation": 29
+      },
+      {
+        "uuid": "aad6a2754e9c4744bd335213853f023f",
+        "rank": "Ice Cubes",
+        "joined": 1523710310348,
+        "mutedTill": 0,
+        "questParticipation": 37
+      },
+      {
+        "uuid": "55b91689bb624c0981a059f920a31609",
+        "rank": "Co-Owner",
+        "joined": 1526859797135,
+        "questParticipation": 2
+      },
+      {
+        "uuid": "4d9c9af2e60c4df88990aeea6a122b49",
+        "rank": "Ice Cubes",
+        "joined": 1535802700063,
+        "questParticipation": 29
+      },
+      {
+        "uuid": "99066be9b6ad4eaaa7ac70bcbe51df8f",
+        "rank": "Ice Cubes",
+        "joined": 1535804288432,
+        "questParticipation": 5
+      },
+      {
+        "uuid": "04e78f15514944dfa05e66f3e9af71d8",
+        "rank": "Ice Cubes",
+        "joined": 1535842458466,
+        "questParticipation": 7
+      },
+      {
+        "uuid": "a403dc23313b44ca9c88662fa491ae52",
+        "rank": "Officers",
+        "joined": 1521652818952,
+        "mutedTill": 1535887816566,
+        "questParticipation": 50
+      },
+      {
+        "uuid": "9bb5593bf12247f8be98a25182ee2b41",
+        "rank": "Officers",
+        "joined": 1526860416399,
+        "mutedTill": 1535887846892
+      },
+      {
+        "uuid": "383bccab799d4ecab05d5cd89615c448",
+        "rank": "Officers",
+        "joined": 1518495357736,
+        "mutedTill": 1535887850323
+      },
+      {
+        "uuid": "fdacec77369244cb93263e274cc02a21",
+        "rank": "Officers",
+        "joined": 1508194402762,
+        "mutedTill": 1535887856786,
+        "questParticipation": 18
+      },
+      {
+        "uuid": "badd9afadeda4f21aecbe3cc3179b5e2",
+        "rank": "Officers",
+        "joined": 1532706569672,
+        "mutedTill": 1535887867475
+      },
+      {
+        "uuid": "ccd24ec82fc446e4ad7412c4d322768c",
+        "rank": "Ice Cubes",
+        "joined": 1535988021658,
+        "questParticipation": 36
+      },
+      {
+        "uuid": "679e11f372cc475280e637fb496da0f2",
+        "rank": "Ice Cubes",
+        "joined": 1536049192462,
+        "questParticipation": 36
+      },
+      {
+        "uuid": "c26836d0379d4596a827be8466ca7925",
+        "rank": "Ice Cubes",
+        "joined": 1536085619500,
+        "mutedTill": 0,
+        "questParticipation": 33
+      },
+      {
+        "uuid": "4913daca80ef46478ec44cf7a27c026c",
+        "rank": "Ice Cubes",
+        "joined": 1524794851472,
+        "mutedTill": 1536230589863,
+        "questParticipation": 26
+      },
+      {
+        "uuid": "68ebc017179e46fab198211c038bb5e5",
+        "rank": "Officers",
+        "joined": 1515791133248,
+        "questParticipation": 26
+      },
+      {
+        "uuid": "f6d62851bc3f4cbb9a43ffad94540b4c",
+        "rank": "Ice Cubes",
+        "joined": 1536189391918,
+        "mutedTill": 0
+      },
+      {
+        "uuid": "be89a70209224dca982f83546327a7aa",
+        "rank": "Ice Cubes",
+        "joined": 1531854185758,
+        "mutedTill": 0,
+        "questParticipation": 30
+      },
+      {
+        "uuid": "1db5b7e5e9274bdea387fd509a89b8b0",
+        "rank": "Ice Cubes",
+        "joined": 1533049250581,
+        "mutedTill": 1536421086266,
+        "questParticipation": 1
+      },
+      {
+        "uuid": "f2471e6e6767469485d34008fd120bcf",
+        "rank": "Ice Cubes",
+        "joined": 1536071284451,
+        "mutedTill": 0,
+        "questParticipation": 34
+      },
+      {
+        "uuid": "31b5211af8b64ea8abc6b16d6dddb07b",
+        "rank": "Liquid Nitrogen",
+        "joined": 1530036101242,
+        "mutedTill": 0,
+        "questParticipation": 26
+      },
+      {
+        "uuid": "3bd74c4d69e04d76965f256b814b9a44",
+        "rank": "Liquid Nitrogen",
+        "joined": 1533090740267,
+        "mutedTill": 0,
+        "questParticipation": 30
+      },
+      {
+        "uuid": "25bd8324e3374c948ee1f2a0618666b8",
+        "rank": "Ice Cubes",
+        "joined": 1532819357508,
+        "mutedTill": 0,
+        "questParticipation": 10
+      },
+      {
+        "uuid": "88c0e6ff872a4a94838536b40423dc41",
+        "rank": "Ice Cubes",
+        "joined": 1534529086993,
+        "mutedTill": 0,
+        "questParticipation": 2
+      },
+      {
+        "uuid": "8ef48353acc349819be9b092d9f99b15",
+        "rank": "Ice Cubes",
+        "joined": 1533831642674,
+        "mutedTill": 0,
+        "questParticipation": 20
+      },
+      {
+        "uuid": "22eb4504ff954677ba3e6cc87c8e271c",
+        "rank": "Ice Cubes",
+        "joined": 1503593372252,
+        "mutedTill": 0,
+        "questParticipation": 20
+      },
+      {
+        "uuid": "b96f9a8172ae462f8458a7f46afb264c",
+        "rank": "Guild Master",
+        "joined": 1471183953619,
+        "questParticipation": 27
+      },
+      {
+        "uuid": "929da3f3c3fc4a7fa60b6db1d17fadee",
+        "rank": "Co-Owner",
+        "joined": 1533878225566
+      },
+      {
+        "uuid": "05a00610b571455489ad5e419781da70",
+        "rank": "Ice Cubes",
+        "joined": 1532888890982,
+        "mutedTill": 0,
+        "questParticipation": 17
+      },
+      {
+        "uuid": "e08618ef8bbc4d688018241d24c8714f",
+        "rank": "Ice Cubes",
+        "joined": 1536616301221,
+        "questParticipation": 2
+      },
+      {
+        "uuid": "83fa4192d2d64d319185e1fef90949a1",
+        "rank": "Ice Cubes",
+        "joined": 1536697509045,
+        "questParticipation": 10
+      },
+      {
+        "uuid": "864528dd3b22465cac9f3b4eee6e4152",
+        "rank": "Ice Cubes",
+        "joined": 1536699246302
+      },
+      {
+        "uuid": "ca5ac837886e4d1383320342ec1777cd",
+        "rank": "Ice Cubes",
+        "joined": 1534950025037,
+        "mutedTill": 1536765475354
+      },
+      {
+        "uuid": "14016bbfdcf547dab04549b49e891dc8",
+        "rank": "Ice Cubes",
+        "joined": 1533832535639,
+        "mutedTill": 1536765759946
+      },
+      {
+        "uuid": "9899b3edf2364d318fe33c7278a2d4a8",
+        "rank": "Liquid Nitrogen",
+        "joined": 1533833062193,
+        "mutedTill": 0
+      },
+      {
+        "uuid": "fc096c7c43bc4cf39682664f2ba1ab5a",
+        "rank": "Ice Cubes",
+        "joined": 1535815623410,
+        "mutedTill": 1536770925541
+      },
+      {
+        "uuid": "80c6395b594340d99d65243d646d5712",
+        "rank": "Ice Cubes",
+        "joined": 1527241636467,
+        "mutedTill": 1536770960613
+      }
+    ],
+    "tag": "ICE",
+    "joinable": false,
+    "achievements": {
+      "WINNERS": 2285,
+      "EXPERIENCE_KINGS": 507587
+    },
+    "exp": 33617682,
+    "chatMute": 1536175588186,
+    "legacyRanking": 29,
+    "ranks": [
+      {
+        "name": "Co-Owner",
+        "default": false,
+        "tag": "CO",
+        "created": 1534122825511,
+        "priority": 8
+      },
+      {
+        "name": "Ice Cubes",
+        "default": true,
+        "tag": null,
+        "created": 1534133864084,
+        "priority": 1
+      },
+      {
+        "name": "Liquid Nitrogen",
+        "default": false,
+        "tag": "BUREK",
+        "created": 1536340579761,
+        "priority": 2
+      },
+      {
+        "name": "Officers",
+        "default": false,
+        "tag": "O",
+        "created": 1536534037967,
+        "priority": 3
+      }
+    ],
+    "publiclyListed": false,
+    "name_lower": "icesquad",
+    "tagColor": "DARK_AQUA",
+    "description": "The Coolest Guild Around :)"
+  }
+}
