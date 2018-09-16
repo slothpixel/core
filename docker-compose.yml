@@ -1,0 +1,30 @@
+# You don't usually need to edit this file.
+# If it does not fit your personal use case, docker-compose.override.yml is a preferred way to go.
+
+version: '3'
+services:
+  mongo:
+    image: mongo
+    container_name: slothpixel-mongo
+  redis:
+    image: redis:4
+    container_name: slothpixel-redis
+  core:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      image: slothpixel/core
+      # Override this command with your script if existing does not fit your needs
+      entrypoint: bash docker/main-launch.sh
+      ports:
+        - "5000:5000"
+        - "5100:5100"
+      environment:
+        REDIS_URL: redis://slothpixel-redis:6379/0
+        REDIS_TEST_URL: redis://slothpixel-redis:6379/1
+      volumes:
+        - .:/usr/src
+      links:
+        - mongo
+        - redis
+      container_name: slothpixel-core
