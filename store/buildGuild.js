@@ -19,7 +19,7 @@ function getGuildData(id, cb) {
     }
     // TODO - Add medal HTML parser
     const guild = processGuildData(body.guild);
-    return cb(guild);
+    return cb(null, guild);
   });
 }
 
@@ -49,7 +49,7 @@ function cacheGuild(guild, id, key, cb) {
         console.error(err);
       }
     });
-    return cb(guild);
+    return cb(null, guild);
   }
 }
 
@@ -68,7 +68,7 @@ function buildGuild(uuid, cb) {
       }
       if (reply) {
         const guild = JSON.parse(reply);
-        return cb(guild);
+        return cb(null, guild);
       }
       getGuildData(id, (err, guild) => {
         if (err) {
