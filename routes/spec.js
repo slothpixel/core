@@ -1,7 +1,7 @@
 /* eslint-disable max-len, no-shadow */
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
-
+const { playerNameParam, gameNameParam } = require('./params');
 const packageJson = require('../package.json');
 
 const spec = {
@@ -59,15 +59,7 @@ const spec = {
         summary: 'Get player stats by name or uuid',
         description: 'Returns player stats',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
-          },
+          playerNameParam,
         ],
         responses: {
           200: {
@@ -236,14 +228,7 @@ const spec = {
         summary: 'In-depth achievement stats',
         description: 'Returns player achievement stats',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
+          playerNameParam,
           },
         ],
         responses: {
@@ -317,14 +302,7 @@ const spec = {
         summary: 'In-depth quest data',
         description: 'Returns player quest completions',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
+          playerNameParam,
           },
         ],
         responses: {
@@ -367,14 +345,7 @@ const spec = {
         summary: 'Get basic player info',
         description: 'Returns player stats',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
+          playerNameParam,
           },
         ],
         responses: {
@@ -427,15 +398,7 @@ const spec = {
         ],
         summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
-          },
+          playerNameParam,
         ],
         responses: {
           200: {
@@ -558,14 +521,7 @@ const spec = {
         ],
         summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
+          playerNameParam,
           },
         ],
         responses: {
@@ -607,14 +563,7 @@ const spec = {
         ],
         summary: 'Get player\'s friends by user\'s username or uuid',
         parameters: [
-          {
-            name: 'playerName',
-            in: 'path',
-            description: 'Username or non-dashed uuid of player',
-            required: true,
-            schema: {
-              type: 'string',
-            },
+          playerNameParam,
           },
         ],
         responses: {
@@ -717,15 +666,7 @@ const spec = {
         ],
         summary: 'Get boosters for a specified game',
         parameters: [
-          {
-            name: 'game',
-            in: 'path',
-            description: 'Standard minigame name',
-            required: true,
-            schema: {
-              type: 'string',
-            },
-          },
+          gameNameParam,
         ],
         responses: {
           200: {
