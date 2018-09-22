@@ -1,6 +1,6 @@
 const express = require('express');
 
-const spec = { paths: [] };
+const spec = require('./spec');
 
 const api = new express.Router();
 
