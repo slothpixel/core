@@ -1,6 +1,7 @@
 /* eslint-disable max-len, no-shadow */
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
+const buildGuild = require('../store/buildGuild');
 const { playerNameParam, gameNameParam } = require('./params');
 const packageJson = require('../package.json');
 
@@ -391,6 +392,7 @@ const spec = {
         },
       },
     },
+    */
     '/guild/{playerName}': {
       get: {
         tags: [
@@ -512,8 +514,23 @@ const spec = {
             },
           },
         },
+        route: () => '/guild/:player',
+        func: (req, res, cb) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              cb();
+            }
+            buildGuild(uuid, (err, guild) => {
+              if (err) {
+                cb();
+              }
+              return res.json(guild);
+            });
+          });
+        },
       },
     },
+    /*
     '/session/{playerName}': {
       get: {
         tags: [
