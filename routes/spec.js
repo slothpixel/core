@@ -2,7 +2,7 @@
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
-const { playerNameParam, gameNameParam } = require('./params');
+const { playerNameParam } = require('./params');
 const packageJson = require('../package.json');
 
 const spec = {
