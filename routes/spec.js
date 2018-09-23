@@ -2,6 +2,7 @@
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
+const buildBans = require('../store/buildBans');
 const { playerNameParam } = require('./params');
 const packageJson = require('../package.json');
 
@@ -736,6 +737,7 @@ const spec = {
         },
       },
     },
+    */
     '/bans': {
       get: {
         tags: [
@@ -786,9 +788,17 @@ const spec = {
             },
           },
         },
+        route: () => '/bans',
+        func: (req, res, cb) => {
+          buildBans((err, bans) => {
+            if (err) {
+              cb();
+            }
+            return res.json(bans);
+          });
+        },
       },
     },
-    */
   },
 };
 module.exports = spec;
