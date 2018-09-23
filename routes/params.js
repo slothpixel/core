@@ -17,4 +17,13 @@ module.exports = {
       type: 'string',
     },
   },
+  cachedParam: {
+    name: 'cached',
+    in: 'query',
+    description: 'Whether to use cached data when available',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
 };

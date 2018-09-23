@@ -5,6 +5,8 @@
 const constants = require('hypixelconstants');
 const request = require('request');
 const urllib = require('url');
+const uuidV4 = require('uuid/v4');
+const moment = require('moment');
 const config = require('../config');
 
 function betterFormatting(i) {
@@ -123,6 +125,41 @@ function getData(url, cb) {
   });
 }
 
+/**
+ * Returns the unix timestamp at the beginning of a block of n minutes
+ * Offset controls the number of blocks to look ahead
+ * */
+function getStartOfBlockMinutes(size, offset = 0) {
+  const blockS = size * 60;
+  const curTime = Math.floor(new Date() / 1000);
+  const blockStart = curTime - (curTime % blockS);
+  return (blockStart + (offset * blockS)).toFixed(0);
+}
+
+function redisCount(redis, prefix) {
+  const key = `${prefix}:${moment().startOf('hour').format('X')}`;
+  redis.pfadd(key, uuidV4());
+  redis.expireat(key, moment().startOf('hour').add(1, 'day').format('X'));
+}
+
+function getRedisCountDay(redis, prefix, cb) {
+  // Get counts for last 24 hour keys (including current partial hour)
+  const keyArr = [];
+  for (let i = 0; i < 24; i += 1) {
+    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
+  }
+  redis.pfcount(...keyArr, cb);
+}
+
+function getRedisCountHour(redis, prefix, cb) {
+  // Get counts for previous full hour
+  const keyArr = [];
+  for (let i = 1; i < 2; i += 1) {
+    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
+  }
+  redis.pfcount(...keyArr, cb);
+}
+
 function colorNameToCode(color) {
   if (color === null) {
     return (null);
@@ -195,6 +232,10 @@ module.exports = {
   DBToStandardName,
   generateJob,
   getData,
+  getStartOfBlockMinutes,
+  redisCount,
+  getRedisCountDay,
+  getRedisCountHour,
   removeDashes,
   colorNameToCode,
   generateFormattedRank,

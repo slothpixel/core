@@ -18,6 +18,7 @@ const defaults = {
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
   MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
+  NO_API_KEY_PER_MIN_LIMIT: 60, // Rate limit per minute if not using an API key
   ENABLE_UUID_CACHE: true, // cache player stats
   ENABLE_PLAYER_CACHE: true, // cache players
   ENABLE_GUILD_CACHE: true, // cache guilds
