@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, no-shadow */
+/* eslint-disable consistent-return */
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const utility = require('../util/utility');

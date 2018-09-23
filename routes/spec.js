@@ -1,4 +1,3 @@
-/* eslint-disable max-len, no-shadow */
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
