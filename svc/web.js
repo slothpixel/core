@@ -5,11 +5,13 @@
 const cors = require('cors');
 const compression = require('compression');
 const express = require('express');
+const moment = require('moment');
+const api = require('../routes/api');
 const redis = require('../store/redis');
 const utility = require('../util/utility');
 const config = require('../config');
 
-const api = require('../routes/api');
+const { redisCount } = utility;
 
 const app = express();
 
@@ -58,6 +60,43 @@ app.use((req, res, cb) => {
 });
 
 // Telemetry middleware
+app.use((req, res, cb) => {
+  const timeStart = new Date();
+  res.once('finish', () => {
+    const timeEnd = new Date();
+    const elapsed = timeEnd - timeStart;
+    if (elapsed > 1000 || config.NODE_ENV === 'development') {
+      console.log('[SLOWLOG] %s, %s', req.originalUrl, elapsed);
+    }
+
+    // When called from a middleware, the mount point is not included in req.path. See Express docs.
+    if (res.statusCode !== 500
+      && res.statusCode !== 429
+      && elapsed < 10000) {
+      const multi = redis.multi();
+      multi.hincrby('usage_count', res.locals.usageIdentifier, 1)
+        .expireat('usage_count', utility.getEndOfMonth());
+
+      multi.exec((err, res) => {
+        if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') {
+          console.log('usage count increment', err, res);
+        }
+      });
+    }
+
+    if (req.originalUrl.indexOf('/api') === 0) {
+      redisCount(redis, 'api_hits');
+      if (req.headers.origin === 'https://www.slothpixel.me') {
+        redisCount(redis, 'api_hits_ui');
+      }
+      redis.zincrby('api_paths', 1, req.path.split('/')[1] || '');
+      redis.expireat('api_paths', moment().startOf('hour').add(1, 'hour').format('X'));
+    }
+    redis.lpush('load_times', elapsed);
+    redis.ltrim('load_times', 0, 9999);
+  });
+  cb();
+});
 
 // CORS headers
 app.use(cors({

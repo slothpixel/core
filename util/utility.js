@@ -136,6 +136,10 @@ function getStartOfBlockMinutes(size, offset = 0) {
   return (blockStart + (offset * blockS)).toFixed(0);
 }
 
+function getEndOfMonth() {
+  return moment().endOf('month').unix();
+}
+
 function redisCount(redis, prefix) {
   const key = `${prefix}:${moment().startOf('hour').format('X')}`;
   redis.pfadd(key, uuidV4());
@@ -233,6 +237,7 @@ module.exports = {
   generateJob,
   getData,
   getStartOfBlockMinutes,
+  getEndOfMonth,
   redisCount,
   getRedisCountDay,
   getRedisCountHour,
