@@ -23,11 +23,13 @@ const defaults = {
   ENABLE_PLAYER_CACHE: true, // cache players
   ENABLE_GUILD_CACHE: true, // cache guilds
   ENABLE_BANS_CACHE: true, // cache bans
+  ENABLE_BOOSTERS_CACHE: true, // cache boosters
   ENABLE_DB_CACHE: true, // set to enable MongoDB cache
   UUID_CACHE_SECONDS: 21600, // number of seconds to cache username-uuid pairs
   PLAYER_CACHE_SECONDS: 600, // number of seconds to cache players
   GUILD_CACHE_SECONDS: 600, // number of seconds to cache guilds
   BANS_CACHE_SECONDS: 30, // number of seconds to cache bans
+  BOOSTERS_CACHE_SECONDS: 30, // number of seconds to cache boosters
 };
 
 // ensure that process.env has all values in defaults, but prefer the process.env value

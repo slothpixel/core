@@ -2,7 +2,8 @@ const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
 const buildBans = require('../store/buildBans');
-const { playerNameParam } = require('./params');
+const buildBoosters = require('../store/buildBoosters');
+const { playerNameParam, gameNameParam } = require('./params');
 const packageJson = require('../package.json');
 
 const spec = {
@@ -614,6 +615,7 @@ const spec = {
         },
       },
     },
+    */
     '/boosters': {
       get: {
         tags: [
@@ -673,6 +675,15 @@ const spec = {
               },
             },
           },
+        },
+        route: () => '/boosters',
+        func: (req, res, cb) => {
+          buildBoosters((err, boosters) => {
+            if (err) {
+              cb();
+            }
+            return res.json(boosters);
+          });
         },
       },
     },
@@ -734,9 +745,21 @@ const spec = {
             },
           },
         },
+        route: () => '/boosters/:game',
+        func: (req, res, cb) => {
+          const { game } = req.params;
+          buildBoosters((err, boosters) => {
+            if (err) {
+              cb();
+            }
+            if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
+              cb();
+            }
+            return res.json(boosters.boosters[game]);
+          });
+        },
       },
     },
-    */
     '/bans': {
       get: {
         tags: [
