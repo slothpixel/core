@@ -21,17 +21,27 @@ function removeDashes(i) {
 }
 
 /**
- * Converts minigame's ID to standard name e.g. GingerBread => TKR
+ * Converts minigames ID to standard name e.g. GingerBread => TKR
  */
-function IDToStandardName(name) {
-  return constants.game_types.find(game => game.id === Number(name)).standard_name;
+function IDToStandardName(name = '') {
+  const result = constants.game_types.find(game => game.id === Number(name));
+  return result === undefined ? null : result.standard_name;
 }
 
 /**
- * Converts minigame's database name to standard name e.g. 3 => Walls
+ * Converts minigames database name to standard name e.g. 3 => Walls
  */
-function DBToStandardName(name) {
-  return constants.game_types.find(game => game.database_name === name).standard_name;
+function DBToStandardName(name = '') {
+  const result = constants.game_types.find(game => game.database_name === name);
+  return result === undefined ? null : result.standard_name;
+}
+
+/**
+* Converts minigames type to standard name e.g. QUAKECRAFT => Quake
+ */
+function typeToStandardName(name) {
+  const result = constants.game_types.find(game => game.type_name === name);
+  return result === undefined ? null : result.standard_name;
 }
 
 /**
@@ -234,6 +244,7 @@ module.exports = {
   betterFormatting,
   IDToStandardName,
   DBToStandardName,
+  typeToStandardName,
   generateJob,
   getData,
   getStartOfBlockMinutes,
