@@ -3,6 +3,7 @@ const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
+const buildSession = require('../store/buildSession');
 const { playerNameParam, gameNameParam } = require('./params');
 const packageJson = require('../package.json');
 
@@ -531,7 +532,6 @@ const spec = {
         },
       },
     },
-    /*
     '/session/{playerName}': {
       get: {
         tags: [
@@ -540,7 +540,6 @@ const spec = {
         summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
           playerNameParam,
-          },
         ],
         responses: {
           200: {
@@ -572,39 +571,55 @@ const spec = {
             },
           },
         },
+        route: () => '/session/:player',
+        func: (req, res, cb) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              cb();
+            }
+            buildSession(uuid, (err, session) => {
+              if (err) {
+                cb();
+              }
+              return res.json(session);
+            });
+          });
+        },
       },
     },
-    '/friends/{playerName}': {
-      get: {
-        tags: [
-          'friends',
-        ],
-        summary: 'Get player\'s friends by user\'s username or uuid',
-        parameters: [
-          playerNameParam,
-          },
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      uuid: {
-                        description: 'Friend\'s uuid',
-                        type: 'string',
-                      },
-                      sent_by: {
-                        description: 'UUID of the player who sent the friend request',
-                        type: 'string',
-                      },
-                      started: {
-                        description: 'Date the friendship started',
-                        type: 'integer',
+    /*
+      '/friends/{playerName}': {
+        get: {
+          tags: [
+            'friends',
+          ],
+          summary: 'Get player\'s friends by user\'s username or uuid',
+          parameters: [
+            playerNameParam,
+            },
+          ],
+          responses: {
+            200: {
+              description: 'successful operation',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        uuid: {
+                          description: 'Friend\'s uuid',
+                          type: 'string',
+                        },
+                        sent_by: {
+                          description: 'UUID of the player who sent the friend request',
+                          type: 'string',
+                        },
+                        started: {
+                          description: 'Date the friendship started',
+                          type: 'integer',
+                        },
                       },
                     },
                   },
@@ -614,8 +629,7 @@ const spec = {
           },
         },
       },
-    },
-    */
+      */
     '/boosters': {
       get: {
         tags: [
@@ -718,11 +732,11 @@ const spec = {
                         description: 'UNIX timestamp of activation date',
                         type: 'integer',
                       },
-                      originalLenght: {
+                      originalLength: {
                         description: 'Original duration in seconds',
                         type: 'integer',
                       },
-                      lenght: {
+                      length: {
                         description: 'Current lenght in seconds',
                         type: 'integer',
                       },
