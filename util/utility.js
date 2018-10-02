@@ -21,7 +21,7 @@ function removeDashes(i) {
 }
 
 /**
- * Converts minigames ID to standard name e.g. GingerBread => TKR
+ * Converts minigames ID to standard name e.g. 3 => Walls
  */
 function IDToStandardName(name = '') {
   const result = constants.game_types.find(game => game.id === Number(name));
@@ -29,7 +29,7 @@ function IDToStandardName(name = '') {
 }
 
 /**
- * Converts minigames database name to standard name e.g. 3 => Walls
+ * Converts minigames database name to standard name e.g. GingerBread => TKR
  */
 function DBToStandardName(name = '') {
   const result = constants.game_types.find(game => game.database_name === name);
