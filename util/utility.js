@@ -20,6 +20,16 @@ function removeDashes(i) {
   return (i.replace(/-/g, ''));
 }
 
+/*
+* Get ratio of x from y. Returns 2 decimal places.
+ */
+function getRatio(x = 0, y = 0) {
+  if (y === 0) {
+    return (Number.POSITIVE_INFINITY);
+  }
+  return Number((x / y).toFixed(2));
+}
+
 /**
  * Converts minigames ID to standard name e.g. 3 => Walls
  */
@@ -253,6 +263,7 @@ module.exports = {
   getRedisCountDay,
   getRedisCountHour,
   removeDashes,
+  getRatio,
   colorNameToCode,
   generateFormattedRank,
 };
