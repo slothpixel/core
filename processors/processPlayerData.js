@@ -255,7 +255,7 @@ function processPlayerData({
     prefix: utility.betterFormatting(prefix),
     karma,
     exp: networkExp,
-    level: calculateLevel.getExactLevel(networkExp).toFixed(2),
+    level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
     achievement_points: achievementPoints,
     // totals here
     mc_version: mcVersionRp,
