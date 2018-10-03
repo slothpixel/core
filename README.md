@@ -36,6 +36,7 @@ Quickstart (Docker)
 * Start containers and initialize databases: `docker-compose up`
 * Make some changes and commit them.
 * Submit a pull request. Wait for it to be reviewed and merged.
+* **OPTIONAL** Add your minecraft UUID to the `CONTRIBUTORS.js` file.
 * Congratulations! You're a contributor
 
 Notes
@@ -43,7 +44,6 @@ Notes
 * The API runs on port 3000 by default.
 * File changes made in the host directory get mirrored into the container.
 * Get a terminal into the running container: `docker exec -it slothpixel-core bash`
-
 * The process manager `pm2` is used to manage the individual services. Each is run as a separate Node.js process.
   * `pm2 list` See the currently running services.
   * `pm2 start manifest.json` Start all the services according to the manifest file
