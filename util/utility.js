@@ -8,6 +8,7 @@ const urllib = require('url');
 const uuidV4 = require('uuid/v4');
 const moment = require('moment');
 const config = require('../config');
+const contributors = require('../CONTRIBUTORS');
 
 function betterFormatting(i) {
   if (typeof i !== 'string') {
@@ -52,6 +53,13 @@ function DBToStandardName(name = '') {
 function typeToStandardName(name) {
   const result = constants.game_types.find(game => game.type_name === name);
   return result === undefined ? null : result.standard_name;
+}
+
+/**
+ * Determines if a player has contributed to the development of OpenDota
+ */
+function isContributor(uuid) {
+  return uuid in contributors;
 }
 
 /**
@@ -255,6 +263,7 @@ module.exports = {
   IDToStandardName,
   DBToStandardName,
   typeToStandardName,
+  isContributor,
   generateJob,
   getData,
   getStartOfBlockMinutes,

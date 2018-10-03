@@ -111,6 +111,7 @@ function processPlayerData({
     language: userLanguage,
     gifts_sent: realBundlesGiven,
     gifts_received: realBundlesReceived,
+    is_contributor: utility.isContributor(uuid),
     rewards: {
       streak_current: rewardScore,
       streak_best: rewardHighScore,
