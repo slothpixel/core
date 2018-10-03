@@ -7,6 +7,7 @@ const settings = {
 };
 
 const db = mongoose.connect(config.MONGODB_URL, settings, (err) => {
+  mongoose.set('useFindAndModify', false);
   console.log('connecting %s', config.MONGODB_URL);
   if (err) {
     console.log('failed db connection: %s', err);
