@@ -37,7 +37,7 @@ function getGuildID(uuid, cb) {
 
 function cacheGuild(guild, id, key, cb) {
   if (config.ENABLE_GUILD_CACHE) {
-    return redis.setex(key, config.GUILD_CACHE_SECONDS, JSON.stringify(guild), (err) => {
+    redis.setex(key, config.GUILD_CACHE_SECONDS, JSON.stringify(guild), (err) => {
       if (err) {
         console.error(err);
       }
@@ -49,8 +49,8 @@ function cacheGuild(guild, id, key, cb) {
         console.error(err);
       }
     });
-    return cb(null, guild);
   }
+  return cb(guild);
 }
 
 function buildGuild(uuid, cb) {
