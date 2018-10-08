@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-const utility = require('../../util/utility');
+const { getRatio } = require('../../util/utility');
 /*
 * Turbo Kart Racers
  */
@@ -53,7 +53,7 @@ module.exports = ({
     box_pickups,
     bananas_sent: banana_hits_sent,
     bananas_received: banana_hits_received,
-    banana_ratio: utility.getRatio(banana_hits_sent, banana_hits_received),
+    banana_ratio: getRatio(banana_hits_sent, banana_hits_received),
     trophies: {
       gold: gold_trophy,
       silver: silver_trophy,
@@ -62,7 +62,7 @@ module.exports = ({
     maps: {
       retro: {
         games: retro_plays,
-        win_ratio: utility.getRatio(retroWins, retro_plays),
+        win_ratio: getRatio(retroWins, retro_plays),
         trophies: {
           gold: gold_trophy_retro,
           silver: silver_trophy_retro,
@@ -71,7 +71,7 @@ module.exports = ({
       },
       hypixelgp: {
         games: hypixelgp_plays,
-        win_ratio: utility.getRatio(hypixelgpWins, hypixelgp_plays),
+        win_ratio: getRatio(hypixelgpWins, hypixelgp_plays),
         trophies: {
           gold: gold_trophy_hypixelgp,
           silver: silver_trophy_hypixelgp,
@@ -80,7 +80,7 @@ module.exports = ({
       },
       junglerush: {
         games: junglerush_plays,
-        win_ratio: utility.getRatio(junglerushWins, junglerush_plays),
+        win_ratio: getRatio(junglerushWins, junglerush_plays),
         trophies: {
           gold: gold_trophy_junglerush,
           silver: silver_trophy_junglerush,
@@ -89,7 +89,7 @@ module.exports = ({
       },
       olympus: {
         games: olympus_plays,
-        win_ratio: utility.getRatio(olympusWins, olympus_plays),
+        win_ratio: getRatio(olympusWins, olympus_plays),
         trophies: {
           gold: gold_trophy_olympus,
           silver: silver_trophy_olympus,
@@ -98,7 +98,7 @@ module.exports = ({
       },
       canyon: {
         games: canyon_plays,
-        win_ratio: utility.getRatio(canyonWins, canyon_plays),
+        win_ratio: getRatio(canyonWins, canyon_plays),
         trophies: {
           gold: gold_trophy_canyon,
           silver: silver_trophy_canyon,
