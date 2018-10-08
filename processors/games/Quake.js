@@ -1,6 +1,9 @@
+/* eslint-disable camelcase */
 /*
-* Quakecraft
+ * Quakecraft
  */
+
+const utility = require('../../util/utility');
 
 module.exports = ({
   barrel = '',
@@ -86,12 +89,13 @@ module.exports = ({
 
   return {
     coins,
+    kills_timeattack,
     solo: {
-      kills,
-      killstreaks,
-      deaths,
       wins,
-      kills_timeattack,
+      kills,
+      deaths,
+      kd: utility.getRatio(kills, deaths),
+      killstreaks,
       kills_dm,
       distance_travelled,
       kills_since_update_feb_2017,
@@ -102,6 +106,7 @@ module.exports = ({
       wins: wins_teams,
       kills: kills_teams,
       deaths: deaths_teams,
+      kd: utility.getRatio(kills_teams, deaths_teams),
       killstreaks: killstreaks_teams,
       kills_dm: kills_dm_teams,
       distance_travelled: distance_travelled_teams,
