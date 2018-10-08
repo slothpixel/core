@@ -32,7 +32,7 @@ function getRatio(x = 0, y = 0) {
 }
 
 /*
- * Gets the correct weekly statistic from the two oscillating 
+ * Gets the correct weekly statistic from the two oscillating
  * weekly fields.
  */
 function getWeeklyStat(a, b) {
@@ -50,7 +50,7 @@ function getMonthlyStat(a, b) {
   const start = new Date();
   const end = new Date(1417410000000);
 
-  const diffYear = end.getFullYear() - start.getFullYear()
+  const diffYear = end.getFullYear() - start.getFullYear();
   const diffMonth = diffYear * 12 + end.getMonth() - start.getMonth();
 
   return diffMonth % 2 === 0 ? a : b;
@@ -301,5 +301,5 @@ module.exports = {
   colorNameToCode,
   generateFormattedRank,
   getWeeklyStat,
-  getMonthlyStat
+  getMonthlyStat,
 };

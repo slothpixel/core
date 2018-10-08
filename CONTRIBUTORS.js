@@ -4,6 +4,6 @@
 */
 
 module.exports = {
-  ef962ec2df6e48a2ac9d6062c1b84652: {},  // builder_247
-  '7beb3348294f44d8b967cdf0d872aff8': {} // ecolsson
+  ef962ec2df6e48a2ac9d6062c1b84652: {}, // builder_247
+  '7beb3348294f44d8b967cdf0d872aff8': {}, // ecolsson
 };

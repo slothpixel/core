@@ -6,7 +6,7 @@
 const {
   getRatio,
   getMonthlyStat,
-  getWeeklyStat
+  getWeeklyStat,
 } = require('../../util/utility');
 
 module.exports = ({
@@ -121,7 +121,7 @@ module.exports = ({
     },
     kills_timeattack,
     highest_killstreak,
-    weekly_kills: getWeeklyStat(weekly_kills_a, weekly_kills_a),
+    weekly_kills: getWeeklyStat(weekly_kills_a, weekly_kills_b),
     monthly_kills: getMonthlyStat(monthly_kills_a, monthly_kills_b),
     dash_power: (dash_power && Number(dash_power)) || 0,
     dash_cooldown: (dash_cooldown && Number(dash_cooldown)) || 0,
