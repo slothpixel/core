@@ -3,7 +3,7 @@
  * Quakecraft
  */
 
-const utility = require('../../util/utility');
+const { getRatio, getMonthlyStat, getWeeklyStat } = require('../../util/utility');
 
 module.exports = ({
   barrel = '',
@@ -94,7 +94,7 @@ module.exports = ({
       wins,
       kills,
       deaths,
-      kd: utility.getRatio(kills, deaths),
+      kd: getRatio(kills, deaths),
       killstreaks,
       kills_dm,
       distance_travelled,
@@ -106,7 +106,7 @@ module.exports = ({
       wins: wins_teams,
       kills: kills_teams,
       deaths: deaths_teams,
-      kd: utility.getRatio(kills_teams, deaths_teams),
+      kd: getRatio(kills_teams, deaths_teams),
       killstreaks: killstreaks_teams,
       kills_dm: kills_dm_teams,
       distance_travelled: distance_travelled_teams,
@@ -118,10 +118,8 @@ module.exports = ({
     dash_cooldown: (dash_cooldown && Number(dash_cooldown)) || 0,
     alternative_gun_cooldown_indicator,
     highest_killstreak,
-    weekly_kills_a,
-    weekly_kills_b,
-    monthly_kills_a,
-    monthly_kills_b,
+    weekly_kills: getWeeklyStat(weekly_kills_a, weekly_kills_a),
+    monthly_kills: getMonthlyStat(monthly_kills_a, monthly_kills_b),
     equipped_cosmetics: {
       barrel: barrel && barrel.toLowerCase(),
       case: _case && _case.toLowerCase(),

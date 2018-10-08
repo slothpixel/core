@@ -31,6 +31,31 @@ function getRatio(x = 0, y = 0) {
   return Number((x / y).toFixed(2));
 }
 
+/*
+ * Gets the correct weekly statistic from the two oscillating 
+ * weekly fields.
+ */
+function getWeeklyStat(a, b) {
+  const delta = new Date() - new Date(1417237200000);
+  const numWeeks = Math.floor(delta / 604800000);
+
+  return numWeeks % 2 === 0 ? a : b;
+}
+
+/*
+ * Gets the correct monthly statistic from the two oscillating
+ * monthly fields.
+ */
+function getMonthlyStat(a, b) {
+  const start = new Date();
+  const end = new Date(1417410000000);
+
+  const diffYear = end.getFullYear() - start.getFullYear()
+  const diffMonth = diffYear * 12 + end.getMonth() - start.getMonth();
+
+  return diffMonth % 2 === 0 ? a : b;
+}
+
 /**
  * Converts minigames ID to standard name e.g. 3 => Walls
  */
@@ -275,4 +300,6 @@ module.exports = {
   getRatio,
   colorNameToCode,
   generateFormattedRank,
+  getWeeklyStat,
+  getMonthlyStat
 };
