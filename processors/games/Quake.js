@@ -67,25 +67,25 @@ module.exports = ({
   messageKillstreaks: message_Killstreaks,
   'messageMulti-kills': message_Multikills,
   'messagePowerup Collections': message_PowerupCollections,
-  beam
+  beam,
 }) => {
   const cosmetics = {
-    misc: []
+    misc: [],
   };
 
-  for (let i = 0; i < packages.length; i++) {
-    let p = packages[i];
+  packages.forEach((p) => {
     const [key, val] = p.split('.');
 
     if (val) {
-      if (Object.keys(cosmetics).indexOf(key + 's') === -1) 
-        cosmetics[key + 's'] = [val];
-      else 
-        cosmetics[key + 's'].push(val);
+      if (Object.keys(cosmetics).indexOf(`${key}s`) === -1) {
+        cosmetics[`${key}s`] = [val];
+      } else {
+        cosmetics[`${key}s`].push(val);
+      }
     } else {
       cosmetics.misc.push(key);
     }
-  }
+  });
 
   return {
     coins,
@@ -100,7 +100,7 @@ module.exports = ({
       distance_travelled,
       kills_since_update_feb_2017,
       shots_fired,
-      headshots
+      headshots,
     },
     teams: {
       wins: wins_teams,
@@ -112,10 +112,10 @@ module.exports = ({
       distance_travelled: distance_travelled_teams,
       kills_since_update_feb_2017: kills_since_update_feb_2017_teams,
       shots_fired: shots_fired_teams,
-      headshots: headshots_teams
+      headshots: headshots_teams,
     },
-    dash_power: dash_power && Number(dash_power) || 0,
-    dash_cooldown: dash_cooldown && Number(dash_cooldown) || 0,
+    dash_power: (dash_power && Number(dash_power)) || 0,
+    dash_cooldown: (dash_cooldown && Number(dash_cooldown)) || 0,
     alternative_gun_cooldown_indicator,
     highest_killstreak,
     weekly_kills_a,
@@ -123,13 +123,13 @@ module.exports = ({
     monthly_kills_a,
     monthly_kills_b,
     equipped_cosmetics: {
-      barrel: barrel.toLowerCase(),
-      case: _case.toLowerCase(),
-      killsound: killsound.toLowerCase(),
-      muzzle: muzzle.toLowerCase(),
-      sight: sight.toLowerCase(),
-      trigger: trigger.toLowerCase(),
-      beam: beam.toLowerCase()
+      barrel: barrel && barrel.toLowerCase(),
+      case: _case && _case.toLowerCase(),
+      killsound: killsound && killsound.toLowerCase(),
+      muzzle: muzzle && muzzle.toLowerCase(),
+      sight: sight && sight.toLowerCase(),
+      trigger: trigger && trigger.toLowerCase(),
+      beam: beam && beam.toLowerCase(),
     },
     cosmetics,
     settings: {
@@ -145,8 +145,8 @@ module.exports = ({
         coins: message_CoinMessages,
         killstreaks: message_Killstreaks,
         multikills: message_Multikills,
-        powerups: message_PowerupCollections
-      }
+        powerups: message_PowerupCollections,
+      },
     },
     votes: {
       apex: votes_Apex,
@@ -162,7 +162,7 @@ module.exports = ({
       lost_world: votes_Lost_World,
       martian: votes_Martian,
       reactor: votes_Reactor,
-      sero: votes_Sero
-    }
+      sero: votes_Sero,
+    },
   };
 };
