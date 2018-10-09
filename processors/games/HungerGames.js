@@ -110,8 +110,7 @@ module.exports = ({
   };
 
   const inventories = Object.entries(rest)
-    .filter(([key]) => key.endsWith('Inventory'))
-    .filter(v => typeof v[1] === 'object')
+    .filter(([key, val]) => key.endsWith('Inventory') && typeof val === 'object')
     .map(v => [v[0].replace('Inventory', '').replace(' ', '_').toLowerCase(), v[1]])
     .reduce((prev, curr) => {
       const key = curr[0];
