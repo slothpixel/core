@@ -1,11 +1,3 @@
-/*
-* Paintball
- */
-module.exports = ({
-  coins = 0,
-}) => ({
-  coins,
-});
 /* eslint-disable camelcase */
 /*
  * Paintball
