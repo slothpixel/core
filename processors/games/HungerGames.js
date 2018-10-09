@@ -134,6 +134,18 @@ module.exports = ({
     monthly_kills: getMonthlyStat(monthly_kills_a, monthly_kills_b),
     rambo_wins,
     random_wins,
+    damage_taken,
+    taunt_kills,
+    potions_drunk,
+    damage,
+    mobs_spawned,
+    time_played,
+    arrows_hit,
+    games_played,
+    potions_thrown,
+    arrows_fired,
+    blitz_uses,
+
     kits_levels: {
       arachnologist,
       archer,
