@@ -162,7 +162,9 @@ module.exports = ({
   };
 
   // Add one to all levels so the range is 1-10 instead of 0-9
-  Object.keys(kitLevels).forEach(key => kitLevels[key]++);
+  Object.keys(kitLevels).forEach((key) => {
+    kitLevels[key] += 1;
+  });
 
   return {
     coins,
