@@ -1,7 +1,7 @@
 const utility = require('../util/utility');
 
 /*
-* Returns guild level with 2 decimal places
+ * Returns guild level with 2 decimal places
  */
 function getLevel(exp) {
   const EXP_NEEDED = [
@@ -24,24 +24,25 @@ function getLevel(exp) {
 
   // Returns two decimal places if level is less than 1 (ex. 50000 = 0.5)
   if (exp < EXP_NEEDED[0]) {
-   return Math.round((exp/EXP_NEEDED[0]) * 100) / 100;
+    return Math.round((exp/EXP_NEEDED[0]) * 100) / 100;
   }
 
   // Otherwise increments through the exp_needed array until current element is
-  // greater than experience obtained, returns the current level plus the percent
+  // greater than experience obtained, returns the current level plus a percent
   // of the next level experience already gained (as decimal places)
-  for (var i = 0; i < EXP_NEEDED.length; i++) {
+  for (let i = 0; i <= (EXP_NEEDED.length - 1); i += 1) {
     if (exp >= EXP_NEEDED[i]) {
-      level++;
+      level += 1;
     } else {
-      var current_level_growth_exp = EXP_NEEDED[i] - EXP_NEEDED[i - 1];
-      var current_level_completion = (exp - EXP_NEEDED[i - 1])/current_level_growth_exp;
-      return Math.round((level + current_level_completion) * 100) / 100;
+      let currentLevelGrowthExp = EXP_NEEDED[i] - EXP_NEEDED[i - 1];
+      let currentLevelCompletion = (exp - EXP_NEEDED[i - 1])/currentLevelGrowthExp;
+      return Math.round((level + currentLevelCompletion) * 100) / 100;
     }
   }
 
-  // Should never happen
-  return -1;
+  // This occurs when the player has met the level cap
+  // Returns only their level without a decimal for growth completion
+  return level;
 }
 
 function processGuildData({
