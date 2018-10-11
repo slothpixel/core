@@ -19,15 +19,29 @@ function getLevel(exp) {
     2500000,
     3000000,
   ];
+
   let level = 0;
-  let xp = exp;
-  do {
-    xp -= EXP_NEEDED[level] || 3000000;
-    level += 1;
+
+  // Returns two decimal places if level is less than 1 (ex. 50000 = 0.5)
+  if (exp < EXP_NEEDED[0]) {
+   return Math.round((exp/EXP_NEEDED[0]) * 100) / 100;
   }
-  while (xp > 0);
-  level += ((EXP_NEEDED[level] || 3000000) - xp) / (EXP_NEEDED[level] || 3000000);
-  return (level - 1).toFixed(2);
+
+  // Otherwise increments through the exp_needed array until current element is
+  // greater than experience obtained, returns the current level plus the percent
+  // of the next level experience already gained (as decimal places)
+  for (var i = 0; i < EXP_NEEDED.length; i++) {
+    if (exp >= EXP_NEEDED[i]) {
+      level++;
+    } else {
+      var current_level_growth_exp = EXP_NEEDED[i] - EXP_NEEDED[i - 1];
+      var current_level_completion = (exp - EXP_NEEDED[i - 1])/current_level_growth_exp;
+      return Math.round((level + current_level_completion) * 100) / 100;
+    }
+  }
+
+  // Should never happen
+  return -1;
 }
 
 function processGuildData({
