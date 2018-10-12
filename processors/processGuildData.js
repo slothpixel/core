@@ -24,12 +24,12 @@ function getLevel(exp) {
 
   // Returns two decimal places if level is less than 1 (ex. 50000 = 0.5)
   // or returns levels between the top of EXP_NEED and the level cap of 100
-  if (exp < EXP_NEEDED[0]) { return Math.round((exp / EXP_NEEDED[0]) * 100) / 100; }   
+  if (exp < EXP_NEEDED[0]) { return Math.round((exp / EXP_NEEDED[0]) * 100) / 100; }
   if (exp >= EXP_NEEDED[(EXP_NEEDED.length - 1)]) {
     level = EXP_NEEDED.length;
     const expRemainder = exp - EXP_NEEDED[(EXP_NEEDED.length - 1)];
     level += expRemainder / EXP_NEEDED[(EXP_NEEDED.length - 1)];
-    if (level >= 100) { return 100; } 
+    if (level >= 100) { return 100; }
     return Math.round(level * 100) / 100;
   }
 
