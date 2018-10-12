@@ -23,8 +23,18 @@ function getLevel(exp) {
   let level = 0;
 
   // Returns two decimal places if level is less than 1 (ex. 50000 = 0.5)
+  // or returns levels between the top of EXP_NEED and the level cap of 100
   if (exp < EXP_NEEDED[0]) {
     return Math.round((exp/EXP_NEEDED[0]) * 100) / 100;
+  } else if (exp >= EXP_NEEDED[(EXP_NEEDED.length - 1)]) {
+    level = EXP_NEEDED.length;
+    let expRemainder = exp - EXP_NEEDED[(EXP_NEEDED.length - 1)];
+    level += expRemainder/EXP_NEEDED[(EXP_NEEDED.length - 1)];
+    if (level >= 100) {
+      return 100;
+    } else {
+      return Math.round(level * 100) / 100;
+    }
   }
 
   // Otherwise increments through the exp_needed array until current element is
@@ -40,9 +50,8 @@ function getLevel(exp) {
     }
   }
 
-  // This occurs when the player has met the level cap
-  // Returns only their level without a decimal for growth completion
-  return level;
+  // This should never happen
+  return -1;
 }
 
 function processGuildData({
