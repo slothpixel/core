@@ -7,6 +7,7 @@ const {
   getRatio,
   getWeeklyStat,
   getMonthlyStat,
+  pickKeys,
 } = require('../../util/utility');
 
 module.exports = ({
@@ -89,38 +90,12 @@ module.exports = ({
   // Other
   ...rest
 }) => {
-  // Gets all stats whose key starts with prefix
-  const getKitStat = (prefix, filter) => {
-    let entries = Object.entries(rest).filter(([key]) => key.startsWith(prefix));
-
-    if (filter) {
-      entries = entries.filter(([key]) => filter(key));
-    }
-
-    const stats = entries.reduce((prev, [key, val]) => {
-      const normalizedKey = key.replace(prefix, '').replace(' ', '_');
-      return {
-        ...prev,
-        [normalizedKey]: val,
-      };
-    }, {});
-
-    // Return undefined instead of empty object
-    return Object.keys(stats).length === 0 ? undefined : stats;
-  };
-
-  const inventories = Object.entries(rest)
-    .filter(([key, val]) => key.endsWith('Inventory') && typeof val === 'object')
-    .map(v => [v[0].replace('Inventory', '').replace(' ', '_').toLowerCase(), v[1]])
-    .reduce((prev, curr) => {
-      const key = curr[0];
-      const val = Object.values(curr[1]);
-
-      return {
-        ...prev,
-        [key]: val,
-      };
-    }, {});
+  const getKitStat = (regexp, options = {}) => pickKeys(rest, {
+    regexp,
+    keyMap: key => key.replace(regexp, '').trim().replace(' ', '_').replace("'", '')
+      .toLowerCase(),
+    ...options,
+  });
 
   const kitLevels = {
     arachnologist,
@@ -193,25 +168,25 @@ module.exports = ({
     kits_levels: kitLevels,
     kit_stats: {
       wins: {
-        solo: getKitStat('wins_', key => key.indexOf('team') === -1),
-        teams: getKitStat('wins_teams_'),
+        solo: getKitStat(/^wins_(?!teams_)/),
+        teams: getKitStat(/^wins_teams_/),
       },
-      kills: getKitStat('kills_'),
-      games_played: getKitStat('games_played_'),
-      time_played: getKitStat('time_played_'),
-      chests_opened: getKitStat('chests_opened_'),
-      mobs_spawned: getKitStat('mobs_spawned_'),
-      damage_taken: getKitStat('damage_taken_'),
-      fall_damage: getKitStat('fall_damage_'),
-      arrows_fired: getKitStat('arrows_fired_'),
-      arrows_hit: getKitStat('arrows_hit_'),
-      bottles_thrown: getKitStat('bottles_thrown_'),
-      potions_drunk: getKitStat('potions_drunk_'),
-      potions_thrown: getKitStat('potions_thrown_'),
-      taunt_kills: getKitStat('taunt_kills_'),
+      kills: getKitStat(/^kills_/),
+      games_played: getKitStat(/^games_played_/),
+      time_played: getKitStat(/^time_played_/),
+      chests_opened: getKitStat(/^chests_opened_/),
+      mobs_spawned: getKitStat(/^mobs_spawned_/),
+      damage_taken: getKitStat(/^damage_taken_/),
+      fall_damage: getKitStat(/^fall_damage_/),
+      arrows_fired: getKitStat(/^arrows_fired_/),
+      arrows_hit: getKitStat(/^arrows_hit_/),
+      bottles_thrown: getKitStat(/^bottles_thrown_/),
+      potions_drunk: getKitStat(/^potions_drunk_/),
+      potions_thrown: getKitStat(/^potions_thrown_/),
+      taunt_kills: getKitStat(/^taunt_kills_/),
       misc: {
         tim_items_enchanted: rest.items_enchanted_tim,
-        blocks_traveled: getKitStat('blocks_traveled_'),
+        blocks_traveled: getKitStat(/^blocks_traveled_/),
         creepertamer_explosive_kills: rest.explosive_kills_creepertamer,
         creepertamer_tnt_placed: rest.tnt_placed_creepertamer,
         snowman_snowballs_thrown: rest.snowballs_thrown_snowman,
@@ -226,14 +201,17 @@ module.exports = ({
       victory_dance: victory_dance && victory_dance.toLowerCase(),
       finisher: finisher && finisher.toLowerCase(),
     },
-    inventories,
     settings: {
       default_kit: defaultkit && defaultkit.toLowerCase(),
       combat_tracker: combatTracker,
       auto_armor: autoarmor,
       toggle_kill_counter: togglekillcounter,
     },
-    votes: getKitStat('votes_'),
+    votes: getKitStat(/^votes_/),
+    inventories: getKitStat(/Inventory$/, {
+      filter: (_, value) => typeof value === 'object',
+      valueMap: Object.values,
+    }),
     packages,
   };
 };

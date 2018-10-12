@@ -56,6 +56,32 @@ function getMonthlyStat(a, b) {
   return diffMonth % 2 === 0 ? a : b;
 }
 
+/*
+ * Pick certain keys from obj.
+ *
+ * Options:
+ *    regexp: A regex object that the keys must pass.
+ *        Defaults to .*
+ *    filter: A function that is passed both the key
+ *        and value, and returns a boolean. Defaults
+ *        to (() => true).
+ *    keyMap: A function that remaps all keys that
+ *        pass the above two tests. Defaults to
+ *        (key => key).
+ *    valueMap: Same as keyMap, but for the values.
+ */
+function pickKeys(obj, options) {
+  const regexp = options.regexp || /.+/;
+  const filter = options.filter || (() => true);
+  const keyMap = options.keyMap || (key => key);
+  const valueMap = options.valueMap || (value => value);
+
+  return Object.entries(obj)
+    .filter(([key, value]) => regexp.test(key) && filter(key, value))
+    .map(([key, value]) => [keyMap(key), valueMap(value)])
+    .reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+}
+
 /**
  * Converts minigames ID to standard name e.g. 3 => Walls
  */
@@ -302,4 +328,5 @@ module.exports = {
   generateFormattedRank,
   getWeeklyStat,
   getMonthlyStat,
+  pickKeys,
 };
