@@ -127,9 +127,9 @@ const server = app.listen(Number(port), () => {
   console.log('[WEB] listening on %s', port);
 });
 
-  /**
-   * Wait for connections to end, then shut down
-   * */
+/**
+ * * Wait for connections to end, then shut down
+ * */
 function gracefulShutdown() {
   console.log('Received kill signal, shutting down gracefully.');
   server.close(() => {
