@@ -22,32 +22,28 @@ function getLevel(exp) {
 
   let level = 0;
 
-  // Returns two decimal places if level is less than 1 (ex. 50000 = 0.5)
-  // or returns levels between the top of EXP_NEED and the level cap of 100
-  if (exp < EXP_NEEDED[0]) { return Math.round((exp / EXP_NEEDED[0]) * 100) / 100; }
-  if (exp >= EXP_NEEDED[(EXP_NEEDED.length - 1)]) {
-    level = EXP_NEEDED.length;
-    const expRemainder = exp - EXP_NEEDED[(EXP_NEEDED.length - 1)];
-    level += expRemainder / EXP_NEEDED[(EXP_NEEDED.length - 1)];
-    if (level >= 100) { return 100; }
-    return Math.round(level * 100) / 100;
-  }
+  // Increments by one from zero to the level cap
+  for (let i = 0; i <= 100; i += 1) {
+    // need is the required exp to get to the next level
+    let need = 0;
+    if (i >= EXP_NEEDED.length) {
+      need = EXP_NEEDED[EXP_NEEDED.length - 1];
+    } else { need = EXP_NEEDED[i]; }
 
-  // Otherwise increments through the exp_needed array until current element is
-  // greater than experience obtained, returns the current level plus a percent
-  // of the next level experience already gained (as decimal places)
-  for (let i = 0; i <= (EXP_NEEDED.length - 1); i += 1) {
-    if (exp >= EXP_NEEDED[i]) {
-      level += 1;
+    // If the required exp to get to the next level isn't met returns
+    // the current level plus progress towards the next (unused exp/need)
+    // Otherwise increments the level and substracts the used exp from exp var
+    if ((exp - need) < 0) {
+      return Math.round((level + (exp / need)) * 100) / 100;
     } else {
-      const currentLevelGrowthExp = EXP_NEEDED[i] - EXP_NEEDED[i - 1];
-      const currentLevelCompletion = (exp - EXP_NEEDED[i - 1]) / currentLevelGrowthExp;
-      return Math.round((level + currentLevelCompletion) * 100) / 100;
+      level += 1;
+      exp -= need;
     }
   }
 
-  // This should never happen
-  return -1;
+  // Returns the level cap - currently 100
+  // If changed here, also change in for loop above
+  return 100;
 }
 
 function processGuildData({
