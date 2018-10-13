@@ -35,10 +35,9 @@ function getLevel(exp) {
     // Otherwise increments the level and substracts the used exp from exp var
     if ((exp - need) < 0) {
       return Math.round((level + (exp / need)) * 100) / 100;
-    } else {
-      level += 1;
-      exp -= need;
     }
+    level += 1;
+    exp -= need;
   }
 
   // Returns the level cap - currently 100
