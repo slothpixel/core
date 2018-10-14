@@ -23,7 +23,7 @@ function getGuildMedals(id, cb) {
 
     const $ = cheerio.load(body);
 
-    $('.guild-medal').each(function() {
+    $('.guild-medal').each(function elemLoop() {
       const elem = $(this);
       const text = elem.parent().last().text();
 
@@ -40,7 +40,7 @@ function getGuildMedals(id, cb) {
         for (let i = 0; i < gameTypes.length; i += 1) {
           const game = gameTypes[i];
 
-          // Search for any of the four game names in the 
+          // Search for any of the four game names in the
           // html element text
           const names = Object.values(game)
             .filter(v => typeof v === 'string')
@@ -109,7 +109,7 @@ function cacheGuild(guild, id, key, cb) {
       }
     });
   }
-  
+
   cb(guild);
 }
 
