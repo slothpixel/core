@@ -13,6 +13,8 @@
   "dependencies": {
     "async": "^2.6.1",
     "body-parser": "^1.13.2",
+    "cheerio": "^1.0.0-rc.2",
+    "cloudscraper": "^1.5.0",
     "compression": "^1.7.3",
     "cors": "^2.8.4",
     "dotenv": "^6.1.0",
