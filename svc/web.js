@@ -123,12 +123,12 @@ app.use((err, req, res, cb) => {
 });
 // temp fix
 const port = config.PORT || config.FRONTEND_PORT;
-const server = app.listen(Number(port), () => {
+const server = app.listen(port, () => {
   console.log('[WEB] listening on %s', port);
 });
 
 /**
- * * Wait for connections to end, then shut down
+ * Wait for connections to end, then shut down
  * */
 function gracefulShutdown() {
   console.log('Received kill signal, shutting down gracefully.');

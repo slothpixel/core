@@ -14,7 +14,7 @@ const defaults = {
   ROLE: '', // for specifying the file that should be run when entry point is invoked
   GROUP: '', // for specifying the group of apps that should be run when entry point is invoked
   NODE_ENV: 'development',
-  PORT: '3000',
+  FRONTEND_PORT: '5000',
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
   MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis

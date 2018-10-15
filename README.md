@@ -41,7 +41,7 @@ Quickstart (Docker)
 
 Notes
 ---
-* The API runs on port 3000 by default.
+* The API runs on port 5000 by default.
 * File changes made in the host directory get mirrored into the container.
 * Get a terminal into the running container: `docker exec -it slothpixel-core bash`
 * The process manager `pm2` is used to manage the individual services. Each is run as a separate Node.js process.
