@@ -93,6 +93,7 @@ module.exports = ({
       healed: healed_1v1,
       kd: getRatio(kills_1v1, deaths_1v1),
       win_loss: getRatio(wins_1v1, losses_1v1),
+      win_percentage: getRatio(wins_1v1, wins_1v1 + losses_1v1),
     },
     two_v_two: {
       damage: damage_2v2,
@@ -105,6 +106,7 @@ module.exports = ({
       healed: healed_2v2,
       kd: getRatio(kills_2v2, deaths_2v2),
       win_loss: getRatio(wins_2v2, losses_2v2),
+      win_percentage: getRatio(wins_2v2, wins_2v2 + losses_2v2),
     },
     four_v_four: {
       damage: damage_4v4,
@@ -117,6 +119,7 @@ module.exports = ({
       healed: healed_4v4,
       kd: getRatio(kills_4v4, deaths_4v4),
       win_loss: getRatio(wins_4v4, losses_4v4),
+      win_percentage: getRatio(wins_4v4, wins_4v4 + losses_4v4),
     },
   },
   combat_tracker: combatTracker,

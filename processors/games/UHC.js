@@ -3,7 +3,9 @@
  * UHC
  */
 
-const { getWeeklyStat, getMonthlyStat, pickKeys } = require('../../util/utility');
+const {
+  getWeeklyStat, getMonthlyStat, getRatio, pickKeys,
+} = require('../../util/utility');
 
 module.exports = ({
   // General
@@ -67,7 +69,10 @@ module.exports = ({
     coins,
     deaths,
     kills,
+    kd: getRatio(kills, deaths),
     wins,
+    win_loss: getRatio(wins, deaths),
+    win_percentage: getRatio(wins, wins + deaths),
     score,
     heads_eaten,
     weekly_kills: getWeeklyStat(weekly_kills_a, weekly_kills_b),
@@ -78,7 +83,10 @@ module.exports = ({
       solo: {
         deaths: deaths_solo,
         kills: kills_solo,
+        kd: getRatio(kills_solo, deaths_solo),
         wins: wins_solo,
+        win_loss: getRatio(wins_solo, deaths_solo),
+        win_percentage: getRatio(wins_solo, wins_solo + deaths_solo),
         heads_eaten: heads_eaten_solo,
         monthly_kills: getMonthlyStat(monthly_kills__solo_a, monthly_kills__solo_b),
         monthly_wins: getMonthlyStat(monthly_wins__solo_a, monthly_wins__solo_b),
@@ -86,7 +94,9 @@ module.exports = ({
       red_v_blue: {
         deaths: deaths_redvblue,
         kills: kills_redvblue,
+        kd: getRatio(kills_redvblue, deaths_redvblue),
         wins: wins_redvblue,
+        win_loss: getRatio(wins_redvblue, wins_redvblue + deaths_redvblue),
         heads_eaten: heads_eaten_redvblue,
       },
     },

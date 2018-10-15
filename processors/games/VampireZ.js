@@ -6,6 +6,7 @@
 const {
   getWeeklyStat,
   getMonthlyStat,
+  getRatio,
 } = require('../../util/utility');
 
 module.exports = ({
@@ -61,6 +62,7 @@ module.exports = ({
   human_stats: {
     deaths: human_deaths,
     kills: human_kills,
+    kd: getRatio(human_kills, human_deaths),
     wins: human_wins,
     weekly_wins: getWeeklyStat(weekly_human_wins_a, weekly_human_wins_b),
     monthly_wins: getMonthlyStat(monthly_human_wins_a, monthly_human_wins_b),
@@ -68,6 +70,7 @@ module.exports = ({
   vampire_stats: {
     deaths: vampire_deaths,
     kills: vampire_kills,
+    kd: getRatio(vampire_kills, vampire_deaths),
     wins: vampires_wins,
     weekly_wins: getWeeklyStat(weekly_vampire_wins_a, weekly_vampire_wins_b),
     monthly_wins: getMonthlyStat(monthly_vampire_wins_a, monthly_vampire_wins_b),
