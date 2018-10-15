@@ -1,7 +1,7 @@
 const utility = require('../util/utility');
 
 /*
-* Returns guild level with 2 decimal places
+ * Returns guild level with 2 decimal places
  */
 function getLevel(exp) {
   const EXP_NEEDED = [
@@ -17,17 +17,34 @@ function getLevel(exp) {
     2500000,
     2500000,
     2500000,
+    2500000,
+    2500000,
     3000000,
   ];
+
   let level = 0;
-  let xp = exp;
-  do {
-    xp -= EXP_NEEDED[level] || 3000000;
+
+  // Increments by one from zero to the level cap
+  for (let i = 0; i <= 100; i += 1) {
+    // need is the required exp to get to the next level
+    let need = 0;
+    if (i >= EXP_NEEDED.length) {
+      need = EXP_NEEDED[EXP_NEEDED.length - 1];
+    } else { need = EXP_NEEDED[i]; }
+
+    // If the required exp to get to the next level isn't met returns
+    // the current level plus progress towards the next (unused exp/need)
+    // Otherwise increments the level and substracts the used exp from exp var
+    if ((exp - need) < 0) {
+      return Math.round((level + (exp / need)) * 100) / 100;
+    }
     level += 1;
+    exp -= need;
   }
-  while (xp > 0);
-  level += ((EXP_NEEDED[level] || 3000000) - xp) / (EXP_NEEDED[level] || 3000000);
-  return (level - 1).toFixed(2);
+
+  // Returns the level cap - currently 100
+  // If changed here, also change in for loop above
+  return 100;
 }
 
 function processGuildData({
