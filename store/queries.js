@@ -5,7 +5,7 @@ const {
 } = require('../store/models');
 
 function insertPlayer(uuid, player, cb) {
-  Player.findOneAndUpdate({ uuid }, { upsert: true }, player, (err) => {
+  Player.findOneAndUpdate({ uuid }, player, { upsert: true }, (err) => {
     if (err) {
       console.log(err);
     }
@@ -33,7 +33,7 @@ function getPlayerProfile(uuid, cb) {
 }
 
 function insertGuild(id, guild, cb) {
-  Guild.findOneAndUpdate({ id }, { upsert: true }, guild, (err) => {
+  Guild.findOneAndUpdate({ id }, guild, { upsert: true }, (err) => {
     if (err) {
       console.log(err);
     }
