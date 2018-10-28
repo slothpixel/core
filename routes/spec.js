@@ -441,6 +441,7 @@ const spec = {
                       type: 'integer',
                     },
                     level: {
+                      description: 'Guild level',
                       type: 'number',
                     },
                     discord: {
@@ -448,9 +449,11 @@ const spec = {
                       type: 'string',
                     },
                     description: {
+                      description: 'Guild description',
                       type: 'string',
                     },
                     preferred_games: {
+                      description: 'Array containing the guild\'s preferred games',
                       type: 'array',
                       items: {
                         type: 'string',
