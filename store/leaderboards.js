@@ -48,7 +48,7 @@ function transformData(data) {
   return array;
 }
 
-function doStuff(query, cb) {
+function getLeaderboards(query, cb) {
   let Model;
   const fields = getQueryFields(query.columns);
   console.log(fields);
@@ -69,4 +69,4 @@ function doStuff(query, cb) {
   });
 }
 
-module.exports = doStuff;
+module.exports = getLeaderboards;
