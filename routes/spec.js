@@ -198,7 +198,77 @@ const spec = {
                       },
                     },
                     stats: {
+                      description: 'Player stats across all minigames',
                       type: 'object',
+                      properties: {
+                        Arcade: {
+                          description: 'Player stats in the Arcade Games',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Coins in the Arcade Games',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        Arena: {
+                          description: 'Player stats in Arena Brawl',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins',
+                              type: 'integer',
+                            },
+                            coins_spent: {
+                              description: 'Total coins spent in Arena Brawl',
+                              type: 'integer',
+                            },
+                            hat: {
+                              description: 'Selected hat',
+                              type: 'string',
+                            },
+                            penalty: {
+                              type: 'integer',
+                            },
+                            magical_chest: {
+                              type: 'integer',
+                            },
+                            keys: {
+                              description: 'Current number of Magical Chest keys',
+                              type: 'integer',
+                            },
+                            selected_sword: {
+                              type: 'object',
+                            },
+                            active_rune: {
+                              type: 'object',
+                            },
+                            skills: {
+                              type: 'object',
+                            },
+                            combat_levels: {
+                              type: 'object',
+                            },
+                            rune_levels: {
+                              type: 'object',
+                            },
+                            gamemodes: {
+                              description: 'Stats in specific Arena gamemodes',
+                              type: 'object',
+                            },
+                          },
+                        },
+                        Battleground: {
+                          description: 'Player stats in Warlords',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Warlords',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                      },
                     },
                   },
                 },
