@@ -7,7 +7,7 @@ We love your input! We want to make contributing to this project as easy and tra
 * Submitting a fix
 * Proposing new features
 
-Make sure to join out [discord](https://discord.gg/ND9bJKK) for any discussion or questions related to the project. 
+Make sure to join our [discord](https://discord.gg/ND9bJKK) for any discussion or questions related to the project. 
 
 Don't forget to discuss any changes before making them to avoid extra work!
 
