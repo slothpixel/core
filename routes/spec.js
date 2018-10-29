@@ -664,12 +664,12 @@ const spec = {
                             description: 'UNIX timestamp of activation date',
                             type: 'integer',
                           },
-                          originalLenght: {
+                          originalLength: {
                             description: 'Original duration in seconds',
                             type: 'integer',
                           },
-                          lenght: {
-                            description: 'Current lenght in seconds',
+                          length: {
+                            description: 'Current length in seconds',
                             type: 'integer',
                           },
                           active: {
