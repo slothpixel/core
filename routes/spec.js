@@ -5,7 +5,9 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildSession = require('../store/buildSession');
 const leaderboards = require('../store/leaderboards');
-const { playerNameParam, gameNameParam } = require('./params');
+const {
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam,
+} = require('./params');
 const packageJson = require('../package.json');
 
 const spec = {
@@ -639,7 +641,7 @@ const spec = {
         summary: 'Allows query of dynamic leaderboards',
         description: 'Returns player or guild leaderboards',
         parameters: [
-          playerNameParam,
+          typeParam, columnParam, sortByParam, filterParam, limitParam, significantParam,
         ],
         responses: {
           200: {
