@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /*
 * Allows custom DB queries for leaderboards API endpoint
  */
@@ -19,7 +20,16 @@ function getQueryFields(columns = '') {
 function createQuery({
   sortBy, limit = 10, filter = '{}', significant = true,
 }) {
-  const filterObj = JSON.parse(filter) || {};
+  let error;
+  let filterObj = {};
+  if (sortBy === undefined) {
+    error = 'No sortBy parameter!';
+  }
+  try {
+    filterObj = JSON.parse(filter);
+  } catch (e) {
+    error = `Failed to parse filter JSON: ${e.message}`;
+  }
   // TODO - Later remove non ADMIN ranked admin accounts
   if (significant === true) {
     filterObj.rank = { $ne: 'ADMIN' };
@@ -35,6 +45,7 @@ function createQuery({
         [sortBy]: -1,
       },
     },
+    error,
   };
 }
 
@@ -51,7 +62,6 @@ function transformData(data) {
 function getLeaderboards(query, cb) {
   let Model;
   const fields = getQueryFields(query.columns);
-  console.log(fields);
   if (query.type === 'players') {
     Model = Player;
   } else if (query.type === 'guilds') {
@@ -59,11 +69,14 @@ function getLeaderboards(query, cb) {
   } else {
     cb('No type parameter!');
   }
-  const { filter, options } = createQuery(query);
+  const { filter, options, error } = createQuery(query);
+  if (error) {
+    return cb(error);
+  }
   Model.find(filter, fields, options, (err, res) => {
     if (err) {
       console.error(err);
-      return cb(err);
+      return cb('Query failed');
     }
     return cb(null, transformData(res));
   });

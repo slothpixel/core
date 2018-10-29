@@ -661,9 +661,9 @@ const spec = {
         },
         route: () => '/leaderboards',
         func: (req, res, cb) => {
-          leaderboards(req.query, (err, lb) => {
-            if (err) {
-              return cb(res.json(err));
+          leaderboards(req.query, (error, lb) => {
+            if (error) {
+              return cb(res.json({ error }));
             }
             return res.json(lb);
           });
