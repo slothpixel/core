@@ -2,10 +2,23 @@
 /*
 * Allows custom DB queries for leaderboards API endpoint
  */
+const config = require('../config');
+const redis = require('../store/redis');
 const { profileFields } = require('../store/profileFields');
 const {
   Player, Guild,
 } = require('../store/models');
+
+function cacheLeaderboard(lb, key, cb) {
+  if (config.ENABLE_LEADERBOARD_CACHE) {
+    redis.setex(key, config.LEADERBOARD_CACHE_SECONDS, JSON.stringify(lb), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  }
+  return cb(lb);
+}
 
 function getQueryFields(columns = '') {
   let string = profileFields;
@@ -60,25 +73,37 @@ function transformData(data) {
 }
 
 function getLeaderboards(query, cb) {
-  let Model;
-  const fields = getQueryFields(query.columns);
-  if (query.type === 'players') {
-    Model = Player;
-  } else if (query.type === 'guilds') {
-    Model = Guild;
-  } else {
-    cb('No type parameter!');
-  }
-  const { filter, options, error } = createQuery(query);
-  if (error) {
-    return cb(error);
-  }
-  Model.find(filter, fields, options, (err, res) => {
+  const qs = JSON.stringify(query);
+  const key = `leaderboard:${qs}`;
+  redis.get(key, (err, reply) => {
     if (err) {
-      console.error(err);
-      return cb('Query failed');
+      return cb(err);
+    } if (reply) {
+      // console.log(`Cache hit for ${qs}`);
+      const lb = JSON.parse(reply);
+      return cb(null, lb);
     }
-    return cb(null, transformData(res));
+    let Model;
+    const fields = getQueryFields(query.columns);
+    if (query.type === 'players') {
+      Model = Player;
+    } else if (query.type === 'guilds') {
+      Model = Guild;
+    } else {
+      cb('No type parameter!');
+    }
+    const { filter, options, error } = createQuery(query);
+    if (error) {
+      return cb(error);
+    }
+    Model.find(filter, fields, options, (err, res) => {
+      if (err) {
+        console.error(err);
+        return cb('Query failed');
+      }
+      const data = transformData(res);
+      cacheLeaderboard(data, key, lb => cb(null, lb));
+    });
   });
 }
 
