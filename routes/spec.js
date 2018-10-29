@@ -740,7 +740,7 @@ const spec = {
                         type: 'integer',
                       },
                       length: {
-                        description: 'Current lenght in seconds',
+                        description: 'Current length in seconds',
                         type: 'integer',
                       },
                       active: {
