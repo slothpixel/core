@@ -16,7 +16,7 @@ const spec = {
   ],
   info: {
     description: 'The Slothpixel API provides Hypixel related data.\n',
-    version: packageJson,
+    version: packageJson.version,
     title: 'Slothpixel API',
     license: {
       name: 'MIT',
