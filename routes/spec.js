@@ -307,10 +307,104 @@ const spec = {
                                   },
                                 },
                                 two_v_two: {
-                                  
+                                  description: 'Specific stats in 2v2 Arena',
+                                  type: 'object',
+                                  properties: {
+                                    damage: {
+                                      description: 'Total damage dealt in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    kills: {
+                                      description: 'Total kills in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    deaths: {
+                                      description: 'Total deaths in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    losses: {
+                                      description: 'Total losses in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    wins: {
+                                      description: 'Total wins in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    win_streaks: {
+                                      description: 'Highest win streak in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    games: {
+                                      description: 'Total games played in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    healed: {
+                                      description: 'Total health healed in 2v2 Arena',
+                                      type: 'integer',
+                                    },
+                                    kd: {
+                                      description: 'Kill/death ratio in 2v2 Arena',
+                                      type: 'number',
+                                    },
+                                    win_loss: {
+                                      description: 'Win/loss ratio in 2v2 Arena',
+                                      type: 'number',
+                                    },
+                                    win_percentage: {
+                                      description: 'Win percentage out of games played in 2v2 Arena',
+                                      type: 'number',
+                                    },
+                                  },
                                 },
                                 four_v_four: {
-                                  
+                                  description: 'Specific stats in 4v4 Arena',
+                                  type: 'object',
+                                  properties: {
+                                    damage: {
+                                      description: 'Total damage dealt in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    kills: {
+                                      description: 'Total kills in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    deaths: {
+                                      description: 'Total deaths in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    losses: {
+                                      description: 'Total losses in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    wins: {
+                                      description: 'Total wins in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    win_streaks: {
+                                      description: 'Highest win streak in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    games: {
+                                      description: 'Total games played in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    healed: {
+                                      description: 'Total health healed in 4v4 Arena',
+                                      type: 'integer',
+                                    },
+                                    kd: {
+                                      description: 'Kill/death ratio in 4v4 Arena',
+                                      type: 'number',
+                                    },
+                                    win_loss: {
+                                      description: 'Win/loss ratio in 4v4 Arena',
+                                      type: 'number',
+                                    },
+                                    win_percentage: {
+                                      description: 'Win percentage out of games played in 4v4 Arena',
+                                      type: 'number',
+                                    },
+                                  },
                                 },
                               },
                             },
