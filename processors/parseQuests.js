@@ -1,4 +1,7 @@
 
+/*
+* Functions used to process quest and challenge data
+ */
 function parseQuests(quests) {
   const obj = {
     quests_completed: 0,
