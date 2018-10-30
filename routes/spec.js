@@ -238,10 +238,10 @@ const spec = {
                               type: 'integer',
                             },
                             selected_sword: {
-                              type: 'object',
+                              type: 'string',
                             },
                             active_rune: {
-                              type: 'object',
+                              type: 'string',
                             },
                             skills: {
                               type: 'object',
@@ -255,6 +255,64 @@ const spec = {
                             gamemodes: {
                               description: 'Stats in specific Arena gamemodes',
                               type: 'object',
+                              properties: {
+                                one_v_one: {
+                                  description: 'Specific stats in 1v1 Arena',
+                                  type: 'object',
+                                  properties: {
+                                    damage: {
+                                      description: 'Total damage dealt in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    kills: {
+                                      description: 'Total kills in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    deaths: {
+                                      description: 'Total deaths in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    losses: {
+                                      description: 'Total losses in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    wins: {
+                                      description: 'Total wins in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    win_streaks: {
+                                      description: 'Highest win streak in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    games: {
+                                      description: 'Total games played in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    healed: {
+                                      description: 'Total health healed in 1v1 Arena',
+                                      type: 'integer',
+                                    },
+                                    kd: {
+                                      description: 'Kill/death ratio in 1v1 Arena',
+                                      type: 'number',
+                                    },
+                                    win_loss: {
+                                      description: 'Win/loss ratio in 1v1 Arena',
+                                      type: 'number',
+                                    },
+                                    win_percentage: {
+                                      description: 'Win percentage out of games played in 1v1 Arena',
+                                      type: 'number',
+                                    },
+                                  },
+                                },
+                                two_v_two: {
+                                  
+                                },
+                                four_v_four: {
+                                  
+                                },
+                              },
                             },
                           },
                         },
