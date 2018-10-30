@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 
-const PlayerSchema = mongoose.Schema({}, { strict: false, timestamps: true });
-const GuildSchema = mongoose.Schema({}, { strict: false, timestamps: true });
+const options = {
+  strict: false,
+  timestamps: true,
+};
+
+const PlayerSchema = mongoose.Schema({}, options);
+const GuildSchema = mongoose.Schema({}, options);
 
 const Player = mongoose.model('PlayerSchema', PlayerSchema);
 const Guild = mongoose.model('GuildSchema', GuildSchema);

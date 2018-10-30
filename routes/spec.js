@@ -441,6 +441,7 @@ const spec = {
                       type: 'integer',
                     },
                     level: {
+                      description: 'Guild level',
                       type: 'number',
                     },
                     discord: {
@@ -448,9 +449,11 @@ const spec = {
                       type: 'string',
                     },
                     description: {
+                      description: 'Guild description',
                       type: 'string',
                     },
                     preferred_games: {
+                      description: 'Array containing the guild\'s preferred games',
                       type: 'array',
                       items: {
                         type: 'string',
@@ -661,12 +664,12 @@ const spec = {
                             description: 'UNIX timestamp of activation date',
                             type: 'integer',
                           },
-                          originalLenght: {
+                          originalLength: {
                             description: 'Original duration in seconds',
                             type: 'integer',
                           },
-                          lenght: {
-                            description: 'Current lenght in seconds',
+                          length: {
+                            description: 'Current length in seconds',
                             type: 'integer',
                           },
                           active: {
@@ -737,7 +740,7 @@ const spec = {
                         type: 'integer',
                       },
                       length: {
-                        description: 'Current lenght in seconds',
+                        description: 'Current length in seconds',
                         type: 'integer',
                       },
                       active: {

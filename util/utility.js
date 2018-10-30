@@ -191,7 +191,7 @@ function getData(url, cb) {
       || res.statusCode !== 200
       || !body
     ) {
-      console.error('[INVALID] status');
+      console.error('[INVALID] status: %s', res ? res.statusCode : '');
       return cb('Request failed', null);
     } if (hypixelApi && !body.success) {
       console.error(`[Hypixel API Error]: ${body.cause}`);

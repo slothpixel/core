@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 const db = require('./db');
+const { profileFields } = require('../store/profileFields');
 const {
   Player, Guild,
 } = require('../store/models');
@@ -23,7 +24,6 @@ function getPlayer(uuid, cb) {
 }
 
 function getPlayerProfile(uuid, cb) {
-  const profileFields = 'uuid username firts_login level achievement_points karma rank_formatted';
   Player.findOne({ uuid }, profileFields, (err, player) => {
     if (err) {
       console.log(err);
