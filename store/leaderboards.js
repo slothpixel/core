@@ -65,8 +65,19 @@ function createQuery({
 function transformData(data) {
   const array = [];
   // Remove _id field from each entry
-  data.forEach((obj) => {
-    delete obj._doc._id;
+  data.forEach((doc) => {
+    const obj = doc._doc;
+    delete obj._id;
+    // Change extra columns from nested objects to keys
+    if (Object.hasOwnProperty.call(obj, 'stats')) {
+      Object.keys(obj.stats).forEach((game) => {
+        const gameObj = obj.stats[game];
+        Object.keys(gameObj).forEach((stat) => {
+          obj[`${game}_${stat}`] = gameObj[stat];
+        });
+      });
+      delete obj.stats;
+    }
     array.push(obj);
   });
   return array;
