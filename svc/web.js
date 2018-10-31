@@ -15,6 +15,14 @@ const { redisCount } = utility;
 
 const app = express();
 
+const whitelistedPaths = [
+  '/api', // Docs
+];
+
+const pathCosts = {
+  '/api/leaderboards': 5,
+};
+
 // Compression middleware
 app.use(compression());
 // Health check
@@ -33,7 +41,7 @@ app.use((req, res, cb) => {
   const rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
   console.log('[USER] %s visit %s, ip %s', req.user ? req.user.account_id : 'anonymous', req.originalUrl, ip);
 
-  const pathCost = Object.hasOwnProperty.call(req.query, 'cached') ? 0 : 1;
+  const pathCost = pathCosts[req.path] || Object.hasOwnProperty.call(req.query, 'cached') ? 0 : 1;
   const multi = redis.multi()
     .hincrby('rate_limit', res.locals.usageIdentifier, pathCost)
     .expireat('rate_limit', utility.getStartOfBlockMinutes(1, 1));
@@ -72,6 +80,7 @@ app.use((req, res, cb) => {
     // When called from a middleware, the mount point is not included in req.path. See Express docs.
     if (res.statusCode !== 500
       && res.statusCode !== 429
+      && !whitelistedPaths.includes(req.baseUrl + (req.path === '/' ? '' : req.path))
       && elapsed < 10000) {
       const multi = redis.multi();
       multi.hincrby('usage_count', res.locals.usageIdentifier, 1)
