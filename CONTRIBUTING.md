@@ -1,11 +1,11 @@
 # Contributing
 
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+We would love to have your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
-* Reporting a bug
+* Reporting a bug (make a [github issue](https://github.com/slothpixel/core/issues/new))
 * Discussing the current state of the code
-* Submitting a fix
-* Proposing new features
+* Submitting a fix (fork and [pull](https://github.com/slothpixel/core/compare) as explained below)
+* Proposing new features (mention it on github or make a [github issue](https://github.com/slothpixel/core/issues/new))
 
 Make sure to join our [discord](https://discord.gg/ND9bJKK) for any discussion or questions related to the project. 
 
