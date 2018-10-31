@@ -25,6 +25,7 @@ const defaults = {
   ENABLE_BANS_CACHE: true, // cache bans
   ENABLE_BOOSTERS_CACHE: true, // cache boosters
   ENABLE_SESSION_CACHE: true, // cache session
+  ENABLE_LEADERBOARD_CACHE: true, // cache leaderboards
   ENABLE_DB_CACHE: true, // set to enable MongoDB cache
   UUID_CACHE_SECONDS: 21600, // number of seconds to cache username-uuid pairs
   PLAYER_CACHE_SECONDS: 600, // number of seconds to cache players
@@ -32,6 +33,7 @@ const defaults = {
   BANS_CACHE_SECONDS: 30, // number of seconds to cache bans
   BOOSTERS_CACHE_SECONDS: 30, // number of seconds to cache boosters
   SESSION_CACHE_SECONDS: 60, // number of seconds to cache session
+  LEADERBOARD_CACHE_SECONDS: 900, // number of seconds to cache each leaderboard
 };
 
 // ensure that process.env has all values in defaults, but prefer the process.env value

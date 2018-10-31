@@ -4,7 +4,10 @@ const buildGuild = require('../store/buildGuild');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildSession = require('../store/buildSession');
-const { playerNameParam, gameNameParam } = require('./params');
+const leaderboards = require('../store/leaderboards');
+const {
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam,
+} = require('./params');
 const packageJson = require('../package.json');
 
 const spec = {
@@ -855,6 +858,45 @@ const spec = {
         },
       },
       */
+    '/leaderboards': {
+      get: {
+        tags: [
+          'leaderboards',
+        ],
+        summary: 'Allows query of dynamic leaderboards',
+        description: 'Returns player or guild leaderboards',
+        parameters: [
+          typeParam, columnParam, sortByParam, filterParam, limitParam, significantParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/leaderboards',
+        func: (req, res, cb) => {
+          leaderboards(req.query, (error, lb) => {
+            if (error) {
+              return cb(res.json({ error }));
+            }
+            return res.json(lb);
+          });
+        },
+      },
+    },
     '/boosters': {
       get: {
         tags: [
