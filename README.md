@@ -47,17 +47,18 @@ Notes
 * The process manager `pm2` is used to manage the individual services. Each is run as a separate Node.js process.
   * `pm2 list` See the currently running services.
   * `pm2 start manifest.json` Start all the services according to the manifest file
-  * `pm2 start web --watch` Starts a specific service and enable watch mode on it, so it'll restart automatically when files change
+  * `pm2 start manifest.json --only web` Starts a specific service
   * `pm2 stop web` Stop a specific service
   * `pm2 stop all` Stop all the services
   * `pm2 logs web` Inspect the output of a service
+  * `docker system prune` Cleans your system of any stopped containers, images, and volumes
   * Tests are written using the mocha framework.
     * `npm test` runs the full test suite.
     * Use `mocha` CLI for more fine-grained control over the tests you want to run.
 
 Resources
 ---
-* Join us on Discord (https://discord.gg/ND9bJKK)! If you are looking to contribute we'll give you the Developer role, which gives you access to channels related to development.
+* Join us on Discord (https://discord.gg/ND9bJKK)! We're always happy to help and answer questions.
 
 History
 ---
