@@ -57,6 +57,7 @@ function createQuery({
       sort: {
         [sortBy]: -1,
       },
+      maxTimeMS: 30000,
     },
     error,
   };
@@ -101,7 +102,7 @@ function getLeaderboards(query, cb) {
     } else if (query.type === 'guilds') {
       Model = Guild;
     } else {
-      cb('No type parameter!');
+      cb('No valid type parameter!');
     }
     const { filter, options, error } = createQuery(query);
     if (error) {
