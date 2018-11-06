@@ -57,7 +57,7 @@ const spec = {
     },
   ],
   paths: {
-    '/player/{playerName}': {
+    '/players/{playerName}': {
       get: {
         tags: [
           'player',
@@ -431,7 +431,7 @@ const spec = {
             },
           },
         },
-        route: () => '/player/:player',
+        route: () => '/players/:player',
         func: (req, res, cb) => {
           getUUID(req.params.player, (err, uuid) => {
             if (err) {
@@ -448,7 +448,7 @@ const spec = {
       },
     },
     /*
-    '/player/{playerName}/achievements': {
+    '/players/{playerName}/achievements': {
       get: {
         tags: [
           'player',
@@ -522,7 +522,7 @@ const spec = {
         },
       },
     },
-    '/player/{playerName}/quests': {
+    '/players/{playerName}/quests': {
       get: {
         tags: [
           'player',
@@ -620,7 +620,7 @@ const spec = {
       },
     },
     */
-    '/guild/{playerName}': {
+    '/guilds/{playerName}': {
       get: {
         tags: [
           'guild',
@@ -744,7 +744,7 @@ const spec = {
             },
           },
         },
-        route: () => '/guild/:player',
+        route: () => '/guilds/:player',
         func: (req, res, cb) => {
           getUUID(req.params.player, (err, uuid) => {
             if (err) {
@@ -760,7 +760,7 @@ const spec = {
         },
       },
     },
-    '/session/{playerName}': {
+    '/sessions/{playerName}': {
       get: {
         tags: [
           'session',
@@ -799,7 +799,7 @@ const spec = {
             },
           },
         },
-        route: () => '/session/:player',
+        route: () => '/sessions/:player',
         func: (req, res, cb) => {
           getUUID(req.params.player, (err, uuid) => {
             if (err) {
