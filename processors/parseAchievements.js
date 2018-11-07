@@ -9,7 +9,9 @@ const { achievements } = constants.achievements;
 function parseAchievements(oneTime = [], tiered = {}) {
   function getAchievementProperties(a) {
     const split = a.split('_');
-    const game = split[0];
+    const game = (split[0] === 'bridge'
+      ? 'duels'
+      : split[0]);
     split.shift();
     const name = split.join('_').toUpperCase();
     return {
@@ -22,7 +24,7 @@ function parseAchievements(oneTime = [], tiered = {}) {
   Object.keys(achievements).forEach((game) => {
     obj[game] = {
       one_time: [],
-      tiered: [],
+      tiered: {},
       completed: 0,
       completed_tiered: 0,
       completed_one_time: 0,
