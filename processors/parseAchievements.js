@@ -20,9 +20,15 @@ function parseAchievements(oneTime = [], tiered = {}) {
     };
   }
   // Initiate the achievements object
-  const obj = {};
+  const obj = {
+    achievement_points: 0,
+    completed_tiered: 0,
+    completed_one_time: 0,
+    completed_total: 0,
+  };
+  const gameObj = {};
   Object.keys(achievements).forEach((game) => {
-    obj[game] = {
+    gameObj[game] = {
       one_time: [],
       tiered: {},
       completed: 0,
@@ -38,9 +44,10 @@ function parseAchievements(oneTime = [], tiered = {}) {
   oneTime.filter(elem => typeof elem === 'string').forEach((achievement) => {
     const { game, name } = getAchievementProperties(achievement);
     const { points = 0 } = achievements[game].one_time[name] || 0;
-    obj[game].points_one_time += points;
-    obj[game].completed_one_time += 1;
-    obj[game].one_time.push(name);
+    gameObj[game].points_one_time += points;
+    gameObj[game].completed_one_time += 1;
+    obj.completed_one_time += 1;
+    gameObj[game].one_time.push(name);
   });
   // Parse tiered achievements
   Object.entries(tiered).forEach((achievement) => {
@@ -49,24 +56,25 @@ function parseAchievements(oneTime = [], tiered = {}) {
     if (ach !== undefined) {
       for (let t = 0; t < ach.tiers.length; t += 1) {
         if (achievement[1] >= ach.tiers[t].amount) {
-          obj[game].points_tiered += ach.tiers[t].points;
-          obj[game].completed_tiered += 1;
+          gameObj[game].points_tiered += ach.tiers[t].points;
+          gameObj[game].completed_tiered += 1;
+          obj.completed_tiered += 1;
         } else {
-          [, obj[game].tiered[name]] = achievement;
+          [, gameObj[game].tiered[name]] = achievement;
           break;
         }
       }
     }
   });
   // Finalise the object
-  let achievementPoints = 0;
-  Object.keys(obj).forEach((game) => {
-    const path = obj[game];
+  Object.keys(gameObj).forEach((game) => {
+    const path = gameObj[game];
     path.completed = path.completed_tiered + path.completed_one_time;
     path.points_total = path.points_tiered + path.points_one_time;
-    achievementPoints += path.points_total;
+    obj.achievement_points += path.points_total;
   });
-  obj.achievement_points = achievementPoints;
+  obj.completed_total = obj.completed_one_time + obj.completed_tiered;
+  obj.games = gameObj;
   return (obj);
 }
 
