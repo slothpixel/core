@@ -17,8 +17,7 @@ function getPlayerData(uuid, cb) {
     if (err) {
       return cb(err, null);
     }
-    const player = processPlayerData(body.player || {});
-    return cb(null, player);
+    processPlayerData(body.player || {}, player => cb(null, player));
   });
 }
 

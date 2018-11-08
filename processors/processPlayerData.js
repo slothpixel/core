@@ -2,6 +2,8 @@ const utility = require('../util/utility');
 const calculateLevel = require('../util/calculateLevel');
 
 const processStats = require('./games');
+const parseAchievements = require('./parseAchievements');
+const parseQuests = require('./parseQuests');
 
 function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
   let playerRank;
@@ -26,6 +28,9 @@ function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
  */
 function processPlayerData({
   uuid,
+  achievements,
+  achievementsOneTime,
+  quests,
   playername,
   firstLogin,
   lastLogin = null,
@@ -50,7 +55,13 @@ function processPlayerData({
   adsense_tokens = 0,
   socialMedia: { links = {} } = {},
   stats = {},
-}) {
+}, cb) {
+  const achievementPromise = new Promise((resolve) => {
+    resolve(parseAchievements(achievementsOneTime, achievements));
+  });
+  const questPromise = new Promise((resolve) => {
+    resolve(parseQuests(quests));
+  });
   const defaultLinks = {
     TWITTER: null,
     YOUTUBE: null,
@@ -92,36 +103,43 @@ function processPlayerData({
       statsObject[standardName] = processStats[game](fullStats[game]);
     }
   });
-  return {
-    uuid,
-    username: playername,
-    online: lastLogin > lastLogout,
-    rank: getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank),
-    rank_plus_color: utility.colorNameToCode(rankPlusColor),
-    prefix: utility.betterFormatting(prefix),
-    karma,
-    exp: networkExp,
-    level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
-    achievement_points: achievementPoints,
-    // totals here
-    mc_version: mcVersionRp,
-    first_login: firstLogin,
-    last_login: lastLogin,
-    last_game: utility.typeToStandardName(mostRecentGameType),
-    language: userLanguage,
-    gifts_sent: realBundlesGiven,
-    gifts_received: realBundlesReceived,
-    is_contributor: utility.isContributor(uuid),
-    rewards: {
-      streak_current: rewardScore,
-      streak_best: rewardHighScore,
-      claimed: totalRewards,
-      claimed_daily: totalDailyRewards,
-      tokens: adsense_tokens,
-    },
-    links: Object.assign(defaultLinks, links),
-    stats: statsObject,
-  };
+  let totalKills = 0;
+  let totalWins = 0;
+  let totalCoins = 0;
+    .then((values) => {
+      [achievementObj, questObject] = values;
+      cb({
+        uuid,
+        username: playername,
+        online: lastLogin > lastLogout,
+        rank: getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank),
+        rank_plus_color: utility.colorNameToCode(rankPlusColor),
+        prefix: utility.betterFormatting(prefix),
+        karma,
+        exp: networkExp,
+        level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
+        achievement_points: achievementPoints,
+        total_kills: totalKills,
+        total_wins: totalWins,
+        total_coins: totalCoins,
+        last_game: utility.typeToStandardName(mostRecentGameType),
+        language: userLanguage,
+        gifts_sent: realBundlesGiven,
+        gifts_received: realBundlesReceived,
+        is_contributor: utility.isContributor(uuid),
+        rewards: {
+          streak_current: rewardScore,
+          streak_best: rewardHighScore,
+          claimed: totalRewards,
+          claimed_daily: totalDailyRewards,
+          tokens: adsense_tokens,
+        },
+        links: Object.assign(defaultLinks, links),
+        stats: statsObject,
+        achievements: achievementObj,
+        quests: questObject,
+      });
+    });
 }
 
 module.exports = processPlayerData;

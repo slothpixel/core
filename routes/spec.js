@@ -441,13 +441,14 @@ const spec = {
               if (err) {
                 cb();
               }
+              delete player.achievements;
+              delete player.quests;
               return res.json(player);
             });
           });
         },
       },
     },
-    /*
     '/players/{playerName}/achievements': {
       get: {
         tags: [
@@ -457,7 +458,6 @@ const spec = {
         description: 'Returns player achievement stats',
         parameters: [
           playerNameParam,
-          },
         ],
         responses: {
           200: {
@@ -520,6 +520,20 @@ const spec = {
             },
           },
         },
+        route: () => '/players/:player/achievements',
+        func: (req, res, cb) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              cb();
+            }
+            buildPlayer(uuid, (err, player) => {
+              if (err) {
+                cb();
+              }
+              return res.json(player.achievements);
+            });
+          });
+        },
       },
     },
     '/players/{playerName}/quests': {
@@ -531,7 +545,6 @@ const spec = {
         description: 'Returns player quest completions',
         parameters: [
           playerNameParam,
-          },
         ],
         responses: {
           200: {
@@ -563,8 +576,23 @@ const spec = {
             },
           },
         },
+        route: () => '/players/:player/quests',
+        func: (req, res, cb) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              cb();
+            }
+            buildPlayer(uuid, (err, player) => {
+              if (err) {
+                cb();
+              }
+              return res.json(player.quests);
+            });
+          });
+        },
       },
     },
+    /*
     '/profile/{playerName}': {
       get: {
         tags: [
