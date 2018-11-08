@@ -103,9 +103,9 @@ function processPlayerData({
       statsObject[standardName] = processStats[game](fullStats[game]);
     }
   });
-  let totalKills = 0;
-  let totalWins = 0;
-  let totalCoins = 0;
+  let achievementObj = {};
+  let questObject = {};
+  Promise.all([achievementPromise, questPromise])
     .then((values) => {
       [achievementObj, questObject] = values;
       cb({
