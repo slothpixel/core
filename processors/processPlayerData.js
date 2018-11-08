@@ -108,6 +108,9 @@ function processPlayerData({
   Promise.all([achievementPromise, questPromise])
     .then((values) => {
       [achievementObj, questObject] = values;
+    }, (err) => {
+      Error(`Failed parsing quest or achievements: ${err}`);
+    }).then(() => {
       cb({
         uuid,
         username: playername,
