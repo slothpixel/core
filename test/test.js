@@ -25,7 +25,8 @@ nock('https://api.hypixel.net/')
 
 describe('parseStats', () => {
   it('should return parsed player stats', () => {
-    const stats = processPlayerData(playerApi.player);
-    assert.equal(stats.uuid, 'ef962ec2df6e48a2ac9d6062c1b84652');
+    processPlayerData(playerApi.player, (stats) => {
+      assert.equal(stats.uuid, 'ef962ec2df6e48a2ac9d6062c1b84652');
+    });
   });
 });
