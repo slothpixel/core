@@ -103,6 +103,14 @@ function processPlayerData({
       statsObject[standardName] = processStats[game](fullStats[game]);
     }
   });
+  let totalKills = 0;
+  let totalWins = 0;
+  let totalCoins = 0;
+  Object.keys(statsObject).forEach((game) => {
+    totalKills += statsObject[game].kills || 0;
+    totalWins += statsObject[game].wins || 0;
+    totalCoins += statsObject[game].coins || 0;
+  });
   let achievementObj = {};
   let questObject = {};
   Promise.all([achievementPromise, questPromise])
@@ -122,6 +130,9 @@ function processPlayerData({
         exp: networkExp,
         level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
         achievement_points: achievementPoints,
+        total_kills: totalKills,
+        total_wins: totalWins,
+        total_coins: totalCoins,
         mc_version: mcVersionRp,
         first_login: firstLogin,
         last_login: lastLogin,
