@@ -108,6 +108,10 @@ const spec = {
                       description: 'Player level with precision of two decimals',
                       type: 'number',
                     },
+                    achievement_points: {
+                      description: 'Total achievement points',
+                      type: 'number',
+                    },
                     karma: {
                       description: 'Player karma',
                       type: 'integer',
