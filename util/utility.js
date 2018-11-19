@@ -94,7 +94,7 @@ function IDToStandardName(name = '') {
  * Converts minigames database name to standard name e.g. GingerBread => TKR
  */
 function DBToStandardName(name = '') {
-  const result = constants.game_types.find(game => game.database_name === name);
+  const result = constants.game_types.find(game => game.database_name.toLowerCase() === name.toLowerCase());
   return result === undefined ? name : result.standard_name;
 }
 

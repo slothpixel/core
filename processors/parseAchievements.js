@@ -1,10 +1,10 @@
 const constants = require('hypixelconstants');
+const { DBToStandardName } = require('../util/utility');
 
 const { achievements } = constants.achievements;
 
 /*
 * This function parses player achievements into an object containing all achievement related data.
-* TODO: Change response object names to standard names (Tricky since naming is not following rules)
  */
 function parseAchievements(oneTime = [], tiered = {}) {
   function getAchievementProperties(a) {
@@ -18,6 +18,18 @@ function parseAchievements(oneTime = [], tiered = {}) {
       game,
       name,
     };
+  }
+  function getStandardName(name = '') {
+    switch (name) {
+      case 'blitz':
+        return 'Blitz';
+      case 'copsandcrims':
+        return 'CvC';
+      case 'warlords':
+        return 'Warlords';
+      default:
+        return DBToStandardName(name);
+    }
   }
   // Initiate the achievements object
   const obj = {
@@ -72,6 +84,10 @@ function parseAchievements(oneTime = [], tiered = {}) {
     path.completed = path.completed_tiered + path.completed_one_time;
     path.points_total = path.points_tiered + path.points_one_time;
     obj.achievement_points += path.points_total;
+    const standardName = getStandardName(game);
+    if (standardName !== game) {
+      delete Object.assign(gameObj, { [standardName]: gameObj[game] })[game];
+    }
   });
   obj.completed_total = obj.completed_one_time + obj.completed_tiered;
   obj.games = gameObj;
