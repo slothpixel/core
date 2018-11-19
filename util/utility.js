@@ -87,7 +87,7 @@ function pickKeys(obj, options) {
  */
 function IDToStandardName(name = '') {
   const result = constants.game_types.find(game => game.id === Number(name));
-  return result === undefined ? null : result.standard_name;
+  return result === undefined ? name : result.standard_name;
 }
 
 /**
@@ -95,7 +95,7 @@ function IDToStandardName(name = '') {
  */
 function DBToStandardName(name = '') {
   const result = constants.game_types.find(game => game.database_name === name);
-  return result === undefined ? null : result.standard_name;
+  return result === undefined ? name : result.standard_name;
 }
 
 /**
@@ -103,7 +103,7 @@ function DBToStandardName(name = '') {
  */
 function typeToStandardName(name) {
   const result = constants.game_types.find(game => game.type_name === name);
-  return result === undefined ? null : result.standard_name;
+  return result === undefined ? name : result.standard_name;
 }
 
 /**
