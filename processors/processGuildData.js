@@ -47,6 +47,16 @@ function getLevel(exp) {
   return 100;
 }
 
+function changeObjKeys(obj) {
+  Object.keys(obj).forEach((game) => {
+    const standardName = utility.typeToStandardName(game);
+    if (standardName !== game) {
+      delete Object.assign(obj, { [standardName]: obj[game] })[game];
+    }
+  });
+  return obj;
+}
+
 function processGuildData({
   name,
   _id,
@@ -57,12 +67,14 @@ function processGuildData({
   tagColor = 'GRAY',
   legacyRanking,
   exp = 0,
-  discord = null,
   description = null,
   preferredGames = [],
   ranks = [],
   members = [],
+  guildExpByGameType = {},
 }) {
+  const expByGame = changeObjKeys(guildExpByGameType);
+
   return {
     name,
     id: _id,
@@ -74,7 +86,7 @@ function processGuildData({
     legacy_ranking: legacyRanking + 1,
     exp,
     level: getLevel(exp),
-    discord,
+    exp_by_game: expByGame,
     description,
     preferred_games: preferredGames,
     ranks,

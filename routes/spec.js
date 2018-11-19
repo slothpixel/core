@@ -701,9 +701,9 @@ const spec = {
                       description: 'Guild level',
                       type: 'number',
                     },
-                    discord: {
-                      description: 'Link to guild discord',
-                      type: 'string',
+                    exp_by_game: {
+                      description: 'Guild EXP earned in each minigame',
+                      type: 'integer',
                     },
                     description: {
                       description: 'Guild description',
