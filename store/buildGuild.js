@@ -31,6 +31,9 @@ function getGuildID(uuid, cb) {
     if (err) {
       return cb(err);
     }
+    if (foundguild.guild === null) {
+      return cb('Player is not in a guild');
+    }
     return cb(null, foundguild.guild);
   });
 }
