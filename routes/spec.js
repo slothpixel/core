@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
@@ -9,6 +10,20 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam,
 } = require('./params');
 const packageJson = require('../package.json');
+
+function getPlayer(req, res, cb) {
+  getUUID(req.params.player, (err, uuid) => {
+    if (err) {
+      return cb({ status: 404, message: err });
+    }
+    buildPlayer(uuid, (err, player) => {
+      if (err) {
+        return cb({ status: 500, message: err });
+      }
+      return cb(null, player);
+    });
+  });
+}
 
 const spec = {
   openapi: '3.0.0',
@@ -436,19 +451,14 @@ const spec = {
           },
         },
         route: () => '/players/:player',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
+        func: (req, res) => {
+          getPlayer(req, res, (err, player) => {
             if (err) {
-              cb();
+              return res.status(err.status).json({ error: err.message });
             }
-            buildPlayer(uuid, (err, player) => {
-              if (err) {
-                cb();
-              }
-              delete player.achievements;
-              delete player.quests;
-              return res.json(player);
-            });
+            delete player.achievements;
+            delete player.quests;
+            return res.json(player);
           });
         },
       },
@@ -525,17 +535,12 @@ const spec = {
           },
         },
         route: () => '/players/:player/achievements',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
+        func: (req, res) => {
+          getPlayer(req, res, (err, player) => {
             if (err) {
-              cb();
+              return res.status(err.status).json({ error: err.message });
             }
-            buildPlayer(uuid, (err, player) => {
-              if (err) {
-                cb();
-              }
-              return res.json(player.achievements);
-            });
+            return res.json(player.achievements);
           });
         },
       },
@@ -562,6 +567,10 @@ const spec = {
                       type: 'integer',
                       description: 'Total quests completed',
                     },
+                    challenges_completed: {
+                      type: 'integer',
+                      description: 'Total challenges completed',
+                    },
                     completions: {
                       type: 'object',
                       properties: {
@@ -581,17 +590,12 @@ const spec = {
           },
         },
         route: () => '/players/:player/quests',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
+        func: (req, res) => {
+          getPlayer(req, res, (err, player) => {
             if (err) {
-              cb();
+              return res.status(err.status).json({ error: err.message });
             }
-            buildPlayer(uuid, (err, player) => {
-              if (err) {
-                cb();
-              }
-              return res.json(player.quests);
-            });
+            return res.json(player.quests);
           });
         },
       },
@@ -777,14 +781,14 @@ const spec = {
           },
         },
         route: () => '/guilds/:player',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           getUUID(req.params.player, (err, uuid) => {
             if (err) {
-              cb();
+              return res.status(404).json({ error: err });
             }
             buildGuild(uuid, (err, guild) => {
               if (err) {
-                cb();
+                return res.status(404).json({ error: err });
               }
               return res.json(guild);
             });
@@ -922,7 +926,7 @@ const spec = {
         func: (req, res, cb) => {
           leaderboards(req.query, (error, lb) => {
             if (error) {
-              return cb(res.json({ error }));
+              return cb(res.status(400).json({ error }));
             }
             return res.json(lb);
           });
@@ -990,10 +994,10 @@ const spec = {
           },
         },
         route: () => '/boosters',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           buildBoosters((err, boosters) => {
             if (err) {
-              cb();
+              return res.status(500).json({ error: err });
             }
             return res.json(boosters);
           });
@@ -1059,14 +1063,14 @@ const spec = {
           },
         },
         route: () => '/boosters/:game',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           const { game } = req.params;
           buildBoosters((err, boosters) => {
             if (err) {
-              cb();
+              return res.status(500).json({ error: err });
             }
             if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
-              cb();
+              return res.status(400).json({ error: 'Invalid minigame name!' });
             }
             return res.json(boosters.boosters[game]);
           });
@@ -1124,10 +1128,10 @@ const spec = {
           },
         },
         route: () => '/bans',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           buildBans((err, bans) => {
             if (err) {
-              cb();
+              return res.status(500).json({ error: err });
             }
             return res.json(bans);
           });
