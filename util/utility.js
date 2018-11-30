@@ -283,7 +283,7 @@ function colorNameToCode(color) {
   }
 }
 
-function generateFormattedRank(rank, plusColor, prefix) {
+function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   if (prefix) {
     return prefix;
   }
@@ -297,7 +297,7 @@ function generateFormattedRank(rank, plusColor, prefix) {
     case 'MVP_PLUS':
       return `&b[MVP${plusColor}+&b]`;
     case 'MVP_PLUS_PLUS':
-      return `&6[MVP${plusColor}++&6]`;
+      return `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`;
     case 'HELPER':
       return '&9[HELPER]';
     case 'MODERATOR':

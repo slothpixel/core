@@ -41,6 +41,7 @@ function processPlayerData({
   prefix = null,
   monthlyPackageRank = null,
   rankPlusColor = 'RED',
+  monthlyRankColor = 'GOLD',
   karma = 0,
   networkExp = 0,
   achievementPoints = 0,
@@ -113,6 +114,10 @@ function processPlayerData({
   });
   let achievementObj = {};
   let questObject = {};
+  const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);
+  const newRankPlusColor = utility.colorNameToCode(rankPlusColor);
+  const newPrefix = utility.betterFormatting(prefix);
+  const rankPlusPlusColor = utility.colorNameToCode(monthlyRankColor);
   Promise.all([achievementPromise, questPromise])
     .then((values) => {
       [achievementObj, questObject] = values;
@@ -123,9 +128,10 @@ function processPlayerData({
         uuid,
         username: playername,
         online: lastLogin > lastLogout,
-        rank: getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank),
-        rank_plus_color: utility.colorNameToCode(rankPlusColor),
-        prefix: utility.betterFormatting(prefix),
+        rank: newRank,
+        rank_plus_color: newRankPlusColor,
+        rank_formatted: utility.generateFormattedRank(newRank, newRankPlusColor, newPrefix, rankPlusPlusColor),
+        prefix: newPrefix,
         karma,
         exp: networkExp,
         level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
