@@ -254,6 +254,8 @@ function colorNameToCode(color) {
       return ('&c');
     case 'green':
       return ('&a');
+    case 'aqua':
+      return ('&b');
     case 'gold':
       return ('&6');
     case 'light_purple':
