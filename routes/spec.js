@@ -442,6 +442,397 @@ const spec = {
                             },
                           },
                         },
+                        Bedwars: {
+                          description: 'Player stats in Bedwars',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Bedwars',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        BuildBattle: {
+                          description: 'Player stats in Build Battle',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Build Battle',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        Duels: {
+                          description: 'Player stats in Duels',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Duels',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        GingerBread: {
+                          description: 'Current stats in Turbo Kart Racers',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            coin_pickups: {
+                              description: 'Total coins picked up in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            laps: {
+                              description: 'Total laps completed in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            wins: {
+                              description: 'Total wins in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            box_pickups: {
+                              description: 'Total powerups collected in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            bananas_sent: {
+                              description: 'Total successful hits by your bananas in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            bananas_received: {
+                              description: 'Total bananas slipped on in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            banana_ratio: {
+                              description: 'Ratio of banana hits to bananas slipped on',
+                              type: 'number',
+                            },
+                            trophies: {
+                              description: 'Stats for trophies won in Turbo Kart Racers',
+                              type: 'object',
+                              properties: {
+                                gold: {
+                                  description: 'Total gold trophies (first place) won in Turbo Kart Racers',
+                                  type: 'integer',
+                                },
+                                silver: {
+                                  description: 'Total silver trophies (second place) won in Turbo Kart Racers',
+                                  type: 'integer',
+                                },
+                                bronze: {
+                                  description: 'Total bronze trophies (third place) won in Turbo Kart Racers',
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            maps: {
+                              description: 'Player stats on specific maps in Turbo Kart Racers',
+                              type: 'object',
+                              properties: {
+                                retro: {
+                                  description: 'Player stats on the Retro map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Retro',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Retro',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Retro',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Retro',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Retro',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Retro',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                hypixelgp: {
+                                  description: 'Player stats on the Hypixel GP map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Hypixel GP',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Hypixel GP',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Hypixel GP',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Hypixel GP',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Hypixel GP',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Hypixel GP',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                junglerush: {
+                                  description: 'Player stats on the Jungle Rush map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Jungle Rush',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Jungle Rush',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Jungle Rush',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Jungle Rush',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Jungle Rush',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Jungle Rush',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                olympus: {
+                                  description: 'Player stats on the Olympus map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Olympus',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Olympus',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Olympus',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Olympus',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Olympus',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Olympus',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                canyon: {
+                                  description: 'Player stats on the Canyon map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Canyon',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Canyon',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Canyon',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Canyon',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Canyon',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Canyon',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        HungerGames: {
+                          description: 'Player stats in Blitz Survival Games',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            deaths: {
+                              description: 'Total deaths in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            kills: {
+                              description: 'Total kills in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            kd: {
+                              description: 'Ratio of kills to deaths in Blitz Survival Games',
+                              type: 'number',
+                            },
+                            wins: {
+                              description: 'Total wins in Solo Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            team_wins: {
+                              description: 'Total wins in Teams Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            win_loss: {
+                              description: 'Ratio of total wins to losses in Blitz Survival Games',
+                              type: 'number',
+                            },
+                            win_percentage: {
+                              description: 'Percentage of games won out of total games played in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            weekly_kills: {
+                              description: 'Current weekly kills in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            monthly_kills: {
+                              description: 'Current monthly kills in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            rambo_wins: {
+                              description: 'Total games won with the Rambo kit in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            random_wins: {
+                              description: 'Total games won with a random kit in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            damage_taken: {
+                              description: 'Total damage taken in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            taunt_kills: {
+                              description: 'Total players killed while using a taunt in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            potions_drunk: {
+                              description: 'Total potions drunk in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            damage: {
+                              description: 'Total damage dealt in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            mobs_spawned: {
+                              description: 'Total mobs spawned by the player in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            time_played: {
+                              description: 'Total playtime in Blitz Survival Games',
+                              type: 'number',
+                            },
+                            arrows_hit: {
+                              description: 'Successful arrow shots landed in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            games_played: {
+                              description: 'Total games of Blitz Survival Games played',
+                              type: 'number',
+                            },
+                            potions_thrown: {
+                              description: 'Total splash potions thrown in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            arrows_fired: {
+                              description: 'Total arrows shot in blitz survival games',
+                              type: 'integer',
+                            },
+                            blitz_uses: {
+                              description: 'Total number of Blitz Stars used in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            kits_levels: {
+                              description: 'Player\'s current kit levels in Blitz Survival Games',
+                              type: 'object',
+                            },
+                            kit_stats: {
+                              description: 'Specific stats with a kit in Blitz Survival Games',
+                              type: 'object',
+                            },
+                            equipped: {
+                              description: 'Player\'s current cosmetics equipped in Blitz Survival Games',
+                              type: 'object',
+                              properties: {
+                                aura: {
+                                  description: 'Currently equipped aura cosmetic',
+                                  type: 'string',
+                                },
+                                taunt: {
+                                  description: 'Currently equipped taunt effect',
+                                  type: 'string',
+                                },
+                                victory_dance: {
+                                  description: 'Currently equipped victory dance effect',
+                                  type: 'string',
+                                },
+                                finisher: {
+                                  description: 'Currently equipped finisher effect',
+                                  type: 'string',
+                                },
+                              },
+                            },
+                            settings: {
+                              description: 'Current settings in Blitz Survival Games',
+                              type: 'object',
+                              properties: {
+                                default_kit: {
+                                  description: 'Current kit selected as default in Blitz Survival Games',
+                                  type: 'string',
+                                },
+                              },
+                            },
+                          },
+                        },
+                        
                       },
                     },
                   },
