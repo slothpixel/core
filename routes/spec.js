@@ -832,7 +832,16 @@ const spec = {
                             },
                           },
                         },
-                        
+                        MurderMystery: {
+                          description: 'Player stats in Murder Mystery',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Murder Mystery',
+                              type: 'integer',
+                            },
+                          },
+                        },
                       },
                     },
                   },
