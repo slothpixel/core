@@ -125,7 +125,11 @@ const spec = {
                     },
                     achievement_points: {
                       description: 'Total achievement points',
-                      type: 'number',
+                      type: 'integer',
+                    },
+                    quests_completed: {
+                      description: 'Total quests completed',
+                      type: 'integer',
                     },
                     karma: {
                       description: 'Player karma',
