@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
-const utility = require('../util/utility');
+const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
 const queries = require('../store/queries');
 
@@ -10,10 +10,10 @@ const queries = require('../store/queries');
 * Currently doesn't support search by name
  */
 function getGuildData(id, cb) {
-  const { url } = utility.generateJob('guild', {
+  const { url } = generateJob('guild', {
     id,
   });
-  utility.getData(url, (err, body) => {
+  getData(url, (err, body) => {
     if (err) {
       return cb(err);
     }
@@ -24,10 +24,10 @@ function getGuildData(id, cb) {
 }
 
 function getGuildID(uuid, cb) {
-  const { url } = utility.generateJob('findguild', {
+  const { url } = generateJob('findguild', {
     id: uuid,
   });
-  utility.getData(url, (err, foundguild) => {
+  getData(url, (err, foundguild) => {
     if (err) {
       return cb(err);
     }
@@ -42,14 +42,14 @@ function cacheGuild(guild, id, key, cb) {
   if (config.ENABLE_GUILD_CACHE) {
     redis.setex(key, config.GUILD_CACHE_SECONDS, JSON.stringify(guild), (err) => {
       if (err) {
-        console.error(err);
+        logger.error(err);
       }
     });
   }
   if (config.ENABLE_DB_CACHE) {
     queries.insertGuild(id, guild, (err) => {
       if (err) {
-        console.error(err);
+        logger.error(err);
       }
     });
   }

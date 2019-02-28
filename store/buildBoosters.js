@@ -1,15 +1,15 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const processBoosters = require('../processors/processBoosters');
-const utility = require('../util/utility');
+const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
 
 /*
 * Functions to build/cache booster objects
  */
 function getBoosterData(cb) {
-  const { url } = utility.generateJob('boosters');
-  utility.getData(url, (err, body) => {
+  const { url } = generateJob('boosters');
+  getData(url, (err, body) => {
     if (err) {
       return cb(err, null);
     }
@@ -33,7 +33,7 @@ function buildBoosters(cb) {
       if (config.ENABLE_BOOSTERS_CACHE) {
         redis.setex('boosters', config.BOOSTERS_CACHE_SECONDS, JSON.stringify(boosters), (err) => {
           if (err) {
-            console.error(err);
+            logger.error(err);
           }
         });
       }

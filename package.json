@@ -25,7 +25,8 @@
     "pm2": "^3.2.2",
     "redis": "^2.7.1",
     "request": "^2.88.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "5.14.1",
