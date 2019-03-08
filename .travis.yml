@@ -20,4 +20,4 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-  script: scripts/postbuild.sh
+  script: chmod +x scripts/postbuild.sh && scripts/postbuild.sh
