@@ -7,7 +7,7 @@ services:
     image: mongo
     container_name: slothpixel-mongo
   redis:
-    image: redis:4
+    image: redis:5
     container_name: slothpixel-redis
   core:
       build:
