@@ -181,7 +181,7 @@ const spec = {
                     },
                     is_contributor: {
                       description: 'Whether player is a contributor to Slothpixel',
-                      type: 'boolean'
+                      type: 'boolean',
                     },
                     rewards: {
                       description: 'Daily reward data',
@@ -913,13 +913,13 @@ const spec = {
                                 auto_armor: {
                                   description: 'Is auto armor enabled',
                                   type: 'boolean',
-                                }
+                                },
                               },
                             },
                             inventories: {
                               description: 'Currently configured kit inventories',
                               type: 'object',
-                            }
+                            },
                           },
                         },
                         CvC: {
@@ -972,7 +972,7 @@ const spec = {
                             },
                             grenade_kills: {
                               description: 'Total kills with a grenade',
-                              type: 'integer'
+                              type: 'integer',
                             },
                             headshot_kills: {
                               description: 'Total headshot kills',
@@ -1083,7 +1083,7 @@ const spec = {
                                       },
                                       strength_training: {
                                         description: 'Current progression of Strength Training upgrade',
-                                        type: 'integer,'
+                                        type: 'integer',
                                       },
                                     },
                                   },
