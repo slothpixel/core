@@ -228,7 +228,7 @@ const spec = {
                           type: 'object',
                           properties: {
                             coins: {
-                              description: 'Coins in the Arcade Games',
+                              description: 'Current coins in the Arcade Games',
                               type: 'integer',
                             },
                           },
@@ -840,6 +840,370 @@ const spec = {
                             }
                           },
                         },
+                        CvC: {
+                          description: 'Player stats in Cops vs Crims',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            deaths: {
+                              description: 'Total deaths in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            kills: {
+                              description: 'Total kills in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            kd: {
+                              description: 'Current kill/death ratio in Cops vs Crims',
+                              type: 'number',
+                            },
+                            wins: {
+                              description: 'Total wins in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            cop_kills: {
+                              description: 'Total cops killed',
+                              type: 'integer',
+                            },
+                            criminal_kills: {
+                              description: 'Total criminals killed',
+                              type: 'integer',
+                            },
+                            weekly_kills: {
+                              description: 'Current weekly kills',
+                              type: 'integer',
+                            },
+                            monthly_kills: {
+                              description: 'Current monthly kills',
+                              type: 'integer',
+                            },
+                            bombs_planted: {
+                              description: 'Total bombs planted as Criminal',
+                              type: 'integer',
+                            },
+                            bombs_defused: {
+                              description: 'Total bombs defused as Cop',
+                              type: 'integer',
+                            },
+                            grenade_kills: {
+                              description: 'Total kills with a grenade',
+                              type: 'integer'
+                            },
+                            headshot_kills: {
+                              description: 'Total headshot kills',
+                              type: 'integer',
+                            },
+                            round_wins: {
+                              description: 'Total individual round wins',
+                              type: 'integer',
+                            },
+                            selected_lobby_prefix: {
+                              description: 'Currently selected nametag prefix in the Cops vs Crims lobby',
+                              type: 'string',
+                            },
+                            shots_fired: {
+                              description: 'Total shots fired',
+                              type: 'integer',
+                            },
+                            show_lobby_prefix: {
+                              description: 'Whether the lobby nametag prefix is currently enabled',
+                              type: 'boolean',
+                            },
+                            map_wins: {
+                              description: 'Current wins on specific maps',
+                              type: 'object',
+                              properties: {
+                                alleyway: {
+                                  description: 'Current wins on the Alleyway map',
+                                  type: 'integer',
+                                },
+                                atomic: {
+                                  description: 'Current wins on the Atomic map',
+                                  type: 'integer',
+                                },
+                                carrier: {
+                                  description: 'Current wins on the Carrier map',
+                                  type: 'integer',
+                                },
+                                melon_factory: {
+                                  description: 'Current wins on the Melon Factory map',
+                                  type: 'integer',
+                                },
+                                overgrown: {
+                                  description: 'Current wins on the Overgrown map',
+                                  type: 'integer',
+                                },
+                                reserve: {
+                                  description: 'Current wins on the Reserve map',
+                                  type: 'integer',
+                                },
+                                sandstorm: {
+                                  description: 'Current wins on the Sandstorm map',
+                                  type: 'integer',
+                                },
+                                temple: {
+                                  description: 'Current wins on the Temple map',
+                                  type: 'integer',
+                                },
+                              },
+                              deathmatch: {
+                                description: 'Current player stats in CvC Deathmatch',
+                                type: 'object',
+                                properties: {
+                                  kills: {
+                                    description: 'Total kills in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  deaths: {
+                                    description: 'Total deaths in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  kd: {
+                                    description: 'Current kill/death ratio in CvC Deathmatch',
+                                    type: 'number',
+                                  },
+                                  wins: {
+                                    description: 'Total wins in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  cop_kills: {
+                                    description: 'Total cops killed in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  criminal_kills: {
+                                    description: 'Total criminals killed in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                },
+                              },
+                              perks: {
+                                description: 'Currently purchased perks and upgrades for Cops vs Crims',
+                                type: 'object',
+                                properties: {
+                                  player: {
+                                    description: 'Character upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      body_armor_cost: {
+                                        description: 'Current progression of Body Armor Cost upgrade',
+                                        type: 'integer',
+                                      },
+                                      bounty_hunter: {
+                                        description: 'Current progression of Bounty Hunter upgrade',
+                                        type: 'integer',
+                                      },
+                                      pocket_change: {
+                                        description: 'Current progression of Pocket Change upgrade',
+                                        type: 'integer',
+                                      },
+                                      strength_training: {
+                                        description: 'Current progression of Strength Training upgrade',
+                                        type: 'integer,'
+                                      },
+                                    },
+                                  },
+                                  carbine: {
+                                    description: 'Carbine Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Carbine\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Carbine\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Carbine\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Carbine\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  knife: {
+                                    description: 'Knife Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      attack_delay: {
+                                        description: 'Current progression of the Knife\'s Attack Delay upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Knife\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  magnum: {
+                                    description: 'Magnum Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Magnum\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Magnum\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Magnum\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Magnum\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  pistol: {
+                                    description: 'Pistol Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      damage_increase: {
+                                        description: 'Current progression of the Pistol\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Pistol\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Pistol\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  rifle: {
+                                    description: 'Rifle Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Rifle\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Rifle\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Rifle\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Rifle\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  shotgun: {
+                                    description: 'Shotgun Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Shotgun\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Shotgun\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Shotgun\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Shotgun\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  smg: {
+                                    description: 'SMG Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the SMG\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the SMG\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the SMG\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the SMG\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  sniper: {
+                                    description: 'Sniper Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      charge_bonus: {
+                                        description: 'Current progression of the Sniper\'s Target Acquire upgrade',
+                                        type: 'integer',
+                                      },
+                                      cost_reduction: {
+                                        description: 'Current progression of the Sniper\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Sniper\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Sniper\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                              selected_cosmetics: {
+                                description: 'Currently selected cosmetic appearance for each weapon type',
+                                type: 'object',
+                                properties: {
+                                  carbine: {
+                                    description: 'Currently selected Carbine cosmetic',
+                                    type: 'string',
+                                  },
+                                  knife: {
+                                    description: 'Currently selected Knife cosmetic',
+                                    type: 'string',
+                                  },
+                                  magnum: {
+                                    description: 'Currently selected Magnum cosmetic',
+                                    type: 'string',
+                                  },
+                                  pistol: {
+                                    description: 'Currently selected Pistol cosmetic',
+                                    type: 'string',
+                                  },
+                                  rifle: {
+                                    description: 'Currently selected Rifle cosmetic',
+                                    type: 'string',
+                                  },
+                                  shotgun: {
+                                    description: 'Currently selected Shotgun cosmetic',
+                                    type: 'string',
+                                  },
+                                  smg: {
+                                    description: 'Currently selected SMG cosmetic',
+                                    type: 'string',
+                                  },
+                                },
                               },
                             },
                           },
