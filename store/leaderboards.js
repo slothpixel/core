@@ -4,6 +4,7 @@
  */
 const config = require('../config');
 const redis = require('../store/redis');
+const { logger } = require('../util/utility');
 const { profileFields } = require('../store/profileFields');
 const {
   Player, Guild,
@@ -13,7 +14,7 @@ function cacheLeaderboard(lb, key, cb) {
   if (config.ENABLE_LEADERBOARD_CACHE) {
     redis.setex(key, config.LEADERBOARD_CACHE_SECONDS, JSON.stringify(lb), (err) => {
       if (err) {
-        console.error(err);
+        logger.error(err);
       }
     });
   }
@@ -91,7 +92,7 @@ function getLeaderboards(query, cb) {
     if (err) {
       return cb(err);
     } if (reply) {
-      // console.log(`Cache hit for ${qs}`);
+      logger.debug(`Cache hit for ${key}`);
       const lb = JSON.parse(reply);
       return cb(null, lb);
     }
@@ -110,7 +111,7 @@ function getLeaderboards(query, cb) {
     }
     Model.find(filter, fields, options, (err, res) => {
       if (err) {
-        console.error(err);
+        logger.error(err);
         return cb('Query failed');
       }
       const data = transformData(res);

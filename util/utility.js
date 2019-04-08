@@ -7,8 +7,21 @@ const request = require('request');
 const urllib = require('url');
 const uuidV4 = require('uuid/v4');
 const moment = require('moment');
+const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
+
+const logger = createLogger({
+  transports: [new transports.Console()],
+  format: format.combine(
+    format.colorize(),
+    format.timestamp({
+      format: 'D MMM HH:mm:ss',
+    }),
+    format.printf(nfo => `${nfo.timestamp} - ${nfo.message}`),
+  ),
+});
+if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') logger.level = 'debug';
 
 function betterFormatting(i) {
   if (typeof i !== 'string') {
@@ -118,6 +131,7 @@ function isContributor(uuid) {
  * See https://github.com/HypixelDev/PublicAPI/tree/master/Documentation/methods
  * */
 function generateJob(type, payload) {
+  logger.error(`generateJob ${type}`);
   const apiUrl = 'https://api.hypixel.net';
   const apiKey = config.HYPIXEL_API_KEY;
   const opts = {
@@ -139,6 +153,11 @@ function generateJob(type, payload) {
     guild() {
       return {
         url: `${apiUrl}/guild?key=${apiKey}&id=${payload.id}`,
+      };
+    },
+    gamecounts() {
+      return {
+        url: `${apiUrl}/gamecounts?key=${apiKey}`,
       };
     },
     key() {
@@ -191,13 +210,13 @@ function getData(url, cb) {
       || res.statusCode !== 200
       || !body
     ) {
-      console.error('[INVALID] status: %s', res ? res.statusCode : '');
+      logger.error(`[INVALID] status: ${res ? res.statusCode : ''}`);
       return cb('Request failed', null);
     } if (hypixelApi && !body.success) {
-      console.error(`[Hypixel API Error]: ${body.cause}`);
+      logger.error(`[Hypixel API Error]: ${body.cause}`);
       return cb(`${body.cause}`, null);
     } if (mojangApi && body.error) {
-      console.error(`[Mojang API Error]: ${body.error} : ${body.errorMessage}`);
+      logger.error(`[Mojang API Error]: ${body.error} : ${body.errorMessage}`);
       return cb(`${body.error} : ${body.errorMessage}`, null);
     }
     return cb(null, body);
@@ -312,6 +331,7 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
 }
 
 module.exports = {
+  logger,
   betterFormatting,
   IDToStandardName,
   DBToStandardName,
