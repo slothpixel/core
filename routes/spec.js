@@ -119,20 +119,24 @@ const spec = {
                       description: 'Custom rank prefix',
                       type: 'string',
                     },
+                    karma: {
+                      description: 'Player karma',
+                      type: 'integer',
+                    },
+                    exp: {
+                      description: 'Current Hypixel Experience',
+                      type: 'integer',
+                    },
                     level: {
                       description: 'Player level with precision of two decimals',
                       type: 'number',
                     },
                     achievement_points: {
                       description: 'Total achievement points',
-                      type: 'number',
-                    },
-                    karma: {
-                      description: 'Player karma',
                       type: 'integer',
                     },
-                    total_coins: {
-                      description: 'Total coins across all minigames',
+                    quests_completed: {
+                      description: 'Total quests completed',
                       type: 'integer',
                     },
                     total_kills: {
@@ -141,6 +145,10 @@ const spec = {
                     },
                     total_wins: {
                       description: 'Total wins across all minigames',
+                      type: 'integer',
+                    },
+                    total_coins: {
+                      description: 'Total coins across all minigames',
                       type: 'integer',
                     },
                     mc_version: {
@@ -159,6 +167,22 @@ const spec = {
                       description: 'Latest minigame played',
                       type: 'string',
                     },
+                    language: {
+                      description: 'Currently selected language',
+                      type: 'string',
+                    },
+                    gifts_sent: {
+                      description: 'Total gifts sent to other players',
+                      type: 'integer',
+                    },
+                    gifts_received: {
+                      description: 'Total gifts received from other players',
+                      type: 'integer',
+                    },
+                    is_contributor: {
+                      description: 'Whether player is a contributor to Slothpixel',
+                      type: 'boolean'
+                    },
                     rewards: {
                       description: 'Daily reward data',
                       type: 'object',
@@ -172,7 +196,7 @@ const spec = {
                           type: 'integer',
                         },
                         claimed: {
-                          description: 'Total reards claimed',
+                          description: 'Total rewards claimed',
                           type: 'integer',
                         },
                         claimed_daily: {
@@ -189,32 +213,32 @@ const spec = {
                       description: 'Social media links',
                       type: 'object',
                       properties: {
-                        twitter: {
-                          description: 'Twitter link',
+                        TWITTER: {
+                          description: 'Link to Twitter profile',
                           type: 'string',
                         },
-                        youtube: {
-                          description: 'YouTube link',
+                        YOUTUBE: {
+                          description: 'Link to YouTube channel',
                           type: 'string',
                         },
-                        instagram: {
-                          description: 'Instagram link',
+                        INSTAGRAM: {
+                          description: 'Link to Instagram profile',
                           type: 'string',
                         },
-                        twitch: {
-                          description: 'Twitch link',
+                        TWITCH: {
+                          description: 'Link to Twitch channel',
                           type: 'string',
                         },
-                        mixer: {
-                          description: 'Mixer link',
+                        MIXER: {
+                          description: 'Link to Mixer channel',
                           type: 'string',
                         },
-                        discord: {
-                          description: 'Discord handle',
+                        DISCORD: {
+                          description: 'Discord handle, in full format of username#discriminator',
                           type: 'string',
                         },
-                        hypixel: {
-                          description: 'Hypixel forums profile link',
+                        HYPIXEL: {
+                          description: 'Link to Hypixel Forums profile',
                           type: 'string',
                         },
                       },
