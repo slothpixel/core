@@ -30,7 +30,8 @@ function processPlayerData({
   uuid,
   achievements,
   achievementsOneTime,
-  quests,
+  quests = {},
+  challenges = {},
   playername,
   firstLogin,
   lastLogin = null,
@@ -61,7 +62,7 @@ function processPlayerData({
     resolve(parseAchievements(achievementsOneTime, achievements));
   });
   const questPromise = new Promise((resolve) => {
-    resolve(parseQuests(quests));
+    resolve(parseQuests(quests, challenges));
   });
   const defaultLinks = {
     TWITTER: null,
@@ -136,6 +137,7 @@ function processPlayerData({
         exp: networkExp,
         level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
         achievement_points: achievementPoints,
+        quests_completed: questObject.quests_completed,
         total_kills: totalKills,
         total_wins: totalWins,
         total_coins: totalCoins,
