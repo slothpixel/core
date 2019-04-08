@@ -3,7 +3,7 @@ const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
-const queries = require('../store/queries');
+const { insertGuild, getGuildByPlayer } = require('../store/queries');
 
 /*
 * Functions to build/cache guild object
@@ -24,17 +24,25 @@ function getGuildData(id, cb) {
 }
 
 function getGuildID(uuid, cb) {
-  const { url } = generateJob('findguild', {
-    id: uuid,
-  });
-  getData(url, (err, foundguild) => {
-    if (err) {
-      return cb(err);
+  // First check if we have the player in a cached guild
+  getGuildByPlayer(uuid, (err, guild) => {
+    if (!err && guild !== null) {
+      logger.debug(`Found cached guild for ${uuid}: ${guild.name}`);
+      return cb(null, guild.id);
     }
-    if (foundguild.guild === null) {
-      return cb('Player is not in a guild');
-    }
-    return cb(null, foundguild.guild);
+    logger.debug(`Ǹo cached guild found for ${uuid}`);
+    const { url } = generateJob('findguild', {
+      id: uuid,
+    });
+    getData(url, (err, foundguild) => {
+      if (err) {
+        return cb(err);
+      }
+      if (foundguild.guild === null) {
+        return cb('Player is not in a guild');
+      }
+      return cb(null, foundguild.guild);
+    });
   });
 }
 
@@ -47,7 +55,7 @@ function cacheGuild(guild, id, key, cb) {
     });
   }
   if (config.ENABLE_DB_CACHE) {
-    queries.insertGuild(id, guild, (err) => {
+    insertGuild(id, guild, (err) => {
       if (err) {
         logger.error(err);
       }

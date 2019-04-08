@@ -52,11 +52,14 @@ function getGuild(id, cb) {
 }
 
 function getGuildByPlayer(uuid, cb) {
-  Guild.findOne({ members: { $elemMatch: { uuid } } }, (err, guild) => {
+  Guild.findOne({ 'members.uuid': uuid }, (err, guild) => {
     if (err) {
       logger.error(err);
     }
-    return cb(err, guild);
+    if (guild === null) {
+      return cb(err, null);
+    }
+    return cb(err, guild.toObject());
   });
 }
 

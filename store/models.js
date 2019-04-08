@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const options = {
   strict: false,
   timestamps: true,
+  id: false,
 };
 
 const PlayerSchema = mongoose.Schema({}, options);
