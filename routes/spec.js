@@ -119,6 +119,14 @@ const spec = {
                       description: 'Custom rank prefix',
                       type: 'string',
                     },
+                    karma: {
+                      description: 'Player karma',
+                      type: 'integer',
+                    },
+                    exp: {
+                      description: 'Current Hypixel Experience',
+                      type: 'integer',
+                    },
                     level: {
                       description: 'Player level with precision of two decimals',
                       type: 'number',
@@ -131,20 +139,16 @@ const spec = {
                       description: 'Total quests completed',
                       type: 'integer',
                     },
-                    karma: {
-                      description: 'Player karma',
-                      type: 'integer',
-                    },
-                    total_coins: {
-                      description: 'Total coins across all minigames',
-                      type: 'integer',
-                    },
                     total_kills: {
                       description: 'Total kills across all minigames',
                       type: 'integer',
                     },
                     total_wins: {
                       description: 'Total wins across all minigames',
+                      type: 'integer',
+                    },
+                    total_coins: {
+                      description: 'Total coins across all minigames',
                       type: 'integer',
                     },
                     mc_version: {
@@ -163,6 +167,22 @@ const spec = {
                       description: 'Latest minigame played',
                       type: 'string',
                     },
+                    language: {
+                      description: 'Currently selected language',
+                      type: 'string',
+                    },
+                    gifts_sent: {
+                      description: 'Total gifts sent to other players',
+                      type: 'integer',
+                    },
+                    gifts_received: {
+                      description: 'Total gifts received from other players',
+                      type: 'integer',
+                    },
+                    is_contributor: {
+                      description: 'Whether player is a contributor to Slothpixel',
+                      type: 'boolean',
+                    },
                     rewards: {
                       description: 'Daily reward data',
                       type: 'object',
@@ -176,7 +196,7 @@ const spec = {
                           type: 'integer',
                         },
                         claimed: {
-                          description: 'Total reards claimed',
+                          description: 'Total rewards claimed',
                           type: 'integer',
                         },
                         claimed_daily: {
@@ -193,32 +213,32 @@ const spec = {
                       description: 'Social media links',
                       type: 'object',
                       properties: {
-                        twitter: {
-                          description: 'Twitter link',
+                        TWITTER: {
+                          description: 'Link to Twitter profile',
                           type: 'string',
                         },
-                        youtube: {
-                          description: 'YouTube link',
+                        YOUTUBE: {
+                          description: 'Link to YouTube channel',
                           type: 'string',
                         },
-                        instagram: {
-                          description: 'Instagram link',
+                        INSTAGRAM: {
+                          description: 'Link to Instagram profile',
                           type: 'string',
                         },
-                        twitch: {
-                          description: 'Twitch link',
+                        TWITCH: {
+                          description: 'Link to Twitch channel',
                           type: 'string',
                         },
-                        mixer: {
-                          description: 'Mixer link',
+                        MIXER: {
+                          description: 'Link to Mixer channel',
                           type: 'string',
                         },
-                        discord: {
-                          description: 'Discord handle',
+                        DISCORD: {
+                          description: 'Discord handle, in full format of username#discriminator',
                           type: 'string',
                         },
-                        hypixel: {
-                          description: 'Hypixel forums profile link',
+                        HYPIXEL: {
+                          description: 'Link to Hypixel Forums profile',
                           type: 'string',
                         },
                       },
@@ -232,7 +252,7 @@ const spec = {
                           type: 'object',
                           properties: {
                             coins: {
-                              description: 'Coins in the Arcade Games',
+                              description: 'Current coins in the Arcade Games',
                               type: 'integer',
                             },
                           },
@@ -250,7 +270,7 @@ const spec = {
                               type: 'integer',
                             },
                             hat: {
-                              description: 'Selected hat',
+                              description: 'Currently selected hat cosmetic',
                               type: 'string',
                             },
                             penalty: {
@@ -264,19 +284,77 @@ const spec = {
                               type: 'integer',
                             },
                             selected_sword: {
+                              description: 'Currently selected Sword cosmetic',
                               type: 'string',
                             },
                             active_rune: {
                               type: 'string',
                             },
                             skills: {
+                              description: 'Currently selected skills',
                               type: 'object',
+                              properties: {
+                                offensive: {
+                                  description: 'Currently selected Offensive skill',
+                                  type: 'string',
+                                },
+                                support: {
+                                  description: 'Currently selected Support skill',
+                                  type: 'string',
+                                },
+                                utility: {
+                                  description: 'Currently selected Utility skill',
+                                  type: 'string',
+                                },
+                                ultimate: {
+                                  description: 'Currently selected Ultimate skill',
+                                  type: 'string',
+                                },
+                              },
                             },
                             combat_levels: {
+                              description: 'Current Combat Upgrades in Arena Brawl',
                               type: 'object',
+                              properties: {
+                                melee: {
+                                  description: 'Current Melee Upgrade progression',
+                                  type: 'integer',
+                                },
+                                health: {
+                                  description: 'Current Health Upgrade progression',
+                                  type: 'integer',
+                                },
+                                energy: {
+                                  description: 'Current Energy Upgrade progression',
+                                  type: 'integer',
+                                },
+                                cooldown: {
+                                  description: 'Current Cooldown Upgrade progression',
+                                  type: 'integer',
+                                },
+                              },
                             },
                             rune_levels: {
+                              description: 'Current rune upgrades in Arena Brawl',
                               type: 'object',
+                              properties: {
+                                damage: {
+                                  description: 'Rune of Damage upgrade progression',
+                                  type: 'integer',
+                                },
+                                energy: {
+                                  description: 'Rune of Energy upgrade progression',
+                                  type: 'integer',
+                                },
+                                slowing: {
+                                  description: 'Rune of Slowing upgrade progression',
+                                  type: 'integer',
+                                },
+                                speed: {
+                                  description: 'Rune of Speed upgrade progression',
+                                  type: 'integer',
+                                },
+                              },
                             },
                             gamemodes: {
                               description: 'Stats in specific Arena gamemodes',
@@ -436,12 +514,788 @@ const spec = {
                             },
                           },
                         },
-                        Battleground: {
+                        Warlords: {
                           description: 'Player stats in Warlords',
                           type: 'object',
                           properties: {
                             coins: {
                               description: 'Current coins in Warlords',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        BedWars: {
+                          description: 'Player stats in Bedwars',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Bedwars',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        BuildBattle: {
+                          description: 'Player stats in Build Battle',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Build Battle',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        Duels: {
+                          description: 'Player stats in Duels',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Duels',
+                              type: 'integer',
+                            },
+                          },
+                        },
+                        TKR: {
+                          description: 'Current stats in Turbo Kart Racers',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            coin_pickups: {
+                              description: 'Total coins picked up in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            laps: {
+                              description: 'Total laps completed in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            wins: {
+                              description: 'Total wins in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            box_pickups: {
+                              description: 'Total powerups collected in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            bananas_sent: {
+                              description: 'Total successful hits by your bananas in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            bananas_received: {
+                              description: 'Total bananas slipped on in Turbo Kart Racers',
+                              type: 'integer',
+                            },
+                            banana_ratio: {
+                              description: 'Ratio of banana hits to bananas slipped on',
+                              type: 'number',
+                            },
+                            trophies: {
+                              description: 'Stats for trophies won in Turbo Kart Racers',
+                              type: 'object',
+                              properties: {
+                                gold: {
+                                  description: 'Total gold trophies (first place) won in Turbo Kart Racers',
+                                  type: 'integer',
+                                },
+                                silver: {
+                                  description: 'Total silver trophies (second place) won in Turbo Kart Racers',
+                                  type: 'integer',
+                                },
+                                bronze: {
+                                  description: 'Total bronze trophies (third place) won in Turbo Kart Racers',
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            maps: {
+                              description: 'Player stats on specific maps in Turbo Kart Racers',
+                              type: 'object',
+                              properties: {
+                                retro: {
+                                  description: 'Player stats on the Retro map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Retro',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Retro',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Retro',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Retro',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Retro',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Retro',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                hypixelgp: {
+                                  description: 'Player stats on the Hypixel GP map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Hypixel GP',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Hypixel GP',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Hypixel GP',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Hypixel GP',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Hypixel GP',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Hypixel GP',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                junglerush: {
+                                  description: 'Player stats on the Jungle Rush map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Jungle Rush',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Jungle Rush',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Jungle Rush',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Jungle Rush',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Jungle Rush',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Jungle Rush',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                olympus: {
+                                  description: 'Player stats on the Olympus map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Olympus',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Olympus',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Olympus',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Olympus',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Olympus',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Olympus',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                canyon: {
+                                  description: 'Player stats on the Canyon map in Turbo Kart Racers',
+                                  type: 'object',
+                                  properties: {
+                                    games: {
+                                      description: 'Total games played on Canyon',
+                                      type: 'integer',
+                                    },
+                                    win_ratio: {
+                                      description: 'Ratio of wins to games played on Canyon',
+                                      type: 'number',
+                                    },
+                                    trophies: {
+                                      description: 'Trophies won on Canyon',
+                                      type: 'object',
+                                      properties: {
+                                        gold: {
+                                          description: 'Gold trophies won on Canyon',
+                                          type: 'integer',
+                                        },
+                                        silver: {
+                                          description: 'Silver trophies won on Canyon',
+                                          type: 'integer',
+                                        },
+                                        bronze: {
+                                          description: 'Bronze trophies won on Canyon',
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        Blitz: {
+                          description: 'Player stats in Blitz Survival Games',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            deaths: {
+                              description: 'Total deaths in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            kills: {
+                              description: 'Total kills in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            kd: {
+                              description: 'Ratio of kills to deaths in Blitz Survival Games',
+                              type: 'number',
+                            },
+                            wins: {
+                              description: 'Total wins in Solo Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            team_wins: {
+                              description: 'Total wins in Teams Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            win_loss: {
+                              description: 'Ratio of total wins to losses in Blitz Survival Games',
+                              type: 'number',
+                            },
+                            win_percentage: {
+                              description: 'Percentage of games won out of total games played in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            weekly_kills: {
+                              description: 'Current weekly kills in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            monthly_kills: {
+                              description: 'Current monthly kills in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            rambo_wins: {
+                              description: 'Total games won with the Rambo kit in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            random_wins: {
+                              description: 'Total games won with a random kit in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            damage_taken: {
+                              description: 'Total damage taken in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            taunt_kills: {
+                              description: 'Total players killed while using a taunt in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            potions_drunk: {
+                              description: 'Total potions drunk in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            damage: {
+                              description: 'Total damage dealt in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            mobs_spawned: {
+                              description: 'Total mobs spawned by the player in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            time_played: {
+                              description: 'Total playtime in Blitz Survival Games',
+                              type: 'number',
+                            },
+                            arrows_hit: {
+                              description: 'Successful arrow shots landed in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            games_played: {
+                              description: 'Total games of Blitz Survival Games played',
+                              type: 'number',
+                            },
+                            potions_thrown: {
+                              description: 'Total splash potions thrown in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            arrows_fired: {
+                              description: 'Total arrows shot in blitz survival games',
+                              type: 'integer',
+                            },
+                            blitz_uses: {
+                              description: 'Total number of Blitz Stars used in Blitz Survival Games',
+                              type: 'integer',
+                            },
+                            kits_levels: {
+                              description: 'Player\'s current kit levels in Blitz Survival Games',
+                              type: 'object',
+                            },
+                            kit_stats: {
+                              description: 'Specific stats with a kit in Blitz Survival Games',
+                              type: 'object',
+                            },
+                            equipped: {
+                              description: 'Player\'s current cosmetics equipped in Blitz Survival Games',
+                              type: 'object',
+                              properties: {
+                                aura: {
+                                  description: 'Currently equipped aura cosmetic',
+                                  type: 'string',
+                                },
+                                taunt: {
+                                  description: 'Currently equipped taunt effect',
+                                  type: 'string',
+                                },
+                                victory_dance: {
+                                  description: 'Currently equipped victory dance effect',
+                                  type: 'string',
+                                },
+                                finisher: {
+                                  description: 'Currently equipped finisher effect',
+                                  type: 'string',
+                                },
+                              },
+                            },
+                            settings: {
+                              description: 'Current settings in Blitz Survival Games',
+                              type: 'object',
+                              properties: {
+                                default_kit: {
+                                  description: 'Current kit selected as default in Blitz Survival Games',
+                                  type: 'string',
+                                },
+                                auto_armor: {
+                                  description: 'Is auto armor enabled',
+                                  type: 'boolean',
+                                },
+                              },
+                            },
+                            inventories: {
+                              description: 'Currently configured kit inventories',
+                              type: 'object',
+                            },
+                          },
+                        },
+                        CvC: {
+                          description: 'Player stats in Cops vs Crims',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            deaths: {
+                              description: 'Total deaths in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            kills: {
+                              description: 'Total kills in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            kd: {
+                              description: 'Current kill/death ratio in Cops vs Crims',
+                              type: 'number',
+                            },
+                            wins: {
+                              description: 'Total wins in Cops vs Crims',
+                              type: 'integer',
+                            },
+                            cop_kills: {
+                              description: 'Total cops killed',
+                              type: 'integer',
+                            },
+                            criminal_kills: {
+                              description: 'Total criminals killed',
+                              type: 'integer',
+                            },
+                            weekly_kills: {
+                              description: 'Current weekly kills',
+                              type: 'integer',
+                            },
+                            monthly_kills: {
+                              description: 'Current monthly kills',
+                              type: 'integer',
+                            },
+                            bombs_planted: {
+                              description: 'Total bombs planted as Criminal',
+                              type: 'integer',
+                            },
+                            bombs_defused: {
+                              description: 'Total bombs defused as Cop',
+                              type: 'integer',
+                            },
+                            grenade_kills: {
+                              description: 'Total kills with a grenade',
+                              type: 'integer',
+                            },
+                            headshot_kills: {
+                              description: 'Total headshot kills',
+                              type: 'integer',
+                            },
+                            round_wins: {
+                              description: 'Total individual round wins',
+                              type: 'integer',
+                            },
+                            selected_lobby_prefix: {
+                              description: 'Currently selected nametag prefix in the Cops vs Crims lobby',
+                              type: 'string',
+                            },
+                            shots_fired: {
+                              description: 'Total shots fired',
+                              type: 'integer',
+                            },
+                            show_lobby_prefix: {
+                              description: 'Whether the lobby nametag prefix is currently enabled',
+                              type: 'boolean',
+                            },
+                            map_wins: {
+                              description: 'Current wins on specific maps',
+                              type: 'object',
+                              properties: {
+                                alleyway: {
+                                  description: 'Current wins on the Alleyway map',
+                                  type: 'integer',
+                                },
+                                atomic: {
+                                  description: 'Current wins on the Atomic map',
+                                  type: 'integer',
+                                },
+                                carrier: {
+                                  description: 'Current wins on the Carrier map',
+                                  type: 'integer',
+                                },
+                                melon_factory: {
+                                  description: 'Current wins on the Melon Factory map',
+                                  type: 'integer',
+                                },
+                                overgrown: {
+                                  description: 'Current wins on the Overgrown map',
+                                  type: 'integer',
+                                },
+                                reserve: {
+                                  description: 'Current wins on the Reserve map',
+                                  type: 'integer',
+                                },
+                                sandstorm: {
+                                  description: 'Current wins on the Sandstorm map',
+                                  type: 'integer',
+                                },
+                                temple: {
+                                  description: 'Current wins on the Temple map',
+                                  type: 'integer',
+                                },
+                              },
+                              deathmatch: {
+                                description: 'Current player stats in CvC Deathmatch',
+                                type: 'object',
+                                properties: {
+                                  kills: {
+                                    description: 'Total kills in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  deaths: {
+                                    description: 'Total deaths in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  kd: {
+                                    description: 'Current kill/death ratio in CvC Deathmatch',
+                                    type: 'number',
+                                  },
+                                  wins: {
+                                    description: 'Total wins in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  cop_kills: {
+                                    description: 'Total cops killed in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                  criminal_kills: {
+                                    description: 'Total criminals killed in CvC Deathmatch',
+                                    type: 'integer',
+                                  },
+                                },
+                              },
+                              perks: {
+                                description: 'Currently purchased perks and upgrades for Cops vs Crims',
+                                type: 'object',
+                                properties: {
+                                  player: {
+                                    description: 'Character upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      body_armor_cost: {
+                                        description: 'Current progression of Body Armor Cost upgrade',
+                                        type: 'integer',
+                                      },
+                                      bounty_hunter: {
+                                        description: 'Current progression of Bounty Hunter upgrade',
+                                        type: 'integer',
+                                      },
+                                      pocket_change: {
+                                        description: 'Current progression of Pocket Change upgrade',
+                                        type: 'integer',
+                                      },
+                                      strength_training: {
+                                        description: 'Current progression of Strength Training upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  carbine: {
+                                    description: 'Carbine Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Carbine\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Carbine\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Carbine\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Carbine\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  knife: {
+                                    description: 'Knife Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      attack_delay: {
+                                        description: 'Current progression of the Knife\'s Attack Delay upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Knife\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  magnum: {
+                                    description: 'Magnum Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Magnum\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Magnum\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Magnum\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Magnum\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  pistol: {
+                                    description: 'Pistol Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      damage_increase: {
+                                        description: 'Current progression of the Pistol\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Pistol\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Pistol\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  rifle: {
+                                    description: 'Rifle Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Rifle\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Rifle\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Rifle\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Rifle\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  shotgun: {
+                                    description: 'Shotgun Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the Shotgun\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Shotgun\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the Shotgun\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Shotgun\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  smg: {
+                                    description: 'SMG Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      cost_reduction: {
+                                        description: 'Current progression of the SMG\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the SMG\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      recoil_reduction: {
+                                        description: 'Current progression of the SMG\'s Recoil Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the SMG\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                  sniper: {
+                                    description: 'Sniper Specialization upgrades',
+                                    type: 'object',
+                                    properties: {
+                                      charge_bonus: {
+                                        description: 'Current progression of the Sniper\'s Target Acquire upgrade',
+                                        type: 'integer',
+                                      },
+                                      cost_reduction: {
+                                        description: 'Current progression of the Sniper\'s Cost Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                      damage_increase: {
+                                        description: 'Current progression of the Sniper\'s Damage Increase upgrade',
+                                        type: 'integer',
+                                      },
+                                      reload_speed_reduction: {
+                                        description: 'Current progression of the Sniper\'s Reload Speed Reduction upgrade',
+                                        type: 'integer',
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                              selected_cosmetics: {
+                                description: 'Currently selected cosmetic appearance for each weapon type',
+                                type: 'object',
+                                properties: {
+                                  carbine: {
+                                    description: 'Currently selected Carbine cosmetic',
+                                    type: 'string',
+                                  },
+                                  knife: {
+                                    description: 'Currently selected Knife cosmetic',
+                                    type: 'string',
+                                  },
+                                  magnum: {
+                                    description: 'Currently selected Magnum cosmetic',
+                                    type: 'string',
+                                  },
+                                  pistol: {
+                                    description: 'Currently selected Pistol cosmetic',
+                                    type: 'string',
+                                  },
+                                  rifle: {
+                                    description: 'Currently selected Rifle cosmetic',
+                                    type: 'string',
+                                  },
+                                  shotgun: {
+                                    description: 'Currently selected Shotgun cosmetic',
+                                    type: 'string',
+                                  },
+                                  smg: {
+                                    description: 'Currently selected SMG cosmetic',
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        MurderMystery: {
+                          description: 'Player stats in Murder Mystery',
+                          type: 'object',
+                          properties: {
+                            coins: {
+                              description: 'Current coins in Murder Mystery',
                               type: 'integer',
                             },
                           },
