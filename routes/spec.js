@@ -828,6 +828,18 @@ const spec = {
                                   description: 'Current kit selected as default in Blitz Survival Games',
                                   type: 'string',
                                 },
+                                auto_armor: {
+                                  description: 'Is auto armor enabled',
+                                  type: 'boolean',
+                                }
+                              },
+                            },
+                            inventories: {
+                              description: 'Currently configured kit inventories',
+                              type: 'object',
+                            }
+                          },
+                        },
                               },
                             },
                           },
