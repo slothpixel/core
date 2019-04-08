@@ -270,7 +270,7 @@ const spec = {
                               type: 'integer',
                             },
                             hat: {
-                              description: 'Selected hat',
+                              description: 'Currently selected hat cosmetic',
                               type: 'string',
                             },
                             penalty: {
@@ -284,19 +284,77 @@ const spec = {
                               type: 'integer',
                             },
                             selected_sword: {
+                              description: 'Currently selected Sword cosmetic',
                               type: 'string',
                             },
                             active_rune: {
                               type: 'string',
                             },
                             skills: {
+                              description: 'Currently selected skills',
                               type: 'object',
+                              properties: {
+                                offensive: {
+                                  description: 'Currently selected Offensive skill',
+                                  type: 'string',
+                                },
+                                support: {
+                                  description: 'Currently selected Support skill',
+                                  type: 'string',
+                                },
+                                utility: {
+                                  description: 'Currently selected Utility skill',
+                                  type: 'string',
+                                },
+                                ultimate: {
+                                  description: 'Currently selected Ultimate skill',
+                                  type: 'string',
+                                },
+                              },
                             },
                             combat_levels: {
+                              description: 'Current Combat Upgrades in Arena Brawl',
                               type: 'object',
+                              properties: {
+                                melee: {
+                                  description: 'Current Melee Upgrade progression',
+                                  type: 'integer',
+                                },
+                                health: {
+                                  description: 'Current Health Upgrade progression',
+                                  type: 'integer',
+                                },
+                                energy: {
+                                  description: 'Current Energy Upgrade progression',
+                                  type: 'integer',
+                                },
+                                cooldown: {
+                                  description: 'Current Cooldown Upgrade progression',
+                                  type: 'integer',
+                                },
+                              },
                             },
                             rune_levels: {
+                              description: 'Current rune upgrades in Arena Brawl',
                               type: 'object',
+                              properties: {
+                                damage: {
+                                  description: 'Rune of Damage upgrade progression',
+                                  type: 'integer',
+                                },
+                                energy: {
+                                  description: 'Rune of Energy upgrade progression',
+                                  type: 'integer',
+                                },
+                                slowing: {
+                                  description: 'Rune of Slowing upgrade progression',
+                                  type: 'integer',
+                                },
+                                speed: {
+                                  description: 'Rune of Speed upgrade progression',
+                                  type: 'integer',
+                                },
+                              },
                             },
                             gamemodes: {
                               description: 'Stats in specific Arena gamemodes',
