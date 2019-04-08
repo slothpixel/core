@@ -432,7 +432,7 @@ const spec = {
                             },
                           },
                         },
-                        Battleground: {
+                        Warlords: {
                           description: 'Player stats in Warlords',
                           type: 'object',
                           properties: {
@@ -442,7 +442,7 @@ const spec = {
                             },
                           },
                         },
-                        Bedwars: {
+                        BedWars: {
                           description: 'Player stats in Bedwars',
                           type: 'object',
                           properties: {
@@ -472,7 +472,7 @@ const spec = {
                             },
                           },
                         },
-                        GingerBread: {
+                        TKR: {
                           description: 'Current stats in Turbo Kart Racers',
                           type: 'object',
                           properties: {
@@ -694,7 +694,7 @@ const spec = {
                             },
                           },
                         },
-                        HungerGames: {
+                        Blitz: {
                           description: 'Player stats in Blitz Survival Games',
                           type: 'object',
                           properties: {
