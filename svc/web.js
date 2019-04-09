@@ -55,7 +55,6 @@ app.use((req, res, cb) => {
       logger.error(err);
       return cb(err);
     }
-    logger.debug(resp);
     res.set({
       'X-Rate-Limit-Remaining-Minute': rateLimit - resp[0],
     });

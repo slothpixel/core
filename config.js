@@ -14,7 +14,7 @@ const defaults = {
   ROLE: '', // for specifying the file that should be run when entry point is invoked
   GROUP: '', // for specifying the group of apps that should be run when entry point is invoked
   NODE_ENV: 'development',
-  FRONTEND_PORT: '5000',
+  FRONTEND_PORT: 5000,
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
   MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
@@ -46,10 +46,10 @@ if (process.env.NODE_ENV === 'development') {
   // process.env.PORT = '';
 }
 if (process.env.NODE_ENV === 'test') {
-  // process.env.PORT = ''; // use service defaults
+  process.env.PORT = ''; // use service default
   // process.env.REDIS_URL = process.env.REDIS_TEST_URL;
   process.env.SESSION_SECRET = 'testsecretvalue';
-  process.env.FRONTEND_PORT = 80080;
+  process.env.FRONTEND_PORT = 5001;
 }
 // now processes can use either process.env or config
 module.exports = process.env;
