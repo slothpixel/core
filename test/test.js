@@ -1,5 +1,5 @@
 /* global before describe it after */
-/* eslint-disable global-require */
+/* eslint-disable global-require, no-unused-vars */
 /**
  * Main test script to run tests
  * */
@@ -69,7 +69,7 @@ describe('api', () => {
         const replacedPath = path
           .replace(/{playerName}/, 'builder_247');
         async.eachSeries(Object.keys(spec.paths[path]), (verb, cb) => {
-          if (path.indexOf('/leaderboards') === 0) {
+          if (path.indexOf('/leaderboards') === 0 || path.indexOf('/boosters') === 0 || path.indexOf('/sessions') === 0) {
             return cb(err);
           }
           return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((err, res) => {

@@ -1654,7 +1654,6 @@ const spec = {
         },
       },
     },
-    /*
     '/sessions/{playerName}': {
       get: {
         tags: [
@@ -1710,7 +1709,6 @@ const spec = {
         },
       },
     },
-     */
     /*
       '/friends/{playerName}': {
         get: {
@@ -1793,7 +1791,6 @@ const spec = {
         },
       },
     },
-    /*
     '/boosters': {
       get: {
         tags: [
@@ -1938,7 +1935,6 @@ const spec = {
         },
       },
     },
-     */
     '/bans': {
       get: {
         tags: [
