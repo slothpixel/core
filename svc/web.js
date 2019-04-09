@@ -46,19 +46,31 @@ app.use((req, res, cb) => {
     .hincrby('rate_limit', res.locals.usageIdentifier, pathCost)
     .expireat('rate_limit', utility.getStartOfBlockMinutes(1, 1));
 
+  if (!res.locals.isAPIRequest) {
+    multi.zscore('user_usage_count', res.locals.usageIdentifier); // not API request so check previous usage.
+  }
+
   multi.exec((err, resp) => {
     if (err) {
       logger.error(err);
       return cb(err);
     }
-
+    logger.debug(resp);
     res.set({
       'X-Rate-Limit-Remaining-Minute': rateLimit - resp[0],
     });
+    if (!res.locals.isAPIRequest) {
+      res.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(resp[2]));
+    }
     logger.debug(`rate limit increment ${resp}`);
     if (resp[0] > rateLimit && config.NODE_ENV !== 'test') {
       return res.status(429).json({
         error: 'rate limit exceeded',
+      });
+    }
+    if (config.ENABLE_API_LIMIT && !whitelistedPaths.includes(req.path) && !res.locals.isAPIRequest && Number(resp[2]) >= config.API_FREE_LIMIT) {
+      return res.status(429).json({
+        error: 'monthly api limit exceeded',
       });
     }
     return cb();
@@ -81,8 +93,13 @@ app.use((req, res, cb) => {
       && !whitelistedPaths.includes(req.baseUrl + (req.path === '/' ? '' : req.path))
       && elapsed < 10000) {
       const multi = redis.multi();
-      multi.hincrby('usage_count', res.locals.usageIdentifier, 1)
-        .expireat('usage_count', utility.getEndOfMonth());
+      if (res.locals.isAPIRequest) {
+        multi.hincrby('usage_count', res.locals.usageIdentifier, 1)
+          .expireat('usage_count', utility.getEndOfMonth());
+      } else {
+        multi.zincrby('user_usage_count', 1, res.locals.usageIdentifier)
+          .expireat('user_usage_count', utility.getEndOfMonth());
+      }
 
       multi.exec((err, res) => {
         logger.debug(`usage count increment ${err} ${res}`);
@@ -102,7 +119,13 @@ app.use((req, res, cb) => {
   });
   cb();
 });
-
+app.use((req, res, next) => {
+  // Reject request if not GET and Origin header is present and not an approved domain (prevent CSRF)
+  if (req.method !== 'GET' && req.header('Origin') && req.header('Origin') !== config.UI_HOST) {
+    return res.status(403).json({ error: 'Invalid Origin header' });
+  }
+  return next();
+});
 // CORS headers
 app.use(cors({
   origin: true,
