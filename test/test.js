@@ -13,7 +13,9 @@ const redis = require('../store/redis');
 const processPlayerData = require('../processors/processPlayerData');
 
 const playerApi = require('./data/player');
+const findguildApi = require('./data/findguild');
 const guildApi = require('./data/guild');
+const boosterApi = require('./data/boosters');
 
 // these are loaded later, as the database needs to be created when these are required
 let db;
@@ -25,9 +27,16 @@ nock('https://api.hypixel.net/')
   .query(true)
   .reply(200, playerApi)
   // fake guild stats
+  .get('/findguild')
+  .query(true)
+  .reply(200, findguildApi)
   .get('/guild')
   .query(true)
-  .reply(200, guildApi);
+  .reply(200, guildApi)
+  // fake boosters
+  .get('/boosters')
+  .query(true)
+  .reply(200, boosterApi);
 before(function setup(done) {
   this.timeout(60000);
   async.series([
@@ -67,9 +76,10 @@ describe('api', () => {
       const spec = res.body;
       return async.eachSeries(Object.keys(spec.paths), (path, cb) => {
         const replacedPath = path
-          .replace(/{playerName}/, 'builder_247');
+          .replace(/{playerName}/, 'builder_247')
+          .replace(/{game}/, 'SkyWars');
         async.eachSeries(Object.keys(spec.paths[path]), (verb, cb) => {
-          if (path.indexOf('/leaderboards') === 0 || path.indexOf('/boosters') === 0 || path.indexOf('/sessions') === 0) {
+          if (path.indexOf('/leaderboards') === 0 || path.indexOf('/sessions') === 0 || path.indexOf('/bans') === 0) {
             return cb(err);
           }
           return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((err, res) => {

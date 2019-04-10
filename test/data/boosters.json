@@ -1,0 +1,110 @@
+{
+  "success": true,
+  "boosters": [
+    {
+      "_id": "5c197fadc8f245280926413d",
+      "purchaserUuid": "978ddb705a8e43618e41749178c020b0",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 3595,
+      "gameType": 24,
+      "stacked": true,
+      "dateActivated": 1545244519133
+    },
+    {
+      "_id": "5c1a418b44f441b0812463de",
+      "purchaserUuid": "ae9787dfb6d54df7afb8601be34ed6c0",
+      "amount": 3.0,
+      "originalLength": 3600,
+      "length": 3600,
+      "gameType": 14,
+      "stacked": true,
+      "dateActivated": 1549807860197
+    },
+    {
+      "_id": "5c9e73ccc8f2a2cae5cdea18",
+      "purchaserUuid": "ff44d15fa71644cb9505007a771a2199",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 529,
+      "gameType": 6,
+      "dateActivated": 1554814156127
+    },
+    {
+      "_id": "5cac9742c8f2a2cae5ce0358",
+      "purchaserUuid": "ee16b75dd91d4ecba299bc9c56bf5cab",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 48,
+      "gameType": 23,
+      "dateActivated": 1554814810695
+    },
+    {
+      "_id": "5cac9832c8f2a2cae5ce035a",
+      "purchaserUuid": "84e24d79076a4efeadef46b578060de8",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 2640,
+      "gameType": 20,
+      "dateActivated": 1554815226980
+    },
+    {
+      "_id": "5cac994844f42ac3fefd84cb",
+      "purchaserUuid": "7a1f2889cb674174a919c01b6f565a19",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 1608,
+      "gameType": 14,
+      "dateActivated": 1554815314603,
+      "stacked": []
+    },
+    {
+      "_id": "5cac991c44f42ac3fefd84c7",
+      "purchaserUuid": "7a1f2889cb674174a919c01b6f565a19",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 1617,
+      "gameType": 51,
+      "dateActivated": 1554815320642
+    },
+    {
+      "_id": "5cac991c44f42ac3fefd84ca",
+      "purchaserUuid": "7a1f2889cb674174a919c01b6f565a19",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 566,
+      "gameType": 56,
+      "dateActivated": 1554815328379
+    },
+    {
+      "_id": "5cac991c44f42ac3fefd84c8",
+      "purchaserUuid": "7a1f2889cb674174a919c01b6f565a19",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 572,
+      "gameType": 13,
+      "dateActivated": 1554815334574
+    },
+    {
+      "_id": "5cab56e844f42ac3fefd8490",
+      "purchaserUuid": "b3a483897df8455eb342e79e8b957a24",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 3600,
+      "gameType": 51,
+      "dateActivated": 1554815365402
+    },
+    {
+      "_id": "5cab56e844f42ac3fefd8491",
+      "purchaserUuid": "b3a483897df8455eb342e79e8b957a24",
+      "amount": 2.0,
+      "originalLength": 3600,
+      "length": 3600,
+      "gameType": 13,
+      "dateActivated": 1554815964574
+    }
+  ],
+  "boosterState": {
+    "decrementing": true
+  }
+}
