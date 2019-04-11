@@ -6,6 +6,15 @@ const {
   Player, Guild,
 } = require('../store/models');
 
+function returnObject(doc) {
+  if (doc !== null) {
+    doc.toObject();
+    delete doc._id;
+    logger.debug(doc);
+  }
+  return doc;
+}
+
 function insertPlayer(uuid, player, cb) {
   Player.findOneAndUpdate({ uuid }, player, { upsert: true }, (err) => {
     if (err) {
@@ -25,11 +34,12 @@ function getPlayer(uuid, cb) {
 }
 
 function getPlayerProfile(uuid, cb) {
-  Player.findOne({ uuid }, profileFields, (err, player) => {
+  Player.findOne({ uuid }, profileFields, { projection: { _id: 0 } }, (err, player) => {
     if (err) {
       logger.error(err);
     }
-    return cb(err, player);
+    const object = returnObject(player);
+    return cb(err, object);
   });
 }
 

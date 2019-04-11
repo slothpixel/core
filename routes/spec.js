@@ -1,4 +1,5 @@
 /* eslint-disable consistent-return */
+const async = require('async');
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
@@ -6,8 +7,10 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildSession = require('../store/buildSession');
 const leaderboards = require('../store/leaderboards');
+const { getPlayerProfile } = require('../store/queries');
+const { logger, getProfileFields } = require('../util/utility');
 const {
-  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam,
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -22,6 +25,31 @@ function getPlayer(req, res, cb) {
       }
       return cb(null, player);
     });
+  });
+}
+
+function populatePlayers(players, cb) {
+  async.map(players, (player, done) => {
+    const { uuid } = player;
+    getPlayerProfile(uuid, (err, profile) => {
+      if (err) {
+        logger.error(err);
+      }
+      if (profile === null) {
+        logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
+        buildPlayer(uuid, (err, newPlayer) => {
+          delete player.uuid;
+          player.profile = getProfileFields(newPlayer);
+          done(err, player);
+        });
+      } else {
+        delete player.uuid;
+        player.profile = profile;
+        done(err, player);
+      }
+    });
+  }, (err, result) => {
+    cb(result);
   });
 }
 
@@ -1521,7 +1549,7 @@ const spec = {
         ],
         summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
-          playerNameParam,
+          playerNameParam, populatePlayersParam,
         ],
         responses: {
           200: {
@@ -1648,7 +1676,14 @@ const spec = {
               if (err) {
                 return res.status(404).json({ error: err });
               }
-              return res.json(guild);
+              if (req.query.populatePlayers !== undefined) {
+                populatePlayers(guild.members, (players) => {
+                  guild.members = players;
+                  return res.json(guild);
+                });
+              } else {
+                return res.json(guild);
+              }
             });
           });
         },

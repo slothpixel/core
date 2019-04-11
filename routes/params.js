@@ -26,6 +26,15 @@ module.exports = {
       type: 'string',
     },
   },
+  populatePlayersParam: {
+    name: 'populatePlayers',
+    in: 'query',
+    description: 'Replace uuid fields with player profiles',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
   typeParam: {
     name: 'type',
     in: 'query',

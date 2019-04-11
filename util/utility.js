@@ -10,6 +10,7 @@ const moment = require('moment');
 const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
+const { profileFields } = require('../store/profileFields');
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -124,6 +125,17 @@ function typeToStandardName(name) {
  */
 function isContributor(uuid) {
   return uuid in contributors;
+}
+
+/**
+* Returns profile fields from a player object
+ */
+function getProfileFields(obj) {
+  const profile = {};
+  profileFields.split(' ').forEach((field) => {
+    profile[field] = obj[field];
+  });
+  return profile;
 }
 
 /**
@@ -337,6 +349,7 @@ module.exports = {
   DBToStandardName,
   typeToStandardName,
   isContributor,
+  getProfileFields,
   generateJob,
   getData,
   getStartOfBlockMinutes,
