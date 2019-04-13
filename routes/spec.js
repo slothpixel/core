@@ -1651,11 +1651,15 @@ const spec = {
                           },
                           joined: {
                             description: 'Member join date',
-                            type: 'number',
+                            type: 'integer',
                           },
-                          coins: {
-                            description: 'Guild coins earned this week',
-                            type: 'number',
+                          quest_participation: {
+                            description: 'How many much the member has contributed to guild quests',
+                            type: 'integer',
+                          },
+                          muted_till: {
+                            description: 'Date the member is muted until',
+                            type: 'integer',
                           },
                         },
                       },

@@ -57,6 +57,37 @@ function changeObjKeys(obj) {
   return obj;
 }
 
+function getPreferredGames(games) {
+  const arr = [];
+  games.forEach((game) => {
+    arr.push(utility.typeToStandardName(game));
+  });
+  return arr;
+}
+
+function processMembers(members) {
+  const arr = [];
+  function processMember({
+    uuid,
+    rank,
+    joined,
+    questParticipation,
+    mutedTill = null,
+  }) {
+    return {
+      uuid,
+      rank,
+      joined,
+      quest_participation: questParticipation,
+      muted_till: mutedTill,
+    };
+  }
+  members.forEach((member) => {
+    arr.push(processMember(member));
+  });
+  return arr;
+}
+
 function processGuildData({
   name,
   _id,
@@ -88,9 +119,9 @@ function processGuildData({
     level: getLevel(exp),
     exp_by_game: expByGame,
     description,
-    preferred_games: preferredGames,
+    preferred_games: getPreferredGames(preferredGames),
     ranks,
-    members,
+    members: processMembers(members),
   };
 }
 
