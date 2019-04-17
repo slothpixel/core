@@ -17,7 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
-    "hypixelconstants": "^3.0.2",
+    "hypixelconstants": "^3.0.4",
     "moment": "^2.24.0",
     "mongoose": "^5.5.2",
     "morgan": "^1.9.1",
