@@ -1,5 +1,5 @@
 const constants = require('hypixelconstants');
-const { DBToStandardName } = require('../util/utility');
+const { logger, DBToStandardName } = require('../util/utility');
 
 const { achievements } = constants.achievements;
 
@@ -7,6 +7,7 @@ const { achievements } = constants.achievements;
 * This function parses player achievements into an object containing all achievement related data.
  */
 function parseAchievements(oneTime = [], tiered = {}) {
+  const startTime = Date.now();
   function getAchievementProperties(a) {
     const split = a.split('_');
     const game = (split[0] === 'bridge'
@@ -55,25 +56,29 @@ function parseAchievements(oneTime = [], tiered = {}) {
   // Temp patch to onetime ach possibly containing an empty array
   oneTime.filter(elem => typeof elem === 'string').forEach((achievement) => {
     const { game, name } = getAchievementProperties(achievement);
-    const { points = 0 } = achievements[game].one_time[name] || 0;
-    gameObj[game].points_one_time += points;
-    gameObj[game].completed_one_time += 1;
-    obj.completed_one_time += 1;
-    gameObj[game].one_time.push(name);
+    if (Object.hasOwnProperty.call(achievements, game)) {
+      const { points = 0 } = achievements[game].one_time[name] || 0;
+      gameObj[game].points_one_time += points;
+      gameObj[game].completed_one_time += 1;
+      obj.completed_one_time += 1;
+      gameObj[game].one_time.push(name);
+    }
   });
   // Parse tiered achievements
   Object.entries(tiered).forEach((achievement) => {
     const { game, name } = getAchievementProperties(achievement[0]);
-    const ach = achievements[game].tiered[name];
-    if (ach !== undefined) {
-      for (let t = 0; t < ach.tiers.length; t += 1) {
-        if (achievement[1] >= ach.tiers[t].amount) {
-          gameObj[game].points_tiered += ach.tiers[t].points;
-          gameObj[game].completed_tiered += 1;
-          obj.completed_tiered += 1;
-        } else {
-          [, gameObj[game].tiered[name]] = achievement;
-          break;
+    if (Object.hasOwnProperty.call(achievements, game)) {
+      const ach = achievements[game].tiered[name];
+      if (ach !== undefined) {
+        for (let t = 0; t < ach.tiers.length; t += 1) {
+          if (achievement[1] >= ach.tiers[t].amount) {
+            gameObj[game].points_tiered += ach.tiers[t].points;
+            gameObj[game].completed_tiered += 1;
+            obj.completed_tiered += 1;
+          } else {
+            [, gameObj[game].tiered[name]] = achievement;
+            break;
+          }
         }
       }
     }
@@ -91,6 +96,7 @@ function parseAchievements(oneTime = [], tiered = {}) {
   });
   obj.completed_total = obj.completed_one_time + obj.completed_tiered;
   obj.games = gameObj;
+  logger.debug(`Achievement parsing took ${Date.now() - startTime}ms`);
   return (obj);
 }
 

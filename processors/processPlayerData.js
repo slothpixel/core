@@ -1,4 +1,12 @@
-const utility = require('../util/utility');
+const {
+  logger,
+  DBToStandardName,
+  generateFormattedRank,
+  colorNameToCode,
+  betterFormatting,
+  typeToStandardName,
+  isContributor,
+} = require('../util/utility');
 const calculateLevel = require('../util/calculateLevel');
 
 const processStats = require('./games');
@@ -101,7 +109,7 @@ function processPlayerData({
   const fullStats = Object.assign(defaultStatsObject, stats);
   Object.keys(fullStats).forEach((game) => {
     if (Object.hasOwnProperty.call(processStats, game)) {
-      const standardName = utility.DBToStandardName(game);
+      const standardName = DBToStandardName(game);
       statsObject[standardName] = processStats[game](fullStats[game]);
     }
   });
@@ -116,14 +124,14 @@ function processPlayerData({
   let achievementObj = {};
   let questObject = {};
   const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);
-  const newRankPlusColor = utility.colorNameToCode(rankPlusColor);
-  const newPrefix = utility.betterFormatting(prefix);
-  const rankPlusPlusColor = utility.colorNameToCode(monthlyRankColor);
+  const newRankPlusColor = colorNameToCode(rankPlusColor);
+  const newPrefix = betterFormatting(prefix);
+  const rankPlusPlusColor = colorNameToCode(monthlyRankColor);
   Promise.all([achievementPromise, questPromise])
     .then((values) => {
       [achievementObj, questObject] = values;
     }, (err) => {
-      Error(`Failed parsing quest or achievements: ${err}`);
+      logger.error(`Failed parsing quest or achievements: ${err}`);
     }).then(() => {
       cb({
         uuid,
@@ -131,7 +139,7 @@ function processPlayerData({
         online: lastLogin > lastLogout,
         rank: newRank,
         rank_plus_color: newRankPlusColor,
-        rank_formatted: utility.generateFormattedRank(newRank, newRankPlusColor, newPrefix, rankPlusPlusColor),
+        rank_formatted: generateFormattedRank(newRank, newRankPlusColor, newPrefix, rankPlusPlusColor),
         prefix: newPrefix,
         karma,
         exp: networkExp,
@@ -144,11 +152,11 @@ function processPlayerData({
         mc_version: mcVersionRp,
         first_login: firstLogin,
         last_login: lastLogin,
-        last_game: utility.typeToStandardName(mostRecentGameType),
+        last_game: typeToStandardName(mostRecentGameType),
         language: userLanguage,
         gifts_sent: realBundlesGiven,
         gifts_received: realBundlesReceived,
-        is_contributor: utility.isContributor(uuid),
+        is_contributor: isContributor(uuid),
         rewards: {
           streak_current: rewardScore,
           streak_best: rewardHighScore,
