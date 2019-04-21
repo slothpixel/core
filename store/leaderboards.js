@@ -6,6 +6,7 @@ const config = require('../config');
 const redis = require('../store/redis');
 const { logger } = require('../util/utility');
 const { profileFields } = require('../store/profileFields');
+const templates = require('../store/lb-templates');
 const {
   Player, Guild,
 } = require('../store/models');
@@ -21,8 +22,10 @@ function cacheLeaderboard(lb, key, cb) {
   return cb(lb);
 }
 
-function getQueryFields(columns = '') {
-  let string = profileFields;
+function getQueryFields(type, columns = '') {
+  let string = (type === 'players')
+    ? profileFields
+    : '';
   columns
     .split(',')
     .forEach((item) => {
@@ -85,39 +88,70 @@ function transformData(data) {
   return array;
 }
 
-function getLeaderboards(query, cb) {
-  const qs = JSON.stringify(query);
-  const key = `leaderboard:${qs}`;
-  redis.get(key, (err, reply) => {
+function executeQuery(type, query, fields, cb) {
+  let Model;
+  if (type === 'players') {
+    Model = Player;
+  } else if (type === 'guilds') {
+    Model = Guild;
+  }
+  const { filter, options, error } = createQuery(query);
+  if (error) {
+    return cb(error);
+  }
+  Model.find(filter, fields, options, (err, res) => {
     if (err) {
-      return cb(err);
-    } if (reply) {
-      logger.debug(`Cache hit for ${key}`);
-      const lb = JSON.parse(reply);
-      return cb(null, lb);
+      logger.error(err);
+      return cb('Query failed');
     }
-    let Model;
-    const fields = getQueryFields(query.columns);
-    if (query.type === 'players') {
-      Model = Player;
-    } else if (query.type === 'guilds') {
-      Model = Guild;
+    cb(null, transformData(res));
+  });
+}
+
+function getLeaderboards(query, template, cb) {
+  if (template) {
+    const [type, subtype] = template.split('_');
+    if (templates[type].items[subtype] !== undefined) {
+      const key = `leaderboard:${template}`;
+      redis.get(key, (err, reply) => {
+        if (err) {
+          return cb(err);
+        } if (reply) {
+          logger.debug(`Cache hit for ${key}`);
+          const lb = JSON.parse(reply);
+          return cb(null, lb);
+        }
+        const model = (type === 'general' || type === 'games')
+          ? 'players'
+          : 'guilds';
+        const query = {
+          sortBy: templates[type].items[subtype].sortBy,
+          limit: 1000,
+        };
+        const fields = getQueryFields(model, templates[type].items[subtype].fields.join());
+        executeQuery(model, query, fields, (err, data) => {
+          if (err) {
+            cb(err);
+          }
+          cacheLeaderboard(data, key, lb => cb(null, lb));
+        });
+      });
     } else {
+      cb('Invalid template name!');
+    }
+  } else {
+    const { type } = query;
+    if (type !== 'players' && type !== 'guilds') {
       cb('No valid type parameter!');
     }
-    const { filter, options, error } = createQuery(query);
-    if (error) {
-      return cb(error);
-    }
-    Model.find(filter, fields, options, (err, res) => {
+    const fields = getQueryFields(type, query.columns);
+    executeQuery(type, query, fields, (err, lb) => {
       if (err) {
-        logger.error(err);
-        return cb('Query failed');
+        cb(err);
       }
-      const data = transformData(res);
-      cacheLeaderboard(data, key, lb => cb(null, lb));
+      cb(null, lb);
     });
-  });
+  }
 }
 
 module.exports = getLeaderboards;

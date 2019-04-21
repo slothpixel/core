@@ -2,6 +2,7 @@
 const db = require('./db');
 const { logger } = require('../util/utility');
 const { profileFields } = require('../store/profileFields');
+const lbTemplates = require('../store/lb-templates');
 const {
   Player, Guild,
 } = require('../store/models');
@@ -10,7 +11,6 @@ function returnObject(doc) {
   if (doc !== null) {
     doc.toObject();
     delete doc._id;
-    logger.debug(doc);
   }
   return doc;
 }
@@ -73,6 +73,11 @@ function getGuildByPlayer(uuid, cb) {
   });
 }
 
+function getMetadata(req, callback) {
+  // TODO - Add API status
+  callback(null, { leaderboards: lbTemplates });
+}
+
 module.exports = {
   insertPlayer,
   getPlayer,
@@ -80,4 +85,5 @@ module.exports = {
   insertGuild,
   getGuild,
   getGuildByPlayer,
+  getMetadata,
 };

@@ -35,6 +35,15 @@ module.exports = {
       type: 'string',
     },
   },
+  templateParam: {
+    name: 'template',
+    in: 'path',
+    description: '',
+    required: true,
+    schema: {
+      type: 'string',
+    },
+  },
   typeParam: {
     name: 'type',
     in: 'query',

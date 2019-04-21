@@ -7,10 +7,10 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildSession = require('../store/buildSession');
 const leaderboards = require('../store/leaderboards');
-const { getPlayerProfile } = require('../store/queries');
+const { getPlayerProfile, getMetadata } = require('../store/queries');
 const { logger, getProfileFields } = require('../util/utility');
 const {
-  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam,
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam, templateParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -97,6 +97,10 @@ const spec = {
     {
       name: 'bans',
       description: 'Ban statistics',
+    },
+    {
+      name: 'Metadata',
+      description: '',
     },
   ],
   paths: {
@@ -1821,7 +1825,46 @@ const spec = {
         },
         route: () => '/leaderboards',
         func: (req, res, cb) => {
-          leaderboards(req.query, (error, lb) => {
+          leaderboards(req.query, null, (error, lb) => {
+            if (error) {
+              return cb(res.status(400).json({ error }));
+            }
+            return res.json(lb);
+          });
+        },
+      },
+    },
+    '/leaderboards/{template}': {
+      get: {
+        tags: [
+          'leaderboards',
+        ],
+        summary: 'Get predefined leaderboards',
+        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
+        parameters: [
+          templateParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/leaderboards/:template',
+        func: (req, res, cb) => {
+          leaderboards(req.query, req.params.template, (error, lb) => {
             if (error) {
               return cb(res.status(400).json({ error }));
             }
@@ -2031,6 +2074,38 @@ const spec = {
               return res.status(500).json({ error: err });
             }
             return res.json(bans);
+          });
+        },
+      },
+    },
+    '/metadata': {
+      get: {
+        summary: 'GET /metadata',
+        description: 'Site metadata',
+        tags: [
+          'metadata',
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+              properties: {
+                leaderboards: {
+                  description: 'Template Leaderboards',
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+        route: () => '/metadata',
+        func: (req, res, cb) => {
+          getMetadata(req, (err, result) => {
+            if (err) {
+              return cb(err);
+            }
+            return res.json(result);
           });
         },
       },
