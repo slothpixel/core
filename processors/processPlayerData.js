@@ -41,6 +41,7 @@ function processPlayerData({
   quests = {},
   challenges = {},
   playername,
+  knownAliases,
   firstLogin,
   lastLogin = null,
   lastLogout = null,
@@ -66,6 +67,9 @@ function processPlayerData({
   socialMedia: { links = {} } = {},
   stats = {},
 }, cb) {
+  const username = (knownAliases[knownAliases.length - 1].toLowerCase() === playername)
+    ? knownAliases[knownAliases.length - 1]
+    : playername;
   const achievementPromise = new Promise((resolve) => {
     resolve(parseAchievements(achievementsOneTime, achievements));
   });
@@ -135,7 +139,7 @@ function processPlayerData({
     }).then(() => {
       cb({
         uuid,
-        username: playername,
+        username,
         online: lastLogin > lastLogout,
         rank: newRank,
         rank_plus_color: newRankPlusColor,
