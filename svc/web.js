@@ -17,6 +17,7 @@ const app = express();
 
 const whitelistedPaths = [
   '/api', // Docs
+  '/api/metadata', // Metadata
 ];
 
 const pathCosts = {
