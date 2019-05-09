@@ -11,7 +11,7 @@
     "lintnofix": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^2.6.2",
     "body-parser": "^1.13.2",
     "compression": "^1.7.3",
     "cors": "^2.8.5",
