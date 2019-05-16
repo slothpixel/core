@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const async = require('async');
+const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
@@ -885,6 +886,39 @@ const spec = {
               return cb(err);
             }
             return res.json(result);
+          });
+        },
+      },
+    },
+    '/health': {
+      get: {
+        summary: 'GET /health',
+        description: 'Get service health data',
+        tags: ['health'],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+            },
+          },
+        },
+        route: () => '/health/:metric?',
+        func: (req, res, cb) => {
+          redis.hgetall('health', (err, result) => {
+            if (err) {
+              return cb(err);
+            }
+            const response = result || {};
+            Object.keys(response).forEach((key) => {
+              response[key] = JSON.parse(response[key]);
+            });
+            if (!req.params.metric) {
+              return res.json(response);
+            }
+            const single = response[req.params.metric];
+            const healthy = single.metric < single.threshold;
+            return res.status(healthy ? 200 : 500).json(single);
           });
         },
       },

@@ -121,7 +121,7 @@ function typeToStandardName(name) {
 }
 
 /**
- * Determines if a player has contributed to the development of OpenDota
+ * Determines if a player has contributed to the development of Slothpixel
  */
 function isContributor(uuid) {
   return uuid in contributors;
