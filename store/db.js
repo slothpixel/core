@@ -7,7 +7,7 @@ const settings = {
   autoIndex: false,
 };
 
-const db = mongoose.connect(config.MONGODB_URL, settings, (err) => {
+mongoose.connect(config.MONGODB_URL, settings, (err) => {
   mongoose.set('useFindAndModify', false);
   logger.info(`connecting ${config.MONGODB_URL}`);
   if (err) {
@@ -15,4 +15,4 @@ const db = mongoose.connect(config.MONGODB_URL, settings, (err) => {
   }
 });
 
-module.exports = db;
+module.exports = mongoose.connection;
