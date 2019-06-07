@@ -16,10 +16,8 @@ const logger = createLogger({
   transports: [new transports.Console()],
   format: format.combine(
     format.colorize(),
-    format.timestamp({
-      format: 'D MMM HH:mm:ss',
-    }),
-    format.printf(nfo => `${nfo.timestamp} - ${nfo.message}`),
+    format.timestamp(),
+    format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
   ),
 });
 if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') logger.level = 'debug';
