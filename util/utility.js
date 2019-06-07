@@ -143,9 +143,12 @@ function getProfileFields(obj) {
  * See https://github.com/HypixelDev/PublicAPI/tree/master/Documentation/methods
  * */
 function generateJob(type, payload) {
-  logger.error(`generateJob ${type}`);
+  logger.debug(`generateJob ${type}`);
   const apiUrl = 'https://api.hypixel.net';
   const apiKey = config.HYPIXEL_API_KEY;
+  if (apiKey === '') {
+    logger.warn('No HYPIXEL_API_KEY env variable set!');
+  }
   const opts = {
     boosters() {
       return {
