@@ -34,7 +34,7 @@ function getPlayer(uuid, cb) {
 }
 
 function getPlayerProfile(uuid, cb) {
-  Player.findOne({ uuid }, profileFields, { projection: { _id: 0 } }, (err, player) => {
+  Player.findOne({ uuid }, profileFields, (err, player) => {
     if (err) {
       logger.error(err);
     }
