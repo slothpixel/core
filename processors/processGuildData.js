@@ -76,7 +76,10 @@ function processMembers(members) {
   }) {
     return {
       uuid,
-      rank,
+      rank: rank
+        .replace('MEMBER', 'Member')
+        .replace('OFFICER', 'Officer')
+        .replace('GUILDMASTER', 'Guild Master'),
       joined,
       quest_participation: questParticipation,
       muted_till: mutedTill,
