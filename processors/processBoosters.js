@@ -1,9 +1,13 @@
-const utility = require('../util/utility');
+const { IDToStandardName, removeDashes } = require('../util/utility');
 
 function buildObject(boosters = []) {
   const obj = {};
+  function getStackedArray(stacked = []) {
+    if (!Array.isArray(stacked)) stacked = [];
+    return stacked.map(uuid => removeDashes(uuid));
+  }
   boosters.forEach((booster) => {
-    const game = utility.IDToStandardName(booster.gameType);
+    const game = IDToStandardName(booster.gameType);
     if (!Object.hasOwnProperty.call(obj, game)) {
       obj[game] = [];
     }
@@ -14,7 +18,7 @@ function buildObject(boosters = []) {
       original_length: booster.originalLength,
       length: booster.length,
       active: (booster.length < booster.originalLength),
-      stacked: booster.stacked || [],
+      stacked: getStackedArray(booster.stacked),
     });
   });
   return obj;
