@@ -9,7 +9,7 @@ const redis = require('../store/redis');
 
 function fetchUUID(username, cb) {
   const url = `https://api.mojang.com/users/profiles/minecraft/${username}`;
-  return getData(url, (err, body) => {
+  return getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }

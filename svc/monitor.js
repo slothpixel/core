@@ -42,7 +42,7 @@ function redisUsage(cb) {
       metric: Number(redis.server_info.used_memory),
       threshold: 2.5 * (10 ** 9),
     });
-  });
+  })
 }
 
 function mongoUsage(cb) {
@@ -53,9 +53,22 @@ function mongoUsage(cb) {
     });
   });
 }
+
+function hypixelApi(cb) {
+  redis.get('hypixel_api_error', (err, reply) => {
+    if (err) {
+      return cb(err);
+    }
+    return cb(err, {
+      metric: Number(reply),
+      threshold: 1,
+    });
+  });
+}
 const health = {
   redisUsage,
   mongoUsage,
+  hypixelApi,
 };
 Object.keys(health).forEach((key) => {
   invokeInterval(health[key]);

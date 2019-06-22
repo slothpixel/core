@@ -13,7 +13,7 @@ function getGuildData(id, cb) {
   const { url } = generateJob('guild', {
     id,
   });
-  getData(url, (err, body) => {
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err);
     }
@@ -34,7 +34,7 @@ function getGuildID(uuid, cb) {
     const { url } = generateJob('findguild', {
       id: uuid,
     });
-    getData(url, (err, foundguild) => {
+    getData(redis, url, (err, foundguild) => {
       if (err) {
         return cb(err);
       }

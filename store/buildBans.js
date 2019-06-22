@@ -8,7 +8,7 @@ const redis = require('../store/redis');
  */
 function getBans(cb) {
   const { url } = generateJob('watchdogstats');
-  getData(url, (err, body) => {
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }

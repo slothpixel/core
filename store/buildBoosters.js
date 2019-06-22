@@ -9,7 +9,7 @@ const redis = require('../store/redis');
  */
 function getBoosterData(cb) {
   const { url } = generateJob('boosters');
-  getData(url, (err, body) => {
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }

@@ -137,6 +137,45 @@ function getProfileFields(obj) {
 }
 
 /**
+ * Returns the unix timestamp at the beginning of a block of n minutes
+ * Offset controls the number of blocks to look ahead
+ * */
+function getStartOfBlockMinutes(size, offset = 0) {
+  const blockS = size * 60;
+  const curTime = Math.floor(new Date() / 1000);
+  const blockStart = curTime - (curTime % blockS);
+  return (blockStart + (offset * blockS)).toFixed(0);
+}
+
+function getEndOfMonth() {
+  return moment().endOf('month').unix();
+}
+
+function redisCount(redis, prefix) {
+  const key = `${prefix}:${moment().startOf('hour').format('X')}`;
+  redis.pfadd(key, uuidV4());
+  redis.expireat(key, moment().startOf('hour').add(1, 'day').format('X'));
+}
+
+function getRedisCountDay(redis, prefix, cb) {
+  // Get counts for last 24 hour keys (including current partial hour)
+  const keyArr = [];
+  for (let i = 0; i < 24; i += 1) {
+    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
+  }
+  redis.pfcount(...keyArr, cb);
+}
+
+function getRedisCountHour(redis, prefix, cb) {
+  // Get counts for previous full hour
+  const keyArr = [];
+  for (let i = 1; i < 2; i += 1) {
+    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
+  }
+  redis.pfcount(...keyArr, cb);
+}
+
+/**
  * Creates a job object for enqueueing that contains details such as the Hypixel endpoint to hit
  * See https://github.com/HypixelDev/PublicAPI/tree/master/Documentation/methods
  * */
@@ -200,13 +239,18 @@ function generateJob(type, payload) {
 
 /**
  * A wrapper around HTTPS requests that handles:
- *
- *
+ * retries/retry delay
+ * Injecting API key for Hypixel API
+ * Errors from Hypixel API
  * */
-function getData(url, cb) {
+function getData(redis, url, cb) {
   let u;
+  let delay = Number(config.DEFAULT_DELAY);
+  let timeout = 5000;
   if (typeof url === 'object' && url && url.url) {
     u = url.url;
+    delay = url.delay || delay;
+    timeout = url.timeout || timeout;
   } else {
     u = url;
   }
@@ -214,65 +258,54 @@ function getData(url, cb) {
   const hypixelApi = parse.host === 'api.hypixel.net';
   const mojangApi = parse.host === 'api.mojang.com';
   const target = urllib.format(parse);
-  return request({
-    url: target,
-    json: hypixelApi,
-  }, (err, res, body) => {
-    if (err
-      || !res
-      || res.statusCode !== 200
-      || !body
-    ) {
-      logger.error(`[INVALID] status: ${res ? res.statusCode : ''}`);
-      return cb('Request failed', null);
-    } if (hypixelApi && !body.success) {
-      logger.error(`[Hypixel API Error]: ${body.cause}`);
-      return cb(`${body.cause}`, null);
-    } if (mojangApi && body.error) {
-      logger.error(`[Mojang API Error]: ${body.error} : ${body.errorMessage}`);
-      return cb(`${body.error} : ${body.errorMessage}`, null);
-    }
-    return cb(null, body);
-  });
-}
-
-/**
- * Returns the unix timestamp at the beginning of a block of n minutes
- * Offset controls the number of blocks to look ahead
- * */
-function getStartOfBlockMinutes(size, offset = 0) {
-  const blockS = size * 60;
-  const curTime = Math.floor(new Date() / 1000);
-  const blockStart = curTime - (curTime % blockS);
-  return (blockStart + (offset * blockS)).toFixed(0);
-}
-
-function getEndOfMonth() {
-  return moment().endOf('month').unix();
-}
-
-function redisCount(redis, prefix) {
-  const key = `${prefix}:${moment().startOf('hour').format('X')}`;
-  redis.pfadd(key, uuidV4());
-  redis.expireat(key, moment().startOf('hour').add(1, 'day').format('X'));
-}
-
-function getRedisCountDay(redis, prefix, cb) {
-  // Get counts for last 24 hour keys (including current partial hour)
-  const keyArr = [];
-  for (let i = 0; i < 24; i += 1) {
-    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
-  }
-  redis.pfcount(...keyArr, cb);
-}
-
-function getRedisCountHour(redis, prefix, cb) {
-  // Get counts for previous full hour
-  const keyArr = [];
-  for (let i = 1; i < 2; i += 1) {
-    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
-  }
-  redis.pfcount(...keyArr, cb);
+  logger.info(`getData: ${target}`);
+  return setTimeout(() => {
+    request({
+      url: target,
+      json: hypixelApi,
+      timeout,
+    }, (err, res, body) => {
+      if (err
+        || !res
+        || res.statusCode !== 200
+        || !body
+      ) {
+        // invalid response
+        if (url.noRetry) {
+          return cb(err || 'invalid response');
+        }
+        if (mojangApi) {
+          return cb('Failed to get player uuid', null);
+        }
+        logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
+        getData(redis, url, cb);
+      }
+      if (hypixelApi && !body.success) {
+        // valid response, but invalid data, retry
+        if (url.noRetry) {
+          return cb(err || 'invalid data');
+        }
+        // insert errors to redis for monitoring
+        const multi = redis.multi()
+          .incr('hypixel_api_error')
+          .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
+        multi.exec((err, resp) => {
+          if (err) {
+            logger.error(err);
+          }
+          logger.warn(`Failed API requests in the past minute: ${resp[0]}`);
+        });
+        logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
+        const backoff = (body.throttle)
+          ? 3000
+          : 0;
+        return setTimeout(() => {
+          getData(redis, url, cb);
+        }, backoff);
+      }
+      return cb(null, body);
+    });
+  }, delay);
 }
 
 function colorNameToCode(color) {

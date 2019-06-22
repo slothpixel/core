@@ -20,6 +20,7 @@ const defaults = {
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
   API_FREE_LIMIT: 50000, // number of api requests per month before 429 is returned.
   NO_API_KEY_PER_MIN_LIMIT: 60, // Rate limit per minute if not using an API key
+  DEFAULT_DELAY: 1000, // delay between API requests
   ENABLE_UUID_CACHE: true, // cache player stats
   ENABLE_PLAYER_CACHE: true, // cache players
   ENABLE_GUILD_CACHE: true, // cache guilds
@@ -47,6 +48,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 if (process.env.NODE_ENV === 'test') {
   process.env.PORT = ''; // use service default
+  process.env.DEFAULT_DELAY = 0;
   // process.env.REDIS_URL = process.env.REDIS_TEST_URL;
   process.env.SESSION_SECRET = 'testsecretvalue';
   process.env.FRONTEND_PORT = 5001;

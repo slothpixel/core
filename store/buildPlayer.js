@@ -13,7 +13,7 @@ function getPlayerData(uuid, cb) {
   const { url } = generateJob('player', {
     id: uuid,
   });
-  getData(url, (err, body) => {
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }
