@@ -42,7 +42,7 @@ function redisUsage(cb) {
       metric: Number(redis.server_info.used_memory),
       threshold: 2.5 * (10 ** 9),
     });
-  })
+  });
 }
 
 function mongoUsage(cb) {
