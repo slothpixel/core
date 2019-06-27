@@ -4,11 +4,11 @@ const { logger } = require('../util/utility');
 
 const settings = {
   useNewUrlParser: true,
+  useFindAndModify: false,
   autoIndex: false,
 };
 
 mongoose.connect(config.MONGODB_URL, settings, (err) => {
-  mongoose.set('useFindAndModify', false);
   logger.info(`connecting ${config.MONGODB_URL}`);
   if (err) {
     logger.error(`failed db connection: ${err}`);

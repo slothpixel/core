@@ -1,6 +1,5 @@
 module.exports = {
   profileFields: `
-  -_id
   uuid 
   username 
   first_login 

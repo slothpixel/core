@@ -1,5 +1,6 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars,consistent-return,prefer-arrow-callback,func-names */
 const db = require('./db');
+const redis = require('./redis');
 const { logger } = require('../util/utility');
 const { profileFields } = require('../store/profileFields');
 const lbTemplates = require('../store/lb-templates');
@@ -7,16 +8,8 @@ const {
   Player, Guild,
 } = require('../store/models');
 
-function returnObject(doc) {
-  if (doc !== null) {
-    doc.toObject();
-    delete doc._id;
-  }
-  return doc;
-}
-
 function insertPlayer(uuid, player, cb) {
-  Player.findOneAndUpdate({ uuid }, player, { upsert: true }, (err) => {
+  Player.findOneAndUpdate({ uuid }, player, { new: true, upsert: true }, function (err) {
     if (err) {
       logger.error(err);
     }
@@ -25,7 +18,7 @@ function insertPlayer(uuid, player, cb) {
 }
 
 function getPlayer(uuid, cb) {
-  Player.findOne({ uuid }, (err, player) => {
+  Player.findOne({ uuid }, function (err, player) {
     if (err) {
       logger.error(err);
     }
@@ -33,18 +26,40 @@ function getPlayer(uuid, cb) {
   });
 }
 
-function getPlayerProfile(uuid, cb) {
-  Player.findOne({ uuid }, profileFields, (err, player) => {
+function cachePlayerProfile(profile, cb) {
+  const key = `profile:${profile.uuid}`;
+  logger.debug(`Caching ${key}`);
+  redis.setex(key, 600, JSON.stringify(profile), (err) => {
     if (err) {
       logger.error(err);
     }
-    const object = returnObject(player);
-    return cb(err, object);
+    cb(profile);
+  });
+}
+
+function getPlayerProfile(uuid, cb) {
+  const key = `profile:${uuid}`;
+  logger.debug(`Trying to get profile ${uuid} from cache`);
+  redis.get(key, (err, reply) => {
+    if (err) {
+      logger.error(err);
+    }
+    if (reply) {
+      logger.debug(`Cache hit for profile ${uuid}`);
+      return cb(err, JSON.parse(reply), true);
+    }
+    Player.findOne({ uuid }, profileFields, function (err, player) {
+      if (err) {
+        logger.error(err);
+      }
+      const object = player.toObject();
+      return cb(err, object);
+    });
   });
 }
 
 function insertGuild(id, guild, cb) {
-  Guild.findOneAndUpdate({ id }, guild, { upsert: true }, (err) => {
+  Guild.findOneAndUpdate({ id }, guild, { new: true, upsert: true }, function (err) {
     if (err) {
       logger.error(err);
     }
@@ -53,7 +68,7 @@ function insertGuild(id, guild, cb) {
 }
 
 function getGuild(id, cb) {
-  Guild.findOne({ id }, (err, guild) => {
+  Guild.findOne({ id }, function (err, guild) {
     if (err) {
       logger.error(err);
     }
@@ -62,7 +77,7 @@ function getGuild(id, cb) {
 }
 
 function getGuildByPlayer(uuid, cb) {
-  Guild.findOne({ 'members.uuid': uuid }, (err, guild) => {
+  Guild.findOne({ 'members.uuid': uuid }, function (err, guild) {
     if (err) {
       logger.error(err);
     }
@@ -81,6 +96,7 @@ function getMetadata(req, callback) {
 module.exports = {
   insertPlayer,
   getPlayer,
+  cachePlayerProfile,
   getPlayerProfile,
   insertGuild,
   getGuild,

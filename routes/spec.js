@@ -9,7 +9,7 @@ const buildBoosters = require('../store/buildBoosters');
 const buildSession = require('../store/buildSession');
 const leaderboards = require('../store/leaderboards');
 const { playerObject } = require('./objects');
-const { getPlayerProfile, getMetadata } = require('../store/queries');
+const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const { logger, getProfileFields } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam, templateParam,
@@ -33,7 +33,7 @@ function getPlayer(req, res, cb) {
 function populatePlayers(players, cb) {
   async.map(players, (player, done) => {
     const { uuid } = player;
-    getPlayerProfile(uuid, (err, profile) => {
+    getPlayerProfile(uuid, (err, profile, isCached) => {
       if (err) {
         logger.error(err);
       }
@@ -41,13 +41,22 @@ function populatePlayers(players, cb) {
         logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
         buildPlayer(uuid, (err, newPlayer) => {
           delete player.uuid;
-          player.profile = getProfileFields(newPlayer);
-          done(err, player);
+          const profile = getProfileFields(newPlayer);
+          player.profile = profile;
+          cachePlayerProfile(profile, () => {
+            done(err, player);
+          });
         });
       } else {
         delete player.uuid;
         player.profile = profile;
-        done(err, player);
+        if (isCached) {
+          done(err, player);
+        } else {
+          cachePlayerProfile(profile, () => {
+            done(err, player);
+          });
+        }
       }
     });
   }, (err, result) => {
