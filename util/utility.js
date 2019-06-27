@@ -280,6 +280,7 @@ function getData(redis, url, cb) {
         logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
         getData(redis, url, cb);
       }
+      if (body === undefined) body = {};
       if (hypixelApi && !body.success) {
         // valid response, but invalid data, retry
         if (url.noRetry) {
