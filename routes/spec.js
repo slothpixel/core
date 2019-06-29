@@ -164,7 +164,28 @@ const spec = {
                       type: 'integer',
                       description: 'Total achievement points',
                     },
-                    game: {
+                    completed_tiered: {
+                      type: 'integer',
+                      description: 'Total tiered achievements completed',
+                    },
+                    completed_one_time: {
+                      type: 'integer',
+                      description: 'Total one time achievements completed',
+                    },
+                    completed_total: {
+                      type: 'integer',
+                      description: 'Total achievements completed',
+                    },
+                    rewards: {
+                      type: 'object',
+                      properties: {
+                        200: {
+                          type: 'integer',
+                          description: 'Timestamp of reward goal claimed',
+                        },
+                      },
+                    },
+                    games: {
                       type: 'object',
                       properties: {
                         one_time: {

@@ -38,6 +38,7 @@ function processPlayerData({
   uuid,
   achievements,
   achievementsOneTime,
+  achievementRewardsNew = {},
   quests = {},
   challenges = {},
   playername,
@@ -71,7 +72,7 @@ function processPlayerData({
     ? knownAliases[knownAliases.length - 1]
     : playername;
   const achievementPromise = new Promise((resolve) => {
-    resolve(parseAchievements(achievementsOneTime, achievements));
+    resolve(parseAchievements(achievementsOneTime, achievements, achievementRewardsNew));
   });
   const questPromise = new Promise((resolve) => {
     resolve(parseQuests(quests, challenges));
