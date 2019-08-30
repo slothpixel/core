@@ -71,7 +71,7 @@ function processMembers(members) {
     uuid,
     rank,
     joined,
-    questParticipation,
+    questParticipation = 0,
     mutedTill = null,
   }) {
     return {
