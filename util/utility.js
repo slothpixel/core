@@ -278,7 +278,7 @@ function getData(redis, url, cb) {
           return cb('Failed to get player uuid', null);
         }
         logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
-        getData(redis, url, cb);
+        return getData(redis, url, cb);
       }
       if (body === undefined) body = {};
       if (hypixelApi && !body.success) {
@@ -287,6 +287,7 @@ function getData(redis, url, cb) {
           return cb(err || 'invalid data');
         }
         // insert errors to redis for monitoring
+        let failed = 0;
         const multi = redis.multi()
           .incr('hypixel_api_error')
           .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
@@ -294,15 +295,21 @@ function getData(redis, url, cb) {
           if (err) {
             logger.error(err);
           }
-          logger.warn(`Failed API requests in the past minute: ${resp[0]}`);
+          [failed] = resp;
+          logger.warn(`Failed API requests in the past minute: ${failed}`);
+          logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
+          let backoff = (body.throttle)
+            ? 3000
+            : 0;
+          logger.debug(failed);
+          backoff += (failed > 50)
+            ? 10 * failed
+            : 0;
+          logger.debug(`getData timout for ${backoff}ms`);
+          return setTimeout(() => {
+            getData(redis, url, cb);
+          }, backoff);
         });
-        logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
-        const backoff = (body.throttle)
-          ? 3000
-          : 0;
-        return setTimeout(() => {
-          getData(redis, url, cb);
-        }, backoff);
       }
       return cb(null, body);
     });
