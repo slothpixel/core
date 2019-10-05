@@ -29,7 +29,7 @@ function getPlayer(uuid, cb) {
 function cachePlayerProfile(profile, cb) {
   const key = `profile:${profile.uuid}`;
   logger.debug(`Caching ${key}`);
-  redis.setex(key, 600, JSON.stringify(profile), (err) => {
+  redis.set(key, JSON.stringify(profile), (err) => {
     if (err) {
       logger.error(err);
     }
@@ -48,13 +48,7 @@ function getPlayerProfile(uuid, cb) {
       logger.debug(`Cache hit for profile ${uuid}`);
       return cb(err, JSON.parse(reply), true);
     }
-    Player.findOne({ uuid }, profileFields, function (err, player) {
-      if (err) {
-        logger.error(err);
-      }
-      const object = player.toObject();
-      return cb(err, object);
-    });
+    return cb(null, null, false);
   });
 }
 
