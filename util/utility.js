@@ -7,8 +7,20 @@ const request = require('request');
 const urllib = require('url');
 const uuidV4 = require('uuid/v4');
 const moment = require('moment');
+const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
+const { profileFields } = require('../store/profileFields');
+
+const logger = createLogger({
+  transports: [new transports.Console()],
+  format: format.combine(
+    format.colorize(),
+    format.timestamp(),
+    format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+  ),
+});
+if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') logger.level = 'debug';
 
 function betterFormatting(i) {
   if (typeof i !== 'string') {
@@ -87,15 +99,15 @@ function pickKeys(obj, options) {
  */
 function IDToStandardName(name = '') {
   const result = constants.game_types.find(game => game.id === Number(name));
-  return result === undefined ? null : result.standard_name;
+  return result === undefined ? name : result.standard_name;
 }
 
 /**
  * Converts minigames database name to standard name e.g. GingerBread => TKR
  */
 function DBToStandardName(name = '') {
-  const result = constants.game_types.find(game => game.database_name === name);
-  return result === undefined ? null : result.standard_name;
+  const result = constants.game_types.find(game => game.database_name.toLowerCase() === name.toLowerCase());
+  return result === undefined ? name : result.standard_name;
 }
 
 /**
@@ -103,105 +115,25 @@ function DBToStandardName(name = '') {
  */
 function typeToStandardName(name) {
   const result = constants.game_types.find(game => game.type_name === name);
-  return result === undefined ? null : result.standard_name;
+  return result === undefined ? name : result.standard_name;
 }
 
 /**
- * Determines if a player has contributed to the development of OpenDota
+ * Determines if a player has contributed to the development of Slothpixel
  */
 function isContributor(uuid) {
   return uuid in contributors;
 }
 
 /**
- * Creates a job object for enqueueing that contains details such as the Hypixel endpoint to hit
- * See https://github.com/HypixelDev/PublicAPI/tree/master/Documentation/methods
- * */
-function generateJob(type, payload) {
-  const apiUrl = 'https://api.hypixel.net';
-  const apiKey = config.HYPIXEL_API_KEY;
-  const opts = {
-    boosters() {
-      return {
-        url: `${apiUrl}/boosters?key=${apiKey}`,
-      };
-    },
-    findguild() {
-      return {
-        url: `${apiUrl}/findguild?key=${apiKey}&byUuid=${payload.id}`,
-      };
-    },
-    friends() {
-      return {
-        url: `${apiUrl}/friends?key=${apiKey}&uuid=${payload.id}`,
-      };
-    },
-    guild() {
-      return {
-        url: `${apiUrl}/guild?key=${apiKey}&id=${payload.id}`,
-      };
-    },
-    key() {
-      return {
-        url: `${apiUrl}/key?key=${apiKey}`,
-      };
-    },
-    session() {
-      return {
-        url: `${apiUrl}/session?key=${apiKey}&uuid=${payload.id}`,
-      };
-    },
-    player() {
-      return {
-        url: `${apiUrl}/player?key=${apiKey}&uuid=${payload.id}`,
-      };
-    },
-    watchdogstats() {
-      return {
-        url: `${apiUrl}/watchdogstats?key=${apiKey}`,
-      };
-    },
-
-  };
-  return opts[type]();
-}
-
-/**
- * A wrapper around HTTPS requests that handles:
- *
- *
- * */
-function getData(url, cb) {
-  let u;
-  if (typeof url === 'object' && url && url.url) {
-    u = url.url;
-  } else {
-    u = url;
-  }
-  const parse = urllib.parse(u, true);
-  const hypixelApi = parse.host === 'api.hypixel.net';
-  const mojangApi = parse.host === 'api.mojang.com';
-  const target = urllib.format(parse);
-  return request({
-    url: target,
-    json: hypixelApi,
-  }, (err, res, body) => {
-    if (err
-      || !res
-      || res.statusCode !== 200
-      || !body
-    ) {
-      console.error('[INVALID] status: %s', res ? res.statusCode : '');
-      return cb('Request failed', null);
-    } if (hypixelApi && !body.success) {
-      console.error(`[Hypixel API Error]: ${body.cause}`);
-      return cb(`${body.cause}`, null);
-    } if (mojangApi && body.error) {
-      console.error(`[Mojang API Error]: ${body.error} : ${body.errorMessage}`);
-      return cb(`${body.error} : ${body.errorMessage}`, null);
-    }
-    return cb(null, body);
+* Returns profile fields from a player object
+ */
+function getProfileFields(obj) {
+  const profile = {};
+  profileFields.split(' ').forEach((field) => {
+    profile[field] = obj[field];
   });
+  return profile;
 }
 
 /**
@@ -243,6 +175,147 @@ function getRedisCountHour(redis, prefix, cb) {
   redis.pfcount(...keyArr, cb);
 }
 
+/**
+ * Creates a job object for enqueueing that contains details such as the Hypixel endpoint to hit
+ * See https://github.com/HypixelDev/PublicAPI/tree/master/Documentation/methods
+ * */
+function generateJob(type, payload) {
+  logger.debug(`generateJob ${type}`);
+  const apiUrl = 'https://api.hypixel.net';
+  const apiKey = config.HYPIXEL_API_KEY;
+  if (apiKey === '') {
+    logger.warn('No HYPIXEL_API_KEY env variable set!');
+  }
+  const opts = {
+    boosters() {
+      return {
+        url: `${apiUrl}/boosters?key=${apiKey}`,
+      };
+    },
+    findguild() {
+      return {
+        url: `${apiUrl}/findguild?key=${apiKey}&byUuid=${payload.id}`,
+      };
+    },
+    friends() {
+      return {
+        url: `${apiUrl}/friends?key=${apiKey}&uuid=${payload.id}`,
+      };
+    },
+    guild() {
+      return {
+        url: `${apiUrl}/guild?key=${apiKey}&id=${payload.id}`,
+      };
+    },
+    gamecounts() {
+      return {
+        url: `${apiUrl}/gamecounts?key=${apiKey}`,
+      };
+    },
+    key() {
+      return {
+        url: `${apiUrl}/key?key=${apiKey}`,
+      };
+    },
+    session() {
+      return {
+        url: `${apiUrl}/session?key=${apiKey}&uuid=${payload.id}`,
+      };
+    },
+    player() {
+      return {
+        url: `${apiUrl}/player?key=${apiKey}&uuid=${payload.id}`,
+      };
+    },
+    watchdogstats() {
+      return {
+        url: `${apiUrl}/watchdogstats?key=${apiKey}`,
+      };
+    },
+
+  };
+  return opts[type]();
+}
+
+/**
+ * A wrapper around HTTPS requests that handles:
+ * retries/retry delay
+ * Injecting API key for Hypixel API
+ * Errors from Hypixel API
+ * */
+function getData(redis, url, cb) {
+  let u;
+  let delay = Number(config.DEFAULT_DELAY);
+  let timeout = 5000;
+  if (typeof url === 'object' && url && url.url) {
+    u = url.url;
+    delay = url.delay || delay;
+    timeout = url.timeout || timeout;
+  } else {
+    u = url;
+  }
+  const parse = urllib.parse(u, true);
+  const hypixelApi = parse.host === 'api.hypixel.net';
+  const mojangApi = parse.host === 'api.mojang.com';
+  const target = urllib.format(parse);
+  logger.info(`getData: ${target}`);
+  return setTimeout(() => {
+    request({
+      url: target,
+      json: hypixelApi,
+      timeout,
+    }, (err, res, body) => {
+      if (err
+        || !res
+        || res.statusCode !== 200
+        || !body
+      ) {
+        // invalid response
+        if (url.noRetry) {
+          return cb(err || 'invalid response');
+        }
+        if (mojangApi) {
+          return cb('Failed to get player uuid', null);
+        }
+        logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
+        return getData(redis, url, cb);
+      }
+      if (body === undefined) body = {};
+      if (hypixelApi && !body.success) {
+        // valid response, but invalid data, retry
+        if (url.noRetry) {
+          return cb(err || 'invalid data');
+        }
+        // insert errors to redis for monitoring
+        let failed = 0;
+        const multi = redis.multi()
+          .incr('hypixel_api_error')
+          .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
+        multi.exec((err, resp) => {
+          if (err) {
+            logger.error(err);
+          }
+          [failed] = resp;
+          logger.warn(`Failed API requests in the past minute: ${failed}`);
+          logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
+          let backoff = (body.throttle)
+            ? 3000
+            : 0;
+          logger.debug(failed);
+          backoff += (failed > 50)
+            ? 10 * failed
+            : 0;
+          logger.debug(`getData timout for ${backoff}ms`);
+          return setTimeout(() => {
+            getData(redis, url, cb);
+          }, backoff);
+        });
+      }
+      return cb(null, body);
+    });
+  }, delay);
+}
+
 function colorNameToCode(color) {
   if (color === null) {
     return (null);
@@ -254,6 +327,8 @@ function colorNameToCode(color) {
       return ('&c');
     case 'green':
       return ('&a');
+    case 'aqua':
+      return ('&b');
     case 'gold':
       return ('&6');
     case 'light_purple':
@@ -281,7 +356,7 @@ function colorNameToCode(color) {
   }
 }
 
-function generateFormattedRank(rank, plusColor, prefix) {
+function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   if (prefix) {
     return prefix;
   }
@@ -295,7 +370,7 @@ function generateFormattedRank(rank, plusColor, prefix) {
     case 'MVP_PLUS':
       return `&b[MVP${plusColor}+&b]`;
     case 'MVP_PLUS_PLUS':
-      return `&6[MVP${plusColor}++&6]`;
+      return `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`;
     case 'HELPER':
       return '&9[HELPER]';
     case 'MODERATOR':
@@ -310,11 +385,13 @@ function generateFormattedRank(rank, plusColor, prefix) {
 }
 
 module.exports = {
+  logger,
   betterFormatting,
   IDToStandardName,
   DBToStandardName,
   typeToStandardName,
   isContributor,
+  getProfileFields,
   generateJob,
   getData,
   getStartOfBlockMinutes,

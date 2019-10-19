@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
-const utility = require('../util/utility');
+const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
 const queries = require('../store/queries');
 
@@ -10,15 +10,14 @@ const queries = require('../store/queries');
 * Currently doesn't support search by name
  */
 function getPlayerData(uuid, cb) {
-  const { url } = utility.generateJob('player', {
+  const { url } = generateJob('player', {
     id: uuid,
   });
-  utility.getData(url, (err, body) => {
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }
-    const player = processPlayerData(body.player || {});
-    return cb(null, player);
+    processPlayerData(body.player || {}, player => cb(null, player));
   });
 }
 
@@ -26,14 +25,14 @@ function cachePlayer(player, uuid, key, cb) {
   if (config.ENABLE_PLAYER_CACHE) {
     redis.setex(key, config.PLAYER_CACHE_SECONDS, JSON.stringify(player), (err) => {
       if (err) {
-        console.error(err);
+        logger.error(err);
       }
     });
   }
   if (config.ENABLE_DB_CACHE) {
     queries.insertPlayer(uuid, player, (err) => {
       if (err) {
-        console.error(err);
+        logger.error(err);
       }
     });
   }
@@ -46,7 +45,7 @@ function buildPlayer(uuid, cb) {
     if (err) {
       return cb(err);
     } if (reply) {
-      // console.log(`Cache hit for player ${name}`);
+      logger.debug(`Cache hit for player ${uuid}`);
       const player = JSON.parse(reply);
       return cb(null, player);
     }

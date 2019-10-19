@@ -11,12 +11,13 @@ const redis = require('../store/redis');
 const utility = require('../util/utility');
 const config = require('../config');
 
-const { redisCount } = utility;
+const { logger, redisCount } = utility;
 
 const app = express();
 
 const whitelistedPaths = [
   '/api', // Docs
+  '/api/metadata', // Metadata
 ];
 
 const pathCosts = {
@@ -39,28 +40,37 @@ app.use((req, res, cb) => {
 
   res.locals.usageIdentifier = ip;
   const rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
-  console.log('[USER] %s visit %s, ip %s', req.user ? req.user.account_id : 'anonymous', req.originalUrl, ip);
+  logger.info(`[USER] ${req.user ? req.user.account_id : 'anonymous'} visit ${req.originalUrl}, ip ${ip}`);
 
   const pathCost = pathCosts[req.path] || Object.hasOwnProperty.call(req.query, 'cached') ? 0 : 1;
   const multi = redis.multi()
     .hincrby('rate_limit', res.locals.usageIdentifier, pathCost)
     .expireat('rate_limit', utility.getStartOfBlockMinutes(1, 1));
 
+  if (!res.locals.isAPIRequest) {
+    multi.zscore('user_usage_count', res.locals.usageIdentifier); // not API request so check previous usage.
+  }
+
   multi.exec((err, resp) => {
     if (err) {
-      console.log(err);
+      logger.error(err);
       return cb(err);
     }
-
     res.set({
       'X-Rate-Limit-Remaining-Minute': rateLimit - resp[0],
     });
-    if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') {
-      console.log('rate limit increment', resp);
+    if (!res.locals.isAPIRequest) {
+      res.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(resp[2]));
     }
+    logger.debug(`rate limit increment ${resp}`);
     if (resp[0] > rateLimit && config.NODE_ENV !== 'test') {
       return res.status(429).json({
         error: 'rate limit exceeded',
+      });
+    }
+    if (config.ENABLE_API_LIMIT && !whitelistedPaths.includes(req.path) && !res.locals.isAPIRequest && Number(resp[2]) >= config.API_FREE_LIMIT) {
+      return res.status(429).json({
+        error: 'monthly api limit exceeded',
       });
     }
     return cb();
@@ -73,8 +83,8 @@ app.use((req, res, cb) => {
   res.once('finish', () => {
     const timeEnd = new Date();
     const elapsed = timeEnd - timeStart;
-    if (elapsed > 1000 || config.NODE_ENV === 'development') {
-      console.log('[SLOWLOG] %s, %s', req.originalUrl, elapsed);
+    if (elapsed > 3000) {
+      logger.debug(`[SLOWLOG] ${req.originalUrl}, ${elapsed}`);
     }
 
     // When called from a middleware, the mount point is not included in req.path. See Express docs.
@@ -83,13 +93,16 @@ app.use((req, res, cb) => {
       && !whitelistedPaths.includes(req.baseUrl + (req.path === '/' ? '' : req.path))
       && elapsed < 10000) {
       const multi = redis.multi();
-      multi.hincrby('usage_count', res.locals.usageIdentifier, 1)
-        .expireat('usage_count', utility.getEndOfMonth());
+      if (res.locals.isAPIRequest) {
+        multi.hincrby('usage_count', res.locals.usageIdentifier, 1)
+          .expireat('usage_count', utility.getEndOfMonth());
+      } else {
+        multi.zincrby('user_usage_count', 1, res.locals.usageIdentifier)
+          .expireat('user_usage_count', utility.getEndOfMonth());
+      }
 
       multi.exec((err, res) => {
-        if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') {
-          console.log('usage count increment', err, res);
-        }
+        logger.debug(`usage count increment ${err} ${res}`);
       });
     }
 
@@ -106,7 +119,13 @@ app.use((req, res, cb) => {
   });
   cb();
 });
-
+app.use((req, res, next) => {
+  // Reject request if not GET and Origin header is present and not an approved domain (prevent CSRF)
+  if (req.method !== 'GET' && req.header('Origin') && req.header('Origin') !== config.UI_HOST) {
+    return res.status(403).json({ error: 'Invalid Origin header' });
+  }
+  return next();
+});
 // CORS headers
 app.use(cors({
   origin: true,
@@ -126,6 +145,7 @@ app.use((err, req, res, cb) => {
     // default express handler
     return cb(err);
   }
+  logger.error(err && err.stacktrace);
   return res.status(500).json({
     error: 'Internal Server Error',
   });
@@ -133,21 +153,21 @@ app.use((err, req, res, cb) => {
 // temp fix
 const port = config.PORT || config.FRONTEND_PORT;
 const server = app.listen(port, () => {
-  console.log('[WEB] listening on %s', port);
+  logger.info(`[WEB] listening on ${port}`);
 });
 
 /**
  * Wait for connections to end, then shut down
  * */
 function gracefulShutdown() {
-  console.log('Received kill signal, shutting down gracefully.');
+  logger.info('Received kill signal, shutting down gracefully.');
   server.close(() => {
-    console.log('Closed out remaining connections.');
+    logger.info('Closed out remaining connections.');
     process.exit();
   });
   // if after
   setTimeout(() => {
-    console.error('Could not close connections in time, forcefully shutting down');
+    logger.info('Could not close connections in time, forcefully shutting down');
     process.exit();
   }, 10 * 1000);
 }

@@ -1,14 +1,14 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
-const utility = require('../util/utility');
+const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
 
 /*
 * Functions to build/cache ban statistics
  */
 function getBans(cb) {
-  const { url } = utility.generateJob('watchdogstats');
-  utility.getData(url, (err, body) => {
+  const { url } = generateJob('watchdogstats');
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }
@@ -39,7 +39,7 @@ function buildBans(cb) {
       if (config.ENABLE_BANS_CACHE) {
         redis.setex('bans', config.BANS_CACHE_SECONDS, JSON.stringify(bans), (err) => {
           if (err) {
-            console.error(err);
+            logger.error(err);
           }
           return cb(null, bans);
         });

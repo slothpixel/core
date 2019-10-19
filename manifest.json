@@ -7,6 +7,14 @@
       "group": "web",
       "exec_mode": "cluster",
       "instances": 1
+    },
+    {
+    "script": "svc/monitor.js",
+    "watch": true,
+    "ignore_watch": [".git", "node_modules"],
+    "group": "backend",
+    "exec_mode": "cluster",
+    "instances": 1
     }
   ]
 }

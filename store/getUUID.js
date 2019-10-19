@@ -4,12 +4,12 @@
 * Returns non-dashed uuid or an error.
  */
 const config = require('../config');
-const util = require('../util/utility');
+const { logger, removeDashes, getData } = require('../util/utility');
 const redis = require('../store/redis');
 
 function fetchUUID(username, cb) {
   const url = `https://api.mojang.com/users/profiles/minecraft/${username}`;
-  return util.getData(url, (err, body) => {
+  return getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }
@@ -24,16 +24,16 @@ function getUUID(name, cb) {
     if (err) {
       return cb(err);
     } if (reply) {
-      // console.log(`Cache hit for match ${name}`);
       const uuid = JSON.parse(reply);
+      logger.debug(`Cache hit for uuid: ${name} - ${uuid}`);
       return cb(err, uuid);
     }
-    // console.log(`Cache miss for player ${name}`);
+    logger.debug(`Cache miss for uuid ${name}`);
     if ((/^[0-9a-f]{32}$/i).test(name)) {
       return cb(null, name);
     }
     if ((/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i).test(name)) {
-      return cb(null, util.removeDashes(name));
+      return cb(null, removeDashes(name));
     }
     fetchUUID(name, (fetchErr, uuid) => {
       if (fetchErr) {
@@ -42,7 +42,7 @@ function getUUID(name, cb) {
       if (config.ENABLE_UUID_CACHE) {
         return redis.setex(key, config.UUID_CACHE_SECONDS, JSON.stringify(uuid), (redisErr) => {
           if (err) {
-            console.error(redisErr);
+            logger.error(redisErr);
           }
           return cb(null, uuid);
         });

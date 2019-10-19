@@ -1,16 +1,18 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
-const utility = require('../util/utility');
+const {
+  logger, generateJob, getData, typeToStandardName,
+} = require('../util/utility');
 const redis = require('../store/redis');
 
 /*
 * Functions to build/cache session objects
  */
 function getSessionData(uuid, cb) {
-  const { url } = utility.generateJob('session', {
+  const { url } = generateJob('session', {
     id: uuid,
   });
-  utility.getData(url, (err, body) => {
+  getData(redis, url, (err, body) => {
     if (err) {
       return cb(err, null);
     }
@@ -18,7 +20,7 @@ function getSessionData(uuid, cb) {
     const obj = session === null
       ? null
       : {
-        game: utility.typeToStandardName(session.gameType),
+        game: typeToStandardName(session.gameType),
         server: session.server,
         players: session.players || [],
       };
@@ -42,7 +44,7 @@ function buildSession(uuid, cb) {
       if (config.ENABLE_SESSION_CACHE) {
         redis.setex(key, config.SESSION_CACHE_SECONDS, JSON.stringify(session), (err) => {
           if (err) {
-            console.error(err);
+            logger.error(err);
           }
         });
       }

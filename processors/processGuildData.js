@@ -47,6 +47,50 @@ function getLevel(exp) {
   return 100;
 }
 
+function changeObjKeys(obj) {
+  Object.keys(obj).forEach((game) => {
+    const standardName = utility.typeToStandardName(game);
+    if (standardName !== game) {
+      delete Object.assign(obj, { [standardName]: obj[game] })[game];
+    }
+  });
+  return obj;
+}
+
+function getPreferredGames(games) {
+  const arr = [];
+  games.forEach((game) => {
+    arr.push(utility.typeToStandardName(game));
+  });
+  return arr;
+}
+
+function processMembers(members) {
+  const arr = [];
+  function processMember({
+    uuid,
+    rank,
+    joined,
+    questParticipation = 0,
+    mutedTill = null,
+  }) {
+    return {
+      uuid,
+      rank: rank
+        .replace('MEMBER', 'Member')
+        .replace('OFFICER', 'Officer')
+        .replace('GUILDMASTER', 'Guild Master'),
+      joined,
+      quest_participation: questParticipation,
+      muted_till: mutedTill,
+    };
+  }
+  members.forEach((member) => {
+    arr.push(processMember(member));
+  });
+  return arr;
+}
+
 function processGuildData({
   name,
   _id,
@@ -57,12 +101,14 @@ function processGuildData({
   tagColor = 'GRAY',
   legacyRanking,
   exp = 0,
-  discord = null,
   description = null,
   preferredGames = [],
   ranks = [],
   members = [],
+  guildExpByGameType = {},
 }) {
+  const expByGame = changeObjKeys(guildExpByGameType);
+
   return {
     name,
     id: _id,
@@ -74,11 +120,11 @@ function processGuildData({
     legacy_ranking: legacyRanking + 1,
     exp,
     level: getLevel(exp),
-    discord,
+    exp_by_game: expByGame,
     description,
-    preferred_games: preferredGames,
+    preferred_games: getPreferredGames(preferredGames),
     ranks,
-    members,
+    members: processMembers(members),
   };
 }
 

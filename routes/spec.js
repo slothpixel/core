@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+const async = require('async');
+const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
@@ -5,10 +8,61 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildSession = require('../store/buildSession');
 const leaderboards = require('../store/leaderboards');
+const { playerObject } = require('./objects');
+const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
+const { logger, getProfileFields } = require('../util/utility');
 const {
-  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam,
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam, templateParam,
 } = require('./params');
 const packageJson = require('../package.json');
+
+function getPlayer(req, res, cb) {
+  getUUID(req.params.player, (err, uuid) => {
+    if (err) {
+      return cb({ status: 404, message: err });
+    }
+    buildPlayer(uuid, (err, player) => {
+      if (err) {
+        return cb({ status: 500, message: err });
+      }
+      return cb(null, player);
+    });
+  });
+}
+
+function populatePlayers(players, cb) {
+  async.map(players, (player, done) => {
+    const { uuid } = player;
+    getPlayerProfile(uuid, (err, profile, isCached) => {
+      if (err) {
+        logger.error(err);
+      }
+      if (profile === null) {
+        logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
+        buildPlayer(uuid, (err, newPlayer) => {
+          delete player.uuid;
+          const profile = getProfileFields(newPlayer);
+          player.profile = profile;
+          cachePlayerProfile(profile, () => {
+            done(err, player);
+          });
+        });
+      } else {
+        delete player.uuid;
+        player.profile = profile;
+        if (isCached) {
+          done(err, player);
+        } else {
+          cachePlayerProfile(profile, () => {
+            done(err, player);
+          });
+        }
+      }
+    });
+  }, (err, result) => {
+    cb(result);
+  });
+}
 
 const spec = {
   openapi: '3.0.0',
@@ -19,7 +73,7 @@ const spec = {
   ],
   info: {
     description: 'The Slothpixel API provides Hypixel related data.\n',
-    version: packageJson,
+    version: packageJson.version,
     title: 'Slothpixel API',
     license: {
       name: 'MIT',
@@ -36,14 +90,6 @@ const spec = {
       description: 'Guild stats',
     },
     {
-      name: 'friends',
-      description: 'Player friends',
-    },
-    {
-      name: 'session',
-      description: 'Player session',
-    },
-    {
       name: 'leaderboards',
       description: 'Player leaderboards',
     },
@@ -55,9 +101,13 @@ const spec = {
       name: 'bans',
       description: 'Ban statistics',
     },
+    {
+      name: 'metadata',
+      description: '',
+    },
   ],
   paths: {
-    '/player/{playerName}': {
+    '/players/{playerName}': {
       get: {
         tags: [
           'player',
@@ -73,160 +123,26 @@ const spec = {
             content: {
               'application/json': {
                 schema: {
-                  type: 'object',
-                  properties: {
-                    uuid: {
-                      description: 'Player uuid',
-                      type: 'string',
-                    },
-                    username: {
-                      description: 'Player username',
-                      type: 'string',
-                    },
-                    online: {
-                      description: 'Is player online',
-                      type: 'boolean',
-                    },
-                    rank: {
-                      description: 'Player rank',
-                      type: 'string',
-                    },
-                    rank_plus_color: {
-                      description: 'Color code for MVP+(+)',
-                      type: 'string',
-                      'x-default_value': '&c',
-                    },
-                    rank_formatted: {
-                      description: 'Formatted rank string',
-                      type: 'string',
-                    },
-                    prefix: {
-                      description: 'Custom rank prefix',
-                      type: 'string',
-                    },
-                    level: {
-                      description: 'Player level with precision of two decimals',
-                      type: 'number',
-                    },
-                    karma: {
-                      description: 'Player karma',
-                      type: 'integer',
-                    },
-                    total_coins: {
-                      description: 'Total coins across all minigames',
-                      type: 'integer',
-                    },
-                    total_kills: {
-                      description: 'Total kills across all minigames',
-                      type: 'integer',
-                    },
-                    total_wins: {
-                      description: 'Total wins across all minigames',
-                      type: 'integer',
-                    },
-                    mc_version: {
-                      description: 'Minecraft version the user last logged on Hypixel with',
-                      type: 'string',
-                    },
-                    first_login: {
-                      description: 'Date of first Hypixel login',
-                      type: 'string',
-                    },
-                    last_login: {
-                      description: 'Date of latest Hypixel login',
-                      type: 'string',
-                    },
-                    last_game: {
-                      description: 'Latest minigame played',
-                      type: 'string',
-                    },
-                    rewards: {
-                      description: 'Daily reward data',
-                      type: 'object',
-                      properties: {
-                        streak_current: {
-                          description: 'Current streak',
-                          type: 'integer',
-                        },
-                        streak_best: {
-                          description: 'Best streak',
-                          type: 'integer',
-                        },
-                        claimed: {
-                          description: 'Total reards claimed',
-                          type: 'integer',
-                        },
-                        claimed_daily: {
-                          description: 'Daily rewards claimed',
-                          type: 'integer',
-                        },
-                        tokens: {
-                          description: 'Current reward tokens',
-                          type: 'integer',
-                        },
-                      },
-                    },
-                    links: {
-                      description: 'Social media links',
-                      type: 'object',
-                      properties: {
-                        twitter: {
-                          description: 'Twitter link',
-                          type: 'string',
-                        },
-                        youtube: {
-                          description: 'YouTube link',
-                          type: 'string',
-                        },
-                        instagram: {
-                          description: 'Instagram link',
-                          type: 'string',
-                        },
-                        twitch: {
-                          description: 'Twitch link',
-                          type: 'string',
-                        },
-                        mixer: {
-                          description: 'Mixer link',
-                          type: 'string',
-                        },
-                        discord: {
-                          description: 'Discord handle',
-                          type: 'string',
-                        },
-                        hypixel: {
-                          description: 'Hypixel forums profile link',
-                          type: 'string',
-                        },
-                      },
-                    },
-                    stats: {
-                      type: 'object',
-                    },
-                  },
+                  ...playerObject,
                 },
               },
             },
           },
         },
-        route: () => '/player/:player',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
+        route: () => '/players/:player',
+        func: (req, res) => {
+          getPlayer(req, res, (err, player) => {
             if (err) {
-              cb();
+              return res.status(err.status).json({ error: err.message });
             }
-            buildPlayer(uuid, (err, player) => {
-              if (err) {
-                cb();
-              }
-              return res.json(player);
-            });
+            delete player.achievements;
+            delete player.quests;
+            return res.json(player);
           });
         },
       },
     },
-    /*
-    '/player/{playerName}/achievements': {
+    '/players/{playerName}/achievements': {
       get: {
         tags: [
           'player',
@@ -235,7 +151,6 @@ const spec = {
         description: 'Returns player achievement stats',
         parameters: [
           playerNameParam,
-          },
         ],
         responses: {
           200: {
@@ -249,7 +164,28 @@ const spec = {
                       type: 'integer',
                       description: 'Total achievement points',
                     },
-                    game: {
+                    completed_tiered: {
+                      type: 'integer',
+                      description: 'Total tiered achievements completed',
+                    },
+                    completed_one_time: {
+                      type: 'integer',
+                      description: 'Total one time achievements completed',
+                    },
+                    completed_total: {
+                      type: 'integer',
+                      description: 'Total achievements completed',
+                    },
+                    rewards: {
+                      type: 'object',
+                      properties: {
+                        200: {
+                          type: 'integer',
+                          description: 'Timestamp of reward goal claimed',
+                        },
+                      },
+                    },
+                    games: {
                       type: 'object',
                       properties: {
                         one_time: {
@@ -298,9 +234,18 @@ const spec = {
             },
           },
         },
+        route: () => '/players/:player/achievements',
+        func: (req, res) => {
+          getPlayer(req, res, (err, player) => {
+            if (err) {
+              return res.status(err.status).json({ error: err.message });
+            }
+            return res.json(player.achievements);
+          });
+        },
       },
     },
-    '/player/{playerName}/quests': {
+    '/players/{playerName}/quests': {
       get: {
         tags: [
           'player',
@@ -309,7 +254,6 @@ const spec = {
         description: 'Returns player quest completions',
         parameters: [
           playerNameParam,
-          },
         ],
         responses: {
           200: {
@@ -322,6 +266,10 @@ const spec = {
                     quests_completed: {
                       type: 'integer',
                       description: 'Total quests completed',
+                    },
+                    challenges_completed: {
+                      type: 'integer',
+                      description: 'Total challenges completed',
                     },
                     completions: {
                       type: 'object',
@@ -341,8 +289,18 @@ const spec = {
             },
           },
         },
+        route: () => '/players/:player/quests',
+        func: (req, res) => {
+          getPlayer(req, res, (err, player) => {
+            if (err) {
+              return res.status(err.status).json({ error: err.message });
+            }
+            return res.json(player.quests);
+          });
+        },
       },
     },
+    /*
     '/profile/{playerName}': {
       get: {
         tags: [
@@ -398,14 +356,14 @@ const spec = {
       },
     },
     */
-    '/guild/{playerName}': {
+    '/guilds/{playerName}': {
       get: {
         tags: [
           'guild',
         ],
         summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
-          playerNameParam,
+          playerNameParam, populatePlayersParam,
         ],
         responses: {
           200: {
@@ -444,16 +402,19 @@ const spec = {
                       type: 'integer',
                     },
                     level: {
+                      description: 'Guild level',
                       type: 'number',
                     },
-                    discord: {
-                      description: 'Link to guild discord',
-                      type: 'string',
+                    exp_by_game: {
+                      description: 'Guild EXP earned in each minigame',
+                      type: 'integer',
                     },
                     description: {
+                      description: 'Guild description',
                       type: 'string',
                     },
                     preferred_games: {
+                      description: 'Array containing the guild\'s preferred games',
                       type: 'array',
                       items: {
                         type: 'string',
@@ -504,11 +465,15 @@ const spec = {
                           },
                           joined: {
                             description: 'Member join date',
-                            type: 'number',
+                            type: 'integer',
                           },
-                          coins: {
-                            description: 'Guild coins earned this week',
-                            type: 'number',
+                          quest_participation: {
+                            description: 'How many much the member has contributed to guild quests',
+                            type: 'integer',
+                          },
+                          muted_till: {
+                            description: 'Date the member is muted until',
+                            type: 'integer',
                           },
                         },
                       },
@@ -519,23 +484,30 @@ const spec = {
             },
           },
         },
-        route: () => '/guild/:player',
-        func: (req, res, cb) => {
+        route: () => '/guilds/:player',
+        func: (req, res) => {
           getUUID(req.params.player, (err, uuid) => {
             if (err) {
-              cb();
+              return res.status(404).json({ error: err });
             }
             buildGuild(uuid, (err, guild) => {
               if (err) {
-                cb();
+                return res.status(404).json({ error: err });
               }
-              return res.json(guild);
+              if (req.query.populatePlayers !== undefined) {
+                populatePlayers(guild.members, (players) => {
+                  guild.members = players;
+                  return res.json(guild);
+                });
+              } else {
+                return res.json(guild);
+              }
             });
           });
         },
       },
     },
-    '/session/{playerName}': {
+    '/sessions/{playerName}': {
       get: {
         tags: [
           'session',
@@ -574,7 +546,7 @@ const spec = {
             },
           },
         },
-        route: () => '/session/:player',
+        route: () => '/sessions/:player',
         func: (req, res, cb) => {
           getUUID(req.params.player, (err, uuid) => {
             if (err) {
@@ -663,9 +635,48 @@ const spec = {
         },
         route: () => '/leaderboards',
         func: (req, res, cb) => {
-          leaderboards(req.query, (error, lb) => {
+          leaderboards(req.query, null, (error, lb) => {
             if (error) {
-              return cb(res.json({ error }));
+              return cb(res.status(400).json({ error }));
+            }
+            return res.json(lb);
+          });
+        },
+      },
+    },
+    '/leaderboards/{template}': {
+      get: {
+        tags: [
+          'leaderboards',
+        ],
+        summary: 'Get predefined leaderboards',
+        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
+        parameters: [
+          templateParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/leaderboards/:template',
+        func: (req, res, cb) => {
+          leaderboards(req.query, req.params.template, (error, lb) => {
+            if (error) {
+              return cb(res.status(400).json({ error }));
             }
             return res.json(lb);
           });
@@ -703,12 +714,12 @@ const spec = {
                             description: 'UNIX timestamp of activation date',
                             type: 'integer',
                           },
-                          originalLenght: {
+                          originalLength: {
                             description: 'Original duration in seconds',
                             type: 'integer',
                           },
-                          lenght: {
-                            description: 'Current lenght in seconds',
+                          length: {
+                            description: 'Current length in seconds',
                             type: 'integer',
                           },
                           active: {
@@ -733,10 +744,10 @@ const spec = {
           },
         },
         route: () => '/boosters',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           buildBoosters((err, boosters) => {
             if (err) {
-              cb();
+              return res.status(500).json({ error: err });
             }
             return res.json(boosters);
           });
@@ -779,7 +790,7 @@ const spec = {
                         type: 'integer',
                       },
                       length: {
-                        description: 'Current lenght in seconds',
+                        description: 'Current length in seconds',
                         type: 'integer',
                       },
                       active: {
@@ -802,14 +813,14 @@ const spec = {
           },
         },
         route: () => '/boosters/:game',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           const { game } = req.params;
           buildBoosters((err, boosters) => {
             if (err) {
-              cb();
+              return res.status(500).json({ error: err });
             }
             if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
-              cb();
+              return res.status(400).json({ error: 'Invalid minigame name!' });
             }
             return res.json(boosters.boosters[game]);
           });
@@ -867,12 +878,77 @@ const spec = {
           },
         },
         route: () => '/bans',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           buildBans((err, bans) => {
             if (err) {
-              cb();
+              return res.status(500).json({ error: err });
             }
             return res.json(bans);
+          });
+        },
+      },
+    },
+    '/metadata': {
+      get: {
+        summary: 'GET /metadata',
+        description: 'Site metadata',
+        tags: [
+          'metadata',
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+              properties: {
+                leaderboards: {
+                  description: 'Template Leaderboards',
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+        route: () => '/metadata',
+        func: (req, res, cb) => {
+          getMetadata(req, (err, result) => {
+            if (err) {
+              return cb(err);
+            }
+            return res.json(result);
+          });
+        },
+      },
+    },
+    '/health': {
+      get: {
+        summary: 'GET /health',
+        description: 'Get service health data',
+        tags: ['health'],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+            },
+          },
+        },
+        route: () => '/health/:metric?',
+        func: (req, res, cb) => {
+          redis.hgetall('health', (err, result) => {
+            if (err) {
+              return cb(err);
+            }
+            const response = result || {};
+            Object.keys(response).forEach((key) => {
+              response[key] = JSON.parse(response[key]);
+            });
+            if (!req.params.metric) {
+              return res.json(response);
+            }
+            const single = response[req.params.metric];
+            const healthy = single.metric < single.threshold;
+            return res.status(healthy ? 200 : 500).json(single);
           });
         },
       },
