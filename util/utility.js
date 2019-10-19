@@ -7,6 +7,7 @@ const request = require('request');
 const urllib = require('url');
 const uuidV4 = require('uuid/v4');
 const moment = require('moment');
+const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
@@ -41,6 +42,19 @@ function getRatio(x = 0, y = 0) {
     return (Number.POSITIVE_INFINITY);
   }
   return Number((x / y).toFixed(2));
+}
+
+/*
+* Decode SkyBlock inventory data
+ */
+function decodeData(string, cb) {
+  const data = Buffer.from(string, 'base64');
+  nbt.parse(data, (err, json) => {
+    if (err) {
+      logger.error(err);
+    }
+    return cb(err, json);
+  });
 }
 
 /*
@@ -301,7 +315,6 @@ function getData(redis, url, cb) {
           let backoff = (body.throttle)
             ? 3000
             : 0;
-          logger.debug(failed);
           backoff += (failed > 50)
             ? 10 * failed
             : 0;
@@ -401,6 +414,7 @@ module.exports = {
   getRedisCountHour,
   removeDashes,
   getRatio,
+  decodeData,
   colorNameToCode,
   generateFormattedRank,
   getWeeklyStat,
