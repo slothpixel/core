@@ -1,5 +1,5 @@
 /*
-* This file is for contributors to Slothpixel to add their minecraft uuid.
+* This file is for contributors to Slothpixel to add their Minecraft UUID.
 * Currently this will cause the /player/:id endpoint to return is_contributor = true for your profile
 */
 
