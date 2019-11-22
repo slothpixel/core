@@ -196,7 +196,8 @@ function getRedisCountHour(redis, prefix, cb) {
 function generateJob(type, payload) {
   logger.debug(`generateJob ${type}`);
   const apiUrl = 'https://api.hypixel.net';
-  const apiKey = config.HYPIXEL_API_KEY;
+  const apiKeys = config.HYPIXEL_API_KEY.split(',');
+  const apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
   if (apiKey === '') {
     logger.warn('No HYPIXEL_API_KEY env variable set!');
   }
