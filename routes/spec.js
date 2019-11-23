@@ -6,7 +6,6 @@ const buildPlayer = require('../store/buildPlayer');
 const buildGuild = require('../store/buildGuild');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
-const buildSession = require('../store/buildSession');
 const leaderboards = require('../store/leaderboards');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
@@ -507,6 +506,7 @@ const spec = {
         },
       },
     },
+    /*
     '/sessions/{playerName}': {
       get: {
         tags: [
@@ -547,22 +547,9 @@ const spec = {
           },
         },
         route: () => '/sessions/:player',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              cb();
-            }
-            buildSession(uuid, (err, session) => {
-              if (err) {
-                cb();
-              }
-              return res.json(session);
-            });
-          });
-        },
+        func: (req, res, cb) => {},
       },
     },
-    /*
       '/friends/{playerName}': {
         get: {
           tags: [

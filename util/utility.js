@@ -7,6 +7,7 @@ const request = require('request');
 const urllib = require('url');
 const uuidV4 = require('uuid/v4');
 const moment = require('moment');
+const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
@@ -41,6 +42,19 @@ function getRatio(x = 0, y = 0) {
     return (Number.POSITIVE_INFINITY);
   }
   return Number((x / y).toFixed(2));
+}
+
+/*
+* Decode SkyBlock inventory data
+ */
+function decodeData(string, cb) {
+  const data = Buffer.from(string, 'base64');
+  nbt.parse(data, (err, json) => {
+    if (err) {
+      logger.error(err);
+    }
+    return cb(err, json);
+  });
 }
 
 /*
@@ -182,7 +196,8 @@ function getRedisCountHour(redis, prefix, cb) {
 function generateJob(type, payload) {
   logger.debug(`generateJob ${type}`);
   const apiUrl = 'https://api.hypixel.net';
-  const apiKey = config.HYPIXEL_API_KEY;
+  const apiKeys = config.HYPIXEL_API_KEY.split(',');
+  const apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
   if (apiKey === '') {
     logger.warn('No HYPIXEL_API_KEY env variable set!');
   }
@@ -215,11 +230,6 @@ function generateJob(type, payload) {
     key() {
       return {
         url: `${apiUrl}/key?key=${apiKey}`,
-      };
-    },
-    session() {
-      return {
-        url: `${apiUrl}/session?key=${apiKey}&uuid=${payload.id}`,
       };
     },
     player() {
@@ -278,7 +288,7 @@ function getData(redis, url, cb) {
           return cb('Failed to get player uuid', null);
         }
         logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
-        getData(redis, url, cb);
+        return getData(redis, url, cb);
       }
       if (body === undefined) body = {};
       if (hypixelApi && !body.success) {
@@ -287,6 +297,7 @@ function getData(redis, url, cb) {
           return cb(err || 'invalid data');
         }
         // insert errors to redis for monitoring
+        let failed = 0;
         const multi = redis.multi()
           .incr('hypixel_api_error')
           .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
@@ -294,15 +305,20 @@ function getData(redis, url, cb) {
           if (err) {
             logger.error(err);
           }
-          logger.warn(`Failed API requests in the past minute: ${resp[0]}`);
+          [failed] = resp;
+          logger.warn(`Failed API requests in the past minute: ${failed}`);
+          logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
+          let backoff = (body.throttle)
+            ? 3000
+            : 0;
+          backoff += (failed > 50)
+            ? 10 * failed
+            : 0;
+          logger.debug(`getData timout for ${backoff}ms`);
+          return setTimeout(() => {
+            getData(redis, url, cb);
+          }, backoff);
         });
-        logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
-        const backoff = (body.throttle)
-          ? 3000
-          : 0;
-        return setTimeout(() => {
-          getData(redis, url, cb);
-        }, backoff);
       }
       return cb(null, body);
     });
@@ -394,6 +410,7 @@ module.exports = {
   getRedisCountHour,
   removeDashes,
   getRatio,
+  decodeData,
   colorNameToCode,
   generateFormattedRank,
   getWeeklyStat,

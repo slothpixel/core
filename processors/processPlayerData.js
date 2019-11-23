@@ -42,7 +42,7 @@ function processPlayerData({
   quests = {},
   challenges = {},
   playername,
-  knownAliases,
+  knownAliases = [],
   firstLogin,
   lastLogin = null,
   lastLogout = null,

@@ -18,7 +18,7 @@ The Slothpixel Project is currently in early development. At the moment no code 
 Overview
 ---
 * This project provides the Slothpixel API for consumption.
-* This API powers the Slothpixel UI, which is also an open source project.
+* This API powers the [Slothpixel UI](https://github.com/slothpixel/ui), which is also an open source project.
 * Raw data comes from the Hypixel API.
 * A public deployment of this code is maintained by The Slothpixel Project.
 
@@ -36,8 +36,8 @@ Quickstart (Docker)
 * Start containers and initialize databases: `docker-compose up`
 * Make some changes and commit them.
 * Submit a pull request. Wait for it to be reviewed and merged.
-* **OPTIONAL** Add your minecraft UUID to the `CONTRIBUTORS.js` file.
-* Congratulations! You're a contributor
+* **OPTIONAL** Add your Minecraft UUID to the `CONTRIBUTORS.js` file.
+* Congratulations! You're a contributor.
 
 Notes
 ---
