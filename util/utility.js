@@ -232,11 +232,6 @@ function generateJob(type, payload) {
         url: `${apiUrl}/key?key=${apiKey}`,
       };
     },
-    session() {
-      return {
-        url: `${apiUrl}/session?key=${apiKey}&uuid=${payload.id}`,
-      };
-    },
     player() {
       return {
         url: `${apiUrl}/player?key=${apiKey}&uuid=${payload.id}`,
