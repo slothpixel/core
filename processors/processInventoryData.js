@@ -1,6 +1,7 @@
 /*
 * Process NBT inventory data
  */
+const { getNestedObjects } = require('../util/utility');
 
 const itemSchema = {
   item_id: 'id',
@@ -16,20 +17,6 @@ const itemSchema = {
     texture: 'tag.value.SkullOwner.value.Properties.value.textures.value',
   },
 };
-
-/*
-* Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
- */
-function getNestedObjects(obj = {}, path = '') {
-  path = path.split('.');
-  for (let i = 0; i < path.length; i += 1) {
-    if (obj[path[i]] === undefined) {
-      break;
-    }
-    obj = obj[path[i]] || {};
-  }
-  return obj;
-}
 
 /*
 * Returns the texture id part from minecraft.net link

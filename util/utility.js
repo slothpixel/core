@@ -140,6 +140,20 @@ function isContributor(uuid) {
 }
 
 /**
+* Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
+ */
+function getNestedObjects(obj = {}, path = '') {
+  path = path.split('.');
+  for (let i = 0; i < path.length; i += 1) {
+    obj = obj[path[i]] || {};
+    if (obj[path[i]] === undefined) {
+      break;
+    }
+  }
+  return obj;
+}
+
+/**
 * Returns profile fields from a player object
  */
 function getProfileFields(obj) {
@@ -400,6 +414,7 @@ module.exports = {
   DBToStandardName,
   typeToStandardName,
   isContributor,
+  getNestedObjects,
   getProfileFields,
   generateJob,
   getData,
