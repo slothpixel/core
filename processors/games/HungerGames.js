@@ -92,7 +92,7 @@ module.exports = ({
 }) => {
   const getKitStat = (regexp, options = {}) => pickKeys(rest, {
     regexp,
-    keyMap: key => key.replace(regexp, '').trim().replace(' ', '_').replace("'", '')
+    keyMap: key => key.replace(regexp, '').trim().replace(' ', '_').replace(/'/g, '')
       .toLowerCase(),
     ...options,
   });

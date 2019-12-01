@@ -2,7 +2,6 @@
 const db = require('./db');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
-const { profileFields } = require('../store/profileFields');
 const lbTemplates = require('../store/lb-templates');
 const {
   Player, Guild,

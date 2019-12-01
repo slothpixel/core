@@ -145,10 +145,10 @@ function isContributor(uuid) {
 function getNestedObjects(obj = {}, path = '') {
   path = path.split('.');
   for (let i = 0; i < path.length; i += 1) {
-    obj = obj[path[i]] || {};
     if (obj[path[i]] === undefined) {
       break;
     }
+    obj = obj[path[i]] || {};
   }
   return obj;
 }
@@ -296,7 +296,7 @@ function getData(redis, url, cb) {
       ) {
         // invalid response
         if (url.noRetry) {
-          return cb(err || 'invalid response');
+          return cb('invalid response');
         }
         if (mojangApi) {
           return cb('Failed to get player uuid', null);
@@ -304,7 +304,7 @@ function getData(redis, url, cb) {
         logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
         return getData(redis, url, cb);
       }
-      if (body === undefined) body = {};
+      if (typeof body === 'undefined') body = {};
       if (hypixelApi && !body.success) {
         // valid response, but invalid data, retry
         if (url.noRetry) {
