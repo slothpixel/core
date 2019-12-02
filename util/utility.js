@@ -246,6 +246,16 @@ function generateJob(type, payload) {
         url: `${apiUrl}/key?key=${apiKey}`,
       };
     },
+    skyblock_auctions() {
+      return {
+        url: `${apiUrl}/skyblock/auctions?key=${apiKey}&page=${payload.page}`,
+      };
+    },
+    skyblock_profile() {
+      return {
+        url: `${apiUrl}/skyblock/profile?key=${apiKey}&profile=${payload.id}`,
+      };
+    },
     player() {
       return {
         url: `${apiUrl}/player?key=${apiKey}&uuid=${payload.id}`,

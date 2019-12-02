@@ -4,7 +4,7 @@ const redis = require('./redis');
 const { logger } = require('../util/utility');
 const lbTemplates = require('../store/lb-templates');
 const {
-  Player, Guild,
+  Player, Guild, Auction,
 } = require('../store/models');
 
 function insertPlayer(uuid, player, cb) {
@@ -81,6 +81,15 @@ function getGuildByPlayer(uuid, cb) {
   });
 }
 
+function insertAuction(auction, cb) {
+  Auction.findOneAndUpdate({ uuid: auction.uuid }, auction, { new: true, upsert: true }, function (err) {
+    if (err) {
+      logger.error(err);
+    }
+    return cb(err);
+  });
+}
+
 function getMetadata(req, callback) {
   // TODO - Add API status
   callback(null, { leaderboards: lbTemplates });
@@ -94,5 +103,6 @@ module.exports = {
   insertGuild,
   getGuild,
   getGuildByPlayer,
+  insertAuction,
   getMetadata,
 };

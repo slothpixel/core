@@ -14,11 +14,47 @@ const options = {
 
 const PlayerSchema = mongoose.Schema({}, options);
 const GuildSchema = mongoose.Schema({}, options);
+const AuctionSchema = mongoose.Schema({
+  uuid: String,
+  start: Number,
+  end: Number,
+  tier: String,
+  category: String,
+  item: {
+    item_id: Number,
+    name: String,
+    lore: Array,
+    count: {
+      type: Number,
+      default: 1,
+    },
+    attributes: {
+      enchantments: Object,
+      origin: String,
+      id: String,
+      uuid: String,
+      texture: String,
+    },
+  },
+  starting_bid: Number,
+  highest_bid: Number,
+  bids: {
+    type: [{
+      bidder: String,
+      profile_id: String,
+      amount: Number,
+      timestamp: Number,
+    }],
+  },
+  highest_bid_amount: Number,
+});
 
 const Player = mongoose.model('Player', PlayerSchema);
 const Guild = mongoose.model('Guild', GuildSchema);
+const Auction = mongoose.model('Auction', AuctionSchema);
 
 module.exports = {
   Player,
   Guild,
+  Auction,
 };

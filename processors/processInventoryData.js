@@ -23,7 +23,7 @@ const itemSchema = {
 * e.g. http://textures.minecraft.net/texture/f715ca0f742544ae3ca104297578c2ed700ea3a54980413512f5e7a0bc06729a
  */
 function getTexture(value = []) {
-  if (value === null) return null;
+  if (value === null && !Array.isArray(value)) return null;
   const string = Buffer.from(value[0].Value.value, 'base64').toString();
   const link = JSON.parse(string).textures.SKIN.url;
   const array = link.split('/');
@@ -63,7 +63,10 @@ function simplifyItem(item) {
 
 function processInventoryData(data) {
   const inventoryArray = data.value.i.value.value;
-  return inventoryArray.map(item => simplifyItem(item));
+  return inventoryArray.map((item) => {
+    if (item === {}) return {};
+    return simplifyItem(item);
+  });
 }
 
 module.exports = processInventoryData;
