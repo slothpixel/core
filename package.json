@@ -19,7 +19,7 @@
     "express": "^4.16.4",
     "hypixelconstants": "^3.0.7",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.5",
+    "mongoose": "^5.7.14",
     "morgan": "^1.9.1",
     "nock": "^11.1.0",
     "pm2": "^4.1.2",
