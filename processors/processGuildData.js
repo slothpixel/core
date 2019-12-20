@@ -72,6 +72,7 @@ function processMembers(members) {
     rank,
     joined,
     questParticipation = 0,
+    expHistory = [],
     mutedTill = null,
   }) {
     return {
@@ -82,6 +83,7 @@ function processMembers(members) {
         .replace('GUILDMASTER', 'Guild Master'),
       joined,
       quest_participation: questParticipation,
+      exp_history: expHistory,
       muted_till: mutedTill,
     };
   }
@@ -107,8 +109,15 @@ function processGuildData({
   members = [],
   guildExpByGameType = {},
 }) {
+  const expHistory = {};
   const expByGame = changeObjKeys(guildExpByGameType);
-
+  const processedMembers = processMembers(members);
+  Object.assign(expHistory, processedMembers[0].exp_history);
+  processedMembers.forEach((member) => {
+    Object.keys(member.exp_history).forEach((day) => {
+      expHistory[day] += member.exp_history[day];
+    });
+  });
   return {
     name,
     id: _id,
@@ -121,10 +130,11 @@ function processGuildData({
     exp,
     level: getLevel(exp),
     exp_by_game: expByGame,
+    exp_history: expHistory,
     description,
     preferred_games: getPreferredGames(preferredGames),
     ranks,
-    members: processMembers(members),
+    members: processedMembers,
   };
 }
 

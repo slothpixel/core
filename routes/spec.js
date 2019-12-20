@@ -408,6 +408,10 @@ const spec = {
                       description: 'Guild EXP earned in each minigame',
                       type: 'integer',
                     },
+                    exp_history: {
+                      description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                      type: 'object',
+                    },
                     description: {
                       description: 'Guild description',
                       type: 'string',
@@ -469,6 +473,10 @@ const spec = {
                           quest_participation: {
                             description: 'How many much the member has contributed to guild quests',
                             type: 'integer',
+                          },
+                          exp_history: {
+                            description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                            type: 'object',
                           },
                           muted_till: {
                             description: 'Date the member is muted until',
