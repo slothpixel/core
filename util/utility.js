@@ -314,11 +314,10 @@ function getData(redis, url, cb) {
         logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
         return getData(redis, url, cb);
       }
-      if (typeof body === 'undefined') body = {};
       if (hypixelApi && !body.success) {
         // valid response, but invalid data, retry
         if (url.noRetry) {
-          return cb(err || 'invalid data');
+          return cb('invalid data');
         }
         // insert errors to redis for monitoring
         let failed = 0;
