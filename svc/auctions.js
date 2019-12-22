@@ -51,6 +51,7 @@ function processAndStoreAuctions(auctions = []) {
       // logger.debug(`Found new bids on auction ${uuid}!`);
       decodeData(auction.item_bytes, (err, json) => {
         [auction.item] = processInventoryData(json);
+        // eslint-disable-next-line array-callback-return
         auction.bids.map((bid) => {
           delete bid.auction_id;
         });
