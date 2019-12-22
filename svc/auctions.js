@@ -17,6 +17,7 @@ function updatePrices(auction) {
   } = auction;
   const data = {
     start,
+    end,
     starting_bid,
     bids,
     highest_bid_amount,
@@ -50,6 +51,9 @@ function processAndStoreAuctions(auctions = []) {
       // logger.debug(`Found new bids on auction ${uuid}!`);
       decodeData(auction.item_bytes, (err, json) => {
         [auction.item] = processInventoryData(json);
+        auction.bids.map((bid) => {
+          delete bid.auction_id;
+        });
         activeAuctions[uuid] = auction;
         return insertAuction(auction, () => {});
       });
