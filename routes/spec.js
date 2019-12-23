@@ -653,9 +653,13 @@ const spec = {
           },
         },
         route: () => '/skyblock/auctions/:id',
-        func: (req, res) => {
-          logger.info(JSON.stringify(req.query));
-          redis.zrangebyscore(req.params.id, req.query.from, Date.now(), (err, auctions) => {
+        func: (req, res, cb) => {
+          const now = Date.now();
+          const from = req.query.from || (now - 24 * 60 * 60 * 1000);
+          if (Number.isNaN(Number(from))) {
+            return cb(res.status(400).json({ error: "parameter 'from' must be an integer" }));
+          }
+          redis.zrangebyscore(req.params.id, from, now, (err, auctions) => {
             if (err) {
               logger.error(err);
             }
