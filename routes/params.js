@@ -98,4 +98,22 @@ module.exports = {
       type: 'boolean',
     },
   },
+  itemIdParam: {
+    name: 'ItemId',
+    in: 'path',
+    description: 'Item id, e.g. HOT_POTATO_BOOK',
+    required: true,
+    schema: {
+      type: 'string',
+    },
+  },
+  fromParam: {
+    name: 'from',
+    in: 'query',
+    description: 'Date from which to get auctions. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000.',
+    required: true,
+    schema: {
+      type: 'integer',
+    },
+  },
 };

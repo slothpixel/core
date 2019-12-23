@@ -9,9 +9,11 @@ const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
-const { logger, getProfileFields } = require('../util/utility');
 const {
-  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam, templateParam,
+  logger, getProfileFields, median, average, stdDev,
+} = require('../util/utility');
+const {
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, fromParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -99,6 +101,10 @@ const spec = {
     {
       name: 'bans',
       description: 'Ban statistics',
+    },
+    {
+      name: 'auctions',
+      description: 'SkyBlock auction data',
     },
     {
       name: 'metadata',
@@ -600,6 +606,79 @@ const spec = {
         },
       },
       */
+    '/skyblock/auctions/{itemId}': {
+      get: {
+        tags: [
+          'auctions',
+        ],
+        summary: 'Query active skyblock auctions',
+        description: 'yeet',
+        parameters: [
+          itemIdParam, fromParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    avg_price: {
+                      description: 'Average price in the selected time period',
+                      type: 'integer',
+                    },
+                    mdn_price: {
+                      description: 'Median price in the selected time period',
+                      type: 'integer',
+                    },
+                    std_price: {
+                      description: 'Standard deviation price in the selected time period',
+                      type: 'integer',
+                    },
+                    auctions: {
+                      description: '',
+                      type: 'object',
+                      properties: {
+                        1577033426093: {
+                          type: 'object',
+                          description: 'Auction object',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/auctions/:id',
+        func: (req, res) => {
+          logger.info(JSON.stringify(req.query));
+          redis.zrangebyscore(req.params.id, req.query.from, Date.now(), (err, auctions) => {
+            if (err) {
+              logger.error(err);
+            }
+            const obj = {
+              avg_price: 0,
+              mdn_price: 0,
+              std_price: 0,
+              auctions: {},
+            };
+            const priceArray = [];
+            auctions.forEach((auction) => {
+              auction = JSON.parse(auction);
+              if (auction.bids.length > 0) priceArray.push(auction.highest_bid_amount / auction.item.count);
+              obj.auctions[auction.end] = auction;
+            });
+            obj.avg_price = average(priceArray);
+            obj.mdn_price = median(priceArray);
+            obj.std_price = stdDev(priceArray);
+            return res.json(obj);
+          });
+        },
+      },
+    },
     '/leaderboards': {
       get: {
         tags: [

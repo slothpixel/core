@@ -416,6 +416,43 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   }
 }
 
+/**
+ * Finds the arithmetic mean of the input array
+ * */
+function average(data) {
+  return Math.floor((data.reduce(
+    (a, b) => a + b,
+    0,
+  ) / data.length));
+}
+
+/**
+ * Finds the standard deviation of the input array
+ * */
+function stdDev(data) {
+  const avg = average(data);
+  const squareDiffs = data.map((value) => {
+    const diff = value - avg;
+    const sqrDiff = diff * diff;
+    return sqrDiff;
+  });
+  const avgSquareDiff = average(squareDiffs);
+  const stdDev = Math.sqrt(avgSquareDiff);
+  return stdDev;
+}
+
+/**
+ * Finds the median of the input array
+ * */
+function median(data) {
+  data.sort((a, b) => a - b);
+  const half = Math.floor(data.length / 2);
+  if (data.length % 2) {
+    return data[half];
+  }
+  return (data[half - 1] + data[half]) / 2.0;
+}
+
 module.exports = {
   logger,
   betterFormatting,
@@ -440,4 +477,7 @@ module.exports = {
   getWeeklyStat,
   getMonthlyStat,
   pickKeys,
+  average,
+  stdDev,
+  median,
 };
