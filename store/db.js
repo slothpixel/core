@@ -5,7 +5,7 @@ const { logger } = require('../util/utility');
 const settings = {
   useNewUrlParser: true,
   useFindAndModify: false,
-  autoIndex: false,
+  useUnifiedTopology: true,
 };
 
 mongoose.connect(config.MONGODB_URL, settings, (err) => {
