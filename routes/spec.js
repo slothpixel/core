@@ -43,6 +43,7 @@ function populatePlayers(players, cb) {
         buildPlayer(uuid, (err, newPlayer) => {
           delete player.uuid;
           const profile = getProfileFields(newPlayer);
+          profile.uuid = uuid;
           player.profile = profile;
           cachePlayerProfile(profile, () => {
             done(err, player);

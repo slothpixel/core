@@ -41,7 +41,7 @@ function processPlayerData({
   achievementRewardsNew = {},
   quests = {},
   challenges = {},
-  playername,
+  playername = null,
   knownAliases = [],
   firstLogin,
   lastLogin = null,
@@ -68,9 +68,12 @@ function processPlayerData({
   socialMedia: { links = {} } = {},
   stats = {},
 }, cb) {
-  const username = (knownAliases[knownAliases.length - 1].toLowerCase() === playername)
-    ? knownAliases[knownAliases.length - 1]
-    : playername;
+  let username = null;
+  if (playername !== null) {
+    username = ((knownAliases[knownAliases.length - 1]).toLowerCase() === playername)
+      ? knownAliases[knownAliases.length - 1]
+      : playername;
+  }
   const achievementPromise = new Promise((resolve) => {
     resolve(parseAchievements(achievementsOneTime, achievements, achievementRewardsNew));
   });
