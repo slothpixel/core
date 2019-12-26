@@ -16,11 +16,11 @@ core
     </a>
 </p>
 
-The Slothpixel Project is currently in early development. At the moment no code is in production.
+**NOTE:** The Slothpixel API is currently in early development - some features are missing and/or incomplete.
 
 Overview
 ---
-* This project provides the Slothpixel API for consumption.
+* This project provides the [Slothpixel API](https://docs.slothpixel.me) for consumption.
 * This API powers the [Slothpixel UI](https://github.com/slothpixel/ui), which is also an open source project.
 * Raw data comes from the Hypixel API.
 * A public deployment of this code is maintained by The Slothpixel Project.
