@@ -29,6 +29,7 @@ const AuctionSchema = mongoose.Schema({
       default: 1,
     },
     attributes: {
+      modifier: String,
       enchantments: Object,
       origin: String,
       id: String,
@@ -40,6 +41,7 @@ const AuctionSchema = mongoose.Schema({
   highest_bid: Number,
   bids: {
     type: [{
+      _id: false,
       bidder: String,
       profile_id: String,
       amount: Number,

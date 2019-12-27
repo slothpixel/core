@@ -74,7 +74,7 @@ module.exports = {
   limitParam: {
     name: 'limit',
     in: 'query',
-    description: 'Limit number of records returned. Default is 10.',
+    description: 'Limit number of records returned. Default is 10 and maximum 1000.',
     required: false,
     schema: {
       type: 'string',
@@ -96,6 +96,51 @@ module.exports = {
     required: false,
     schema: {
       type: 'boolean',
+    },
+  },
+  auctionUUIDParam: {
+    name: 'auctionUUID',
+    in: 'query',
+    description: 'Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be"',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
+  itemUUIDParam: {
+    name: 'itemUUID',
+    in: 'query',
+    description: 'Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
+  activeParam: {
+    name: 'active',
+    in: 'query',
+    description: 'Set to false if you want to query historical auctions',
+    required: false,
+    schema: {
+      type: 'boolean',
+    },
+  },
+  pageParam: {
+    name: 'page',
+    in: 'query',
+    description: 'Pages allow you to split data with the "limit" param. For example if there are 23 auctions matching you query and you se limit to 10, pages 0 and 1 will return 10 results and the third page 3.',
+    required: false,
+    schema: {
+      type: 'integer',
+    },
+  },
+  itemIdParam2: {
+    name: 'id',
+    in: 'query',
+    description: 'Item id, e.g. HOT_POTATO_BOOK',
+    required: false,
+    schema: {
+      type: 'string',
     },
   },
   itemIdParam: {

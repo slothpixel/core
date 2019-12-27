@@ -7,13 +7,16 @@ const buildGuild = require('../store/buildGuild');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
+const queryAuctions = require('../store/queryAuctions');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const {
   logger, getProfileFields, median, average, stdDev,
 } = require('../util/utility');
 const {
-  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam, limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, fromParam,
+  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
+  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
+  fromParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -65,6 +68,117 @@ function populatePlayers(players, cb) {
     cb(result);
   });
 }
+
+const auctionObject = {
+  type: 'object',
+  description: 'Auction object',
+  properties: {
+    uuid: {
+      type: 'string',
+      description: 'Auction uuid',
+    },
+    start: {
+      type: 'integer',
+      description: 'UNIX timestamp of auction start date',
+    },
+    end: {
+      type: 'integer',
+      description: 'UNIX timestamp of auction end date',
+    },
+    tier: {
+      type: 'string',
+      description: 'Item rarity, e.g. "RARE"',
+    },
+    category: {
+      type: 'string',
+      description: 'Item category, e.g. "misc"',
+    },
+    item: {
+      type: 'object',
+      properties: {
+        item_id: {
+          type: 'integer',
+          description: 'Item\'s minecraft id',
+        },
+        name: {
+          type: 'string',
+          description: 'Item name with formatting',
+        },
+        lore: {
+          type: 'array',
+          description: 'Array of strings containing item\'s lore with formatting',
+          items: {
+            type: 'string',
+          },
+        },
+        count: {
+          type: 'integer',
+          description: 'How many items are for sale in the auction',
+        },
+        attributes: {
+          type: 'object',
+          properties: {
+            modifier: {
+              type: 'string',
+              description: 'Item modifier e.g. "spicy"',
+            },
+            enchantments: {
+              type: 'object',
+              description: 'Object containing item\'s enchantments in type:level format e.g. sharpness: 5.',
+            },
+            origin: {
+              type: 'string',
+              description: 'Item\'s origin, for example "CRAFTING_GRID"',
+            },
+            id: {
+              type: 'string',
+              description: 'Item id, e.g. "ASPECT_OF_THE_END"',
+            },
+            uuid: {
+              type: 'string',
+              description: 'Item\'s unique uuid if it has one. Can be used to track previous auctions of the same item',
+            },
+            texture: {
+              type: 'string',
+              description: 'If the item is a minecraft skull, i.e. a talisman, this property contains the texture id. Textures can be found at http://textures.minecraft.net/texture/{id}',
+            },
+          },
+        },
+      },
+    },
+    starting_bid: {
+      type: 'integer',
+    },
+    highest_bid_amount: {
+      type: 'integer',
+    },
+    bids: {
+      type: 'array',
+      description: 'All current bids',
+      items: {
+        type: 'object',
+        properties: {
+          bidder: {
+            type: 'string',
+            description: 'Bidder\'s uuid',
+          },
+          profile_id: {
+            type: 'string',
+            description: 'Bidder\'s skyblock profile id',
+          },
+          amount: {
+            type: 'integer',
+            description: 'Bidded coins',
+          },
+          timestamp: {
+            type: 'integer',
+            description: 'Bid UNIX timestamp',
+          },
+        },
+      },
+    },
+  },
+};
 
 const spec = {
   openapi: '3.0.0',
@@ -607,13 +721,48 @@ const spec = {
         },
       },
       */
+    '/skyblock/auctions': {
+      get: {
+        tags: [
+          'auctions',
+        ],
+        summary: 'Query all skyblock auctions',
+        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
+        parameters: [
+          filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam,
+          itemIdParam2,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: auctionObject,
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/auctions',
+        func: (req, res) => {
+          queryAuctions(req.query, (error, auctions) => {
+            if (error) {
+              return res.status(400).json({ error });
+            }
+            return res.json(auctions);
+          });
+        },
+      },
+    },
     '/skyblock/auctions/{itemId}': {
       get: {
         tags: [
           'auctions',
         ],
-        summary: 'Query active skyblock auctions',
-        description: 'yeet',
+        summary: 'Query past skyblock auctions by item',
+        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
         parameters: [
           itemIdParam, fromParam,
         ],
@@ -703,9 +852,7 @@ const spec = {
                   type: 'array',
                   items: {
                     type: 'object',
-                    properties: {
-
-                    },
+                    properties: {},
                   },
                 },
               },
@@ -742,9 +889,7 @@ const spec = {
                   type: 'array',
                   items: {
                     type: 'object',
-                    properties: {
-
-                    },
+                    properties: {},
                   },
                 },
               },
