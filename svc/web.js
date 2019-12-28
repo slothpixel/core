@@ -5,6 +5,7 @@
 const cors = require('cors');
 const compression = require('compression');
 const express = require('express');
+const requestIp = require('request-ip');
 const moment = require('moment');
 const api = require('../routes/api');
 const redis = require('../store/redis');
@@ -26,6 +27,8 @@ const pathCosts = {
 
 // Compression middleware
 app.use(compression());
+// Get client IP to use for rate limiting;
+app.use(requestIp.mw());
 // Health check
 app.route('/healthz').get((req, res) => {
   res.send('ok');
@@ -33,9 +36,7 @@ app.route('/healthz').get((req, res) => {
 
 // Rate limiter and API key middleware
 app.use((req, res, cb) => {
-  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '';
-  [ip] = ip.replace(/^.*:/, '').split(',');
-
+  const ip = req.clientIp;
   res.locals.ip = ip;
 
   res.locals.usageIdentifier = ip;
