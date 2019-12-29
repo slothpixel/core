@@ -2,7 +2,7 @@
 
 curl -sSL https://get.docker.com/ | sh
 
-curl -H "Metadata-Flavor: Google" -L http://metadata.google.internal/computeMetadata/v1/project/attributes/redis > /redis.conf
+# curl -H "Metadata-Flavor: Google" -L http://metadata.google.internal/computeMetadata/v1/project/attributes/redis > /redis.conf
 
 sudo mkdir -p /var/lib/redis
 sudo mount -o discard,defaults /dev/disk/by-id/google-persistent-disk-1 /var/lib/redis
