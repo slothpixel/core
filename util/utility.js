@@ -280,7 +280,7 @@ function generateJob(type, payload) {
 function getData(redis, url, cb) {
   let u;
   let delay = Number(config.DEFAULT_DELAY);
-  let timeout = 5000;
+  let timeout = 20000;
   if (typeof url === 'object' && url && url.url) {
     u = url.url;
     delay = url.delay || delay;
@@ -416,6 +416,22 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   }
 }
 
+function invokeInterval(func, delay) {
+  // invokes the function immediately, waits for callback, waits the delay, and then calls it again
+  (function invoker() {
+    logger.info(`running ${func.name}`);
+    const start = Date.now();
+    return func((err) => {
+      if (err) {
+        // log the error, but wait until next interval to retry
+        logger.error(err);
+      }
+      logger.info(`${func.name}: ${Date.now() - start}ms`);
+      setTimeout(invoker, delay);
+    });
+  }());
+}
+
 /**
  * Finds the arithmetic mean of the input array
  * */
@@ -477,6 +493,7 @@ module.exports = {
   getWeeklyStat,
   getMonthlyStat,
   pickKeys,
+  invokeInterval,
   average,
   stdDev,
   median,

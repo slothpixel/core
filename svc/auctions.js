@@ -3,7 +3,7 @@
  */
 const redis = require('../store/redis');
 const {
-  logger, generateJob, getData, decodeData,
+  logger, generateJob, getData, decodeData, invokeInterval,
 } = require('../util/utility');
 const processInventoryData = require('../processors/processInventoryData');
 const { insertAuction } = require('../store/queries');
@@ -74,7 +74,7 @@ function getAuctionPage(page, cb) {
   });
 }
 
-function updateListings() {
+function updateListings(cb) {
   // eslint-disable-next-line consistent-return
   getAuctionPage(0, (err, data) => {
     if (err) {
@@ -92,12 +92,10 @@ function updateListings() {
           }
           return processAndStoreAuctions(data.auctions);
         });
-      }, 500 * page);
+      }, 1000 * page);
     }
+    cb();
   });
 }
 
-updateListings();
-setInterval(() => {
-  updateListings();
-}, 60 * 1000);
+invokeInterval(updateListings, 3 * 60 * 1000);
