@@ -41,8 +41,7 @@ function processPlayerData({
   achievementRewardsNew = {},
   quests = {},
   challenges = {},
-  playername = null,
-  knownAliases = ['null'],
+  displayname = null,
   firstLogin,
   lastLogin = null,
   lastLogout = null,
@@ -68,14 +67,6 @@ function processPlayerData({
   socialMedia: { links = {} } = {},
   stats = {},
 }, cb) {
-  let username = null;
-  if (playername !== null) {
-    // Attempt to get capitalized version of username - we probably need to move to using
-    // Mojang API for this because of all the edge cases and to get more reliability
-    username = ((knownAliases[knownAliases.length - 1]).toLowerCase() === playername)
-      ? knownAliases[knownAliases.length - 1]
-      : playername;
-  }
   const achievementPromise = new Promise((resolve) => {
     resolve(parseAchievements(achievementsOneTime, achievements, achievementRewardsNew));
   });
@@ -145,7 +136,7 @@ function processPlayerData({
     }).then(() => {
       cb({
         uuid,
-        username,
+        username: displayname,
         online: lastLogin > lastLogout,
         rank: newRank,
         rank_plus_color: newRankPlusColor,
