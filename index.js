@@ -2,6 +2,7 @@
 /**
  * Entry point for the application.
  * */
+const cp = require('child_process');
 const pm2 = require('pm2');
 const async = require('async');
 const { apps } = require('./manifest.json');
@@ -9,6 +10,9 @@ const { apps } = require('./manifest.json');
 const args = process.argv.slice(2);
 const group = args[0] || process.env.GROUP;
 
+if (process.env.PROVIDER === 'gce') {
+  cp.execSync('curl -H "Metadata-Flavor: Google" -L http://metadata.google.internal/computeMetadata/v1/project/attributes/env > /usr/src/.env');
+}
 if (process.env.ROLE) {
   // if role variable is set just run that script
   require(`./svc/${process.env.ROLE}.js`);
@@ -35,8 +39,8 @@ if (process.env.ROLE) {
       pm2.disconnect();
     });
   });
-  // Clean up the logs once a day
-  setInterval(() => pm2.flush(), 86400 * 1000);
+  // Clean up the logs once an hour
+  setInterval(() => pm2.flush(), 3600 * 1000);
 } else {
   // Block indefinitely (keep process alive for Docker)
   process.stdin.resume();
