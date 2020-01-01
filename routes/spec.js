@@ -11,7 +11,7 @@ const queryAuctions = require('../store/queryAuctions');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const {
-  logger, getProfileFields, median, average, stdDev,
+  logger, getProfileFields, min, max, median, average, stdDev,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -783,7 +783,19 @@ const spec = {
                       type: 'integer',
                     },
                     std_price: {
-                      description: 'Standard deviation price in the selected time period',
+                      description: 'Standard deviation of prices in the selected time period',
+                      type: 'integer',
+                    },
+                    min_price: {
+                      description: 'Lowest price in the selected time period',
+                      type: 'integer',
+                    },
+                    max_price: {
+                      description: 'Largest price in the selected time period',
+                      type: 'integer',
+                    },
+                    sold: {
+                      description: 'Total sold items in the selected time period',
                       type: 'integer',
                     },
                     auctions: {
@@ -817,6 +829,9 @@ const spec = {
               avg_price: 0,
               mdn_price: 0,
               std_price: 0,
+              min_price: 0,
+              max_price: 0,
+              sold: 0,
               auctions: {},
             };
             const priceArray = [];
@@ -828,6 +843,9 @@ const spec = {
             obj.avg_price = average(priceArray);
             obj.mdn_price = median(priceArray);
             obj.std_price = stdDev(priceArray);
+            obj.min_price = min(priceArray);
+            obj.max_price = max(priceArray);
+            obj.sold = priceArray.length;
             return res.json(obj);
           });
         },

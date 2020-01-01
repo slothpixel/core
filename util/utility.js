@@ -433,6 +433,20 @@ function invokeInterval(func, delay) {
 }
 
 /**
+ * Finds the max of the input array
+ * */
+function max(array) {
+  return Math.max.apply(null, array);
+}
+
+/**
+ * Finds the min of the input array
+ * */
+function min(array) {
+  return Math.min.apply(null, array);
+}
+
+/**
  * Finds the arithmetic mean of the input array
  * */
 function average(data) {
@@ -454,7 +468,7 @@ function stdDev(data) {
   });
   const avgSquareDiff = average(squareDiffs);
   const stdDev = Math.sqrt(avgSquareDiff);
-  return stdDev;
+  return Math.floor(stdDev);
 }
 
 /**
@@ -466,7 +480,7 @@ function median(data) {
   if (data.length % 2) {
     return data[half];
   }
-  return (data[half - 1] + data[half]) / 2.0;
+  return Math.floor((data[half - 1] + data[half]) / 2.0);
 }
 
 module.exports = {
@@ -494,6 +508,8 @@ module.exports = {
   getMonthlyStat,
   pickKeys,
   invokeInterval,
+  min,
+  max,
   average,
   stdDev,
   median,
