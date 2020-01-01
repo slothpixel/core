@@ -25,6 +25,15 @@ function getPlayer(uuid, cb) {
   });
 }
 
+function getPlayers(filter = {}, fields = null, options = {}, cb) {
+  Player.find(filter, fields, options, (err, res) => {
+    if (err) {
+      logger.error(err);
+    }
+    cb(err, res.map(model => model.toObject()));
+  });
+}
+
 function cachePlayerProfile(profile, cb) {
   const key = `profile:${profile.uuid}`;
   logger.debug(`Caching ${key}`);
@@ -98,6 +107,7 @@ function getMetadata(req, callback) {
 module.exports = {
   insertPlayer,
   getPlayer,
+  getPlayers,
   cachePlayerProfile,
   getPlayerProfile,
   insertGuild,
