@@ -155,8 +155,17 @@ module.exports = {
   fromParam: {
     name: 'from',
     in: 'query',
-    description: 'Date from which to get auctions. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000.',
-    required: true,
+    description: 'Date from which to get auctions. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is from past 24 hours.',
+    required: false,
+    schema: {
+      type: 'integer',
+    },
+  },
+  untilParam: {
+    name: 'until',
+    in: 'query',
+    description: 'Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.',
+    required: false,
     schema: {
       type: 'integer',
     },

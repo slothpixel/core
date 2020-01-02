@@ -16,7 +16,7 @@ const {
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
-  fromParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam,
+  fromParam, untilParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -761,10 +761,10 @@ const spec = {
         tags: [
           'auctions',
         ],
-        summary: 'Query past skyblock auctions by item',
+        summary: 'Query past skyblock auctions and their stats by item',
         description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
         parameters: [
-          itemIdParam, fromParam,
+          itemIdParam, fromParam, untilParam,
         ],
         responses: {
           200: {
@@ -774,15 +774,15 @@ const spec = {
                 schema: {
                   type: 'object',
                   properties: {
-                    avg_price: {
+                    average_price: {
                       description: 'Average price in the selected time period',
                       type: 'integer',
                     },
-                    mdn_price: {
+                    median_price: {
                       description: 'Median price in the selected time period',
                       type: 'integer',
                     },
-                    std_price: {
+                    standard_deviation: {
                       description: 'Standard deviation of prices in the selected time period',
                       type: 'integer',
                     },
@@ -818,17 +818,18 @@ const spec = {
         func: (req, res, cb) => {
           const now = Date.now();
           const from = req.query.from || (now - 24 * 60 * 60 * 1000);
+          const until = req.query.from || now;
           if (Number.isNaN(Number(from))) {
             return cb(res.status(400).json({ error: "parameter 'from' must be an integer" }));
           }
-          redis.zrangebyscore(req.params.id, from, now, (err, auctions) => {
+          redis.zrangebyscore(req.params.id, from, until, (err, auctions) => {
             if (err) {
               logger.error(err);
             }
             const obj = {
-              avg_price: 0,
-              mdn_price: 0,
-              std_price: 0,
+              average_price: 0,
+              median_price: 0,
+              standard_deviation: 0,
               min_price: 0,
               max_price: 0,
               sold: 0,
@@ -840,9 +841,9 @@ const spec = {
               if (auction.bids.length > 0) priceArray.push(auction.highest_bid_amount / auction.item.count);
               obj.auctions[auction.end] = auction;
             });
-            obj.avg_price = average(priceArray);
-            obj.mdn_price = median(priceArray);
-            obj.std_price = stdDev(priceArray);
+            obj.average_price = average(priceArray);
+            obj.median_price = median(priceArray);
+            obj.standard_deviation = stdDev(priceArray);
             obj.min_price = min(priceArray);
             obj.max_price = max(priceArray);
             obj.sold = priceArray.length;
