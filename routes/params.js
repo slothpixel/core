@@ -77,13 +77,13 @@ module.exports = {
     description: 'Limit number of records returned. Default is 10 and maximum 1000.',
     required: false,
     schema: {
-      type: 'string',
+      type: 'integer',
     },
   },
   filterParam: {
     name: 'filter',
     in: 'query',
-    description: 'Filter entries by passing MongoDB query filter object as JSON string',
+    description: 'Filter entries by passing [MongoDB query](https://docs.mongodb.com/manual/reference/operator/query/) filter object as JSON string',
     required: false,
     schema: {
       type: 'string',
