@@ -860,7 +860,7 @@ const spec = {
         summary: 'Allows query of dynamic leaderboards',
         description: 'Returns player or guild leaderboards',
         parameters: [
-          typeParam, columnParam, sortByParam, filterParam, limitParam, significantParam,
+          typeParam, columnParam, sortByParam, filterParam, limitParam, pageParam, significantParam,
         ],
         responses: {
           200: {

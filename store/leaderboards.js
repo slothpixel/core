@@ -35,7 +35,7 @@ function getQueryFields(type, columns = '') {
 }
 
 function createQuery({
-  sortBy, limit = 10, filter = '{}', significant = true,
+  sortBy, limit = 10, filter = '{}', significant = true, page = 0,
 }) {
   let error;
   let filterObj = {};
@@ -58,6 +58,7 @@ function createQuery({
     filter: filterObj,
     options: {
       limit: Number(limit),
+      skip: page * limit,
       sort: {
         [sortBy]: -1,
       },
@@ -68,9 +69,8 @@ function createQuery({
 }
 
 function transformData(data) {
-  const array = [];
   // Remove _id field from each entry
-  data.forEach((doc) => {
+  return data.map((doc) => {
     const obj = doc._doc;
     delete obj._id;
     // Change extra columns from nested objects to keys
@@ -83,9 +83,8 @@ function transformData(data) {
       });
       delete obj.stats;
     }
-    array.push(obj);
+    return obj;
   });
-  return array;
 }
 
 function executeQuery(type, query, fields, cb) {
