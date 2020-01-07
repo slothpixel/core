@@ -56,7 +56,7 @@ module.exports = {
   columnParam: {
     name: 'columns',
     in: 'query',
-    description: 'Choose which data columns will be returned e.g. stats.Arcade.coins',
+    description: 'Choose which data columns will be returned e.g. stats.Arcade.coins. Multiple columns are separated with commas.',
     required: true,
     schema: {
       type: 'string',
@@ -65,7 +65,7 @@ module.exports = {
   sortByParam: {
     name: 'sortBy',
     in: 'query',
-    description: 'Which stat to sort records by',
+    description: 'Which stat to sort records by. Requires the full path when using with nested objects like stats.Arcade.wins',
     required: true,
     schema: {
       type: 'string',
@@ -83,7 +83,7 @@ module.exports = {
   filterParam: {
     name: 'filter',
     in: 'query',
-    description: 'Filter entries by passing [MongoDB query](https://docs.mongodb.com/manual/reference/operator/query/) filter object as JSON string',
+    description: 'Filter entries by passing [MongoDB query](https://docs.mongodb.com/manual/reference/operator/query/) filter object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)',
     required: false,
     schema: {
       type: 'string',
