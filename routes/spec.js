@@ -879,10 +879,10 @@ const spec = {
           },
         },
         route: () => '/leaderboards',
-        func: (req, res, cb) => {
+        func: (req, res) => {
           leaderboards(req.query, null, (error, lb) => {
             if (error) {
-              return cb(res.status(400).json({ error }));
+              return res.status(400).json({ error });
             }
             return res.json(lb);
           });

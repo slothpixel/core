@@ -89,10 +89,10 @@ function transformData(data) {
 
 function executeQuery(type, query, fields, cb) {
   let Model;
-  if (type === 'players') {
-    Model = Player;
-  } else if (type === 'guilds') {
+  if (type === 'guilds') {
     Model = Guild;
+  } else {
+    Model = Player;
   }
   const { filter, options, error } = createQuery(query);
   if (error) {
@@ -130,7 +130,7 @@ function getLeaderboards(query, template, cb) {
         const fields = getQueryFields(model, templates[type].items[subtype].fields.join());
         executeQuery(model, query, fields, (err, data) => {
           if (err) {
-            cb(err);
+            return cb(err);
           }
           cacheLeaderboard(data, key, lb => cb(null, lb));
         });
@@ -141,12 +141,12 @@ function getLeaderboards(query, template, cb) {
   } else {
     const { type } = query;
     if (type !== 'players' && type !== 'guilds') {
-      cb('No valid type parameter!');
+      return cb('No valid type parameter!');
     }
     const fields = getQueryFields(type, query.columns);
     executeQuery(type, query, fields, (err, lb) => {
       if (err) {
-        cb(err);
+        return cb(err);
       }
       cb(null, lb);
     });
