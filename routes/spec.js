@@ -818,7 +818,7 @@ const spec = {
         func: (req, res, cb) => {
           const now = Date.now();
           const from = req.query.from || (now - 24 * 60 * 60 * 1000);
-          const until = req.query.from || now;
+          const until = req.query.until || now;
           if (Number.isNaN(Number(from))) {
             return cb(res.status(400).json({ error: "parameter 'from' must be an integer" }));
           }
