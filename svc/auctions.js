@@ -79,14 +79,14 @@ function updateListings(cb) {
   // eslint-disable-next-line consistent-return
   getAuctionPage(0, (err, data) => {
     if (err) {
-      return logger.error('Failed to update listings!');
+      return cb('Failed to update listings!');
     }
     logger.info(`[updateListings] Retrieving ${data.totalAuctions} auctions from ${data.totalPages} pages.`);
     const timestamp = new Date(data.lastUpdated);
     logger.info(`Data last updated at ${timestamp.toLocaleString()}`);
     processAndStoreAuctions(data.auctions);
-    async.each([...Array(data.totalPages).keys()], (page, cb) => {
-      getAuctionPage(page + 1, (err, data) => {
+    async.each([...Array(data.totalPages).keys()].slice(1), (page, cb) => {
+      getAuctionPage(page, (err, data) => {
         if (err) {
           cb(`Failed getting auction page ${page}: ${err}`);
         }
