@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /*
 * Worker to generate SkyBlock item schema from auction database
  */
