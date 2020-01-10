@@ -52,4 +52,4 @@ function doItems(cb) {
   });
 }
 
-invokeInterval(doItems, 1 * 60 * 1000);
+invokeInterval(doItems, 60 * 60 * 1000);
