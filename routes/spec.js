@@ -218,6 +218,10 @@ const spec = {
       description: 'Ban statistics',
     },
     {
+      name: 'skyblock',
+      description: 'SkyBlock related data',
+    },
+    {
       name: 'auctions',
       description: 'SkyBlock auction data',
     },
@@ -848,6 +852,51 @@ const spec = {
             obj.max_price = max(priceArray);
             obj.sold = priceArray.length;
             return res.json(obj);
+          });
+        },
+      },
+    },
+    '/skyblock/items': {
+      get: {
+        tags: [
+          'skyblock',
+        ],
+        summary: 'SkyBlock item spec',
+        description: 'Returns all SkyBlock items found in auctions',
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    ITEM_ID: {
+                      type: 'object',
+                      properties: {
+                        name: {
+                          type: 'string',
+                        },
+                        tier: auctionObject.properties.tier,
+                        category: auctionObject.properties.category,
+                        item_id: auctionObject.properties.item.properties.item_id,
+                        texture: auctionObject.properties.item.properties.attributes.properties.texture,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/items',
+        func: (req, res) => {
+          redis.get('skyblock_items', (err, items) => {
+            if (err) {
+              logger.error(err);
+              return res.status(500);
+            }
+            return res.json(JSON.parse(items));
           });
         },
       },

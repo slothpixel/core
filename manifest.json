@@ -25,6 +25,14 @@
       "instances": 1
     },
     {
+      "script": "svc/items.js",
+      "watch": true,
+      "ignore_watch": [".git", "node_modules"],
+      "group": "backend",
+      "exec_mode": "cluster",
+      "instances": 1
+    },
+    {
       "script": "svc/auctions.js",
       "watch": true,
       "ignore_watch": [".git", "node_modules"],

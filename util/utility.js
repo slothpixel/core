@@ -30,6 +30,10 @@ function betterFormatting(i) {
   return (i.replace(/Â§/g, '§').replace(/§/g, '&'));
 }
 
+function removeFormatting(i) {
+  return i.replace(/§./g, '');
+}
+
 function removeDashes(i) {
   return (i.replace(/-/g, ''));
 }
@@ -486,6 +490,7 @@ function median(data) {
 module.exports = {
   logger,
   betterFormatting,
+  removeFormatting,
   IDToStandardName,
   DBToStandardName,
   typeToStandardName,

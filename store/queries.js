@@ -99,6 +99,24 @@ function insertAuction(auction, cb) {
   });
 }
 
+function getAuctions(filter, fields = null, options, cb) {
+  Auction.find(filter, fields, options, (err, res) => {
+    if (err) {
+      return cb(err, null);
+    }
+    cb(null, res);
+  });
+}
+
+function getItems(cb) {
+  Auction.distinct('item.attributes.id', function (err, ids) {
+    if (err) {
+      return cb(err, null);
+    }
+    cb(null, ids);
+  });
+}
+
 function getMetadata(req, callback) {
   // TODO - Add API status
   callback(null, { leaderboards: lbTemplates });
@@ -114,5 +132,7 @@ module.exports = {
   getGuild,
   getGuildByPlayer,
   insertAuction,
+  getAuctions,
+  getItems,
   getMetadata,
 };
