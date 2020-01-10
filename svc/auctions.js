@@ -1,6 +1,7 @@
 /*
 * Worker to replicate SkyBlock auction data from the Hypixel API
  */
+const async = require('async');
 const redis = require('../store/redis');
 const {
   logger, generateJob, getData, decodeData, invokeInterval,
@@ -84,16 +85,15 @@ function updateListings(cb) {
     const timestamp = new Date(data.lastUpdated);
     logger.info(`Data last updated at ${timestamp.toLocaleString()}`);
     processAndStoreAuctions(data.auctions);
-    for (let page = 1; page < data.totalPages; page += 1) {
-      setTimeout(() => {
-        getAuctionPage(page, (err, data) => {
-          if (err) {
-            return logger.error(`Failed getting auction page ${page}: ${err}`);
-          }
-          return processAndStoreAuctions(data.auctions);
-        });
-      }, 1000 * page);
-    }
+    async.each([...Array(data.totalPages).keys()], (page, cb) => {
+      getAuctionPage(page + 1, (err, data) => {
+        if (err) {
+          cb(`Failed getting auction page ${page}: ${err}`);
+        }
+        processAndStoreAuctions(data.auctions);
+        cb();
+      });
+    });
     cb();
   });
 }
