@@ -33,10 +33,11 @@ function doItems(cb) {
       }
       const items = JSON.parse(res) || {};
       async.each(ids, (id, cb) => {
-        getAuctions({ 'item.attributes.id': id }, null, { limit: 1 }, (err, auction) => {
+        getAuctions({ 'item.attributes.id': id, 'item.attributes.modifier': null }, 'tier category item', { limit: 1 }, (err, auction) => {
           if (err) {
             return cb(err);
           }
+          if (auction.length === 0) return cb();
           items[id] = schemaObject(auction[0]);
           return cb();
         });

@@ -104,7 +104,7 @@ function getAuctions(filter, fields = null, options, cb) {
     if (err) {
       return cb(err, null);
     }
-    cb(null, res);
+    cb(null, res.map(model => model.toObject()));
   });
 }
 
