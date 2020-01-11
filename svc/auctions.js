@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 /*
 * Worker to replicate SkyBlock auction data from the Hypixel API
  */
@@ -8,32 +7,27 @@ const {
   logger, generateJob, getData, decodeData, invokeInterval,
 } = require('../util/utility');
 const processInventoryData = require('../processors/processInventoryData');
-const { insertAuction, getAuctions } = require('../store/queries');
+const { insertAuction } = require('../store/queries');
 
 const activeAuctions = {};
 
-function updatePrices(uuid) {
-  getAuctions({ uuid }, null, null, (err, auctions) => {
+function updatePrices(auction) {
+  const {
+    // eslint-disable-next-line camelcase
+    start, end, starting_bid, item, bids, highest_bid_amount,
+  } = auction;
+  const data = {
+    start,
+    end,
+    starting_bid,
+    bids,
+    highest_bid_amount,
+    item,
+  };
+  redis.zadd([item.attributes.id, end, JSON.stringify(data)], (err) => {
     if (err) {
-      return logger.error(`Failed to updatePrices for ${uuid}: ${err}`);
+      logger.error(err);
     }
-    const {
-      // eslint-disable-next-line camelcase
-      start, end, starting_bid, item, bids, highest_bid_amount,
-    } = auctions[0];
-    const data = {
-      start,
-      end,
-      starting_bid,
-      bids,
-      highest_bid_amount,
-      item,
-    };
-    redis.zadd([item.attributes.id, end, JSON.stringify(data)], (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
   });
 }
 
@@ -42,10 +36,10 @@ function updatePrices(uuid) {
  */
 function shouldUpdate(auction) {
   const { uuid } = auction;
-  if (!(uuid in activeAuctions) || (auction.bids.length > activeAuctions[uuid])) return true;
+  if (!(uuid in activeAuctions) || (auction.bids.length > activeAuctions[uuid].bids.length)) return true;
   // Check if auction has ended and remove from cache
   if (auction.end < Date.now()) {
-    updatePrices(uuid);
+    updatePrices(activeAuctions[uuid]);
     delete activeAuctions[uuid];
   }
   return false;
@@ -62,7 +56,7 @@ function processAndStoreAuctions(auctions = []) {
         auction.bids.map((bid) => {
           delete bid.auction_id;
         });
-        activeAuctions[uuid] = auction.bids.length;
+        activeAuctions[uuid] = auction;
         return insertAuction(auction, () => {});
       });
     }
