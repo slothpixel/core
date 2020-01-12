@@ -99,6 +99,14 @@ function insertAuction(auction, cb) {
   });
 }
 
+function bulkInsertAuctions(ops, options = {}, cb) {
+  Auction.collection.bulkWrite(ops, options, (err, res) => {
+    if (err) {
+      return cb(err, null);
+    }
+  });
+}
+
 function getAuctions(filter, fields = null, options, cb) {
   Auction.find(filter, fields, options, (err, res) => {
     if (err) {
@@ -132,6 +140,7 @@ module.exports = {
   getGuild,
   getGuildByPlayer,
   insertAuction,
+  bulkInsertAuctions,
   getAuctions,
   getItems,
   getMetadata,

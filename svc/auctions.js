@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /*
 * Worker to replicate SkyBlock auction data from the Hypixel API
  */
@@ -7,7 +8,7 @@ const {
   logger, generateJob, getData, decodeData, invokeInterval,
 } = require('../util/utility');
 const processInventoryData = require('../processors/processInventoryData');
-const { insertAuction } = require('../store/queries');
+const { bulkInsertAuctions } = require('../store/queries');
 
 const activeAuctions = {};
 
@@ -32,34 +33,65 @@ function updatePrices(auction) {
 }
 
 /*
-* Determine whether there are new bids and should the auction be updated to DB
+* Determine how the auction should be updated to DB
  */
-function shouldUpdate(auction) {
+function getUpdateType(auction) {
   const { uuid } = auction;
-  if (!(uuid in activeAuctions) || (auction.bids.length > activeAuctions[uuid].bids.length)) return true;
+  if (!(uuid in activeAuctions)) return 'full';
+  if ((auction.bids.length > activeAuctions[uuid].bids.length)) return 'partial';
   // Check if auction has ended and remove from cache
   if (auction.end < Date.now()) {
     updatePrices(activeAuctions[uuid]);
     delete activeAuctions[uuid];
   }
-  return false;
+  return 'none';
 }
 
 function processAndStoreAuctions(auctions = []) {
-  auctions.forEach((auction) => {
-    if (shouldUpdate(auction)) {
-      const { uuid } = auction;
-      // logger.debug(`Found new bids on auction ${uuid}!`);
+  function removeAuctionIds(bids) {
+    bids.forEach(bid => delete bid.auction_id);
+    return bids;
+  }
+  function upsertDoc(uuid, update) {
+    return {
+      updateOne: {
+        update: { $set: update },
+        filter: { uuid },
+        upsert: true,
+      },
+    };
+  }
+  async.map(auctions, (auction, cb) => {
+    const { uuid } = auction;
+    const update = getUpdateType(auction);
+    if (update === 'none') {
+      return cb();
+    }
+    // Insert new auction
+    if (update === 'full') {
       decodeData(auction.item_bytes, (err, json) => {
         [auction.item] = processInventoryData(json);
-        // eslint-disable-next-line array-callback-return
-        auction.bids.map((bid) => {
-          delete bid.auction_id;
-        });
+        delete auction.item_bytes;
+        auction.bids = removeAuctionIds(auction.bids);
         activeAuctions[uuid] = auction;
-        return insertAuction(auction, () => {});
+        return cb(err, upsertDoc(uuid, auction));
       });
     }
+    // Only bids have changed
+    if (update === 'partial') {
+      activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
+      return cb(null, upsertDoc(uuid, { bids: activeAuctions[uuid].bids }));
+    }
+  }, (err, bulkAuctionOps) => {
+    if (err) {
+      return logger.error(`auction processing failed: ${err}`);
+    }
+    // Remove empty elements from array
+    bulkAuctionOps = bulkAuctionOps.filter(Boolean);
+    if (bulkAuctionOps.length === 0) return;
+    return bulkInsertAuctions(bulkAuctionOps, { ordered: false }, (err) => {
+      logger.error(`Failed bulkInsert: ${err.stack}`);
+    });
   });
 }
 
@@ -76,7 +108,6 @@ function getAuctionPage(page, cb) {
 }
 
 function updateListings(cb) {
-  // eslint-disable-next-line consistent-return
   getAuctionPage(0, (err, data) => {
     if (err) {
       return cb('Failed to update listings!');
