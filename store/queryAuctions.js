@@ -90,7 +90,7 @@ function executeQuery(query, cb) {
 }
 
 function getAuctions(query, cb) {
-  const key = `leaderboard:${JSON.stringify(query)}`;
+  const key = `auctions:${JSON.stringify(query)}`;
   redis.get(key, (err, reply) => {
     if (err) {
       return cb(err);
