@@ -129,4 +129,4 @@ function updateListings(cb) {
   });
 }
 
-invokeInterval(updateListings, 3 * 60 * 1000);
+invokeInterval(updateListings, 60 * 1000);
