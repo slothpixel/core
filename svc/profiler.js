@@ -49,6 +49,7 @@ function updatePlayers(cb) {
       if (err) {
         cb(err);
       }
+      if (bulkPlayerOps.length === 0) cb();
       bulkWrite('player', bulkPlayerOps, { ordered: false }, (err) => {
         logger.error(`bulkWrite failed: ${err}`);
       });
