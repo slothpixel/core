@@ -21,7 +21,8 @@ function getPlayerData(uuid, cb) {
   });
 }
 
-function cachePlayer(player, uuid, key, cb) {
+function cachePlayer(player, uuid, key, caching, cb) {
+  if (caching.cacheResult === false) return cb(player);
   if (config.ENABLE_PLAYER_CACHE) {
     redis.setex(key, config.PLAYER_CACHE_SECONDS, JSON.stringify(player), (err) => {
       if (err) {
@@ -40,20 +41,27 @@ function cachePlayer(player, uuid, key, cb) {
 }
 
 function buildPlayer(uuid, cb) {
-  const key = `player:${uuid}`;
+  let u;
+  const caching = uuid.caching || {};
+  if (typeof uuid === 'object') {
+    u = uuid.uuid;
+  } else {
+    u = uuid;
+  }
+  const key = `player:${u}`;
   redis.get(key, (err, reply) => {
     if (err) {
       return cb(err);
     } if (reply) {
-      logger.debug(`Cache hit for player ${uuid}`);
+      logger.debug(`Cache hit for player ${u}`);
       const player = JSON.parse(reply);
       return cb(null, player);
     }
-    getPlayerData(uuid, (err, player) => {
+    getPlayerData(u, (err, player) => {
       if (err) {
         return cb(err);
       }
-      cachePlayer(player, uuid, key, player => cb(null, player));
+      cachePlayer(player, u, key, caching, player => cb(null, player));
     });
   });
 }

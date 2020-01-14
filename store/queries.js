@@ -99,11 +99,24 @@ function insertAuction(auction, cb) {
   });
 }
 
-function bulkInsertAuctions(ops, options = {}, cb) {
-  Auction.collection.bulkWrite(ops, options, (err, res) => {
+function bulkWrite(type, ops, options = {}, cb) {
+  let Model;
+  switch (type) {
+    default:
+    case 'player':
+      Model = Player;
+      break;
+    case 'guild':
+      Model = Guild;
+      break;
+    case 'auction':
+      Model = Auction;
+  }
+  Model.collection.bulkWrite(ops, options, (err, res) => {
     if (err) {
       return cb(err, null);
     }
+    logger.debug(`[bulkWrite ${type}] nUpserted: ${res.nUpserted} nModified: ${res.nModified}`);
   });
 }
 
@@ -140,7 +153,7 @@ module.exports = {
   getGuild,
   getGuildByPlayer,
   insertAuction,
-  bulkInsertAuctions,
+  bulkWrite,
   getAuctions,
   getItems,
   getMetadata,

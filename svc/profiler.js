@@ -2,12 +2,21 @@
 * Worker to automatically update player stats at random
 */
 const async = require('async');
-const { invokeInterval } = require('../util/utility');
-const { getPlayers } = require('../store/queries');
+const { logger, invokeInterval } = require('../util/utility');
+const { getPlayers, bulkWrite } = require('../store/queries');
 const buildPlayer = require('../store/buildPlayer');
 
 function updatePlayers(cb) {
   const now = Date.now();
+  function upsertDoc(uuid, update) {
+    return {
+      updateOne: {
+        update: { $set: update },
+        filter: { uuid },
+        upsert: true,
+      },
+    };
+  }
   /*
   * In order to update, player data must be older than 12 hours
   * and they have had to logged on in the past month
@@ -24,14 +33,27 @@ function updatePlayers(cb) {
     if (err) {
       cb(err);
     }
-    async.eachLimit(players, 10, (p, cb) => {
-      buildPlayer(p.uuid, (err) => {
+    async.mapLimit(players, 10, (p, cb) => {
+      buildPlayer({
+        uuid: p.uuid,
+        caching: {
+          cacheResult: false,
+        },
+      }, (err, player) => {
         if (err) {
           cb(err);
         }
-        cb();
+        cb(null, upsertDoc(p.uuid, player));
       });
-    }, cb);
+    }, (err, bulkPlayerOps) => {
+      if (err) {
+        cb(err);
+      }
+      bulkWrite('player', bulkPlayerOps, { ordered: false }, (err) => {
+        logger.error(`bulkWrite failed: ${err}`);
+      });
+      cb();
+    });
   });
 }
 

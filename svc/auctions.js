@@ -8,7 +8,7 @@ const {
   logger, generateJob, getData, decodeData, invokeInterval,
 } = require('../util/utility');
 const processInventoryData = require('../processors/processInventoryData');
-const { bulkInsertAuctions } = require('../store/queries');
+const { bulkWrite } = require('../store/queries');
 
 const activeAuctions = {};
 
@@ -89,8 +89,8 @@ function processAndStoreAuctions(auctions = []) {
     // Remove empty elements from array
     bulkAuctionOps = bulkAuctionOps.filter(Boolean);
     if (bulkAuctionOps.length === 0) return;
-    return bulkInsertAuctions(bulkAuctionOps, { ordered: false }, (err) => {
-      logger.error(`Failed bulkInsert: ${err.stack}`);
+    return bulkWrite('auction', bulkAuctionOps, { ordered: false }, (err) => {
+      logger.error(`Failed bulkWrite: ${err.stack}`);
     });
   });
 }
