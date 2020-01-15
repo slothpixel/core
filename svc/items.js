@@ -33,7 +33,11 @@ function doItems(cb) {
       }
       const items = JSON.parse(res) || {};
       async.each(ids, (id, cb) => {
-        getAuctions({ 'item.attributes.id': id, 'item.attributes.modifier': null }, 'tier category item', { limit: 1 }, (err, auction) => {
+        getAuctions({
+          'item.attributes.id': id,
+          'item.attributes.modifier': null,
+          'item.name': { $ne: 'null' },
+        }, 'tier category item', { limit: 1 }, (err, auction) => {
           if (err) {
             return cb(err);
           }
