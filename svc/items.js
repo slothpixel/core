@@ -36,7 +36,7 @@ function doItems(cb) {
         getAuctions({
           'item.attributes.id': id,
           'item.attributes.modifier': null,
-          'item.name': { $ne: 'null' },
+          'item.name': { $ne: '§fnull' },
         }, 'tier category item', { limit: 1 }, (err, auction) => {
           if (err) {
             return cb(err);
