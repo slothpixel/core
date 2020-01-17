@@ -137,7 +137,7 @@ module.exports = {
   itemIdParam2: {
     name: 'id',
     in: 'query',
-    description: 'Item id, e.g. HOT_POTATO_BOOK',
+    description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
     required: false,
     schema: {
       type: 'string',
@@ -146,7 +146,7 @@ module.exports = {
   itemIdParam: {
     name: 'ItemId',
     in: 'path',
-    description: 'Item id, e.g. HOT_POTATO_BOOK',
+    description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
     required: true,
     schema: {
       type: 'string',
