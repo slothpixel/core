@@ -32,6 +32,9 @@ function doItems(cb) {
         cb(err);
       }
       const items = JSON.parse(res) || {};
+      ids = ids.filter(id => !(id in items));
+      logger.info(`${ids.length} IDs aren't currently included`);
+      let counter = 0;
       async.each(ids, (id, cb) => {
         getAuctions({
           'item.attributes.id': id,
@@ -42,6 +45,7 @@ function doItems(cb) {
             return cb(err);
           }
           if (auction.length === 0) return cb();
+          counter += 1;
           items[id] = schemaObject(auction[0]);
           return cb();
         });
@@ -51,6 +55,7 @@ function doItems(cb) {
         }
         redis.set('skyblock_items', JSON.stringify(items), (err) => {
           if (err) logger.error(err);
+          logger.info(`${counter} new items discovered`);
           return cb();
         });
       });
