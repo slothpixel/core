@@ -6,6 +6,7 @@ const settings = {
   useNewUrlParser: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
+  autoIndex: config.NODE_ENV === 'development',
 };
 
 mongoose.connect(config.MONGODB_URL, settings, (err) => {

@@ -51,6 +51,10 @@ const AuctionSchema = mongoose.Schema({
   highest_bid_amount: Number,
 });
 
+PlayerSchema.index({ uuid: 1 });
+GuildSchema.index({ id: 1 });
+AuctionSchema.index({ 'item.attributes.id': 1 });
+
 const Player = mongoose.model('Player', PlayerSchema);
 const Guild = mongoose.model('Guild', GuildSchema);
 const Auction = mongoose.model('Auction', AuctionSchema);
