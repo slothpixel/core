@@ -222,10 +222,6 @@ const spec = {
       description: 'SkyBlock related data',
     },
     {
-      name: 'auctions',
-      description: 'SkyBlock auction data',
-    },
-    {
       name: 'metadata',
       description: '',
     },
@@ -728,7 +724,7 @@ const spec = {
     '/skyblock/auctions': {
       get: {
         tags: [
-          'auctions',
+          'skyblock',
         ],
         summary: 'Query all skyblock auctions',
         description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
@@ -763,7 +759,7 @@ const spec = {
     '/skyblock/auctions/{itemId}': {
       get: {
         tags: [
-          'auctions',
+          'skyblock',
         ],
         summary: 'Query past skyblock auctions and their stats by item',
         description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
