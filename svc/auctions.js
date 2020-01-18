@@ -125,7 +125,6 @@ function updateListings(cb) {
         cb();
       });
     });
-    cb();
   });
 }
 
