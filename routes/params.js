@@ -2,7 +2,7 @@ module.exports = {
   playerNameParam: {
     name: 'playerName',
     in: 'path',
-    description: 'Username or non-dashed uuid of player',
+    description: 'Username or non-dashed UUID of player. UUID should be used when feasible for better performance.',
     required: true,
     schema: {
       type: 'string',
@@ -11,7 +11,7 @@ module.exports = {
   gameNameParam: {
     name: 'game',
     in: 'path',
-    description: 'Standard minigame name',
+    description: '[Standard](https://github.com/slothpixel/core/wiki/Standard-naming) minigame name',
     required: true,
     schema: {
       type: 'string',
