@@ -11,12 +11,13 @@ function parseAchievements(oneTime = [], tiered = {}, rewards) {
   function getAchievementProperties(a) {
     const split = a.split('_');
     const game = (split[0] === 'bridge'
-      ? 'duels'
-      : split[0]);
+      ? ['duels', 'bridge']
+      : [split[0]]);
     split.shift();
-    const name = split.join('_').toUpperCase();
+    let name = split.join('_').toUpperCase();
+    if (['duels', 'bridge'].includes(game)) name = `${game[1].toUpperCase()}_${name}`;
     return {
-      game,
+      game: game[0],
       name,
     };
   }
@@ -70,16 +71,21 @@ function parseAchievements(oneTime = [], tiered = {}, rewards) {
     if (Object.hasOwnProperty.call(achievements, game)) {
       const ach = achievements[game].tiered[name];
       if (ach !== undefined) {
-        for (let t = 0; t < ach.tiers.length; t += 1) {
-          if (achievement[1] >= ach.tiers[t].amount) {
+        const tiers = ach.tiers.length;
+        for (let t = 0; t < tiers; t += 1) {
+          const required = ach.tiers[t].amount;
+          if (achievement[1] >= required) {
             gameObj[game].points_tiered += ach.tiers[t].points;
             gameObj[game].completed_tiered += 1;
             obj.completed_tiered += 1;
-          } else {
+          }
+          if (achievement[1] < required || t === tiers - 1) {
             [, gameObj[game].tiered[name]] = achievement;
             break;
           }
         }
+      } else {
+        logger.debug(`Found non existing tiered achievement: ${JSON.stringify(achievement)}`);
       }
     }
   });
