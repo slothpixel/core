@@ -90,6 +90,14 @@ function getGuildByPlayer(uuid, cb) {
   });
 }
 
+function removeGuild(id) {
+  Guild.findOneAndRemove({ id }, (err) => {
+    if (err) {
+      logger.error(err);
+    }
+  });
+}
+
 function insertAuction(auction, cb) {
   Auction.findOneAndUpdate({ uuid: auction.uuid }, auction, { new: true, upsert: true }, function (err) {
     if (err) {
@@ -152,6 +160,7 @@ module.exports = {
   insertGuild,
   getGuild,
   getGuildByPlayer,
+  removeGuild,
   insertAuction,
   bulkWrite,
   getAuctions,

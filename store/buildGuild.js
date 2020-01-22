@@ -3,7 +3,7 @@ const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
-const { insertGuild, getGuildByPlayer } = require('../store/queries');
+const { insertGuild, getGuildByPlayer, removeGuild } = require('../store/queries');
 
 /*
 * Functions to build/cache guild object
@@ -17,7 +17,10 @@ function getGuildData(id, cb) {
     if (err) {
       return cb(err);
     }
-    // TODO - Add medal HTML parser
+    if (body.guild === null) {
+      cb(null);
+      return removeGuild(id);
+    }
     const guild = processGuildData(body.guild);
     return cb(null, guild);
   });
