@@ -7,11 +7,12 @@ const redis = require('../store/redis');
 const { getItems, getAuctions } = require('../store/queries');
 const { logger, removeFormatting, invokeInterval } = require('../util/utility');
 
-const schemaObject = ({
-  tier,
-  category,
-  item,
-}) => {
+const schemaObject = (auction) => {
+  const {
+    tier,
+    category,
+    item,
+  } = auction;
   try {
     return {
       name: removeFormatting(item.name),
@@ -21,7 +22,7 @@ const schemaObject = ({
       texture: item.attributes.texture,
     };
   } catch (e) {
-    logger.warn(`Found bad item in DB: ${JSON.stringify(item)}`);
+    logger.warn(`Found bad item in DB: ${JSON.stringify(auction)}`);
   }
 };
 
