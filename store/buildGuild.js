@@ -18,7 +18,7 @@ function getGuildData(id, cb) {
       return cb(err);
     }
     if (body.guild === null) {
-      cb(null);
+      cb(null, null);
       return removeGuild(id);
     }
     const guild = processGuildData(body.guild);
@@ -73,7 +73,7 @@ function buildGuild(uuid, cb) {
       return cb(err);
     }
     if (id === null) {
-      return cb(null);
+      return cb(null, { guild: null });
     }
     const key = `guild:${id}`;
     redis.get(key, (err, reply) => {
@@ -87,6 +87,9 @@ function buildGuild(uuid, cb) {
       getGuildData(id, (err, guild) => {
         if (err) {
           return cb(err);
+        }
+        if (guild === null) {
+          return cb(null, { guild: null });
         }
         cacheGuild(guild, id, key, guild => cb(null, guild));
       });
