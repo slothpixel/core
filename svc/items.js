@@ -11,13 +11,19 @@ const schemaObject = ({
   tier,
   category,
   item,
-}) => ({
-  name: removeFormatting(item.name),
-  tier,
-  category,
-  item_id: item.item_id,
-  texture: item.attributes.texture,
-});
+}) => {
+  try {
+    return {
+      name: removeFormatting(item.name),
+      tier,
+      category,
+      item_id: item.item_id,
+      texture: item.attributes.texture,
+    };
+  } catch (e) {
+    logger.warn(`Found bad item in DB: ${JSON.stringify(item)}`);
+  }
+};
 
 function doItems(cb) {
   getItems((err, ids) => {
