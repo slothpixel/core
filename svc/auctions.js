@@ -80,7 +80,7 @@ function processAndStoreAuctions(auctions = []) {
     // Only bids have changed
     if (update === 'partial') {
       activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
-      return cb(null, upsertDoc(uuid, { bids: activeAuctions[uuid].bids }));
+      return cb(null, upsertDoc(uuid, { bids: activeAuctions[uuid].bids, end: auction.end }));
     }
   }, (err, bulkAuctionOps) => {
     if (err) {
