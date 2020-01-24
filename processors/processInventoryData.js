@@ -64,7 +64,7 @@ function simplifyItem(item) {
 function processInventoryData(data) {
   const inventoryArray = data.value.i.value.value;
   return inventoryArray.map((item) => {
-    if (item === {}) return {};
+    if (Object.entries(item).length === 0) return {};
     return simplifyItem(item);
   });
 }
