@@ -838,7 +838,8 @@ const spec = {
             const priceArray = [];
             auctions.forEach((auction) => {
               auction = JSON.parse(auction);
-              if (auction.bids.length > 0) priceArray.push(auction.highest_bid_amount / auction.item.count);
+              const { bids } = auction;
+              if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
               obj.auctions[auction.end] = auction;
             });
             obj.average_price = average(priceArray);

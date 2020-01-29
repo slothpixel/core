@@ -80,7 +80,13 @@ function processAndStoreAuctions(auctions = []) {
     // Only bids have changed
     if (update === 'partial') {
       activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
-      return cb(null, upsertDoc(uuid, { bids: activeAuctions[uuid].bids, end: auction.end }));
+      activeAuctions[uuid].highest_bid_amount = auction.highest_bid_amount;
+      activeAuctions[uuid].end = auction.end;
+      return cb(null, upsertDoc(uuid, {
+        bids: activeAuctions[uuid].bids,
+        end: auction.end,
+        highest_bid_amount: auction.highest_bid_amount,
+      }));
     }
   }, (err, bulkAuctionOps) => {
     if (err) {
