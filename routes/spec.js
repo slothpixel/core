@@ -16,7 +16,7 @@ const {
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
-  fromParam, untilParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam,
+  fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -764,7 +764,7 @@ const spec = {
         summary: 'Query past skyblock auctions and their stats by item',
         description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
         parameters: [
-          itemIdParam, fromParam, untilParam,
+          itemIdParam, fromParam, toParam,
         ],
         responses: {
           200: {
@@ -818,11 +818,11 @@ const spec = {
         func: (req, res, cb) => {
           const now = Date.now();
           const from = req.query.from || (now - 24 * 60 * 60 * 1000);
-          const until = req.query.until || now;
-          if (Number.isNaN(Number(from))) {
-            return cb(res.status(400).json({ error: "parameter 'from' must be an integer" }));
+          const to = req.query.to || now;
+          if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
+            return cb(res.status(400).json({ error: "parameters 'from' and 'to' must be integers" }));
           }
-          redis.zrangebyscore(req.params.id, from, until, (err, auctions) => {
+          redis.zrangebyscore(req.params.id, from, to, (err, auctions) => {
             if (err) {
               logger.error(err);
             }

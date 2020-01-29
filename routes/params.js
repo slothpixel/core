@@ -161,8 +161,8 @@ module.exports = {
       type: 'integer',
     },
   },
-  untilParam: {
-    name: 'until',
+  toParam: {
+    name: 'to',
     in: 'query',
     description: 'Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.',
     required: false,
