@@ -42,8 +42,11 @@ function removeDashes(i) {
 * Get ratio of x from y. Returns 2 decimal places.
  */
 function getRatio(x = 0, y = 0) {
+  if (x === 0) {
+    return 0;
+  }
   if (y === 0) {
-    return (Number.POSITIVE_INFINITY);
+    return 'Infinity';
   }
   return Number((x / y).toFixed(2));
 }
