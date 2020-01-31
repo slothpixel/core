@@ -35,7 +35,7 @@ function getQueryFields(type, columns = '') {
 }
 
 function createQuery({
-  sortBy, limit = 10, filter = '{}', significant = true, page = 0,
+  sortBy, limit = 100, filter = '{}', significant = true, page = 0,
 }) {
   let error;
   let filterObj = {};

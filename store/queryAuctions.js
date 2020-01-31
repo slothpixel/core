@@ -35,7 +35,7 @@ function easyFilterQuery({
 }
 
 function createQuery({
-  sortBy = null, limit = 1000, filter = '{}', active = true, page = 0,
+  sortBy = null, limit = 100, filter = '{}', active = true, page = 0,
 }, easyFilter) {
   let error;
   let filterObj = {};
