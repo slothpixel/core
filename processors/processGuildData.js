@@ -57,12 +57,23 @@ function changeObjKeys(obj) {
   return obj;
 }
 
-function getPreferredGames(games) {
-  const arr = [];
-  games.forEach((game) => {
-    arr.push(utility.typeToStandardName(game));
+/*
+* This is stupid - See https://github.com/HypixelDev/PublicAPI/issues/177
+ */
+function insertDefaultRanks(ranks, created) {
+  const highestPriority = Math.max(...ranks.map(o => o.priority));
+  ranks.push({
+    name: 'Guild Master',
+    default: false,
+    tag: 'GM',
+    created,
+    priority: highestPriority + 1,
   });
-  return arr;
+  return ranks;
+}
+
+function getPreferredGames(games) {
+  return games.map(game => utility.typeToStandardName(game));
 }
 
 function processMembers(members) {
@@ -133,7 +144,7 @@ function processGuildData({
     exp_history: expHistory,
     description,
     preferred_games: getPreferredGames(preferredGames),
-    ranks,
+    ranks: insertDefaultRanks(ranks, created),
     members: processedMembers,
   };
 }
