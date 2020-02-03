@@ -4,7 +4,6 @@
  */
 const config = require('../config');
 const cacheFunctions = require('../store/cacheFunctions');
-const redis = require('../store/redis');
 const { logger } = require('../util/utility');
 const { Auction } = require('../store/models');
 
