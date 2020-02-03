@@ -19,7 +19,7 @@ function fetchUUID(username, cb) {
 }
 
 function getUUID(name, cb) {
-  const key = `uuid:${name}`;
+  const key = `uuid:${name.toLowerCase()}`;
   redis.get(key, (err, reply) => {
     if (err) {
       return cb(err);
