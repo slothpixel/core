@@ -3,17 +3,17 @@
 * Allows custom DB queries for auctions API endpoint
  */
 const config = require('../config');
+const cacheFunctions = require('../store/cacheFunctions');
 const redis = require('../store/redis');
 const { logger } = require('../util/utility');
 const { Auction } = require('../store/models');
 
 function cacheAuctions(auctions, key, cb) {
   if (config.ENABLE_AUCTION_CACHE) {
-    redis.setex(key, config.AUCTION_CACHE_SECONDS, JSON.stringify(auctions), (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
+    cacheFunctions.write({
+      key,
+      duration: config.AUCTION_CACHE_SECONDS,
+    }, auctions);
   }
   return cb(auctions);
 }
@@ -91,12 +91,9 @@ function executeQuery(query, cb) {
 
 function getAuctions(query, cb) {
   const key = `auctions:${JSON.stringify(query)}`;
-  redis.get(key, (err, reply) => {
-    if (err) {
-      return cb(err);
-    } if (reply) {
+  cacheFunctions.read({ key }, (auctions) => {
+    if (auctions) {
       logger.debug(`Cache hit for ${key}`);
-      const auctions = JSON.parse(reply);
       return cb(null, auctions);
     }
     executeQuery(query, (err, data) => {

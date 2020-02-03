@@ -5,6 +5,7 @@
  */
 const config = require('../config');
 const { logger, removeDashes, getData } = require('../util/utility');
+const cacheFunctions = require('../store/cacheFunctions');
 const redis = require('../store/redis');
 
 function fetchUUID(username, cb) {
@@ -20,13 +21,10 @@ function fetchUUID(username, cb) {
 
 function getUUID(name, cb) {
   const key = `uuid:${name.toLowerCase()}`;
-  redis.get(key, (err, reply) => {
-    if (err) {
-      return cb(err);
-    } if (reply) {
-      const uuid = JSON.parse(reply);
+  cacheFunctions.read({ key }, (uuid) => {
+    if (uuid) {
       logger.debug(`Cache hit for uuid: ${name} - ${uuid}`);
-      return cb(err, uuid);
+      return cb(null, uuid);
     }
     logger.debug(`Cache miss for uuid ${name}`);
     if ((/^[0-9a-f]{32}$/i).test(name)) {
@@ -43,12 +41,11 @@ function getUUID(name, cb) {
         return cb(fetchErr, null);
       }
       if (config.ENABLE_UUID_CACHE) {
-        return redis.setex(key, config.UUID_CACHE_SECONDS, JSON.stringify(uuid), (redisErr) => {
-          if (err) {
-            logger.error(redisErr);
-          }
-          return cb(null, uuid);
-        });
+        cacheFunctions.write({
+          key,
+          duration: config.UUID_CACHE_SECONDS,
+        }, uuid);
+        return cb(null, uuid);
       }
       return cb(null, uuid);
     });

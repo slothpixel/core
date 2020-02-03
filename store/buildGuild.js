@@ -3,6 +3,7 @@ const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
+const cacheFunctions = require('../store/cacheFunctions');
 const { insertGuild, getGuildByPlayer, removeGuild } = require('../store/queries');
 
 /*
@@ -51,11 +52,10 @@ function getGuildID(uuid, cb) {
 
 function cacheGuild(guild, id, key, cb) {
   if (config.ENABLE_GUILD_CACHE) {
-    redis.setex(key, config.GUILD_CACHE_SECONDS, JSON.stringify(guild), (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
+    cacheFunctions.write({
+      key,
+      duration: config.GUILD_CACHE_SECONDS,
+    }, guild);
   }
   if (config.ENABLE_DB_CACHE) {
     insertGuild(id, guild, (err) => {
@@ -76,12 +76,8 @@ function buildGuild(uuid, cb) {
       return cb(null, { guild: null });
     }
     const key = `guild:${id}`;
-    redis.get(key, (err, reply) => {
-      if (err) {
-        return cb(err);
-      }
-      if (reply) {
-        const guild = JSON.parse(reply);
+    cacheFunctions.read({ key }, (guild) => {
+      if (guild) {
         return cb(null, guild);
       }
       getGuildData(id, (err, guild) => {

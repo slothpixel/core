@@ -3,21 +3,20 @@
 * Allows custom DB queries for leaderboards API endpoint
  */
 const config = require('../config');
-const redis = require('../store/redis');
 const { logger } = require('../util/utility');
 const { profileFields } = require('../store/profileFields');
 const templates = require('../store/lb-templates');
+const cacheFunctions = require('../store/cacheFunctions');
 const {
   Player, Guild,
 } = require('../store/models');
 
 function cacheLeaderboard(lb, key, cb) {
   if (config.ENABLE_LEADERBOARD_CACHE) {
-    redis.setex(key, config.LEADERBOARD_CACHE_SECONDS, JSON.stringify(lb), (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
+    cacheFunctions.write({
+      key,
+      duration: config.ENABLE_LEADERBOARD_CACHE,
+    }, lb);
   }
   return cb(lb);
 }
@@ -112,12 +111,9 @@ function getLeaderboards(query, template, cb) {
     const [type, subtype] = template.split('_');
     if (templates[type].items[subtype] !== undefined) {
       const key = `leaderboard:${template}`;
-      redis.get(key, (err, reply) => {
-        if (err) {
-          return cb(err);
-        } if (reply) {
+      cacheFunctions.read({ key }, (lb) => {
+        if (lb) {
           logger.debug(`Cache hit for ${key}`);
-          const lb = JSON.parse(reply);
           return cb(null, lb);
         }
         const model = (type === 'general' || type === 'games')

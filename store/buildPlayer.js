@@ -3,6 +3,7 @@ const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
+const cacheFunctions = require('../store/cacheFunctions');
 const queries = require('../store/queries');
 
 /*
@@ -24,11 +25,10 @@ function getPlayerData(uuid, cb) {
 function cachePlayer(player, uuid, key, caching, cb) {
   if (caching.cacheResult === false) return cb(player);
   if (config.ENABLE_PLAYER_CACHE) {
-    redis.setex(key, config.PLAYER_CACHE_SECONDS, JSON.stringify(player), (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
+    cacheFunctions.write({
+      key,
+      duration: config.PLAYER_CACHE_SECONDS,
+    }, player);
   }
   if (config.ENABLE_DB_CACHE) {
     queries.insertPlayer(uuid, player, (err) => {
@@ -49,12 +49,9 @@ function buildPlayer(uuid, cb) {
     u = uuid;
   }
   const key = `player:${u}`;
-  redis.get(key, (err, reply) => {
-    if (err) {
-      return cb(err);
-    } if (reply) {
+  cacheFunctions.read({ key }, (player) => {
+    if (player) {
       logger.debug(`Cache hit for player ${u}`);
-      const player = JSON.parse(reply);
       return cb(null, player);
     }
     getPlayerData(u, (err, player) => {

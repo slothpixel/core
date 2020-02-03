@@ -1,7 +1,8 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
-const { logger, generateJob, getData } = require('../util/utility');
+const { generateJob, getData } = require('../util/utility');
 const redis = require('../store/redis');
+const cacheFunctions = require('../store/cacheFunctions');
 
 /*
 * Functions to build/cache ban statistics
@@ -27,22 +28,17 @@ function getBans(cb) {
 }
 
 function buildBans(cb) {
-  redis.get('bans', (err, reply) => {
-    if (err) {
-      return cb(err);
-    }
-    if (reply) {
-      const bans = JSON.parse(reply);
+  cacheFunctions.read({ key: 'bans' }, (bans) => {
+    if (bans) {
       return cb(null, bans);
     }
     getBans((err, bans) => {
       if (config.ENABLE_BANS_CACHE) {
-        redis.setex('bans', config.BANS_CACHE_SECONDS, JSON.stringify(bans), (err) => {
-          if (err) {
-            logger.error(err);
-          }
-          return cb(null, bans);
-        });
+        cacheFunctions.write({
+          key: 'bans',
+          duration: config.BANS_CACHE_SECONDS,
+        }, bans);
+        return cb(null, bans);
       }
     });
   });
