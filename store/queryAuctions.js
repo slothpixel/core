@@ -34,7 +34,7 @@ function easyFilterQuery({
 }
 
 function createQuery({
-  sortBy = 'end', limit = 100, filter = '{}', active = true, page = 0,
+  sortBy = 'end', sortOrder = 'desc', limit = 100, filter = '{}', active = true, page = 0,
 }, easyFilter) {
   let error;
   let filterObj = {};
@@ -49,13 +49,16 @@ function createQuery({
   if (limit > 1000) {
     limit = 1000;
   }
+  sortOrder = (sortOrder === 'asc')
+    ? 1
+    : -1;
   return {
     filter: filterObj,
     options: {
       limit: Number(limit),
       skip: page * limit,
       sort: {
-        [sortBy]: -1,
+        [sortBy]: sortOrder,
       },
       maxTimeMS: 30000,
     },

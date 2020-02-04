@@ -62,11 +62,20 @@ module.exports = {
       type: 'string',
     },
   },
-  sortByParam: {
+  sortByParam: (required = true) => ({
     name: 'sortBy',
     in: 'query',
-    description: 'Which stat to sort records by. Requires the full path when using with nested objects like stats.Arcade.wins',
-    required: true,
+    description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
+    required,
+    schema: {
+      type: 'string',
+    },
+  }),
+  sortOrderParam: {
+    name: 'sortOrder',
+    in: 'query',
+    description: 'Define sort order. `asc` for ascending or `desc` for descending (default)',
+    required: false,
     schema: {
       type: 'string',
     },

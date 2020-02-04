@@ -16,7 +16,7 @@ const {
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
-  fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam,
+  fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -206,6 +206,10 @@ const spec = {
       description: 'Guild stats',
     },
     {
+      name: 'skyblock',
+      description: 'SkyBlock related data',
+    },
+    {
       name: 'leaderboards',
       description: 'Player leaderboards',
     },
@@ -216,10 +220,6 @@ const spec = {
     {
       name: 'bans',
       description: 'Ban statistics',
-    },
-    {
-      name: 'skyblock',
-      description: 'SkyBlock related data',
     },
     {
       name: 'metadata',
@@ -730,7 +730,7 @@ const spec = {
         description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
         parameters: [
           filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam,
-          itemIdParam2,
+          itemIdParam2, sortByParam(false), sortOrderParam,
         ],
         responses: {
           200: {
@@ -906,7 +906,7 @@ const spec = {
         summary: 'Allows query of dynamic leaderboards',
         description: 'Returns player or guild leaderboards',
         parameters: [
-          typeParam, columnParam, sortByParam, filterParam, limitParam, pageParam, significantParam,
+          typeParam, columnParam, sortByParam(), sortOrderParam, filterParam, limitParam, pageParam, significantParam,
         ],
         responses: {
           200: {
