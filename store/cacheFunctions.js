@@ -20,16 +20,14 @@ module.exports = {
   write: (req, data, cb) => {
     logger.info(`[WRITECACHE] cache:${req.key}`);
     if (data === undefined) {
-      logger.warn('[WRITECACHE] Cache data is undefined! This should never happen');
-      cb();
+      return logger.warn('[WRITECACHE] Cache data is undefined! This should never happen');
     }
     let string;
     try {
       string = JSON.stringify(data);
     } catch (e) {
-      logger.error(`[WRITECACHE] Failed to stringify JSON: ${e}`);
-      cb();
+      return logger.error(`[WRITECACHE] Failed to stringify JSON: ${e}`);
     }
-    redis.setex(`cache:${req.key}`, req.duration, string, cb);
+    return redis.setex(`cache:${req.key}`, req.duration, string, cb);
   },
 };
