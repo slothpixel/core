@@ -9,6 +9,7 @@ const HungerGames = require('./HungerGames');
 const MCGO = require('./MCGO');
 const MurderMystery = require('./MurderMystery');
 const Paintball = require('./Paintball');
+const Pit = require('./Pit');
 const Quake = require('./Quake');
 const SkyClash = require('./SkyClash');
 const SkyWars = require('./SkyWars');
@@ -33,6 +34,7 @@ module.exports = {
   MCGO,
   MurderMystery,
   Paintball,
+  Pit,
   Quake,
   SkyClash,
   SkyWars,

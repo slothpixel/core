@@ -94,6 +94,7 @@ function processPlayerData({
     MCGO: {},
     MurderMystery: {},
     Paintball: {},
+    Pit: {},
     Quake: {},
     SkyClash: {},
     SkyWars: {},
