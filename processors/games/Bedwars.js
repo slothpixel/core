@@ -1,4 +1,4 @@
-const { getRatio } = require('../../util/utility');
+const { getRatio, pickKeys } = require('../../util/utility');
 const { getLevelForExp } = require('../../util/calculateBedWarsLevel');
 /*
 * Bedwars
@@ -29,27 +29,40 @@ module.exports = ({
   diamond_resources_collected_bedwars = 0,
   emerald_resources_collected_bedwars = 0,
   packages = [],
+  ...rest
 }) => {
+  const getModeStats = regexp => pickKeys(rest, {
+    regexp,
+    // who named these ;-;
+    keyMap: key => key.replace(regexp, '')
+      .replace(/^_/, '')
+      .replace(' _', '_')
+      .replace('_bedwars', '')
+      .replace('__', '_'),
+  });
   const gamemodes = {};
-  /*
   const betterModeNames = {
-    eight_one: 'solo',
-    eight_two: 'doubles',
+    'eight_one(?!_rush|_ultimate)': 'solo',
+    'eight_two(?!_rush|_ultimate|_lucky|_voidless|_armed)': 'doubles',
     four_three: '3v3v3v3',
-    four_four: '4v4v4v4',
+    'four_four(?!_rush|_ultimate|_lucky|_voidless|_armed)': '4v4v4v4',
     eight_one_rush: 'rush_solo',
     eight_two_rush: 'rush_doubles',
-    four_three_rush: 'rush_3v3v3v3',
     four_four_rush: 'rush_4v4v4v4',
     eight_one_ultimate: 'ultimate_solo',
     eight_two_ultimate: 'ultimate_doubles',
-    four_three_ultimate: 'ultimate_3v3v3v3',
     four_four_ultimate: 'ultimate_4v4v4v4',
     eight_two_lucky: 'lucky_doubles',
     four_four_lucky: 'lucky_4v4v4v4',
+    eight_two_voidless: 'voidless_doubles',
+    four_four_voidless: 'voidless_4v4v4v4',
+    eight_two_armed: 'armed_doubles',
+    four_four_armed: 'armed_4v4v4v4',
+    castle: 'castle',
   };
-  const modefields = [];
-  */
+  Object.keys(betterModeNames).forEach((name) => {
+    gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`^${name}_`));
+  });
   return ({
     coins,
     exp: Experience,
