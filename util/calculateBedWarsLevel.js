@@ -40,9 +40,10 @@ function getLevelForExp(exp) {
   const prestiges = Math.floor(exp / XP_PER_PRESTIGE);
   let level = prestiges * LEVELS_PER_PRESTIGE;
   let expWithoutPrestiges = exp - (prestiges * XP_PER_PRESTIGE);
+  let expForEasyLevel;
 
   for (let i = 1; i <= EASY_LEVELS; i += 1) {
-    let expForEasyLevel = getExpForLevel(i);
+    expForEasyLevel = getExpForLevel(i);
     if (expWithoutPrestiges < expForEasyLevel) {
       break;
     }
