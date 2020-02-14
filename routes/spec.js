@@ -8,6 +8,7 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
 const queryAuctions = require('../store/queryAuctions');
+const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const {
@@ -17,6 +18,7 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
+  profileIdParam,
 } = require('./params');
 const packageJson = require('../package.json');
 
@@ -721,6 +723,118 @@ const spec = {
         },
       },
       */
+    '/skyblock/profiles/{playerName}': {
+      get: {
+        tags: [
+          'skyblock',
+        ],
+        summary: 'Get list of player\'s skyblock profiles',
+        description: '',
+        parameters: [
+          playerNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    PROFILE_ID: {
+                      type: 'object',
+                      properties: {
+                        profile_id: {
+                          type: 'string',
+                        },
+                        cute_name: {
+                          type: 'string',
+                          description: 'Profile name, e.g. Strawberry',
+                        },
+                        first_join: {
+                          type: 'integer',
+                        },
+                        last_save: {
+                          type: 'integer',
+                        },
+                        collections_unlocked: {
+                          type: 'integer',
+                        },
+                        members: {
+                          type: 'array',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/profiles/:player',
+        func: (req, res, cb) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              return res.status(404).json({ error: err });
+            }
+            redis.get(`skyblock_profiles:${uuid}`, (err, resp) => {
+              if (err) {
+                return cb(err);
+              }
+              if (resp) {
+                const profiles = JSON.parse(resp) || {};
+                // TODO - populatePlayers for each profile
+                return res.json(profiles);
+              }
+              return res.json({});
+            });
+          });
+        },
+      },
+    },
+    '/skyblock/profile/{playerName}/{profileId}': {
+      get: {
+        tags: [
+          'skyblock',
+        ],
+        summary: 'Return a skyblock profile',
+        description: 'If no profile is specified, the last played profile is returned',
+        parameters: [
+          playerNameParam, profileIdParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/profile/:player/:profile?',
+        func: (req, res) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              return res.status(404).json({ error: err });
+            }
+            buildProfile(uuid, req.params.profile, (err, profile) => {
+              if (err) {
+                return res.json({ error: err });
+              }
+              populatePlayers(Object.keys(profile.members).map(uuid => ({ uuid })), (players) => {
+                players.forEach((player) => {
+                  profile.members[player.profile.uuid].player = player.profile;
+                });
+                res.json(profile);
+              });
+            });
+          });
+        },
+      },
+    },
     '/skyblock/auctions': {
       get: {
         tags: [

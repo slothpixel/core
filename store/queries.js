@@ -4,7 +4,7 @@ const redis = require('./redis');
 const { logger } = require('../util/utility');
 const lbTemplates = require('../store/lb-templates');
 const {
-  Player, Guild, Auction,
+  Player, Guild, SkyBlockProfile, Auction,
 } = require('../store/models');
 
 function insertPlayer(uuid, player, cb) {
@@ -98,6 +98,14 @@ function removeGuild(id) {
   });
 }
 
+function insertSkyBlockProfile(profile, cb) {
+  SkyBlockProfile.findOneAndUpdate({}, profile, { new: true, upsert: true }, function (err) {
+    if (err) {
+      logger.error(err);
+    }
+  });
+}
+
 function insertAuction(auction, cb) {
   Auction.findOneAndUpdate({ uuid: auction.uuid }, auction, { new: true, upsert: true }, function (err) {
     if (err) {
@@ -161,6 +169,7 @@ module.exports = {
   getGuild,
   getGuildByPlayer,
   removeGuild,
+  insertSkyBlockProfile,
   insertAuction,
   bulkWrite,
   getAuctions,

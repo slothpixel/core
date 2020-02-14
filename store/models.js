@@ -14,6 +14,7 @@ const options = {
 
 const PlayerSchema = mongoose.Schema({}, options);
 const GuildSchema = mongoose.Schema({}, options);
+const SkyBlockProfileSchema = mongoose.Schema({}, options);
 const AuctionSchema = mongoose.Schema({
   uuid: String,
   start: Number,
@@ -57,10 +58,12 @@ AuctionSchema.index({ uuid: 1, 'item.attributes.id': 1 });
 
 const Player = mongoose.model('Player', PlayerSchema);
 const Guild = mongoose.model('Guild', GuildSchema);
+const SkyBlockProfile = mongoose.model('SkyBlockProfile', SkyBlockProfileSchema);
 const Auction = mongoose.model('Auction', AuctionSchema);
 
 module.exports = {
   Player,
   Guild,
+  SkyBlockProfile,
   Auction,
 };

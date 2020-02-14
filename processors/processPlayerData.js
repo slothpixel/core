@@ -7,6 +7,7 @@ const {
   typeToStandardName,
   isContributor,
 } = require('../util/utility');
+const { buildProfileList } = require('../store/buildSkyBlockProfiles');
 const calculateLevel = require('../util/calculateLevel');
 
 const processStats = require('./games');
@@ -98,6 +99,7 @@ function processPlayerData({
     Quake: {},
     SkyClash: {},
     SkyWars: {},
+    SkyBlock: {},
     SpeedUHC: {},
     SuperSmash: {},
     TNTGames: {},
@@ -123,6 +125,8 @@ function processPlayerData({
     totalWins += statsObject[game].wins || 0;
     totalCoins += statsObject[game].coins || 0;
   });
+  // Update SkyBlock profiles
+  buildProfileList(uuid, statsObject.SkyBlock.profiles);
   let achievementObj = {};
   let questObject = {};
   const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);

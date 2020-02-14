@@ -179,4 +179,13 @@ module.exports = {
       type: 'integer',
     },
   },
+  profileIdParam: {
+    name: 'profileId',
+    in: 'path',
+    description: 'SkyBlock profile id e.g. \'498228a732d443589aabd1e97e6806cd\' or profile name e.g. \'Mango\'. Note: profile name can be different (although unlikely) for different members of a co-op!',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
 };
