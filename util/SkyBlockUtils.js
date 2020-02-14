@@ -1,5 +1,5 @@
-const rarityOrder = ['special', 'legendary', 'epic', 'rare', 'uncommon', 'common'];
-const maxSouls = 190;
+// const rarityOrder = ['special', 'legendary', 'epic', 'rare', 'uncommon', 'common'];
+// const maxSouls = 190;
 
 // XP required for each level of a skill
 const levelingXp = {
@@ -83,7 +83,7 @@ const runecraftingXp = {
   24: 15300,
 };
 
-const slayerXp = {
+/* const slayerXp = {
   1: 5,
   2: 15,
   3: 200,
@@ -92,7 +92,7 @@ const slayerXp = {
   6: 20000,
   7: 100000,
   8: 400000,
-};
+}; */
 
 function getLevelByXp(xp = 0, runecrafting) {
   const xpTable = runecrafting ? runecraftingXp : levelingXp;
