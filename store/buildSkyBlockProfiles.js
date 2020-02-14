@@ -47,7 +47,7 @@ function buildProfile(uuid, id = null, cb) {
       if (id === null) {
         [profile_id] = getLatestProfile(profiles);
       } else if (id.length < 32) {
-        profile_id = Object.keys(profiles).find(profile => profiles[profile].cute_name === id) || null;
+        profile_id = Object.keys(profiles).find(profile => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
       }
     } else {
       // buildPlayer(uuid, () => {});
