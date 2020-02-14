@@ -42,14 +42,14 @@ function getLevelForExp(exp) {
   let expWithoutPrestiges = exp - (prestiges * XP_PER_PRESTIGE);
 
   for (let i = 1; i <= EASY_LEVELS; i += 1) {
-    const expForEasyLevel = getExpForLevel(i);
+    let expForEasyLevel = getExpForLevel(i);
     if (expWithoutPrestiges < expForEasyLevel) {
       break;
     }
     level += 1;
     expWithoutPrestiges -= expForEasyLevel;
   }
-  return level + (expWithoutPrestiges / 5000).toFixed(2);
+  return level + Math.floor(expWithoutPrestiges / 5000);
 }
 
 module.exports = {
