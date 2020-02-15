@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /*
 * Process NBT inventory data
  */
@@ -11,6 +12,8 @@ const itemSchema = {
   attributes: {
     modifier: 'tag.value.ExtraAttributes.value.modifier',
     enchantments: 'tag.value.ExtraAttributes.value.enchantments',
+    anvil_uses: 'tag.value.ExtraAttributes.value.anvil_uses',
+    hot_potato_count: 'tag.value.ExtraAttributes.value.hot_potato_count',
     origin: 'tag.value.ExtraAttributes.value.originTag',
     id: 'tag.value.ExtraAttributes.value.id',
     uuid: 'tag.value.ExtraAttributes.value.uuid',
@@ -27,7 +30,7 @@ function getTexture(value = []) {
   const string = Buffer.from(value[0].Value.value, 'base64').toString();
   const link = JSON.parse(string).textures.SKIN.url;
   const array = link.split('/');
-  return array[array.length - 1];
+  return array.pop();
 }
 
 /*
@@ -50,6 +53,11 @@ function simplifyItem(item) {
         Object.keys(enchantments || {}).forEach((enchantment) => {
           x.attributes.enchantments[enchantment] = enchantments[enchantment].value;
         });
+      }
+      // Handle hot potatoes
+      const { hot_potato_count } = x.attributes;
+      if (hot_potato_count !== null) {
+        x.attributes.anvil_uses -= hot_potato_count;
       }
       // Decode texture data
       const { texture } = x.attributes;
