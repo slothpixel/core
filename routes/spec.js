@@ -515,6 +515,10 @@ const spec = {
                       description: 'Formatting code for the guild tag',
                       type: 'string',
                     },
+                    tag_formatted: {
+                      description: 'Formatted tag string e.g. \'&b[TAG]\'',
+                      type: 'string',
+                    },
                     legacy_ranking: {
                       description: 'Ranking in the number of guild coins owned in the legacy guild system',
                       type: 'integer',

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const utility = require('../util/utility');
 
 /*
@@ -129,14 +130,17 @@ function processGuildData({
       expHistory[day] += member.exp_history[day];
     });
   });
+  const guildTag = utility.betterFormatting(tag);
+  const tag_color = utility.colorNameToCode(tagColor);
   return {
     name,
     id: _id,
     created,
     joinable,
     public: publiclyListed,
-    tag: utility.betterFormatting(tag),
-    tag_color: utility.colorNameToCode(tagColor),
+    tag: guildTag,
+    tag_color,
+    tag_formatted: `${tag_color}[${guildTag}]`,
     legacy_ranking: legacyRanking + 1,
     exp,
     level: getLevel(exp),
