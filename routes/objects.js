@@ -166,6 +166,284 @@ const playerObject = {
               description: 'Current coins in the Arcade Games',
               type: 'integer',
             },
+            blocking_dead: {
+              description: 'Stats about Blocking Dead',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Blocking Dead',
+                  type: 'integer',
+                },
+                zombie_kills: {
+                  description: 'Amount of zombie kills in Blocking Dead',
+                  type: 'integer',
+                },
+                headshots: {
+                  description: 'Amount of headshots in Blocking Dead',
+                  type: 'integer',
+                },
+              },
+            },
+            dragonwars: {
+              description: 'Stats about Dragon Wars',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Dragon Wars',
+                  type: 'integer',
+                },
+                kills: {
+                  description: 'Amount of kills in Dragon Wars',
+                  type: 'integer',
+                },
+              }
+            },
+            hypixel_says: {
+              description: 'Stats about Hypixel Says',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Hypixel Says',
+                  type: 'integer',
+                },
+                rounds: {
+                  description: 'Amount of rounds played in Hypixel Says',
+                  type: 'integer',
+                },
+              }
+            },
+            santa_says: {
+              description: 'Stats about Santa Says',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Santa Says',
+                  type: 'integer',
+                },
+                rounds: {
+                  description: 'Amount of rounds played in Santa Says',
+                  type: 'integer',
+                },
+              },
+            },
+            miniwalls: {
+              description: 'Stats about Mini Walls',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Mini Walls',
+                  type: 'integer',
+                },
+                kills: {
+                  description: 'Amount of kills in Mini Walls',
+                  type: 'integer',
+                },
+                deaths: {
+                  description: 'Amount of deaths in Mini Walls',
+                  type: 'integer',
+                },
+                final_kills: {
+                  description: 'Amount of final kills in Mini Walls',
+                  type: 'integer',
+                },
+                arrows_shot: {
+                  description: 'The number of arrows shot in Mini Walls',
+                  type: 'integer',
+                },
+                arrows_hit: {
+                  description: 'Amount of arrows that hit their targets in Mini Walls',
+                  type: 'integer',
+                },
+                wither_damage: {
+                  description: 'Amount of wither damage taken in Mini Walls',
+                  type: 'number',
+                },
+                wither_kills: {
+                  description: 'Amount of withers killed in Mini Walls',
+                  type: 'integer',
+                },
+                kit: {
+                  description: 'Active kit',
+                  type: 'any',
+                },
+              },
+            },
+            party_games: {
+              description: 'Stats about Party Games',
+              type: 'object',
+              properties: {
+                wins_1: {
+                  description: 'Amount of wins in Party Games',
+                  type: 'integer',
+                },
+                wins_2: {
+                  description: 'Amount of wins in Party Games',
+                  type: 'integer',
+                },
+                wins_3: {
+                  description: 'Amount of wins in Party Games',
+                  type: 'integer',
+                },
+              },
+            },
+            bounty_hunters: {
+              description: 'Stats about Bounty Hunters',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Bounty Hunters',
+                  type: 'integer',
+                },
+                kills: {
+                  description: 'Amount of kills in Bounty Hunters',
+                  type: 'integer',
+                },
+                deaths: {
+                  description: 'Amount of deaths in Bounty Hunters',
+                  type: 'integer',
+                },
+                bounty_kills: {
+                  description: 'Amount of bounty kills in Bounty Hunters',
+                  type: 'integer',
+                },
+              },
+            },
+            galaxy_wars: {
+              description: 'Stats about Galaxy Wars',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Galaxy Wars',
+                  type: 'integer',
+                },
+                kills: {
+                  description: 'Amount of kills in Galaxy Wars',
+                  type: 'integer',
+                },
+                deaths: {
+                  description: 'Amount of deaths in Galaxy Wars',
+                  type: 'integer',
+                },
+                rebel_kills: {
+                  description: 'Amount of rebel kills in Galaxy Wars',
+                  type: 'integer',
+                },
+                shots_fired: {
+                  description: 'The number of shots fired in Galaxy Wars',
+                  type: 'integer',
+                },
+              },
+            },
+            farm_hunt: {
+              description: 'Stats about Farm Hunt',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Farm Hunt',
+                  type: 'integer',
+                },
+                poop_collected: {
+                  description: 'Amount of poop collected in Farm Hunt',
+                  type: 'integer',
+                },
+              },
+            },
+            football: {
+              description: 'Stats about Football',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Football',
+                  type: 'integer',
+                },
+                goals: {
+                  description: 'Amount of goals scored in Football',
+                  type: 'integer',
+                },
+                powerkicks: {
+                  description: 'Amount of powerkicks in Football',
+                  type: 'integer',
+                },
+              },
+            },
+            creeper_attack: {
+              description: 'Stats about Creeper Attack',
+              type: 'object',
+              properties: {
+                best_wave: {
+                  description: 'Best wave in Football',
+                  type: 'integer',
+                },
+              },
+            },
+            hole_in_the_wall: {
+              description: 'Stats about Hole in the Wall',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Hole in the Wall',
+                  type: 'integer',
+                },
+                rounds: {
+                  description: 'Amount of rounds played in Hole in the Wall',
+                  type: 'integer',
+                },
+                highest_score_qualification: {
+                  description: 'Highest score qualification in Hole in the Wall',
+                  type: 'integer',
+                },
+                highest_score_finals: {
+                  description: 'Highest score in finals in Hole in the Wall',
+                  type: 'integer',
+                },
+              },
+            },
+            zombies: {
+              description: 'Stats about Zombies',
+              type: 'object',
+              properties: {
+                wins: {
+                  description: 'Amount of wins in Zombies',
+                  type: 'integer',
+                },
+                zombie_kills: {
+                  description: 'Amount of zombie kills in Zombies',
+                  type: 'integer',
+                },
+                deaths: {
+                  description: 'Amount of deaths in Zombies',
+                  type: 'integer',
+                },
+                total_rounds_survived: {
+                  description: 'Total rounds survived in Zombies',
+                  type: 'integer',
+                },
+                bullets_hit: {
+                  description: 'Amount of bullets hit in Zombies',
+                  type: 'integer',
+                },
+                headshots: {
+                  description: 'Amount of headshots in Zombies',
+                  type: 'integer',
+                },
+                players_revived: {
+                  description: 'Amount of players revived in Zombies',
+                  type: 'integer',
+                },
+                windows_repaired: {
+                  description: 'Amount of windows repaired in Zombies',
+                  type: 'integer',
+                },
+                doors_opened: {
+                  description: 'Amount of doors opened in Zombies',
+                  type: 'integer',
+                },
+                best_round: {
+                  description: 'Best round in Zombies',
+                  type: 'integer',
+                },
+              },
+            },
           },
         },
         Arena: {
@@ -442,6 +720,135 @@ const playerObject = {
             coins: {
               description: 'Current coins in Bedwars',
               type: 'integer',
+            },
+            exp: {
+              description: 'Total exp',
+              type: 'number',
+            },
+            level: {
+              description: 'EXP level',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Total exp',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Total exp',
+              type: 'integer',
+            },
+            games_played: {
+              description: 'Total exp',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Total exp',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Total number of deaths',
+              type: 'integer',
+            },
+            k_d: {
+              description: 'K/D ratio',
+              type: 'number',
+            },
+            w_l: {
+              description: 'W/L ratio',
+              type: 'number',
+            },
+            beds_broken: {
+              description: 'Total number of beds broken',
+              type: 'integer',
+            },
+            beds_lost: {
+              description: 'Total number of beds lost',
+              type: 'integer',
+            },
+            bed_ratio: {
+              description: 'Ratio of beds broken to beds lost',
+              type: 'number',
+            },
+            final_kills: {
+              description: 'Total number of final kills',
+              type: 'integer',
+            },
+            final_deaths: {
+              description: 'Total number of final deaths',
+              type: 'integer',
+            },
+            final_k_d: {
+              description: 'Total number of final deaths',
+              type: 'number',
+            },
+            void_kills: {
+              description: 'Total number of final deaths',
+              type: 'integer',
+            },
+            void_deaths: {
+              description: 'Total number of final deaths',
+              type: 'integer',
+            },
+            winstreak: {
+              description: 'Amount of times you\'ve gone without losing',
+              type: 'integer',
+            },
+            boxes: {
+              description: 'Stats for boxes in BedWars',
+              type: 'object',
+              properties: {
+                current: {
+                  description: 'Current amount of boxes',
+                  type: 'integer',
+                },
+                opened: {
+                  description: 'Amount of boxes opened',
+                  type: 'integer',
+                },
+                commons: {
+                  description: 'Amount of commons earned from boxes',
+                  type: 'integer',
+                },
+                rares: {
+                  description: 'Amount of rares earned from boxes',
+                  type: 'integer',
+                },
+                epics: {
+                  description: 'Amount of epics earned from boxes',
+                  type: 'integer',
+                },
+                legendaries: {
+                  description: 'Amount of legendaries earned from boxes',
+                  type: 'integer',
+                },
+              },
+            },
+            resources_collected: {
+              description: 'Stats for the resources collected in BedWars',
+              type: 'object',
+              properties: {
+                iron: {
+                  description: 'Total number of iron collected from generators',
+                  type: 'integer',
+                },
+                gold: {
+                  description: 'Total number of gold collected from generators',
+                  type: 'integer',
+                },
+                diamond: {
+                  description: 'Total number of diamonds collected from generators',
+                  type: 'integer',
+                },
+                emerald: {
+                  description: 'Total number of emeralds collected from generators',
+                  type: 'integer',
+                },
+              },
+            },
+            gamemodes: {
+              description: 'Stats for the different gamemodes in BedWars',
+              type: 'object',
+              properties: {},
             },
           },
         },
