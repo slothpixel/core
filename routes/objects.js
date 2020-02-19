@@ -196,7 +196,7 @@ const playerObject = {
                   description: 'Amount of kills in Dragon Wars',
                   type: 'integer',
                 },
-              }
+              },
             },
             hypixel_says: {
               description: 'Stats about Hypixel Says',
@@ -210,7 +210,7 @@ const playerObject = {
                   description: 'Amount of rounds played in Hypixel Says',
                   type: 'integer',
                 },
-              }
+              },
             },
             santa_says: {
               description: 'Stats about Santa Says',
