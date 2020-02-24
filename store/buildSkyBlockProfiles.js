@@ -75,10 +75,10 @@ function buildProfile(uuid, id = null, cb) {
 
 // Destruct some properties from profiles for overview
 function getStats({
-  first_join,
-  last_save,
-  collections_unlocked,
-}, members) {
+  first_join = null,
+  last_save = null,
+  collections_unlocked = 0,
+}, members = {}) {
   return {
     first_join,
     last_save,
@@ -98,11 +98,10 @@ function buildProfileList(uuid, profiles = {}) {
     const p = JSON.parse(res) || {};
     // TODO - Mark old profiles
     const updateQueue = Object.keys(profiles).filter(id => !(id in p));
-    logger.info(updateQueue);
     if (updateQueue.length === 0) return;
     async.each(updateQueue, (id, cb) => {
       buildProfile(uuid, id, (err, profile) => {
-        p[id] = Object.assign(profiles[id], getStats(profile.members[uuid], profile.members));
+        p[id] = Object.assign(profiles[id], getStats(profile.members[uuid] || {}, profile.members));
         cb();
       });
     }, () => redis.set(key, JSON.stringify(p), (err) => {
