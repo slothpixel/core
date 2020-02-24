@@ -47,7 +47,7 @@ module.exports = {
   typeParam: {
     name: 'type',
     in: 'query',
-    description: '"players" or "guilds"',
+    description: '`players`, `guilds` or `skyblock`',
     required: true,
     schema: {
       type: 'string',
@@ -137,7 +137,7 @@ module.exports = {
   pageParam: {
     name: 'page',
     in: 'query',
-    description: 'Pages allow you to split data with the "limit" param. For example if there are 23 auctions matching you query and you se limit to 10, pages 0 and 1 will return 10 results and the third page 3.',
+    description: 'Pages allow you to split the data using the `limit` param. For example, if there are 23 auctions matching your query and you set the limit to 10, each page will return up to the next 10 consecutive results. With 23 results, you would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.',
     required: false,
     schema: {
       type: 'integer',
