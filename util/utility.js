@@ -310,6 +310,7 @@ function getData(redis, url, cb) {
         || !res
         || res.statusCode !== 200
         || !body
+        || (hypixelApi && !body.success)
       ) {
         // invalid response
         if (url.noRetry) {
