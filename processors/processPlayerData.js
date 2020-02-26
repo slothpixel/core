@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   logger,
   DBToStandardName,
@@ -32,10 +33,19 @@ function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
   return playerRank;
 }
 
+function getFirstLogin(firstLogin, _id) {
+  // Get date from MongoDB ObjectId
+  const betterDate = mongoose.Types.ObjectId(_id).getTimestamp().getTime();
+  return (betterDate < firstLogin)
+    ? betterDate
+    : firstLogin;
+}
+
 /*
  * This function modifies the raw API response to the wanted format
  */
 function processPlayerData({
+  _id,
   uuid,
   achievements,
   achievementsOneTime,
@@ -156,7 +166,7 @@ function processPlayerData({
         total_wins: totalWins,
         total_coins: totalCoins,
         mc_version: mcVersionRp,
-        first_login: firstLogin,
+        first_login: getFirstLogin(firstLogin, _id),
         last_login: lastLogin,
         last_game: typeToStandardName(mostRecentGameType),
         language: userLanguage,
