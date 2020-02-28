@@ -319,7 +319,11 @@ function getData(redis, url, cb) {
         if (mojangApi) {
           return cb('Failed to get player uuid', null);
         }
-        logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
+        if (body) {
+          logger.error(`[INVALID] error: ${body.cause}, retrying ${target}`);
+        } else {
+          logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
+        }
         return getData(redis, url, cb);
       }
       if (hypixelApi && !body.success) {
