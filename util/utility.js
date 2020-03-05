@@ -11,7 +11,7 @@ const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
-const { profileFields } = require('../store/profileFields');
+const profileFields = require('../store/profileFields');
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -165,7 +165,7 @@ function getNestedObjects(obj = {}, path = '') {
  */
 function getProfileFields(obj) {
   const profile = {};
-  profileFields.split(' ').forEach((field) => {
+  profileFields.forEach((field) => {
     profile[field] = obj[field];
   });
   return profile;

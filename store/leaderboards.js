@@ -4,7 +4,7 @@
  */
 const config = require('../config');
 const { logger } = require('../util/utility');
-const { profileFields } = require('../store/profileFields');
+const profileFields = require('../store/profileFields');
 const templates = require('../store/lb-templates');
 const cacheFunctions = require('../store/cacheFunctions');
 const {
@@ -22,15 +22,12 @@ function cacheLeaderboard(lb, key, cb) {
 }
 
 function getQueryFields(type, columns = '') {
-  let string = (type === 'players')
+  const defaultFields = (type === 'players')
     ? profileFields
-    : '';
-  columns
+    : [];
+  return columns
     .split(',')
-    .forEach((item) => {
-      string += ` ${item}`;
-    });
-  return string;
+    .concat(defaultFields);
 }
 
 function createQuery({
