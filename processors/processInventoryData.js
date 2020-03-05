@@ -42,10 +42,10 @@ function simplifyItem(item) {
   };
   Object.keys(itemSchema).forEach((key) => {
     if (key !== 'attributes') {
-      x[key] = getNestedObjects(item, itemSchema[key]).value || null;
+      x[key] = (getNestedObjects(item, itemSchema[key]) || {}).value || null;
     } else {
       Object.keys(itemSchema.attributes).forEach((attribute) => {
-        x.attributes[attribute] = getNestedObjects(item, itemSchema.attributes[attribute]).value || null;
+        x.attributes[attribute] = (getNestedObjects(item, itemSchema.attributes[attribute]) || {}).value || null;
       });
       // Prettify enchantments
       const { enchantments } = x.attributes;

@@ -155,20 +155,20 @@ function getNestedObjects(obj = {}, path = '') {
     if (obj[path[i]] === undefined) {
       break;
     }
-    obj = obj[path[i]] || {};
+    obj = obj[path[i]];
   }
   return obj;
 }
 
 /**
-* Returns profile fields from a player object
+* Returns specified+profile fields from a player object
  */
-function getProfileFields(obj) {
-  const profile = {};
-  profileFields.forEach((field) => {
-    profile[field] = obj[field];
+function getPlayerFields(obj = {}, fields = []) {
+  const res = {};
+  fields.concat(profileFields).forEach((field) => {
+    res[field] = getNestedObjects(obj, field);
   });
-  return profile;
+  return res;
 }
 
 /**
@@ -504,7 +504,7 @@ module.exports = {
   typeToStandardName,
   isContributor,
   getNestedObjects,
-  getProfileFields,
+  getPlayerFields,
   generateJob,
   getData,
   getStartOfBlockMinutes,

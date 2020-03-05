@@ -12,7 +12,7 @@ const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const {
-  logger, getProfileFields, min, max, median, average, stdDev,
+  logger, getPlayerFields, min, max, median, average, stdDev,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -22,8 +22,8 @@ const {
 } = require('./params');
 const packageJson = require('../package.json');
 
-function getPlayer(req, res, cb) {
-  getUUID(req.params.player, (err, uuid) => {
+function getPlayer(name, cb) {
+  getUUID(name, (err, uuid) => {
     if (err) {
       return cb({ status: 404, message: err });
     }
@@ -47,7 +47,7 @@ function populatePlayers(players, cb) {
         logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
         buildPlayer(uuid, (err, newPlayer) => {
           delete player.uuid;
-          const profile = getProfileFields(newPlayer);
+          const profile = getPlayerFields(newPlayer);
           profile.uuid = uuid;
           player.profile = profile;
           cachePlayerProfile(profile, () => {
@@ -235,9 +235,18 @@ const spec = {
           'player',
         ],
         summary: 'Get player stats by name or uuid',
-        description: 'Returns player stats',
+        description: 'Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.',
         parameters: [
           playerNameParam,
+          {
+            name: 'fields',
+            in: 'query',
+            description: 'A comma separated list of fields to include alongside basic stats.',
+            required: false,
+            schema: {
+              type: 'string',
+            },
+          },
         ],
         responses: {
           200: {
@@ -253,13 +262,24 @@ const spec = {
         },
         route: () => '/players/:player',
         func: (req, res) => {
-          getPlayer(req, res, (err, player) => {
-            if (err) {
-              return res.status(err.status).json({ error: err.message });
-            }
-            delete player.achievements;
-            delete player.quests;
-            return res.json(player);
+          const players = req.params.player.split(',').slice(0, 15);
+          async.map(players, (player, cb) => {
+            getPlayer(player, (err, player) => {
+              if (err) {
+                return cb(err);
+              }
+              delete player.achievements;
+              delete player.quests;
+              const { fields } = req.query;
+              if (fields) {
+                player = getPlayerFields(player, fields.split(','));
+              }
+              return cb(null, player);
+            });
+          }, (err, result) => {
+            if (err) return res.status(err.status).json({ error: err.message });
+            if (result.length === 1) return res.json(result[0]);
+            return res.json(result);
           });
         },
       },
@@ -358,7 +378,7 @@ const spec = {
         },
         route: () => '/players/:player/achievements',
         func: (req, res) => {
-          getPlayer(req, res, (err, player) => {
+          getPlayer(req.params.player, (err, player) => {
             if (err) {
               return res.status(err.status).json({ error: err.message });
             }
@@ -413,7 +433,7 @@ const spec = {
         },
         route: () => '/players/:player/quests',
         func: (req, res) => {
-          getPlayer(req, res, (err, player) => {
+          getPlayer(req.params.player, (err, player) => {
             if (err) {
               return res.status(err.status).json({ error: err.message });
             }
@@ -422,62 +442,6 @@ const spec = {
         },
       },
     },
-    /*
-    '/profile/{playerName}': {
-      get: {
-        tags: [
-          'player',
-        ],
-        summary: 'Get basic player info',
-        description: 'Returns player stats',
-        parameters: [
-          playerNameParam,
-          },
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    uuid: {
-                      description: 'Player uuid',
-                      type: 'string',
-                    },
-                    username: {
-                      description: 'Player username',
-                      type: 'string',
-                    },
-                    first_login: {
-                      description: 'First login date',
-                      type: 'string',
-                    },
-                    level: {
-                      description: 'Player level',
-                      type: 'number',
-                    },
-                    achievement_points: {
-                      description: 'Total achievement points',
-                      type: 'integer',
-                    },
-                    karma: {
-                      type: 'integer',
-                    },
-                    rank_formatted: {
-                      description: 'Formatted rank string',
-                      type: 'string',
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    */
     '/guilds/{playerName}': {
       get: {
         tags: [
