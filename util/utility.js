@@ -321,6 +321,9 @@ function getData(redis, url, cb) {
         }
         if (body) {
           logger.error(`[INVALID] error: ${body.cause}, retrying ${target}`);
+          if (body.cause === 'Internal error') {
+            return cb('Internal error');
+          }
         } else {
           logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
         }
