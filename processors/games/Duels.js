@@ -304,7 +304,7 @@ module.exports = ({
   op_duel_rounds_played = 0,
   op_duel_wins = 0,
   op_rookie_title_prestige = 0,
-  packages = 0,
+  packages = [],
   paladin_kit_wins = 0,
   potion_duel_damage_dealt = 0,
   potion_duel_deaths = 0,
@@ -483,6 +483,7 @@ module.exports = ({
   wins = 0,
   wolftamer_kit_wins = 0,
 }) => ({
+  packages,
   active_auras,
   active_cage,
   active_cosmetictitle,
