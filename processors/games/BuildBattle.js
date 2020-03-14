@@ -23,13 +23,13 @@ module.exports = ({
   active_movement_trail = null,
   selected_backdrop = null,
   packages = [],
-  ...rest,
+  ...rest
 }) => {
   // Theme ratings come in as 'votes_Theme: rating'
   // ex: 'votes_Roman: 5', 'votes_Steam Locomotive: 3'
   const themeRatings = pickKeys(rest, {
     regexp: /votes_.*/,
-    keyMap: (key) => key.replace('votes_', '')
+    keyMap: key => key.replace('votes_', ''),
   });
   return {
     coins,
@@ -51,6 +51,6 @@ module.exports = ({
     selected_movement_trail: active_movement_trail,
     selected_backdrop,
     packages,
-    themeRatings: themeRatings,
-  }
+    themeRatings,
+  };
 };

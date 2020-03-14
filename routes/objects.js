@@ -862,75 +862,75 @@ const playerObject = {
             },
             score: {
               description: 'Current score in Build Battle',
-              type: 'integer'
+              type: 'integer',
             },
             wins: {
               description: 'Wins in all Build Battle modes',
-              type: 'integer'
+              type: 'integer',
             },
             w_r: {
               description: 'Win Ratio',
-              type: 'integer'
+              type: 'integer',
             },
             total_votes: {
               description: 'Judging votes on other builds',
-              type: 'integer'
+              type: 'integer',
             },
             wins_solo_normal: {
               description: 'Wins in Solo Mode',
-              type: 'integer'
+              type: 'integer',
             },
             wins_solo_pro: {
               description: 'Wins in Pro Mode',
-              type: 'integer'
+              type: 'integer',
             },
             wins_teams_normal: {
               description: 'Wins in Teams Mode',
-              type: 'integer'
+              type: 'integer',
             },
             wins_guess_the_build: {
               description: 'Wins in Guess The Build',
-              type: 'integer'
+              type: 'integer',
             },
             correct_guesses: {
               description: 'Correct guesses in Guess The Build',
-              type: 'integer'
+              type: 'integer',
             },
             games_played: {
               description: 'Post-Update games played in all modes',
-              type: 'integer'
+              type: 'integer',
             },
             super_votes: {
               description: 'Super Votes the player currently has',
-              type: 'integer'
+              type: 'integer',
             },
             loadout: {
               description: 'Custom Hotbar loadout',
-              type: 'array'
+              type: 'array',
             },
             selected_hat: {
               description: 'Currently selected hat cosmetic',
-              type: 'string'
+              type: 'string',
             },
             selected_victory_dance: {
               description: 'Currently selected victory dance cosmetic',
-              type: 'string'
+              type: 'string',
             },
             selected_suit: {
               description: 'Currently selected suit cosmetic',
-              type: 'string'
+              type: 'string',
             },
             selected_movement_trail: {
               description: 'Currently selected movement trail cosmetic',
-              type: 'string'
+              type: 'string',
             },
             selected_backdrop: {
               description: 'Currently selected backdrop cosmetic',
-              type: 'string'
+              type: 'string',
             },
             themeRatings: {
               description: 'Key-Value pairs of 1-5 star ratings on themes',
-              type: 'object'
+              type: 'object',
             },
           },
         },
