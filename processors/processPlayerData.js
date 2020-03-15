@@ -168,6 +168,7 @@ function processPlayerData({
         mc_version: mcVersionRp,
         first_login: getFirstLogin(firstLogin, _id),
         last_login: lastLogin,
+        last_logout: lastLogout,
         last_game: typeToStandardName(mostRecentGameType),
         language: userLanguage,
         gifts_sent: realBundlesGiven,
