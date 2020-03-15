@@ -30,7 +30,7 @@ module.exports = ({
   potions_thrown = 0,
   arrows_fired = 0,
   blitz_uses = 0,
-
+  chests_opened = 0,
   monthly_kills_a = 0,
   monthly_kills_b = 0,
   weekly_kills_a = 0,
@@ -58,6 +58,8 @@ module.exports = ({
   meatmaster = 0,
   necromancer = 0,
   paladin = 0,
+  random = 0,
+  rambo = 0,
   pigman = 0,
   reaper = 0,
   reddragon = 0,
@@ -119,6 +121,8 @@ module.exports = ({
     meatmaster,
     necromancer,
     paladin,
+    random,
+    rambo,
     pigman,
     reaper,
     reddragon,
@@ -165,6 +169,7 @@ module.exports = ({
     potions_thrown,
     arrows_fired,
     blitz_uses,
+    chests_opened,
 
     kits_levels: kitLevels,
     kit_stats: {
@@ -173,6 +178,8 @@ module.exports = ({
         teams: getKitStat(/^wins_teams_/),
       },
       kills: getKitStat(/^kills_/),
+      kd: getRatio(getKitStat(/^kills_/),getKitStat(/^deaths_/)),
+      wl: getRatio(getKitStat(/^wins_(?!teams_)/)+getKitStat(/^wins_teams_/),getKitStat(/^deaths_/)),
       games_played: getKitStat(/^games_played_/),
       time_played: getKitStat(/^time_played_/),
       chests_opened: getKitStat(/^chests_opened_/),
