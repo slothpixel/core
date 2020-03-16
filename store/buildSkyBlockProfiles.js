@@ -67,7 +67,7 @@ function buildProfile(uuid, id = null, cb) {
         if (err) {
           return cb(err);
         }
-        cacheProfile(key, profile, profile => cb(null, profile));
+        cacheProfile(key, profile, profile => cb(null, profile || {}));
       });
     });
   });
