@@ -68,11 +68,15 @@ const playerObject = {
     },
     first_login: {
       description: 'Date of first Hypixel login',
-      type: 'string',
+      type: 'integer',
     },
     last_login: {
       description: 'Date of latest Hypixel login',
-      type: 'string',
+      type: 'integer',
+    },
+    last_logout: {
+      description: 'Date of latest Hypixel logout',
+      type: 'integer',
     },
     last_game: {
       description: 'Latest minigame played',
@@ -1182,7 +1186,7 @@ const playerObject = {
               description: 'Total kills in Blitz Survival Games',
               type: 'integer',
             },
-            kd: {
+            k_d: {
               description: 'Ratio of kills to deaths in Blitz Survival Games',
               type: 'number',
             },
@@ -1260,6 +1264,10 @@ const playerObject = {
             },
             blitz_uses: {
               description: 'Total number of Blitz Stars used in Blitz Survival Games',
+              type: 'integer',
+            },
+            chests_opened: {
+              description: 'Total number of chests opened in Blitz Survival Games',
               type: 'integer',
             },
             kits_levels: {
