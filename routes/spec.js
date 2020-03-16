@@ -12,7 +12,7 @@ const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const {
-  logger, getPlayerFields, min, max, median, average, stdDev,
+  logger, generateJob, getData, DBToStandardName, getPlayerFields, min, max, median, average, stdDev,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -438,6 +438,69 @@ const spec = {
               return res.status(err.status).json({ error: err.message });
             }
             return res.json(player.quests);
+          });
+        },
+      },
+    },
+    '/players/{playerName}/recentGames': {
+      get: {
+        tags: [
+          'player',
+        ],
+        summary: 'Get recent games played',
+        description: 'Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.',
+        parameters: [
+          playerNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    quests_completed: {
+                      type: 'integer',
+                      description: 'Total quests completed',
+                    },
+                    challenges_completed: {
+                      type: 'integer',
+                      description: 'Total challenges completed',
+                    },
+                    completions: {
+                      type: 'object',
+                      properties: {
+                        game: {
+                          type: 'array',
+                          items: {
+                            description: 'UNIX date',
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/players/:player/recentGames',
+        func: (req, res, cb) => {
+          getUUID(req.params.player, (err, uuid) => {
+            if (err) {
+              return res.status(404).json({ error: err });
+            }
+            getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
+              if (err) {
+                return cb(err);
+              }
+              return res.json(data.games.map(game) => {
+                game.gameType = DBToStandardName(game.gameType);
+                  return game;
+              });
+            })
           });
         },
       },
