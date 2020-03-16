@@ -145,6 +145,44 @@ module.exports = ({
     kitLevels[key] += 1;
   });
 
+  const kit_stats = {
+    wins: {
+      solo: getKitStat(/^wins_(?!teams_)/),
+      teams: getKitStat(/^wins_teams_/),
+    },
+    kills: getKitStat(/^kills_/),
+    k_d: {},
+    w_l: {},
+    games_played: getKitStat(/^games_played_/),
+    time_played: getKitStat(/^time_played_/),
+    chests_opened: getKitStat(/^chests_opened_/),
+    mobs_spawned: getKitStat(/^mobs_spawned_/),
+    damage_taken: getKitStat(/^damage_taken_/),
+    fall_damage: getKitStat(/^fall_damage_/),
+    arrows_fired: getKitStat(/^arrows_fired_/),
+    arrows_hit: getKitStat(/^arrows_hit_/),
+    bottles_thrown: getKitStat(/^bottles_thrown_/),
+    potions_drunk: getKitStat(/^potions_drunk_/),
+    potions_thrown: getKitStat(/^potions_thrown_/),
+    taunt_kills: getKitStat(/^taunt_kills_/),
+    misc: {
+      tim_items_enchanted: rest.items_enchanted_tim,
+      blocks_traveled: getKitStat(/^blocks_traveled_/),
+      creepertamer_explosive_kills: rest.explosive_kills_creepertamer,
+      creepertamer_tnt_placed: rest.tnt_placed_creepertamer,
+      snowman_snowballs_thrown: rest.snowballs_thrown_snowman,
+      farmer_eggs_collected: rest.eggs_collected_farmer,
+      farmer_eggs_thrown: rest.eggs_thrown_farmer,
+      hype_train_rails_placed: rest['rails_placed_hype train'],
+    },
+  };
+
+  // Calculate k_d and w_l for kits
+  Object.keys(kit_stats.games_played).forEach((kit) => {
+    kit_stats.k_d[kit] = getRatio(kit_stats.kills[kit], (kit_stats.games_played[kit] - (kit_stats.wins.solo[kit] || 0 + kit_stats.wins.teams[kit] || 0)));
+    kit_stats.w_l[kit] = getRatio((kit_stats.wins.solo[kit] || 0 + kit_stats.wins.teams[kit] || 0), kit_stats.games_played[kit]);
+  });
+
   return {
     coins,
     deaths,
@@ -172,37 +210,7 @@ module.exports = ({
     chests_opened,
 
     kits_levels: kitLevels,
-    kit_stats: {
-      wins: {
-        solo: getKitStat(/^wins_(?!teams_)/),
-        teams: getKitStat(/^wins_teams_/),
-      },
-      kills: getKitStat(/^kills_/),
-      k_d: getRatio(getKitStat(/^kills_/), getKitStat(/^deaths_/)),
-      w_l: getRatio(getKitStat(/^wins_(?!teams_)/) + getKitStat(/^wins_teams_/), getKitStat(/^deaths_/)),
-      games_played: getKitStat(/^games_played_/),
-      time_played: getKitStat(/^time_played_/),
-      chests_opened: getKitStat(/^chests_opened_/),
-      mobs_spawned: getKitStat(/^mobs_spawned_/),
-      damage_taken: getKitStat(/^damage_taken_/),
-      fall_damage: getKitStat(/^fall_damage_/),
-      arrows_fired: getKitStat(/^arrows_fired_/),
-      arrows_hit: getKitStat(/^arrows_hit_/),
-      bottles_thrown: getKitStat(/^bottles_thrown_/),
-      potions_drunk: getKitStat(/^potions_drunk_/),
-      potions_thrown: getKitStat(/^potions_thrown_/),
-      taunt_kills: getKitStat(/^taunt_kills_/),
-      misc: {
-        tim_items_enchanted: rest.items_enchanted_tim,
-        blocks_traveled: getKitStat(/^blocks_traveled_/),
-        creepertamer_explosive_kills: rest.explosive_kills_creepertamer,
-        creepertamer_tnt_placed: rest.tnt_placed_creepertamer,
-        snowman_snowballs_thrown: rest.snowballs_thrown_snowman,
-        farmer_eggs_collected: rest.eggs_collected_farmer,
-        farmer_eggs_thrown: rest.eggs_thrown_farmer,
-        hype_train_rails_placed: rest['rails_placed_hype train'],
-      },
-    },
+    kit_stats,
     equipped: {
       aura: aura && aura.toLowerCase(),
       taunt: taunt && taunt.toLowerCase(),
