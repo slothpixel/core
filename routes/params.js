@@ -51,6 +51,11 @@ module.exports = {
     required: true,
     schema: {
       type: 'string',
+      enum: [
+        'players',
+        'guilds',
+        'skyblock',
+      ],
     },
   },
   columnParam: {
@@ -74,10 +79,11 @@ module.exports = {
   sortOrderParam: {
     name: 'sortOrder',
     in: 'query',
-    description: 'Define sort order. `asc` for ascending or `desc` for descending (default)',
+    description: 'Define sort order. `asc` for ascending or `desc` for descending',
     required: false,
     schema: {
       type: 'string',
+      default: 'desc',
     },
   },
   limitParam: {
@@ -101,10 +107,11 @@ module.exports = {
   significantParam: {
     name: 'significant',
     in: 'query',
-    description: 'Set to "false" to also return admin accounts. "true" by default.',
+    description: 'Set to "false" to also return admin accounts.',
     required: false,
     schema: {
       type: 'boolean',
+      default: true,
     },
   },
   auctionUUIDParam: {
