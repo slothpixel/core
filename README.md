@@ -8,6 +8,7 @@ core
     <a href="https://travis-ci.org/slothpixel/core">
           <img src="https://travis-ci.org/slothpixel/core.svg?branch=master" alt="Build Status" />
         </a>
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fslothpixel%2Fcore?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fslothpixel%2Fcore.svg?type=shield"/></a>
     <a href="https://lgtm.com/projects/g/slothpixel/core/">
       <img src="https://img.shields.io/lgtm/grade/javascript/github/slothpixel/core" alt="Code Quality"/>
     </a>
@@ -67,3 +68,7 @@ History
 ---
 * Development started in July 2017
 * Project based on [The OpenDota Project](https://github.com/odota/)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fslothpixel%2Fcore.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fslothpixel%2Fcore?ref=badge_large)
