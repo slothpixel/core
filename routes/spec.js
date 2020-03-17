@@ -12,7 +12,7 @@ const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, DBToStandardName, getPlayerFields, min, max, median, average, stdDev,
+  logger, generateJob, getData, typeToStandardName, getPlayerFields, min, max, median, average, stdDev,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -458,26 +458,21 @@ const spec = {
             content: {
               'application/json': {
                 schema: {
-                  type: 'object',
-                  properties: {
-                    quests_completed: {
-                      type: 'integer',
-                      description: 'Total quests completed',
-                    },
-                    challenges_completed: {
-                      type: 'integer',
-                      description: 'Total challenges completed',
-                    },
-                    completions: {
-                      type: 'object',
-                      properties: {
-                        game: {
-                          type: 'array',
-                          items: {
-                            description: 'UNIX date',
-                            type: 'integer',
-                          },
-                        },
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      date: {
+                        type: 'integer',
+                      },
+                      gameType: {
+                        type: 'string',
+                      },
+                      mode: {
+                        type: 'string',
+                      },
+                      map: {
+                        type: 'string',
                       },
                     },
                   },
@@ -496,11 +491,15 @@ const spec = {
               if (err) {
                 return cb(err);
               }
-              return res.json(data.games.map(game) => {
-                game.gameType = DBToStandardName(game.gameType);
+              try {
+                return res.json(data.games.map((game) => {
+                  game.gameType = typeToStandardName(game.gameType);
                   return game;
-              });
-            })
+                }));
+              } catch (e) {
+                return cb(e);
+              }
+            });
           });
         },
       },
