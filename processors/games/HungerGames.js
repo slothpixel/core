@@ -150,6 +150,7 @@ module.exports = ({
     wins: {
       solo: getKitStat(/^wins_(?!teams_)/),
       teams: getKitStat(/^wins_teams_/),
+      total: (getKitStat(/^wins_(?!teams_)/) + getKitStat(/^wins_teams_/)),
     },
     kills: getKitStat(/^kills_/),
     k_d: {},
