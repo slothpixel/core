@@ -2,10 +2,10 @@
 const db = require('./db');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
-const lbTemplates = require('../store/lb-templates');
+const lbTemplates = require('./lb-templates');
 const {
   Player, Guild, SkyBlockProfile, Auction,
-} = require('../store/models');
+} = require('./models');
 
 function insertPlayer(uuid, player, cb) {
   Player.findOneAndUpdate({ uuid }, player, { new: true, upsert: true }, function (err) {
@@ -30,7 +30,7 @@ function getPlayers(filter = {}, fields = null, options = {}, cb) {
     if (err) {
       logger.error(err);
     }
-    cb(err, res.map(model => model.toObject()));
+    cb(err, res.map((model) => model.toObject()));
   });
 }
 
@@ -141,7 +141,7 @@ function getAuctions(filter, fields = null, options, cb) {
     if (err) {
       return cb(err, null);
     }
-    cb(null, res.map(model => model.toObject()));
+    cb(null, res.map((model) => model.toObject()));
   });
 }
 

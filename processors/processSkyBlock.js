@@ -45,9 +45,9 @@ function processStats({
   auctions_gold_spent = 0,
   ...rest
 }) {
-  const getStats = regexp => pickKeys(rest, {
+  const getStats = (regexp) => pickKeys(rest, {
     regexp,
-    keyMap: key => key.replace(regexp, ''),
+    keyMap: (key) => key.replace(regexp, ''),
   });
   const auctions = {
     created: auctions_created,
@@ -112,10 +112,10 @@ async function processMember({
   ender_chest_contents = {},
   ...rest
 }) {
-  const getSkills = regexp => pickKeys(rest, {
+  const getSkills = (regexp) => pickKeys(rest, {
     regexp,
-    keyMap: key => key.replace(regexp, ''),
-    valueMap: val => SkyBlockUtils.getLevelByXp(val),
+    keyMap: (key) => key.replace(regexp, ''),
+    valueMap: (val) => SkyBlockUtils.getLevelByXp(val),
   });
   const getUnlockedTier = (array) => {
     const o = {};

@@ -854,7 +854,7 @@ const spec = {
               if (err) {
                 return res.json({ error: err });
               }
-              populatePlayers(Object.keys(profile.members).map(uuid => ({ uuid })), (players) => {
+              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (players) => {
                 players.forEach((player) => {
                   profile.members[player.profile.uuid].player = player.profile;
                 });

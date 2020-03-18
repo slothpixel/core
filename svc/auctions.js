@@ -49,7 +49,7 @@ function getUpdateType(auction) {
 
 function processAndStoreAuctions(auctions = []) {
   function removeAuctionIds(bids) {
-    bids.forEach(bid => delete bid.auction_id);
+    bids.forEach((bid) => delete bid.auction_id);
     return bids;
   }
   function upsertDoc(uuid, update) {

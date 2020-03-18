@@ -163,12 +163,12 @@ module.exports = ({
   packages,
   ...rest
 }) => {
-  const pick = options => pickKeys(rest, options);
+  const pick = (options) => pickKeys(rest, options);
 
   const getKitStats = (regexp) => {
     const picks = pick({
       regexp,
-      keyMap: key => key.replace(regexp, '').replace('_kit_basic', ''),
+      keyMap: (key) => key.replace(regexp, '').replace('_kit_basic', ''),
     });
     return Object.keys(picks).length === 0 ? picks : undefined;
   };
@@ -209,13 +209,13 @@ module.exports = ({
 
     mastery: {
       active_mastery: activeMasterPerk && activeMasterPerk.replace('mastery_', ''),
-      berserk: pick({ regexp: /_mastery_berserk$/, keyMap: key => key.replace('_mastery_berserk', '') }),
-      fortune: pick({ regexp: /_mastery_fortune$/, keyMap: key => key.replace('_mastery_fortune', '') }),
-      huntsman: pick({ regexp: /_mastery_huntsman$/, keyMap: key => key.replace('_mastery_huntsman', '') }),
-      invigorate: pick({ regexp: /_mastery_invigorate$/, keyMap: key => key.replace('_mastery_invigorate', '') }),
-      master_baker: pick({ regexp: /_mastery_master_baker$/, keyMap: key => key.replace('_mastery_master_baker', '') }),
-      sniper: pick({ regexp: /_mastery_sniper$/, keyMap: key => key.replace('_mastery_sniper', '') }),
-      wild_specialist: pick({ regexp: /_mastery_wild_specialist$/, keyMap: key => key.replace('_mastery_wild_specialist', '') }),
+      berserk: pick({ regexp: /_mastery_berserk$/, keyMap: (key) => key.replace('_mastery_berserk', '') }),
+      fortune: pick({ regexp: /_mastery_fortune$/, keyMap: (key) => key.replace('_mastery_fortune', '') }),
+      huntsman: pick({ regexp: /_mastery_huntsman$/, keyMap: (key) => key.replace('_mastery_huntsman', '') }),
+      invigorate: pick({ regexp: /_mastery_invigorate$/, keyMap: (key) => key.replace('_mastery_invigorate', '') }),
+      master_baker: pick({ regexp: /_mastery_master_baker$/, keyMap: (key) => key.replace('_mastery_master_baker', '') }),
+      sniper: pick({ regexp: /_mastery_sniper$/, keyMap: (key) => key.replace('_mastery_sniper', '') }),
+      wild_specialist: pick({ regexp: /_mastery_wild_specialist$/, keyMap: (key) => key.replace('_mastery_wild_specialist', '') }),
     },
 
     gamemodes: {
@@ -389,7 +389,7 @@ module.exports = ({
     },
     drops: pickKeys(rest, {
       regexp: /_drop$/,
-      keyMap: key => key.replace(/_drop$/, '').replace(/§\S/, ''),
+      keyMap: (key) => key.replace(/_drop$/, '').replace(/§\S/, ''),
     }),
     votes: {
       hailstone: votes_Hailstone,

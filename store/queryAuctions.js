@@ -3,9 +3,9 @@
 * Allows custom DB queries for auctions API endpoint
  */
 const config = require('../config');
-const cacheFunctions = require('../store/cacheFunctions');
+const cacheFunctions = require('./cacheFunctions');
 const { logger } = require('../util/utility');
-const { Auction } = require('../store/models');
+const { Auction } = require('./models');
 
 function cacheAuctions(auctions, key, cb) {
   if (config.ENABLE_AUCTION_CACHE) {
@@ -102,7 +102,7 @@ function getAuctions(query, cb) {
       if (err) {
         cb(err);
       }
-      cacheAuctions(data, key, auctions => cb(null, auctions));
+      cacheAuctions(data, key, (auctions) => cb(null, auctions));
     });
   });
 }

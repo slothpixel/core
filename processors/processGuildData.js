@@ -62,7 +62,7 @@ function changeObjKeys(obj) {
 * This is stupid - See https://github.com/HypixelDev/PublicAPI/issues/177
  */
 function insertDefaultRanks(ranks, created) {
-  const highestPriority = Math.max(...ranks.map(o => o.priority));
+  const highestPriority = Math.max(...ranks.map((o) => o.priority));
   ranks.push({
     name: 'Guild Master',
     default: false,
@@ -74,7 +74,7 @@ function insertDefaultRanks(ranks, created) {
 }
 
 function getPreferredGames(games) {
-  return games.map(game => utility.typeToStandardName(game));
+  return games.map((game) => utility.typeToStandardName(game));
 }
 
 function processMembers(members) {

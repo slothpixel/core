@@ -62,7 +62,7 @@ module.exports = ({
   ...rest
 }) => {
   const perks = ['alchemy', 'apprentice', 'armorsmith', 'bloodcraft', 'cooking', 'enchanting', 'engineering', 'hunter', 'survivalism', 'toolsmithing', 'weaponsmith']
-    .map(perk => [perk, pickKeys(rest, { regexp: new RegExp(`perk_${perk}_`) })])
+    .map((perk) => [perk, pickKeys(rest, { regexp: new RegExp(`perk_${perk}_`) })])
     .reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
 
   return {

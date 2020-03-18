@@ -31,10 +31,10 @@ module.exports = ({
   packages = [],
   ...rest
 }) => {
-  const getModeStats = regexp => pickKeys(rest, {
+  const getModeStats = (regexp) => pickKeys(rest, {
     regexp,
     // who named these ;-;
-    keyMap: key => key.replace(regexp, '')
+    keyMap: (key) => key.replace(regexp, '')
       .replace(/^_/, '')
       .replace(' _', '_')
       .replace('_bedwars', '')

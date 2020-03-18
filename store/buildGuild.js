@@ -2,9 +2,9 @@
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const { logger, generateJob, getData } = require('../util/utility');
-const redis = require('../store/redis');
-const cacheFunctions = require('../store/cacheFunctions');
-const { insertGuild, getGuildByPlayer, removeGuild } = require('../store/queries');
+const redis = require('./redis');
+const cacheFunctions = require('./cacheFunctions');
+const { insertGuild, getGuildByPlayer, removeGuild } = require('./queries');
 
 /*
 * Functions to build/cache guild object
@@ -87,7 +87,7 @@ function buildGuild(uuid, cb) {
         if (guild === null) {
           return cb(null, { guild: null });
         }
-        cacheGuild(guild, id, key, guild => cb(null, guild));
+        cacheGuild(guild, id, key, (guild) => cb(null, guild));
       });
     });
   });

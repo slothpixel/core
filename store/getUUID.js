@@ -5,8 +5,8 @@
  */
 const config = require('../config');
 const { logger, removeDashes, getData } = require('../util/utility');
-const cacheFunctions = require('../store/cacheFunctions');
-const redis = require('../store/redis');
+const cacheFunctions = require('./cacheFunctions');
+const redis = require('./redis');
 
 function fetchUUID(username, cb) {
   const url = `https://api.mojang.com/users/profiles/minecraft/${username}`;

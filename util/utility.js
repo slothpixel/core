@@ -18,7 +18,7 @@ const logger = createLogger({
   format: format.combine(
     format.colorize(),
     format.timestamp(),
-    format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+    format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
   ),
 });
 if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') logger.level = 'debug';
@@ -106,8 +106,8 @@ function getMonthlyStat(a, b) {
 function pickKeys(obj, options) {
   const regexp = options.regexp || /.+/;
   const filter = options.filter || (() => true);
-  const keyMap = options.keyMap || (key => key);
-  const valueMap = options.valueMap || (value => value);
+  const keyMap = options.keyMap || ((key) => key);
+  const valueMap = options.valueMap || ((value) => value);
 
   return Object.entries(obj)
     .filter(([key, value]) => regexp.test(key) && filter(key, value))
@@ -119,7 +119,7 @@ function pickKeys(obj, options) {
  * Converts minigames ID to standard name e.g. 3 => Walls
  */
 function IDToStandardName(name = '') {
-  const result = constants.game_types.find(game => game.id === Number(name));
+  const result = constants.game_types.find((game) => game.id === Number(name));
   return result === undefined ? name : result.standard_name;
 }
 
@@ -127,7 +127,7 @@ function IDToStandardName(name = '') {
  * Converts minigames database name to standard name e.g. GingerBread => TKR
  */
 function DBToStandardName(name = '') {
-  const result = constants.game_types.find(game => game.database_name.toLowerCase() === name.toLowerCase());
+  const result = constants.game_types.find((game) => game.database_name.toLowerCase() === name.toLowerCase());
   return result === undefined ? name : result.standard_name;
 }
 
@@ -135,7 +135,7 @@ function DBToStandardName(name = '') {
 * Converts minigames type to standard name e.g. QUAKECRAFT => Quake
  */
 function typeToStandardName(name) {
-  const result = constants.game_types.find(game => game.type_name === name);
+  const result = constants.game_types.find((game) => game.type_name === name);
   return result === undefined ? name : result.standard_name;
 }
 

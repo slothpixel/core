@@ -39,7 +39,7 @@ function doItems(cb) {
         cb(err);
       }
       const items = JSON.parse(res) || {};
-      ids = ids.filter(id => !(id in items));
+      ids = ids.filter((id) => !(id in items));
       logger.info(`${ids.length} IDs aren't currently included`);
       let counter = 0;
       async.each(ids, (id, cb) => {

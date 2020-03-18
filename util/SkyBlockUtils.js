@@ -109,7 +109,7 @@ function getLevelByXp(xp = 0, runecrafting) {
   let xpTotal = 0;
   let level = 0;
   let xpForNext = Infinity;
-  const maxLevel = Object.keys(xpTable).sort((a, b) => Number(a) - Number(b)).map(a => Number(a)).pop();
+  const maxLevel = Object.keys(xpTable).sort((a, b) => Number(a) - Number(b)).map((a) => Number(a)).pop();
 
   for (let x = 1; x <= maxLevel; x += 1) {
     xpTotal += xpTable[x];
