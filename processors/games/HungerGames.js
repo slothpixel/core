@@ -1,4 +1,3 @@
-
 /* eslint-disable camelcase */
 /*
  * Blitz Survival Games
@@ -183,7 +182,8 @@ module.exports = ({
   Object.keys(kit_stats.games_played).forEach((kit) => {
     kit_stats.wins.total[kit] = (kit_stats.wins.solo[kit] || 0) + (kit_stats.wins.teams[kit] || 0);
     kit_stats.k_d[kit] = getRatio(kit_stats.kills[kit], (kit_stats.games_played[kit] - ((kit_stats.wins.solo[kit] || 0) + (kit_stats.wins.teams[kit] || 0))));
-    kit_stats.w_l[kit] = getRatio(((kit_stats.wins.solo[kit] || 0) + (kit_stats.wins.teams[kit] || 0)), (kit_stats.games_played[kit] - ((kit_stats.wins.solo[kit] || 0) + (kit_stats.wins.teams[kit] || 0))));
+    kit_stats.w_l[kit] = getRatio(((kit_stats.wins.solo[kit] || 0) + (kit_stats.wins.teams[kit] || 0)),
+      (kit_stats.games_played[kit] - ((kit_stats.wins.solo[kit] || 0) + (kit_stats.wins.teams[kit] || 0))));
   });
 
   return {
@@ -234,4 +234,3 @@ module.exports = ({
     packages,
   };
 };
-
