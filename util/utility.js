@@ -330,7 +330,7 @@ function getData(redis, url, cb) {
             return cb('Internal error');
           }
         } else {
-          logger.error(`[INVALID] status: ${res.statusCode || ''}, retrying ${target}`);
+          logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
         }
         return getData(redis, url, cb);
       }
