@@ -20,6 +20,12 @@ function fetchUUID(username, cb) {
 }
 
 function getUUID(name, cb) {
+  if ((/^[0-9a-f]{32}$/i).test(removeDashes(name))) {
+    return cb(null, removeDashes(name));
+  }
+  if (!(/^\w{1,16}$/i).test(name)) {
+    return cb('Invalid username or UUID!');
+  }
   const key = `uuid:${name.toLowerCase()}`;
   cacheFunctions.read({ key }, (uuid) => {
     if (uuid) {
@@ -27,15 +33,6 @@ function getUUID(name, cb) {
       return cb(null, uuid);
     }
     logger.debug(`Cache miss for uuid ${name}`);
-    if ((/^[0-9a-f]{32}$/i).test(name)) {
-      return cb(null, name);
-    }
-    if ((/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i).test(name)) {
-      return cb(null, removeDashes(name));
-    }
-    if (!(/^\w{1,16}$/i).test(name)) {
-      return cb('Invalid username or UUID!');
-    }
     fetchUUID(name, (fetchErr, uuid) => {
       if (fetchErr) {
         return cb(fetchErr, null);
