@@ -15,7 +15,7 @@ function cacheLeaderboard(lb, key, cb) {
   if (config.ENABLE_LEADERBOARD_CACHE) {
     cacheFunctions.write({
       key,
-      duration: config.ENABLE_LEADERBOARD_CACHE,
+      duration: config.LEADERBOARD_CACHE_SECONDS,
     }, lb);
   }
   return cb(lb);
