@@ -25,7 +25,7 @@ function getProfileData(id, cb) {
   });
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err, null);
+      logger.error(`Failed getting skyblock profile: ${err}`);
     }
     processSkyBlock(body.profile || {}, (profile) => cb(null, profile));
   });
