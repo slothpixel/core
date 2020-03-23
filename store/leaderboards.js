@@ -47,7 +47,7 @@ function createQuery({
   if (significant === true) {
     filterObj.rank = { $ne: 'ADMIN' };
   }
-  filterObj[sortBy] = { $nin: [null, 'Infinity'] };
+  filterObj[sortBy] = { $ne: null };
   if (limit > 1000) {
     limit = 1000;
   }

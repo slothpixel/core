@@ -46,7 +46,7 @@ function getRatio(x = 0, y = 0) {
     return 0;
   }
   if (y === 0) {
-    return 'Infinity';
+    return null;
   }
   return Number((x / y).toFixed(2));
 }
