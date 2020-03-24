@@ -77,6 +77,14 @@ function getGuild(id, cb) {
     return cb(err, guild);
   });
 }
+function getGuilds(filter = {}, fields = null, options = {}, cb) {
+  Guild.find(filter, fields, options, (err, res) => {
+    if (err) {
+      logger.error(err);
+    }
+    cb(err, res.map((model) => model.toObject()));
+  });
+}
 
 function getGuildByPlayer(uuid, cb) {
   Guild.findOne({ 'members.uuid': uuid }, function (err, guild) {
@@ -167,6 +175,7 @@ module.exports = {
   getPlayerProfile,
   insertGuild,
   getGuild,
+  getGuilds,
   getGuildByPlayer,
   removeGuild,
   insertSkyBlockProfile,

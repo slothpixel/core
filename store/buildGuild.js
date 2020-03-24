@@ -93,4 +93,7 @@ function buildGuild(uuid, cb) {
   });
 }
 
-module.exports = buildGuild;
+module.exports = {
+  getGuildData,
+  buildGuild,
+};
