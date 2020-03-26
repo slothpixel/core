@@ -41,6 +41,12 @@ function getFirstLogin(firstLogin, _id) {
     : firstLogin;
 }
 
+function getOnlineStatus(lastLogin, lastLogout) {
+ return lastLogin === null 
+  ? false
+  : lastLogin > lastLogout;
+}
+
 /*
  * This function modifies the raw API response to the wanted format
  */
@@ -152,7 +158,7 @@ function processPlayerData({
       cb({
         uuid,
         username: displayname,
-        online: lastLogin > lastLogout,
+        online: getOnlineStatus(lastLogin, lastLogout),
         rank: newRank,
         rank_plus_color: newRankPlusColor,
         rank_formatted: generateFormattedRank(newRank, newRankPlusColor, newPrefix, rankPlusPlusColor),
