@@ -42,9 +42,9 @@ function getFirstLogin(firstLogin, _id) {
 }
 
 function getOnlineStatus(lastLogin, lastLogout) {
- return lastLogin === null 
-  ? false
-  : lastLogin > lastLogout;
+  return lastLogin === null
+    ? false
+    : lastLogin > lastLogout;
 }
 
 /*
