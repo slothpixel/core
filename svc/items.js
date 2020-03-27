@@ -5,7 +5,25 @@
 const async = require('async');
 const redis = require('../store/redis');
 const { getItems, getAuctions } = require('../store/queries');
-const { logger, removeFormatting, invokeInterval } = require('../util/utility');
+const {
+  logger, removeFormatting, generateJob, getData, invokeInterval,
+} = require('../util/utility');
+
+function updateBazaar() {
+  return new Promise(((resolve) => {
+    getData(redis, generateJob('bazaar_products').url, (err, data) => {
+      const items = data.productIds;
+      if (err || !items) {
+        return resolve([]);
+      }
+      redis.set('skyblock_bazaar', JSON.stringify(items), (err) => {
+        if (err) logger.error(err);
+        logger.info('[Bazaar] Updated item IDs');
+        return resolve(items);
+      });
+    });
+  }));
+}
 
 const schemaObject = (auction) => {
   const {
@@ -26,7 +44,8 @@ const schemaObject = (auction) => {
   }
 };
 
-function doItems(cb) {
+async function doItems(cb) {
+  const bazaarProducts = await updateBazaar();
   getItems((err, ids) => {
     if (err) {
       logger.error(err);
@@ -39,7 +58,7 @@ function doItems(cb) {
         cb(err);
       }
       const items = JSON.parse(res) || {};
-      ids = ids.filter(id => !(id in items));
+      ids = ids.filter((id) => !(id in items));
       logger.info(`${ids.length} IDs aren't currently included`);
       let counter = 0;
       async.each(ids, (id, cb) => {
@@ -54,6 +73,12 @@ function doItems(cb) {
           if (auction.length === 0) return cb();
           counter += 1;
           items[id] = schemaObject(auction[0]);
+          if (items[id] && items[id].texture === null) {
+            delete items[id].texture;
+          }
+          if (bazaarProducts.includes(id)) {
+            items[id].bazaar = true;
+          }
           return cb();
         });
       }, (err) => {
