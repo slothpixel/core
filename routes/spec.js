@@ -225,17 +225,22 @@ const spec = {
     },
     {
       name: 'metadata',
-      description: '',
+      description: 'Serivce metadata',
+    },
+    {
+      name: 'health',
+      description: 'Service health',
     },
   ],
   paths: {
     '/players/{playerName}': {
       get: {
+        summary: 'Get player stats by name or uuid',
+        description: 'Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.',
+        operationId: 'getPlayer',
         tags: [
           'player',
         ],
-        summary: 'Get player stats by name or uuid',
-        description: 'Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.',
         parameters: [
           playerNameParam,
           {
@@ -286,11 +291,12 @@ const spec = {
     },
     '/players/{playerName}/achievements': {
       get: {
+        summary: 'In-depth achievement stats',
+        description: 'Returns player achievement stats',
+        operationId: 'getPlayerAchievements',
         tags: [
           'player',
         ],
-        summary: 'In-depth achievement stats',
-        description: 'Returns player achievement stats',
         parameters: [
           playerNameParam,
         ],
@@ -389,11 +395,12 @@ const spec = {
     },
     '/players/{playerName}/quests': {
       get: {
+        summary: 'In-depth quest data',
+        description: 'Returns player quest completions',
+        operationId: 'getPlayerQuests',
         tags: [
           'player',
         ],
-        summary: 'In-depth quest data',
-        description: 'Returns player quest completions',
         parameters: [
           playerNameParam,
         ],
@@ -444,11 +451,12 @@ const spec = {
     },
     '/players/{playerName}/recentGames': {
       get: {
+        summary: 'Get recent games played',
+        description: 'Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.',
+        operationId: 'getPlayerRecentGames',
         tags: [
           'player',
         ],
-        summary: 'Get recent games played',
-        description: 'Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.',
         parameters: [
           playerNameParam,
         ],
@@ -506,10 +514,12 @@ const spec = {
     },
     '/guilds/{playerName}': {
       get: {
+        summary: 'Get guild stats by user\'s username or uuid',
+        description: 'Look up a guild from the name of one of it\'s members',
+        operationId: 'getGuildFromPlayer',
         tags: [
           'guild',
         ],
-        summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
           playerNameParam, populatePlayersParam,
         ],
@@ -755,11 +765,12 @@ const spec = {
       */
     '/skyblock/profiles/{playerName}': {
       get: {
+        summary: 'Get list of player\'s skyblock profiles',
+        description: 'Gets all skyblock profiles for the specified player',
+        operationId: 'getSkyblockProfiles',
         tags: [
           'skyblock',
         ],
-        summary: 'Get list of player\'s skyblock profiles',
-        description: '',
         parameters: [
           playerNameParam,
         ],
@@ -824,11 +835,12 @@ const spec = {
     },
     '/skyblock/profile/{playerName}/{profileId}': {
       get: {
+        summary: 'Return a skyblock profile',
+        description: 'If no profile is specified, the last played profile is returned',
+        operationId: 'getSkyblockPlayerProfile',
         tags: [
           'skyblock',
         ],
-        summary: 'Return a skyblock profile',
-        description: 'If no profile is specified, the last played profile is returned',
         parameters: [
           playerNameParam, profileIdParam,
         ],
@@ -867,11 +879,12 @@ const spec = {
     },
     '/skyblock/auctions': {
       get: {
+        summary: 'Query all skyblock auctions',
+        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
+        operationId: 'getSkyblockAuctions',
         tags: [
           'skyblock',
         ],
-        summary: 'Query all skyblock auctions',
-        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
         parameters: [
           filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam,
           itemIdParam2, sortByParam(false), sortOrderParam,
@@ -902,11 +915,12 @@ const spec = {
     },
     '/skyblock/auctions/{itemId}': {
       get: {
+        summary: 'Query past skyblock auctions and their stats by item',
+        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
+        operationId: 'getSkyblockAuctionItem',
         tags: [
           'skyblock',
         ],
-        summary: 'Query past skyblock auctions and their stats by item',
-        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
         parameters: [
           itemIdParam, fromParam, toParam,
         ],
@@ -999,11 +1013,12 @@ const spec = {
     },
     '/skyblock/items': {
       get: {
+        summary: 'SkyBlock item spec',
+        description: 'Returns all SkyBlock items found in auctions',
+        operationId: 'getSkyblockItems',
         tags: [
           'skyblock',
         ],
-        summary: 'SkyBlock item spec',
-        description: 'Returns all SkyBlock items found in auctions',
         responses: {
           200: {
             description: 'successful operation',
@@ -1044,11 +1059,12 @@ const spec = {
     },
     '/leaderboards': {
       get: {
+        summary: 'Allows query of dynamic leaderboards',
+        description: 'Returns player or guild leaderboards',
+        operationId: 'getLeaderboards',
         tags: [
           'leaderboards',
         ],
-        summary: 'Allows query of dynamic leaderboards',
-        description: 'Returns player or guild leaderboards',
         parameters: [
           typeParam, columnParam, sortByParam(), sortOrderParam, filterParam, limitParam, pageParam, significantParam,
         ],
@@ -1081,11 +1097,12 @@ const spec = {
     },
     '/leaderboards/{template}': {
       get: {
+        summary: 'Get predefined leaderboards',
+        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
+        operationId: 'getLeaderboardTemplate',
         tags: [
           'leaderboards',
         ],
-        summary: 'Get predefined leaderboards',
-        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
         parameters: [
           templateParam,
         ],
@@ -1118,10 +1135,12 @@ const spec = {
     },
     '/boosters': {
       get: {
+        summary: 'Get list of network boosters',
+        description: 'Returns a list of boosters for all server gamemodes',
+        operationId: 'getBoosters',
         tags: [
           'boosters',
         ],
-        summary: 'Get list of network boosters',
         responses: {
           200: {
             description: 'successful operation',
@@ -1189,10 +1208,12 @@ const spec = {
     },
     '/boosters/{game}': {
       get: {
+        summary: 'Get boosters for a specified game',
+        description: 'Returns a list of active boosters for the specified game',
+        operationsId: 'getGameBoosters',
         tags: [
           'boosters',
         ],
-        summary: 'Get boosters for a specified game',
         parameters: [
           gameNameParam,
         ],
@@ -1262,10 +1283,12 @@ const spec = {
     },
     '/bans': {
       get: {
+        summary: 'Get network ban information',
+        description: 'Returns information about the number of staff and watchdog server bans',
+        operationId: 'getBans',
         tags: [
           'bans',
         ],
-        description: 'Get watchdog and staff bans',
         responses: {
           200: {
             description: 'successful operation',
@@ -1325,6 +1348,7 @@ const spec = {
       get: {
         summary: 'GET /metadata',
         description: 'Site metadata',
+        operationId: 'getMetadata',
         tags: [
           'metadata',
         ],
@@ -1357,6 +1381,7 @@ const spec = {
       get: {
         summary: 'GET /health',
         description: 'Get service health data',
+        operationId: 'getHealth',
         tags: ['health'],
         responses: {
           200: {
