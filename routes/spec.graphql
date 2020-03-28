@@ -1,0 +1,3048 @@
+"""
+Player stats in the Arcade Games
+"""
+type Arcade {
+  """
+  Stats about Blocking Dead
+  """
+  blockingDead: BlockingDead
+
+  """
+  Stats about Bounty Hunters
+  """
+  bountyHunters: BountyHunters
+
+  """
+  Current coins in the Arcade Games
+  """
+  coins: Int
+
+  """
+  Stats about Creeper Attack
+  """
+  creeperAttack: CreeperAttack
+
+  """
+  Stats about Dragon Wars
+  """
+  dragonwars: Dragonwars
+
+  """
+  Stats about Farm Hunt
+  """
+  farmHunt: FarmHunt
+
+  """
+  Stats about Football
+  """
+  football: Football
+
+  """
+  Stats about Galaxy Wars
+  """
+  galaxyWars: GalaxyWars
+
+  """
+  Stats about Hole in the Wall
+  """
+  holeInTheWall: HoleInTheWall
+
+  """
+  Stats about Hypixel Says
+  """
+  hypixelSays: HypixelSays
+
+  """
+  Stats about Mini Walls
+  """
+  miniwalls: Miniwalls
+
+  """
+  Stats about Party Games
+  """
+  partyGames: PartyGames
+
+  """
+  Stats about Santa Says
+  """
+  santaSays: SantaSays
+
+  """
+  Stats about Zombies
+  """
+  zombies: Zombies
+}
+
+"""
+Player stats in Arena Brawl
+"""
+type Arena {
+  activeRune: String
+
+  """
+  Current coins
+  """
+  coins: Int
+
+  """
+  Total coins spent in Arena Brawl
+  """
+  coinsSpent: Int
+
+  """
+  Current Combat Upgrades in Arena Brawl
+  """
+  combatLevels: CombatLevels
+
+  """
+  Stats in specific Arena gamemodes
+  """
+  gamemodes: Gamemodes
+
+  """
+  Currently selected hat cosmetic
+  """
+  hat: String
+
+  """
+  Current number of Magical Chest keys
+  """
+  keys: Int
+  magicalChest: Int
+  penalty: Int
+
+  """
+  Current rune upgrades in Arena Brawl
+  """
+  runeLevels: RuneLevels
+
+  """
+  Currently selected Sword cosmetic
+  """
+  selectedSword: String
+
+  """
+  Currently selected skills
+  """
+  skills: Skills
+}
+
+type Attributes {
+  """
+  Object containing item's enchantments in type:level format e.g. sharpness: 5.
+  """
+  enchantments: JSON
+
+  """
+  Item id, e.g. "ASPECT_OF_THE_END"
+  """
+  id: String
+
+  """
+  Item modifier e.g. "spicy"
+  """
+  modifier: String
+
+  """
+  Item's origin, for example "CRAFTING_GRID"
+  """
+  origin: String
+
+  """
+  If the item is a minecraft skull, i.e. a talisman, this property contains the
+  texture id. Textures can be found at
+  http://textures.minecraft.net/texture/{id}
+  """
+  texture: String
+
+  """
+  Item's unique uuid if it has one. Can be used to track previous auctions of the same item
+  """
+  uuid: String
+}
+
+type Auctions {
+  """
+  Auction object
+  """
+  _1577033426093: JSON
+}
+
+type Bans {
+  staff: Staff
+  watchdog: Watchdog
+}
+
+"""
+Player stats in Bedwars
+"""
+type BedWars {
+  """
+  Ratio of beds broken to beds lost
+  """
+  bedRatio: Float
+
+  """
+  Total number of beds broken
+  """
+  bedsBroken: Int
+
+  """
+  Total number of beds lost
+  """
+  bedsLost: Int
+
+  """
+  Stats for boxes in BedWars
+  """
+  boxes: Boxes
+
+  """
+  Current coins in Bedwars
+  """
+  coins: Int
+
+  """
+  Total number of deaths
+  """
+  deaths: Int
+
+  """
+  Total exp
+  """
+  exp: Float
+
+  """
+  Total number of final deaths
+  """
+  finalDeaths: Int
+
+  """
+  Total number of final deaths
+  """
+  finalKD: Float
+
+  """
+  Total number of final kills
+  """
+  finalKills: Int
+
+  """
+  Stats for the different gamemodes in BedWars
+  """
+  gamemodes: JSON
+
+  """
+  Total exp
+  """
+  gamesPlayed: Int
+
+  """
+  K/D ratio
+  """
+  kD: Float
+
+  """
+  Total exp
+  """
+  kills: Int
+
+  """
+  EXP level
+  """
+  level: Int
+
+  """
+  Total exp
+  """
+  losses: Int
+
+  """
+  Stats for the resources collected in BedWars
+  """
+  resourcesCollected: ResourcesCollected
+
+  """
+  Total number of final deaths
+  """
+  voidDeaths: Int
+
+  """
+  Total number of final deaths
+  """
+  voidKills: Int
+
+  """
+  W/L ratio
+  """
+  wL: Float
+
+  """
+  Total exp
+  """
+  wins: Int
+
+  """
+  Amount of times you've gone without losing
+  """
+  winstreak: Int
+}
+
+type BidsListItem {
+  """
+  Bidded coins
+  """
+  amount: Int
+
+  """
+  Bidder's uuid
+  """
+  bidder: String
+
+  """
+  Bidder's skyblock profile id
+  """
+  profileId: String
+
+  """
+  Bid UNIX timestamp
+  """
+  timestamp: Int
+}
+
+"""
+Player stats in Blitz Survival Games
+"""
+type Blitz {
+  """
+  Total arrows shot in blitz survival games
+  """
+  arrowsFired: Int
+
+  """
+  Successful arrow shots landed in Blitz Survival Games
+  """
+  arrowsHit: Int
+
+  """
+  Total number of Blitz Stars used in Blitz Survival Games
+  """
+  blitzUses: Int
+
+  """
+  Total number of chests opened in Blitz Survival Games
+  """
+  chestsOpened: Int
+
+  """
+  Current coins in Blitz Survival Games
+  """
+  coins: Int
+
+  """
+  Total damage dealt in Blitz Survival Games
+  """
+  damage: Int
+
+  """
+  Total damage taken in Blitz Survival Games
+  """
+  damageTaken: Int
+
+  """
+  Total deaths in Blitz Survival Games
+  """
+  deaths: Int
+
+  """
+  Player's current cosmetics equipped in Blitz Survival Games
+  """
+  equipped: Equipped
+
+  """
+  Total games of Blitz Survival Games played
+  """
+  gamesPlayed: Float
+
+  """
+  Currently configured kit inventories
+  """
+  inventories: JSON
+
+  """
+  Ratio of kills to deaths in Blitz Survival Games
+  """
+  kD: Float
+
+  """
+  Total kills in Blitz Survival Games
+  """
+  kills: Int
+
+  """
+  Specific stats with a kit in Blitz Survival Games
+  """
+  kitStats: JSON
+
+  """
+  Player's current kit levels in Blitz Survival Games
+  """
+  kitsLevels: JSON
+
+  """
+  Total mobs spawned by the player in Blitz Survival Games
+  """
+  mobsSpawned: Int
+
+  """
+  Current monthly kills in Blitz Survival Games
+  """
+  monthlyKills: Int
+
+  """
+  Total potions drunk in Blitz Survival Games
+  """
+  potionsDrunk: Int
+
+  """
+  Total splash potions thrown in Blitz Survival Games
+  """
+  potionsThrown: Int
+
+  """
+  Total games won with the Rambo kit in Blitz Survival Games
+  """
+  ramboWins: Int
+
+  """
+  Total games won with a random kit in Blitz Survival Games
+  """
+  randomWins: Int
+
+  """
+  Current settings in Blitz Survival Games
+  """
+  settings: Settings
+
+  """
+  Total players killed while using a taunt in Blitz Survival Games
+  """
+  tauntKills: Int
+
+  """
+  Total wins in Teams Blitz Survival Games
+  """
+  teamWins: Int
+
+  """
+  Total playtime in Blitz Survival Games
+  """
+  timePlayed: Float
+
+  """
+  Current weekly kills in Blitz Survival Games
+  """
+  weeklyKills: Int
+
+  """
+  Ratio of total wins to losses in Blitz Survival Games
+  """
+  winLoss: Float
+
+  """
+  Percentage of games won out of total games played in Blitz Survival Games
+  """
+  winPercentage: Int
+
+  """
+  Total wins in Solo Blitz Survival Games
+  """
+  wins: Int
+}
+
+"""
+Stats about Blocking Dead
+"""
+type BlockingDead {
+  """
+  Amount of headshots in Blocking Dead
+  """
+  headshots: Int
+
+  """
+  Amount of wins in Blocking Dead
+  """
+  wins: Int
+
+  """
+  Amount of zombie kills in Blocking Dead
+  """
+  zombieKills: Int
+}
+
+type Boosters {
+  game: [GameBooster]
+}
+
+type GameBooster {
+  """
+  UNIX timestamp of activation date
+  """
+  activated: Int
+
+  """
+  Whether the booster is currently active
+  """
+  active: Boolean
+
+  """
+  Current length in seconds
+  """
+  length: Int
+
+  """
+  Booster coin multiplier
+  """
+  multiplier: Float
+
+  """
+  Original duration in seconds
+  """
+  originalLength: Int
+
+  """
+  Array of players that have stacked a booster on the same slot
+  """
+  stacked: [String]
+
+  """
+  UUID of booster owner
+  """
+  uuid: String
+}
+
+"""
+Stats about Bounty Hunters
+"""
+type BountyHunters {
+  """
+  Amount of bounty kills in Bounty Hunters
+  """
+  bountyKills: Int
+
+  """
+  Amount of deaths in Bounty Hunters
+  """
+  deaths: Int
+
+  """
+  Amount of kills in Bounty Hunters
+  """
+  kills: Int
+
+  """
+  Amount of wins in Bounty Hunters
+  """
+  wins: Int
+}
+
+"""
+Stats for boxes in BedWars
+"""
+type Boxes {
+  """
+  Amount of commons earned from boxes
+  """
+  commons: Int
+
+  """
+  Current amount of boxes
+  """
+  current: Int
+
+  """
+  Amount of epics earned from boxes
+  """
+  epics: Int
+
+  """
+  Amount of legendaries earned from boxes
+  """
+  legendaries: Int
+
+  """
+  Amount of boxes opened
+  """
+  opened: Int
+
+  """
+  Amount of rares earned from boxes
+  """
+  rares: Int
+}
+
+"""
+Player stats in Build Battle
+"""
+type BuildBattle {
+  """
+  Current coins in Build Battle
+  """
+  coins: Int
+
+  """
+  Correct guesses in Guess The Build
+  """
+  correctGuesses: Int
+
+  """
+  Post-Update games played in all modes
+  """
+  gamesPlayed: Int
+
+  """
+  Custom Hotbar loadout
+  """
+  loadout: [String]
+
+  """
+  Current score in Build Battle
+  """
+  score: Int
+
+  """
+  Currently selected backdrop cosmetic
+  """
+  selectedBackdrop: String
+
+  """
+  Currently selected hat cosmetic
+  """
+  selectedHat: String
+
+  """
+  Currently selected movement trail cosmetic
+  """
+  selectedMovementTrail: String
+
+  """
+  Currently selected suit cosmetic
+  """
+  selectedSuit: String
+
+  """
+  Currently selected victory dance cosmetic
+  """
+  selectedVictoryDance: String
+
+  """
+  Super Votes the player currently has
+  """
+  superVotes: Int
+
+  """
+  Key-Value pairs of 1-5 star ratings on themes
+  """
+  themeRatings: JSON
+
+  """
+  Judging votes on other builds
+  """
+  totalVotes: Int
+
+  """
+  Win Ratio
+  """
+  wR: Int
+
+  """
+  Wins in all Build Battle modes
+  """
+  wins: Int
+
+  """
+  Wins in Guess The Build
+  """
+  winsGuessTheBuild: Int
+
+  """
+  Wins in Solo Mode
+  """
+  winsSoloNormal: Int
+
+  """
+  Wins in Pro Mode
+  """
+  winsSoloPro: Int
+
+  """
+  Wins in Teams Mode
+  """
+  winsTeamsNormal: Int
+}
+
+"""
+Player stats on the Canyon map in Turbo Kart Racers
+"""
+type Canyon {
+  """
+  Total games played on Canyon
+  """
+  games: Int
+
+  """
+  Trophies won on Canyon
+  """
+  trophies: Trophies6
+
+  """
+  Ratio of wins to games played on Canyon
+  """
+  winRatio: Float
+}
+
+"""
+Carbine Specialization upgrades
+"""
+type Carbine {
+  """
+  Current progression of the Carbine's Cost Reduction upgrade
+  """
+  costReduction: Int
+
+  """
+  Current progression of the Carbine's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the Carbine's Recoil Reduction upgrade
+  """
+  recoilReduction: Int
+
+  """
+  Current progression of the Carbine's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+"""
+Current Combat Upgrades in Arena Brawl
+"""
+type CombatLevels {
+  """
+  Current Cooldown Upgrade progression
+  """
+  cooldown: Int
+
+  """
+  Current Energy Upgrade progression
+  """
+  energy: Int
+
+  """
+  Current Health Upgrade progression
+  """
+  health: Int
+
+  """
+  Current Melee Upgrade progression
+  """
+  melee: Int
+}
+
+type Completions {
+  game: [Int]
+}
+
+"""
+Stats about Creeper Attack
+"""
+type CreeperAttack {
+  """
+  Best wave in Football
+  """
+  bestWave: Int
+}
+
+"""
+Player stats in Cops vs Crims
+"""
+type CvC {
+  """
+  Total bombs defused as Cop
+  """
+  bombsDefused: Int
+
+  """
+  Total bombs planted as Criminal
+  """
+  bombsPlanted: Int
+
+  """
+  Current coins in Cops vs Crims
+  """
+  coins: Int
+
+  """
+  Total cops killed
+  """
+  copKills: Int
+
+  """
+  Total criminals killed
+  """
+  criminalKills: Int
+
+  """
+  Current player stats in CvC Deathmatch
+  """
+  deathmatch: Deathmatch
+
+  """
+  Total deaths in Cops vs Crims
+  """
+  deaths: Int
+
+  """
+  Total kills with a grenade
+  """
+  grenadeKills: Int
+
+  """
+  Total headshot kills
+  """
+  headshotKills: Int
+
+  """
+  Current kill/death ratio in Cops vs Crims
+  """
+  kd: Float
+
+  """
+  Total kills in Cops vs Crims
+  """
+  kills: Int
+
+  """
+  Current wins on specific maps
+  """
+  mapWins: MapWins
+
+  """
+  Current monthly kills
+  """
+  monthlyKills: Int
+
+  """
+  Currently purchased perks and upgrades for Cops vs Crims
+  """
+  perks: Perks
+
+  """
+  Total individual round wins
+  """
+  roundWins: Int
+
+  """
+  Currently selected cosmetic appearance for each weapon type
+  """
+  selectedCosmetics: SelectedCosmetics
+
+  """
+  Currently selected nametag prefix in the Cops vs Crims lobby
+  """
+  selectedLobbyPrefix: String
+
+  """
+  Total shots fired
+  """
+  shotsFired: Int
+
+  """
+  Whether the lobby nametag prefix is currently enabled
+  """
+  showLobbyPrefix: Boolean
+
+  """
+  Current weekly kills
+  """
+  weeklyKills: Int
+
+  """
+  Total wins in Cops vs Crims
+  """
+  wins: Int
+}
+
+"""
+Current player stats in CvC Deathmatch
+"""
+type Deathmatch {
+  """
+  Total cops killed in CvC Deathmatch
+  """
+  copKills: Int
+
+  """
+  Total criminals killed in CvC Deathmatch
+  """
+  criminalKills: Int
+
+  """
+  Total deaths in CvC Deathmatch
+  """
+  deaths: Int
+
+  """
+  Current kill/death ratio in CvC Deathmatch
+  """
+  kd: Float
+
+  """
+  Total kills in CvC Deathmatch
+  """
+  kills: Int
+
+  """
+  Total wins in CvC Deathmatch
+  """
+  wins: Int
+}
+
+"""
+Stats about Dragon Wars
+"""
+type Dragonwars {
+  """
+  Amount of kills in Dragon Wars
+  """
+  kills: Int
+
+  """
+  Amount of wins in Dragon Wars
+  """
+  wins: Int
+}
+
+"""
+Player stats in Duels
+"""
+type Duels {
+  """
+  Current coins in Duels
+  """
+  coins: Int
+}
+
+"""
+Player's current cosmetics equipped in Blitz Survival Games
+"""
+type Equipped {
+  """
+  Currently equipped aura cosmetic
+  """
+  aura: String
+
+  """
+  Currently equipped finisher effect
+  """
+  finisher: String
+
+  """
+  Currently equipped taunt effect
+  """
+  taunt: String
+
+  """
+  Currently equipped victory dance effect
+  """
+  victoryDance: String
+}
+
+"""
+Stats about Farm Hunt
+"""
+type FarmHunt {
+  """
+  Amount of poop collected in Farm Hunt
+  """
+  poopCollected: Int
+
+  """
+  Amount of wins in Farm Hunt
+  """
+  wins: Int
+}
+
+"""
+Stats about Football
+"""
+type Football {
+  """
+  Amount of goals scored in Football
+  """
+  goals: Int
+
+  """
+  Amount of powerkicks in Football
+  """
+  powerkicks: Int
+
+  """
+  Amount of wins in Football
+  """
+  wins: Int
+}
+
+"""
+Specific stats in 4v4 Arena
+"""
+type FourVFour {
+  """
+  Total damage dealt in 4v4 Arena
+  """
+  damage: Int
+
+  """
+  Total deaths in 4v4 Arena
+  """
+  deaths: Int
+
+  """
+  Total games played in 4v4 Arena
+  """
+  games: Int
+
+  """
+  Total health healed in 4v4 Arena
+  """
+  healed: Int
+
+  """
+  Kill/death ratio in 4v4 Arena
+  """
+  kd: Float
+
+  """
+  Total kills in 4v4 Arena
+  """
+  kills: Int
+
+  """
+  Total losses in 4v4 Arena
+  """
+  losses: Int
+
+  """
+  Win/loss ratio in 4v4 Arena
+  """
+  winLoss: Float
+
+  """
+  Win percentage out of games played in 4v4 Arena
+  """
+  winPercentage: Float
+
+  """
+  Highest win streak in 4v4 Arena
+  """
+  winStreaks: Int
+
+  """
+  Total wins in 4v4 Arena
+  """
+  wins: Int
+}
+
+"""
+Stats about Galaxy Wars
+"""
+type GalaxyWars {
+  """
+  Amount of deaths in Galaxy Wars
+  """
+  deaths: Int
+
+  """
+  Amount of kills in Galaxy Wars
+  """
+  kills: Int
+
+  """
+  Amount of rebel kills in Galaxy Wars
+  """
+  rebelKills: Int
+
+  """
+  The number of shots fired in Galaxy Wars
+  """
+  shotsFired: Int
+
+  """
+  Amount of wins in Galaxy Wars
+  """
+  wins: Int
+}
+
+"""
+Stats in specific Arena gamemodes
+"""
+type Gamemodes {
+  """
+  Specific stats in 4v4 Arena
+  """
+  fourVFour: FourVFour
+
+  """
+  Specific stats in 1v1 Arena
+  """
+  oneVOne: OneVOne
+
+  """
+  Specific stats in 2v2 Arena
+  """
+  twoVTwo: TwoVTwo
+}
+
+type Games {
+  """
+  Total achievements completed in the game
+  """
+  completed: Int
+
+  """
+  Total one time achievements completed in the game
+  """
+  completedOneTime: Int
+
+  """
+  Total tiered achievements completed in the game. Each tier counts as a completion
+  """
+  completedTiered: Int
+  oneTime: [String]
+
+  """
+  Total achievement points in the game
+  """
+  points: Int
+
+  """
+  Total achievement points from one time achievements in the game
+  """
+  pointsOneTime: Int
+
+  """
+  Total achievement points from tiered achievements in the game
+  """
+  pointsTiered: Int
+  tiered: [Int]
+}
+
+type Guild {
+  """
+  Guild creation date
+  """
+  created: String
+
+  """
+  Guild description
+  """
+  description: String
+
+  """
+  Total guild xp
+  """
+  exp: Int
+
+  """
+  Guild EXP earned in each minigame
+  """
+  expByGame: Int
+
+  """
+  Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.
+  """
+  expHistory: JSON
+
+  """
+  Guild id used in hypixel backend
+  """
+  id: String
+
+  """
+  Ranking in the number of guild coins owned in the legacy guild system
+  """
+  legacyRanking: Int
+
+  """
+  Guild level
+  """
+  level: Float
+
+  """
+  Array of players on the guild
+  """
+  members: [MembersListItem]
+
+  """
+  Guild's name
+  """
+  name: String
+
+  """
+  Array containing the guild's preferred games
+  """
+  preferredGames: [String]
+  ranks: [RanksListItem]
+
+  """
+  Guild tag
+  """
+  tag: String
+
+  """
+  Formatting code for the guild tag
+  """
+  tagColor: String
+
+  """
+  Formatted tag string e.g. '&b[TAG]'
+  """
+  tagFormatted: String
+}
+
+"""
+Stats about Hole in the Wall
+"""
+type HoleInTheWall {
+  """
+  Highest score in finals in Hole in the Wall
+  """
+  highestScoreFinals: Int
+
+  """
+  Highest score qualification in Hole in the Wall
+  """
+  highestScoreQualification: Int
+
+  """
+  Amount of rounds played in Hole in the Wall
+  """
+  rounds: Int
+
+  """
+  Amount of wins in Hole in the Wall
+  """
+  wins: Int
+}
+
+"""
+Player stats on the Hypixel GP map in Turbo Kart Racers
+"""
+type Hypixelgp {
+  """
+  Total games played on Hypixel GP
+  """
+  games: Int
+
+  """
+  Trophies won on Hypixel GP
+  """
+  trophies: Trophies3
+
+  """
+  Ratio of wins to games played on Hypixel GP
+  """
+  winRatio: Float
+}
+
+"""
+Stats about Hypixel Says
+"""
+type HypixelSays {
+  """
+  Amount of rounds played in Hypixel Says
+  """
+  rounds: Int
+
+  """
+  Amount of wins in Hypixel Says
+  """
+  wins: Int
+}
+
+type Item {
+  attributes: Attributes
+
+  """
+  How many items are for sale in the auction
+  """
+  count: Int
+
+  """
+  Item's minecraft id
+  """
+  itemId: Int
+
+  """
+  Array of strings containing item's lore with formatting
+  """
+  lore: [String]
+
+  """
+  Item name with formatting
+  """
+  name: String
+}
+
+type ITEMID {
+  """
+  Item category, e.g. "misc"
+  """
+  category: String
+
+  """
+  Item's minecraft id
+  """
+  itemId: Int
+  name: String
+
+  """
+  If the item is a minecraft skull, i.e. a talisman, this property contains the
+  texture id. Textures can be found at
+  http://textures.minecraft.net/texture/{id}
+  """
+  texture: String
+
+  """
+  Item rarity, e.g. "RARE"
+  """
+  tier: String
+}
+
+"""
+The 'JSON' scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+"""
+Player stats on the Jungle Rush map in Turbo Kart Racers
+"""
+type Junglerush {
+  """
+  Total games played on Jungle Rush
+  """
+  games: Int
+
+  """
+  Trophies won on Jungle Rush
+  """
+  trophies: Trophies4
+
+  """
+  Ratio of wins to games played on Jungle Rush
+  """
+  winRatio: Float
+}
+
+"""
+Knife Specialization upgrades
+"""
+type Knife {
+  """
+  Current progression of the Knife's Attack Delay upgrade
+  """
+  attackDelay: Int
+
+  """
+  Current progression of the Knife's Damage Increase upgrade
+  """
+  damageIncrease: Int
+}
+
+"""
+Social media links
+"""
+type Links {
+  """
+  Discord handle, in full format of username#discriminator
+  """
+  dISCORD: String
+
+  """
+  Link to Hypixel Forums profile
+  """
+  hYPIXEL: String
+
+  """
+  Link to Instagram profile
+  """
+  iNSTAGRAM: String
+
+  """
+  Link to Mixer channel
+  """
+  mIXER: String
+
+  """
+  Link to Twitch channel
+  """
+  tWITCH: String
+
+  """
+  Link to Twitter profile
+  """
+  tWITTER: String
+
+  """
+  Link to YouTube channel
+  """
+  yOUTUBE: String
+}
+
+"""
+Magnum Specialization upgrades
+"""
+type Magnum {
+  """
+  Current progression of the Magnum's Cost Reduction upgrade
+  """
+  costReduction: Int
+
+  """
+  Current progression of the Magnum's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the Magnum's Recoil Reduction upgrade
+  """
+  recoilReduction: Int
+
+  """
+  Current progression of the Magnum's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+"""
+Player stats on specific maps in Turbo Kart Racers
+"""
+type Maps {
+  """
+  Player stats on the Canyon map in Turbo Kart Racers
+  """
+  canyon: Canyon
+
+  """
+  Player stats on the Hypixel GP map in Turbo Kart Racers
+  """
+  hypixelgp: Hypixelgp
+
+  """
+  Player stats on the Jungle Rush map in Turbo Kart Racers
+  """
+  junglerush: Junglerush
+
+  """
+  Player stats on the Olympus map in Turbo Kart Racers
+  """
+  olympus: Olympus
+
+  """
+  Player stats on the Retro map in Turbo Kart Racers
+  """
+  retro: Retro
+}
+
+"""
+Current wins on specific maps
+"""
+type MapWins {
+  """
+  Current wins on the Alleyway map
+  """
+  alleyway: Int
+
+  """
+  Current wins on the Atomic map
+  """
+  atomic: Int
+
+  """
+  Current wins on the Carrier map
+  """
+  carrier: Int
+
+  """
+  Current wins on the Melon Factory map
+  """
+  melonFactory: Int
+
+  """
+  Current wins on the Overgrown map
+  """
+  overgrown: Int
+
+  """
+  Current wins on the Reserve map
+  """
+  reserve: Int
+
+  """
+  Current wins on the Sandstorm map
+  """
+  sandstorm: Int
+
+  """
+  Current wins on the Temple map
+  """
+  temple: Int
+}
+
+type MembersListItem {
+  """
+  Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.
+  """
+  expHistory: JSON
+
+  """
+  Member join date
+  """
+  joined: Int
+
+  """
+  Date the member is muted until
+  """
+  mutedTill: Int
+
+  """
+  How many much the member has contributed to guild quests
+  """
+  questParticipation: Int
+
+  """
+  Player rank in the guild
+  """
+  rank: String
+
+  """
+  Player UUID
+  """
+  uuid: String
+}
+
+"""
+Stats about Mini Walls
+"""
+type Miniwalls {
+  """
+  Amount of arrows that hit their targets in Mini Walls
+  """
+  arrowsHit: Int
+
+  """
+  The number of arrows shot in Mini Walls
+  """
+  arrowsShot: Int
+
+  """
+  Amount of deaths in Mini Walls
+  """
+  deaths: Int
+
+  """
+  Amount of final kills in Mini Walls
+  """
+  finalKills: Int
+
+  """
+  Amount of kills in Mini Walls
+  """
+  kills: Int
+
+  """
+  Active kit
+  """
+  kit: String
+
+  """
+  Amount of wins in Mini Walls
+  """
+  wins: Int
+
+  """
+  Amount of wither damage taken in Mini Walls
+  """
+  witherDamage: Float
+
+  """
+  Amount of withers killed in Mini Walls
+  """
+  witherKills: Int
+}
+
+"""
+Player stats in Murder Mystery
+"""
+type MurderMystery {
+  """
+  Current coins in Murder Mystery
+  """
+  coins: Int
+}
+
+"""
+Player stats on the Olympus map in Turbo Kart Racers
+"""
+type Olympus {
+  """
+  Total games played on Olympus
+  """
+  games: Int
+
+  """
+  Trophies won on Olympus
+  """
+  trophies: Trophies5
+
+  """
+  Ratio of wins to games played on Olympus
+  """
+  winRatio: Float
+}
+
+"""
+Specific stats in 1v1 Arena
+"""
+type OneVOne {
+  """
+  Total damage dealt in 1v1 Arena
+  """
+  damage: Int
+
+  """
+  Total deaths in 1v1 Arena
+  """
+  deaths: Int
+
+  """
+  Total games played in 1v1 Arena
+  """
+  games: Int
+
+  """
+  Total health healed in 1v1 Arena
+  """
+  healed: Int
+
+  """
+  Kill/death ratio in 1v1 Arena
+  """
+  kd: Float
+
+  """
+  Total kills in 1v1 Arena
+  """
+  kills: Int
+
+  """
+  Total losses in 1v1 Arena
+  """
+  losses: Int
+
+  """
+  Win/loss ratio in 1v1 Arena
+  """
+  winLoss: Float
+
+  """
+  Win percentage out of games played in 1v1 Arena
+  """
+  winPercentage: Float
+
+  """
+  Highest win streak in 1v1 Arena
+  """
+  winStreaks: Int
+
+  """
+  Total wins in 1v1 Arena
+  """
+  wins: Int
+}
+
+"""
+Stats about Party Games
+"""
+type PartyGames {
+  """
+  Amount of wins in Party Games
+  """
+  wins1: Int
+
+  """
+  Amount of wins in Party Games
+  """
+  wins2: Int
+
+  """
+  Amount of wins in Party Games
+  """
+  wins3: Int
+}
+
+"""
+Currently purchased perks and upgrades for Cops vs Crims
+"""
+type Perks {
+  """
+  Carbine Specialization upgrades
+  """
+  carbine: Carbine
+
+  """
+  Knife Specialization upgrades
+  """
+  knife: Knife
+
+  """
+  Magnum Specialization upgrades
+  """
+  magnum: Magnum
+
+  """
+  Pistol Specialization upgrades
+  """
+  pistol: Pistol
+
+  """
+  Character upgrades
+  """
+  player: Player2
+
+  """
+  Rifle Specialization upgrades
+  """
+  rifle: Rifle
+
+  """
+  Shotgun Specialization upgrades
+  """
+  shotgun: Shotgun
+
+  """
+  SMG Specialization upgrades
+  """
+  smg: Smg
+
+  """
+  Sniper Specialization upgrades
+  """
+  sniper: Sniper
+}
+
+"""
+Pistol Specialization upgrades
+"""
+type Pistol {
+  """
+  Current progression of the Pistol's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the Pistol's Recoil Reduction upgrade
+  """
+  recoilReduction: Int
+
+  """
+  Current progression of the Pistol's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+type Player {
+  """
+  Total achievement points
+  """
+  achievementPoints: Int
+
+  """
+  Current Hypixel Experience
+  """
+  exp: Int
+
+  """
+  Date of first Hypixel login
+  """
+  firstLogin: Int
+
+  """
+  Total gifts received from other players
+  """
+  giftsReceived: Int
+
+  """
+  Total gifts sent to other players
+  """
+  giftsSent: Int
+
+  """
+  Whether player is a contributor to Slothpixel
+  """
+  isContributor: Boolean
+
+  """
+  Player karma
+  """
+  karma: Int
+
+  """
+  Currently selected language
+  """
+  language: String
+
+  """
+  Latest minigame played
+  """
+  lastGame: String
+
+  """
+  Date of latest Hypixel login
+  """
+  lastLogin: Int
+
+  """
+  Date of latest Hypixel logout
+  """
+  lastLogout: Int
+
+  """
+  Player level with precision of two decimals
+  """
+  level: Float
+
+  """
+  Social media links
+  """
+  links: Links
+
+  """
+  Minecraft version the user last logged on Hypixel with
+  """
+  mcVersion: String
+
+  """
+  Is player online
+  """
+  online: Boolean
+
+  """
+  Custom rank prefix
+  """
+  prefix: String
+
+  """
+  Total quests completed
+  """
+  questsCompleted: Int
+
+  """
+  Player rank
+  """
+  rank: String
+
+  """
+  Formatted rank string
+  """
+  rankFormatted: String
+
+  """
+  Color code for MVP+(+)
+  """
+  rankPlusColor: String
+
+  """
+  Daily reward data
+  """
+  rewards: Rewards
+
+  """
+  Player stats across all minigames
+  """
+  stats: Stats
+
+  """
+  Total coins across all minigames
+  """
+  totalCoins: Int
+
+  """
+  Total kills across all minigames
+  """
+  totalKills: Int
+
+  """
+  Total wins across all minigames
+  """
+  totalWins: Int
+
+  """
+  Player username
+  """
+  username: String
+
+  """
+  Player uuid
+  """
+  uuid: String
+}
+
+"""
+Character upgrades
+"""
+type Player2 {
+  """
+  Current progression of Body Armor Cost upgrade
+  """
+  bodyArmorCost: Int
+
+  """
+  Current progression of Bounty Hunter upgrade
+  """
+  bountyHunter: Int
+
+  """
+  Current progression of Pocket Change upgrade
+  """
+  pocketChange: Int
+
+  """
+  Current progression of Strength Training upgrade
+  """
+  strengthTraining: Int
+}
+
+type PlayerAchievements {
+  """
+  Total achievement points
+  """
+  achievementPoints: Int
+
+  """
+  Total one time achievements completed
+  """
+  completedOneTime: Int
+
+  """
+  Total tiered achievements completed
+  """
+  completedTiered: Int
+
+  """
+  Total achievements completed
+  """
+  completedTotal: Int
+  games: Games
+  rewards: Rewards2
+}
+
+type PlayerQuests {
+  """
+  Total challenges completed
+  """
+  challengesCompleted: Int
+  completions: Completions
+
+  """
+  Total quests completed
+  """
+  questsCompleted: Int
+}
+
+type PlayerRecentGamesListItem {
+  date: Int
+  gameType: String
+  map: String
+  mode: String
+}
+
+type PROFILEID {
+  collectionsUnlocked: Int
+
+  """
+  Profile name, e.g. Strawberry
+  """
+  cuteName: String
+  firstJoin: Int
+  lastSave: Int
+  members: [String]
+  profileId: String
+}
+
+"""
+The start of any query
+"""
+type Query {
+  """
+  Get watchdog and staff bans
+
+  Equivalent to GET /bans
+  """
+  bans: Bans
+
+  """
+  Returns a list of boosters for all server gamemodes.
+
+  Equivalent to GET /boosters
+  """
+  allBoosters: Boosters
+
+  """
+  Returns a list of active boosters for the game specified
+
+  Equivalent to GET /boosters/{game}
+  """
+  boosters(
+    """
+    [Standard](https://github.com/slothpixel/core/wiki/Standard-naming) minigame name
+    """
+    game: String!
+  ): [GameBooster]
+
+  """
+  Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.
+
+  Equivalent to GET /leaderboards/{template}
+  """
+  getLeaderboardTemplate(template: String!): [JSON]
+
+  """
+  Look up a guild from the name of one of it's members
+
+  Equivalent to GET /guilds/{playerName}
+  """
+  guild(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+
+    """
+    Replace uuid fields with player profiles
+    """
+    populatePlayers: String = false
+  ): Guild
+
+  """
+  Returns player or guild leaderboards
+
+  Equivalent to GET /leaderboards
+  """
+  leaderboards(
+    """
+    Choose which data columns will be returned e.g. stats.Arcade.coins. Multiple columns are separated with commas.
+    """
+    columns: String!
+
+    """
+    Filter entries by passing [MongoDB
+    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
+    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
+    """
+    filter: String
+
+    """
+    Limit number of records returned. Default is 100 and maximum 1000.
+    """
+    limit: Int
+
+    """
+    Pages allow you to split the data using the 'limit' param. For example, if
+    there are 23 auctions matching your query and you set the limit to 10, each
+    page will return up to the next 10 consecutive results. With 23 results, you
+    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
+    """
+    page: Int
+
+    """
+    Set to "false" to also return admin accounts.
+    """
+    significant: Boolean
+
+    """
+    Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
+    """
+    sortBy: String!
+
+    """
+    Define sort order. 'asc' for ascending or 'desc' for descending
+    """
+    sortOrder: String
+
+    """
+    'players', 'guilds' or 'skyblock'
+    """
+    type: Type!
+  ): [JSON]
+
+  """
+  Returns player stats of one or up to 16 players. Multiple 'playerName's must be separated by a comma.
+
+  Equivalent to GET /players/{playerName}
+  """
+  player(
+    """
+    A comma separated list of fields to include alongside basic stats.
+    """
+    fields: String
+
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+  ): Player
+
+  """
+  Returns player achievement stats
+
+  Equivalent to GET /players/{playerName}/achievements
+  """
+  playerAchievements(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+  ): PlayerAchievements
+
+  """
+  Returns player quest completions
+
+  Equivalent to GET /players/{playerName}/quests
+  """
+  playerQuests(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+  ): PlayerQuests
+
+  """
+  Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.
+
+  Equivalent to GET /players/{playerName}/recentGames
+  """
+  playerRecentGames(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+  ): [PlayerRecentGamesListItem]
+
+  """
+  Allows you to query past auctions for an item within specified time range.
+  Also returns some statistical constants for this data.
+
+  Equivalent to GET /skyblock/auctions/{itemId}
+  """
+  skyblockAuction(
+    """
+    Date from which to get auctions. Uses a Unix timestamp with milliseconds.
+    E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is
+    from past 24 hours.
+    """
+    from: Int
+
+    """
+    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
+    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
+    """
+    itemId: String!
+
+    """
+    Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g.
+    to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.
+    """
+    to: Int
+  ): SkyblockAuction
+
+  """
+  Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.
+
+  Equivalent to GET /skyblock/auctions
+  """
+  skyblockAuctions(
+    """
+    Set to false if you want to query historical auctions
+    """
+    active: Boolean
+
+    """
+    Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be"
+    """
+    auctionUUID: String
+
+    """
+    Filter entries by passing [MongoDB
+    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
+    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
+    """
+    filter: String
+
+    """
+    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
+    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
+    """
+    id: String
+
+    """
+    Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"
+    """
+    itemUUID: String
+
+    """
+    Limit number of records returned. Default is 100 and maximum 1000.
+    """
+    limit: Int
+
+    """
+    Pages allow you to split the data using the 'limit' param. For example, if
+    there are 23 auctions matching your query and you set the limit to 10, each
+    page will return up to the next 10 consecutive results. With 23 results, you
+    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
+    """
+    page: Int
+
+    """
+    Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
+    """
+    sortBy: String
+
+    """
+    Define sort order. 'asc' for ascending or 'desc' for descending
+    """
+    sortOrder: String
+  ): [SkyblockAuctionsListItem]
+
+  """
+  Returns all SkyBlock items found in auctions
+
+  Equivalent to GET /skyblock/items
+  """
+  skyblockItems: SkyblockItems
+
+  """
+  Gets all skyblock profiles for the specified player
+
+  Equivalent to GET /skyblock/profiles/{playerName}
+  """
+  skyblockProfiles(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+  ): [SkyblockProfile]
+
+  """
+  If no profile is specified, the last played profile is returned
+
+  Equivalent to GET /skyblock/profile/{playerName}/{profileId}
+  """
+  # TODO: Strong type
+  skyblockProfile(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    playerName: String!
+
+    """
+    SkyBlock profile id e.g. '498228a732d443589aabd1e97e6806cd' or profile name
+    e.g. 'Mango'. Note: profile name can be different (although unlikely) for
+    different members of a co-op!
+    """
+    profileId: String!
+  ): JSON
+}
+
+type RanksListItem {
+  created: Int
+  default: Boolean
+  name: String
+  permissions: [Float]
+  priority: Int
+  tag: String
+}
+
+"""
+Stats for the resources collected in BedWars
+"""
+type ResourcesCollected {
+  """
+  Total number of diamonds collected from generators
+  """
+  diamond: Int
+
+  """
+  Total number of emeralds collected from generators
+  """
+  emerald: Int
+
+  """
+  Total number of gold collected from generators
+  """
+  gold: Int
+
+  """
+  Total number of iron collected from generators
+  """
+  iron: Int
+}
+
+"""
+Player stats on the Retro map in Turbo Kart Racers
+"""
+type Retro {
+  """
+  Total games played on Retro
+  """
+  games: Int
+
+  """
+  Trophies won on Retro
+  """
+  trophies: Trophies2
+
+  """
+  Ratio of wins to games played on Retro
+  """
+  winRatio: Float
+}
+
+"""
+Daily reward data
+"""
+type Rewards {
+  """
+  Total rewards claimed
+  """
+  claimed: Int
+
+  """
+  Daily rewards claimed
+  """
+  claimedDaily: Int
+
+  """
+  Best streak
+  """
+  streakBest: Int
+
+  """
+  Current streak
+  """
+  streakCurrent: Int
+
+  """
+  Current reward tokens
+  """
+  tokens: Int
+}
+
+type Rewards2 {
+  """
+  Timestamp of reward goal claimed
+  """
+  _200: Int
+}
+
+"""
+Rifle Specialization upgrades
+"""
+type Rifle {
+  """
+  Current progression of the Rifle's Cost Reduction upgrade
+  """
+  costReduction: Int
+
+  """
+  Current progression of the Rifle's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the Rifle's Recoil Reduction upgrade
+  """
+  recoilReduction: Int
+
+  """
+  Current progression of the Rifle's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+"""
+Current rune upgrades in Arena Brawl
+"""
+type RuneLevels {
+  """
+  Rune of Damage upgrade progression
+  """
+  damage: Int
+
+  """
+  Rune of Energy upgrade progression
+  """
+  energy: Int
+
+  """
+  Rune of Slowing upgrade progression
+  """
+  slowing: Int
+
+  """
+  Rune of Speed upgrade progression
+  """
+  speed: Int
+}
+
+"""
+Stats about Santa Says
+"""
+type SantaSays {
+  """
+  Amount of rounds played in Santa Says
+  """
+  rounds: Int
+
+  """
+  Amount of wins in Santa Says
+  """
+  wins: Int
+}
+
+"""
+Currently selected cosmetic appearance for each weapon type
+"""
+type SelectedCosmetics {
+  """
+  Currently selected Carbine cosmetic
+  """
+  carbine: String
+
+  """
+  Currently selected Knife cosmetic
+  """
+  knife: String
+
+  """
+  Currently selected Magnum cosmetic
+  """
+  magnum: String
+
+  """
+  Currently selected Pistol cosmetic
+  """
+  pistol: String
+
+  """
+  Currently selected Rifle cosmetic
+  """
+  rifle: String
+
+  """
+  Currently selected Shotgun cosmetic
+  """
+  shotgun: String
+
+  """
+  Currently selected SMG cosmetic
+  """
+  smg: String
+}
+
+"""
+Current settings in Blitz Survival Games
+"""
+type Settings {
+  """
+  Is auto armor enabled
+  """
+  autoArmor: Boolean
+
+  """
+  Current kit selected as default in Blitz Survival Games
+  """
+  defaultKit: String
+}
+
+"""
+Shotgun Specialization upgrades
+"""
+type Shotgun {
+  """
+  Current progression of the Shotgun's Cost Reduction upgrade
+  """
+  costReduction: Int
+
+  """
+  Current progression of the Shotgun's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the Shotgun's Recoil Reduction upgrade
+  """
+  recoilReduction: Int
+
+  """
+  Current progression of the Shotgun's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+"""
+Currently selected skills
+"""
+type Skills {
+  """
+  Currently selected Offensive skill
+  """
+  offensive: String
+
+  """
+  Currently selected Support skill
+  """
+  support: String
+
+  """
+  Currently selected Ultimate skill
+  """
+  ultimate: String
+
+  """
+  Currently selected Utility skill
+  """
+  utility: String
+}
+
+type SkyblockAuction {
+  auctions: Auctions
+
+  """
+  Average price in the selected time period
+  """
+  averagePrice: Int
+
+  """
+  Largest price in the selected time period
+  """
+  maxPrice: Int
+
+  """
+  Median price in the selected time period
+  """
+  medianPrice: Int
+
+  """
+  Lowest price in the selected time period
+  """
+  minPrice: Int
+
+  """
+  Total sold items in the selected time period
+  """
+  sold: Int
+
+  """
+  Standard deviation of prices in the selected time period
+  """
+  standardDeviation: Int
+}
+
+"""
+Auction object
+"""
+type SkyblockAuctionsListItem {
+  """
+  All current bids
+  """
+  bids: [BidsListItem]
+
+  """
+  Item category, e.g. "misc"
+  """
+  category: String
+
+  """
+  UNIX timestamp of auction end date
+  """
+  end: Int
+  highestBidAmount: Int
+  item: Item
+
+  """
+  UNIX timestamp of auction start date
+  """
+  start: Int
+  startingBid: Int
+
+  """
+  Item rarity, e.g. "RARE"
+  """
+  tier: String
+
+  """
+  Auction uuid
+  """
+  uuid: String
+}
+
+type SkyblockItems {
+  iTEMID: ITEMID
+}
+
+type SkyblockProfile {
+  pROFILEID: PROFILEID
+}
+
+"""
+SMG Specialization upgrades
+"""
+type Smg {
+  """
+  Current progression of the SMG's Cost Reduction upgrade
+  """
+  costReduction: Int
+
+  """
+  Current progression of the SMG's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the SMG's Recoil Reduction upgrade
+  """
+  recoilReduction: Int
+
+  """
+  Current progression of the SMG's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+"""
+Sniper Specialization upgrades
+"""
+type Sniper {
+  """
+  Current progression of the Sniper's Target Acquire upgrade
+  """
+  chargeBonus: Int
+
+  """
+  Current progression of the Sniper's Cost Reduction upgrade
+  """
+  costReduction: Int
+
+  """
+  Current progression of the Sniper's Damage Increase upgrade
+  """
+  damageIncrease: Int
+
+  """
+  Current progression of the Sniper's Reload Speed Reduction upgrade
+  """
+  reloadSpeedReduction: Int
+}
+
+type Staff {
+  """
+  Staff bans in the last day
+  """
+  daily: Int
+
+  """
+  Total staff bans, ever
+  """
+  total: Int
+}
+
+"""
+Player stats across all minigames
+"""
+type Stats {
+  """
+  Player stats in the Arcade Games
+  """
+  arcade: Arcade
+
+  """
+  Player stats in Arena Brawl
+  """
+  arena: Arena
+
+  """
+  Player stats in Bedwars
+  """
+  bedWars: BedWars
+
+  """
+  Player stats in Blitz Survival Games
+  """
+  blitz: Blitz
+
+  """
+  Player stats in Build Battle
+  """
+  buildBattle: BuildBattle
+
+  """
+  Player stats in Cops vs Crims
+  """
+  cvC: CvC
+
+  """
+  Player stats in Duels
+  """
+  duels: Duels
+
+  """
+  Player stats in Murder Mystery
+  """
+  murderMystery: MurderMystery
+
+  """
+  Current stats in Turbo Kart Racers
+  """
+  tKR: TKR
+
+  """
+  Player stats in Warlords
+  """
+  warlords: Warlords
+}
+
+"""
+Current stats in Turbo Kart Racers
+"""
+type TKR {
+  """
+  Ratio of banana hits to bananas slipped on
+  """
+  bananaRatio: Float
+
+  """
+  Total bananas slipped on in Turbo Kart Racers
+  """
+  bananasReceived: Int
+
+  """
+  Total successful hits by your bananas in Turbo Kart Racers
+  """
+  bananasSent: Int
+
+  """
+  Total powerups collected in Turbo Kart Racers
+  """
+  boxPickups: Int
+
+  """
+  Total coins picked up in Turbo Kart Racers
+  """
+  coinPickups: Int
+
+  """
+  Current coins in Turbo Kart Racers
+  """
+  coins: Int
+
+  """
+  Total laps completed in Turbo Kart Racers
+  """
+  laps: Int
+
+  """
+  Player stats on specific maps in Turbo Kart Racers
+  """
+  maps: Maps
+
+  """
+  Stats for trophies won in Turbo Kart Racers
+  """
+  trophies: Trophies
+
+  """
+  Total wins in Turbo Kart Racers
+  """
+  wins: Int
+}
+
+"""
+Stats for trophies won in Turbo Kart Racers
+"""
+type Trophies {
+  """
+  Total bronze trophies (third place) won in Turbo Kart Racers
+  """
+  bronze: Int
+
+  """
+  Total gold trophies (first place) won in Turbo Kart Racers
+  """
+  gold: Int
+
+  """
+  Total silver trophies (second place) won in Turbo Kart Racers
+  """
+  silver: Int
+}
+
+"""
+Trophies won on Retro
+"""
+type Trophies2 {
+  """
+  Bronze trophies won on Retro
+  """
+  bronze: Int
+
+  """
+  Gold trophies won on Retro
+  """
+  gold: Int
+
+  """
+  Silver trophies won on Retro
+  """
+  silver: Int
+}
+
+"""
+Trophies won on Hypixel GP
+"""
+type Trophies3 {
+  """
+  Bronze trophies won on Hypixel GP
+  """
+  bronze: Int
+
+  """
+  Gold trophies won on Hypixel GP
+  """
+  gold: Int
+
+  """
+  Silver trophies won on Hypixel GP
+  """
+  silver: Int
+}
+
+"""
+Trophies won on Jungle Rush
+"""
+type Trophies4 {
+  """
+  Bronze trophies won on Jungle Rush
+  """
+  bronze: Int
+
+  """
+  Gold trophies won on Jungle Rush
+  """
+  gold: Int
+
+  """
+  Silver trophies won on Jungle Rush
+  """
+  silver: Int
+}
+
+"""
+Trophies won on Olympus
+"""
+type Trophies5 {
+  """
+  Bronze trophies won on Olympus
+  """
+  bronze: Int
+
+  """
+  Gold trophies won on Olympus
+  """
+  gold: Int
+
+  """
+  Silver trophies won on Olympus
+  """
+  silver: Int
+}
+
+"""
+Trophies won on Canyon
+"""
+type Trophies6 {
+  """
+  Bronze trophies won on Canyon
+  """
+  bronze: Int
+
+  """
+  Gold trophies won on Canyon
+  """
+  gold: Int
+
+  """
+  Silver trophies won on Canyon
+  """
+  silver: Int
+}
+
+"""
+Specific stats in 2v2 Arena
+"""
+type TwoVTwo {
+  """
+  Total damage dealt in 2v2 Arena
+  """
+  damage: Int
+
+  """
+  Total deaths in 2v2 Arena
+  """
+  deaths: Int
+
+  """
+  Total games played in 2v2 Arena
+  """
+  games: Int
+
+  """
+  Total health healed in 2v2 Arena
+  """
+  healed: Int
+
+  """
+  Kill/death ratio in 2v2 Arena
+  """
+  kd: Float
+
+  """
+  Total kills in 2v2 Arena
+  """
+  kills: Int
+
+  """
+  Total losses in 2v2 Arena
+  """
+  losses: Int
+
+  """
+  Win/loss ratio in 2v2 Arena
+  """
+  winLoss: Float
+
+  """
+  Win percentage out of games played in 2v2 Arena
+  """
+  winPercentage: Float
+
+  """
+  Highest win streak in 2v2 Arena
+  """
+  winStreaks: Int
+
+  """
+  Total wins in 2v2 Arena
+  """
+  wins: Int
+}
+
+enum Type {
+  PLAYERS
+  GUILDS
+  SKYBLOCK
+}
+
+"""
+Player stats in Warlords
+"""
+type Warlords {
+  """
+  Current coins in Warlords
+  """
+  coins: Int
+}
+
+type Watchdog {
+  """
+  Watchdog bans in the last day
+  """
+  daily: Int
+
+  """
+  Watchdog's bans in the last minute
+  """
+  lastMinute: Int
+
+  """
+  Total Watchdog bans, ever
+  """
+  total: Int
+}
+
+"""
+Stats about Zombies
+"""
+type Zombies {
+  """
+  Best round in Zombies
+  """
+  bestRound: Int
+
+  """
+  Amount of bullets hit in Zombies
+  """
+  bulletsHit: Int
+
+  """
+  Amount of deaths in Zombies
+  """
+  deaths: Int
+
+  """
+  Amount of doors opened in Zombies
+  """
+  doorsOpened: Int
+
+  """
+  Amount of headshots in Zombies
+  """
+  headshots: Int
+
+  """
+  Amount of players revived in Zombies
+  """
+  playersRevived: Int
+
+  """
+  Total rounds survived in Zombies
+  """
+  totalRoundsSurvived: Int
+
+  """
+  Amount of windows repaired in Zombies
+  """
+  windowsRepaired: Int
+
+  """
+  Amount of wins in Zombies
+  """
+  wins: Int
+
+  """
+  Amount of zombie kills in Zombies
+  """
+  zombieKills: Int
+}
