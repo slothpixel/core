@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
+const async = require('async');
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
+const getUUID = require('./getUUID');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cacheFunctions = require('./cacheFunctions');
@@ -63,4 +65,53 @@ function buildPlayer(uuid, cb) {
   });
 }
 
-module.exports = buildPlayer;
+function getPlayer(name, cb) {
+  getUUID(name, (err, uuid) => {
+    if (err) {
+      return cb({ status: 404, message: err });
+    }
+    buildPlayer(uuid, (err, player) => {
+      if (err) {
+        return cb({ status: 500, message: err });
+      }
+      return cb(null, player);
+    });
+  });
+}
+
+function populatePlayers(players, cb) {
+  async.map(players, (player, done) => {
+    const { uuid } = player;
+    queries.getPlayerProfile(uuid, (err, profile, isCached) => {
+      if (err) {
+        logger.error(err);
+      }
+      if (profile === null) {
+        logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
+        buildPlayer(uuid, (err, newPlayer) => {
+          delete player.uuid;
+          const profile = queries.getPlayerFields(newPlayer);
+          profile.uuid = uuid;
+          player.profile = profile;
+          queries.cachePlayerProfile(profile, () => {
+            done(err, player);
+          });
+        });
+      } else {
+        delete player.uuid;
+        player.profile = profile;
+        if (isCached) {
+          done(err, player);
+        } else {
+          queries.cachePlayerProfile(profile, () => {
+            done(err, player);
+          });
+        }
+      }
+    });
+  }, (err, result) => {
+    cb(result);
+  });
+}
+
+module.exports = { buildPlayer, getPlayer, populatePlayers };

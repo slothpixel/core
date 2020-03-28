@@ -2,15 +2,15 @@
 const async = require('async');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
-const buildPlayer = require('../store/buildPlayer');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
 const queryAuctions = require('../store/queryAuctions');
-const { buildGuild } = require('../store/buildGuild');
+const { getGuildFromPlayer } = require('../store/buildGuild');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
-const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
+const { populatePlayers, getPlayer } = require('../store/buildPlayer');
+const { getMetadata } = require('../store/queries');
 const {
   logger, generateJob, getData, typeToStandardName, getPlayerFields, min, max, median, average, stdDev,
 } = require('../util/utility');
@@ -21,55 +21,6 @@ const {
   profileIdParam,
 } = require('./params');
 const packageJson = require('../package.json');
-
-function getPlayer(name, cb) {
-  getUUID(name, (err, uuid) => {
-    if (err) {
-      return cb({ status: 404, message: err });
-    }
-    buildPlayer(uuid, (err, player) => {
-      if (err) {
-        return cb({ status: 500, message: err });
-      }
-      return cb(null, player);
-    });
-  });
-}
-
-function populatePlayers(players, cb) {
-  async.map(players, (player, done) => {
-    const { uuid } = player;
-    getPlayerProfile(uuid, (err, profile, isCached) => {
-      if (err) {
-        logger.error(err);
-      }
-      if (profile === null) {
-        logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
-        buildPlayer(uuid, (err, newPlayer) => {
-          delete player.uuid;
-          const profile = getPlayerFields(newPlayer);
-          profile.uuid = uuid;
-          player.profile = profile;
-          cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        });
-      } else {
-        delete player.uuid;
-        player.profile = profile;
-        if (isCached) {
-          done(err, player);
-        } else {
-          cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        }
-      }
-    });
-  }, (err, result) => {
-    cb(result);
-  });
-}
 
 const auctionObject = {
   type: 'object',
@@ -656,23 +607,11 @@ const spec = {
         },
         route: () => '/guilds/:player',
         func: (req, res) => {
-          getUUID(req.params.player, (err, uuid) => {
+          getGuildFromPlayer(req.params.player, req.params.populatePlayers, (err, guild) => {
             if (err) {
               return res.status(404).json({ error: err });
             }
-            buildGuild(uuid, (err, guild) => {
-              if (err) {
-                return res.status(404).json({ error: err });
-              }
-              if (req.query.populatePlayers !== undefined) {
-                populatePlayers(guild.members, (players) => {
-                  guild.members = players;
-                  return res.json(guild);
-                });
-              } else {
-                return res.json(guild);
-              }
-            });
+            return res.json(guild);
           });
         },
       },
