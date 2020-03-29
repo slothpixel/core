@@ -68,13 +68,13 @@ function mergeStats({
   // Rest
   ...rest
 }) {
-  const getCoinsDuringPrestige = regexp => pickKeys(rest, {
+  const getCoinsDuringPrestige = (regexp) => pickKeys(rest, {
     regexp,
-    keyMap: key => key.replace(regexp, ''),
-    valueMap: val => Math.round(val),
+    keyMap: (key) => key.replace(regexp, ''),
+    valueMap: (val) => Math.round(val),
   });
   // TODO - Decode the inventory data to more readable format
-  const getInventory = obj => obj.data;
+  const getInventory = (obj) => obj.data;
 
   return {
     kills,

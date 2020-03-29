@@ -2,9 +2,9 @@
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
 const { logger, generateJob, getData } = require('../util/utility');
-const redis = require('../store/redis');
-const cacheFunctions = require('../store/cacheFunctions');
-const queries = require('../store/queries');
+const redis = require('./redis');
+const cacheFunctions = require('./cacheFunctions');
+const queries = require('./queries');
 
 /*
 * Functions to build/cache player object
@@ -18,7 +18,7 @@ function getPlayerData(uuid, cb) {
     if (err) {
       return cb(err, null);
     }
-    processPlayerData(body.player || {}, player => cb(null, player));
+    processPlayerData(body.player || {}, (player) => cb(null, player));
   });
 }
 
@@ -58,7 +58,7 @@ function buildPlayer(uuid, cb) {
       if (err) {
         return cb(err);
       }
-      cachePlayer(player, u, key, caching, player => cb(null, player));
+      cachePlayer(player, u, key, caching, (player) => cb(null, player));
     });
   });
 }

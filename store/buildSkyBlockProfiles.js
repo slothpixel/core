@@ -5,9 +5,9 @@
 const async = require('async');
 const redis = require('./redis');
 const processSkyBlock = require('../processors/processSkyBlock');
-const cacheFunctions = require('../store/cacheFunctions');
+const cacheFunctions = require('./cacheFunctions');
 // const buildPlayer = require('../store/buildPlayer');
-const { insertSkyBlockProfile } = require('../store/queries');
+const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 
 function cacheProfile(key, profile, cb) {
@@ -25,9 +25,9 @@ function getProfileData(id, cb) {
   });
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err, null);
+      logger.error(`Failed getting skyblock profile: ${err}`);
     }
-    processSkyBlock(body.profile || {}, profile => cb(null, profile));
+    processSkyBlock((body || {}).profile || {}, (profile) => cb(null, profile));
   });
 }
 
@@ -47,7 +47,7 @@ function buildProfile(uuid, id = null, cb) {
       if (id === null) {
         [profile_id] = getLatestProfile(profiles);
       } else if (id.length < 32) {
-        profile_id = Object.keys(profiles).find(profile => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
+        profile_id = Object.keys(profiles).find((profile) => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
       }
     } else {
       // buildPlayer(uuid, () => {});
@@ -67,7 +67,7 @@ function buildProfile(uuid, id = null, cb) {
         if (err) {
           return cb(err);
         }
-        cacheProfile(key, profile, profile => cb(null, profile || {}));
+        cacheProfile(key, profile, (profile) => cb(null, profile || {}));
       });
     });
   });
@@ -97,7 +97,7 @@ function buildProfileList(uuid, profiles = {}) {
     }
     const p = JSON.parse(res) || {};
     // TODO - Mark old profiles
-    const updateQueue = Object.keys(profiles).filter(id => !(id in p));
+    const updateQueue = Object.keys(profiles).filter((id) => !(id in p));
     if (updateQueue.length === 0) return;
     async.each(updateQueue, (id, cb) => {
       buildProfile(uuid, id, (err, profile) => {

@@ -45,9 +45,9 @@ function processStats({
   auctions_gold_spent = 0,
   ...rest
 }) {
-  const getStats = regexp => pickKeys(rest, {
+  const getStats = (regexp) => pickKeys(rest, {
     regexp,
-    keyMap: key => key.replace(regexp, ''),
+    keyMap: (key) => key.replace(regexp, ''),
   });
   const auctions = {
     created: auctions_created,
@@ -91,15 +91,13 @@ function processStats({
 }
 
 // TODO - Parse health, defence, intelligence etc.
-// TODO - Slayer stuff
 async function processMember({
   last_save = null,
   first_join = null,
   stats = {},
   coin_purse = 0,
   crafted_generators = [],
-  slayer_quest,
-  slayer_bosses,
+  slayer_bosses = {},
   unlocked_coll_tiers = [],
   collection = {},
   // Inventories
@@ -112,10 +110,27 @@ async function processMember({
   ender_chest_contents = {},
   ...rest
 }) {
-  const getSkills = regexp => pickKeys(rest, {
+  const getSkills = (regexp) => pickKeys(rest, {
     regexp,
-    keyMap: key => key.replace(regexp, ''),
-    valueMap: val => SkyBlockUtils.getLevelByXp(val),
+    keyMap: (key) => key.replace(regexp, ''),
+    valueMap: (val) => SkyBlockUtils.getLevelByXp(val),
+  });
+  const getSlayer = ({
+    claimed_levels = {},
+    xp = 0,
+    boss_kills_tier_0,
+    boss_kills_tier_1,
+    boss_kills_tier_2,
+    boss_kills_tier_3,
+  }) => ({
+    claimed_levels: Object.keys(claimed_levels).length,
+    xp,
+    kills_tier: {
+      1: boss_kills_tier_0,
+      2: boss_kills_tier_1,
+      3: boss_kills_tier_2,
+      4: boss_kills_tier_3,
+    },
   });
   const getUnlockedTier = (array) => {
     const o = {};
@@ -150,12 +165,18 @@ async function processMember({
     collections_unlocked: Object.keys(collection_tiers).length,
     minions: getUnlockedTier(crafted_generators),
     stats: processStats(stats),
+    slayer: {
+      zombie: getSlayer(slayer_bosses.zombie || {}),
+      spider: getSlayer(slayer_bosses.spider || {}),
+      wolf: getSlayer(slayer_bosses.wolf || {}),
+    },
   };
 }
 
 function processSkyBlock({
   profile_id = null,
   members = {},
+  banking = {},
 }, cb) {
   const newMembers = {};
   async.each(Object.keys(members), async (member) => {
@@ -163,6 +184,10 @@ function processSkyBlock({
   }, () => cb({
     profile_id,
     members: newMembers,
+    banking: {
+      balance: banking.balance || null,
+      transactions: banking.transactions || [],
+    },
   }));
 }
 

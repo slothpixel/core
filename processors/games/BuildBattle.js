@@ -29,7 +29,7 @@ module.exports = ({
   // ex: 'votes_Roman: 5', 'votes_Steam Locomotive: 3'
   const themeRatings = pickKeys(rest, {
     regexp: /votes_.*/,
-    keyMap: key => key.replace('votes_', ''),
+    keyMap: (key) => key.replace('votes_', ''),
   });
   return {
     coins,

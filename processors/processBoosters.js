@@ -4,7 +4,7 @@ function buildObject(boosters = []) {
   const obj = {};
   function getStackedArray(stacked = []) {
     if (!Array.isArray(stacked)) stacked = [];
-    return stacked.map(uuid => removeDashes(uuid));
+    return stacked.map((uuid) => removeDashes(uuid));
   }
   boosters.forEach((booster) => {
     const game = IDToStandardName(booster.gameType);

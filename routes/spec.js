@@ -9,6 +9,7 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
 const queryAuctions = require('../store/queryAuctions');
+const { buildGuild } = require('../store/buildGuild');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
@@ -855,7 +856,7 @@ const spec = {
               if (err) {
                 return res.json({ error: err });
               }
-              populatePlayers(Object.keys(profile.members).map(uuid => ({ uuid })), (players) => {
+              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (players) => {
                 players.forEach((player) => {
                   profile.members[player.profile.uuid].player = player.profile;
                 });

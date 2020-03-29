@@ -5,8 +5,8 @@
  */
 const config = require('../config');
 const { logger, removeDashes, getData } = require('../util/utility');
-const cacheFunctions = require('../store/cacheFunctions');
-const redis = require('../store/redis');
+const cacheFunctions = require('./cacheFunctions');
+const redis = require('./redis');
 
 function fetchUUID(username, cb) {
   const url = `https://api.mojang.com/users/profiles/minecraft/${username}`;
@@ -20,6 +20,12 @@ function fetchUUID(username, cb) {
 }
 
 function getUUID(name, cb) {
+  if ((/^[0-9a-f]{32}$/i).test(removeDashes(name))) {
+    return cb(null, removeDashes(name));
+  }
+  if (!(/^\w{1,16}$/i).test(name)) {
+    return cb('Invalid username or UUID!');
+  }
   const key = `uuid:${name.toLowerCase()}`;
   cacheFunctions.read({ key }, (uuid) => {
     if (uuid) {
@@ -27,15 +33,6 @@ function getUUID(name, cb) {
       return cb(null, uuid);
     }
     logger.debug(`Cache miss for uuid ${name}`);
-    if ((/^[0-9a-f]{32}$/i).test(name)) {
-      return cb(null, name);
-    }
-    if ((/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i).test(name)) {
-      return cb(null, removeDashes(name));
-    }
-    if (!(/^\w{1,16}$/i).test(name)) {
-      return cb('Invalid username or UUID!');
-    }
     fetchUUID(name, (fetchErr, uuid) => {
       if (fetchErr) {
         return cb(fetchErr, null);

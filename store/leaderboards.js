@@ -4,18 +4,18 @@
  */
 const config = require('../config');
 const { logger } = require('../util/utility');
-const profileFields = require('../store/profileFields');
-const templates = require('../store/lb-templates');
-const cacheFunctions = require('../store/cacheFunctions');
+const profileFields = require('./profileFields');
+const templates = require('./lb-templates');
+const cacheFunctions = require('./cacheFunctions');
 const {
   Player, Guild,
-} = require('../store/models');
+} = require('./models');
 
 function cacheLeaderboard(lb, key, cb) {
   if (config.ENABLE_LEADERBOARD_CACHE) {
     cacheFunctions.write({
       key,
-      duration: config.ENABLE_LEADERBOARD_CACHE,
+      duration: config.LEADERBOARD_CACHE_SECONDS,
     }, lb);
   }
   return cb(lb);
@@ -129,7 +129,7 @@ function getLeaderboards(query, template, cb) {
           if (err) {
             return cb(err);
           }
-          cacheLeaderboard(data, key, lb => cb(null, lb));
+          cacheLeaderboard(data, key, (lb) => cb(null, lb));
         });
       });
     } else {

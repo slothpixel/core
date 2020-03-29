@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const { generateJob, getData } = require('../util/utility');
-const redis = require('../store/redis');
-const cacheFunctions = require('../store/cacheFunctions');
+const redis = require('./redis');
+const cacheFunctions = require('./cacheFunctions');
 
 /*
 * Functions to build/cache ban statistics

@@ -55,7 +55,7 @@ function parseAchievements(oneTime = [], tiered = {}, rewards) {
   });
   // Parse onetime achievements
   // Temp patch to onetime ach possibly containing an empty array
-  oneTime.filter(elem => typeof elem === 'string').forEach((achievement) => {
+  oneTime.filter((elem) => typeof elem === 'string').forEach((achievement) => {
     const { game, name } = getAchievementProperties(achievement);
     if (Object.hasOwnProperty.call(achievements, game)) {
       const { points = 0 } = achievements[game].one_time[name] || 0;
