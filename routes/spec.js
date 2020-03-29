@@ -3,7 +3,6 @@ const async = require('async');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
-const buildGuild = require('../store/buildGuild');
 const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
