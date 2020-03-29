@@ -3,24 +3,41 @@ Player stats in the Arcade Games
 """
 type Arcade {
   """
-  Stats about Blocking Dead
-  """
-  blockingDead: BlockingDead
-
-  """
-  Stats about Bounty Hunters
-  """
-  bountyHunters: BountyHunters
-
-  """
   Current coins in the Arcade Games
   """
   coins: Int
 
   """
+  Current kills in the Arcade Games
+  """
+  kills: Int
+
+  """
+  Current wins in the Arcade Games
+  """
+  wins: Int
+
+  """
+  All Arcade Games modes
+  """
+  modes: ArcadeModes
+}
+
+type ArcadeModes {
+  """
+  Stats about Blocking Dead
+  """
+  blocking_dead: BlockingDead
+
+  """
+  Stats about Bounty Hunters
+  """
+  bounty_hunters: BountyHunters
+
+  """
   Stats about Creeper Attack
   """
-  creeperAttack: CreeperAttack
+  creeper_attack: CreeperAttack
 
   """
   Stats about Dragon Wars
@@ -30,7 +47,7 @@ type Arcade {
   """
   Stats about Farm Hunt
   """
-  farmHunt: FarmHunt
+  farm_hunt: FarmHunt
 
   """
   Stats about Football
@@ -40,17 +57,17 @@ type Arcade {
   """
   Stats about Galaxy Wars
   """
-  galaxyWars: GalaxyWars
+  galaxy_wars: GalaxyWars
 
   """
   Stats about Hole in the Wall
   """
-  holeInTheWall: HoleInTheWall
+  hole_in_the_wall: HoleInTheWall
 
   """
   Stats about Hypixel Says
   """
-  hypixelSays: HypixelSays
+  hypixel_says: HypixelSays
 
   """
   Stats about Mini Walls
@@ -60,12 +77,12 @@ type Arcade {
   """
   Stats about Party Games
   """
-  partyGames: PartyGames
+  party_games: PartyGames
 
   """
   Stats about Santa Says
   """
-  santaSays: SantaSays
+  santa_says: SantaSays
 
   """
   Stats about Zombies
@@ -77,7 +94,7 @@ type Arcade {
 Player stats in Arena Brawl
 """
 type Arena {
-  activeRune: String
+  active_rune: String
 
   """
   Current coins
@@ -87,12 +104,12 @@ type Arena {
   """
   Total coins spent in Arena Brawl
   """
-  coinsSpent: Int
+  coins_spent: Int
 
   """
   Current Combat Upgrades in Arena Brawl
   """
-  combatLevels: CombatLevels
+  combat_levels: CombatLevels
 
   """
   Stats in specific Arena gamemodes
@@ -108,18 +125,18 @@ type Arena {
   Current number of Magical Chest keys
   """
   keys: Int
-  magicalChest: Int
+  magical_chest: Int
   penalty: Int
 
   """
   Current rune upgrades in Arena Brawl
   """
-  runeLevels: RuneLevels
+  rune_levels: RuneLevels
 
   """
   Currently selected Sword cosmetic
   """
-  selectedSword: String
+  selected_sword: String
 
   """
   Currently selected skills
@@ -161,13 +178,6 @@ type Attributes {
   uuid: String
 }
 
-type Auctions {
-  """
-  Auction object
-  """
-  _1577033426093: JSON
-}
-
 type Bans {
   staff: Staff
   watchdog: Watchdog
@@ -180,17 +190,17 @@ type BedWars {
   """
   Ratio of beds broken to beds lost
   """
-  bedRatio: Float
+  bed_ratio: Float
 
   """
   Total number of beds broken
   """
-  bedsBroken: Int
+  beds_broken: Int
 
   """
   Total number of beds lost
   """
-  bedsLost: Int
+  beds_lost: Int
 
   """
   Stats for boxes in BedWars
@@ -215,17 +225,17 @@ type BedWars {
   """
   Total number of final deaths
   """
-  finalDeaths: Int
+  final_deaths: Int
 
   """
   Total number of final deaths
   """
-  finalKD: Float
+  final_k_d: Float
 
   """
   Total number of final kills
   """
-  finalKills: Int
+  final_kills: Int
 
   """
   Stats for the different gamemodes in BedWars
@@ -235,12 +245,12 @@ type BedWars {
   """
   Total exp
   """
-  gamesPlayed: Int
+  games_played: Int
 
   """
   K/D ratio
   """
-  kD: Float
+  k_d: Float
 
   """
   Total exp
@@ -260,22 +270,22 @@ type BedWars {
   """
   Stats for the resources collected in BedWars
   """
-  resourcesCollected: ResourcesCollected
+  resources_collected: ResourcesCollected
 
   """
   Total number of final deaths
   """
-  voidDeaths: Int
+  void_deaths: Int
 
   """
   Total number of final deaths
   """
-  voidKills: Int
+  void_kills: Int
 
   """
   W/L ratio
   """
-  wL: Float
+  w_l: Float
 
   """
   Total exp
@@ -302,7 +312,7 @@ type BidsListItem {
   """
   Bidder's skyblock profile id
   """
-  profileId: String
+  profile_id: String
 
   """
   Bid UNIX timestamp
@@ -317,22 +327,22 @@ type Blitz {
   """
   Total arrows shot in blitz survival games
   """
-  arrowsFired: Int
+  arrows_fired: Int
 
   """
   Successful arrow shots landed in Blitz Survival Games
   """
-  arrowsHit: Int
+  arrows_hit: Int
 
   """
   Total number of Blitz Stars used in Blitz Survival Games
   """
-  blitzUses: Int
+  blitz_uses: Int
 
   """
   Total number of chests opened in Blitz Survival Games
   """
-  chestsOpened: Int
+  chests_opened: Int
 
   """
   Current coins in Blitz Survival Games
@@ -347,7 +357,7 @@ type Blitz {
   """
   Total damage taken in Blitz Survival Games
   """
-  damageTaken: Int
+  damage_taken: Int
 
   """
   Total deaths in Blitz Survival Games
@@ -362,7 +372,7 @@ type Blitz {
   """
   Total games of Blitz Survival Games played
   """
-  gamesPlayed: Float
+  games_played: Float
 
   """
   Currently configured kit inventories
@@ -372,7 +382,7 @@ type Blitz {
   """
   Ratio of kills to deaths in Blitz Survival Games
   """
-  kD: Float
+  k_d: Float
 
   """
   Total kills in Blitz Survival Games
@@ -382,42 +392,42 @@ type Blitz {
   """
   Specific stats with a kit in Blitz Survival Games
   """
-  kitStats: JSON
+  kit_stats: JSON
 
   """
   Player's current kit levels in Blitz Survival Games
   """
-  kitsLevels: JSON
+  kits_levels: JSON
 
   """
   Total mobs spawned by the player in Blitz Survival Games
   """
-  mobsSpawned: Int
+  mobs_spawned: Int
 
   """
   Current monthly kills in Blitz Survival Games
   """
-  monthlyKills: Int
+  monthly_kills: Int
 
   """
   Total potions drunk in Blitz Survival Games
   """
-  potionsDrunk: Int
+  potions_drunk: Int
 
   """
   Total splash potions thrown in Blitz Survival Games
   """
-  potionsThrown: Int
+  potions_thrown: Int
 
   """
   Total games won with the Rambo kit in Blitz Survival Games
   """
-  ramboWins: Int
+  rambo_wins: Int
 
   """
   Total games won with a random kit in Blitz Survival Games
   """
-  randomWins: Int
+  random_wins: Int
 
   """
   Current settings in Blitz Survival Games
@@ -427,32 +437,32 @@ type Blitz {
   """
   Total players killed while using a taunt in Blitz Survival Games
   """
-  tauntKills: Int
+  taunt_kills: Int
 
   """
   Total wins in Teams Blitz Survival Games
   """
-  teamWins: Int
+  team_wins: Int
 
   """
   Total playtime in Blitz Survival Games
   """
-  timePlayed: Float
+  time_played: Float
 
   """
   Current weekly kills in Blitz Survival Games
   """
-  weeklyKills: Int
+  weekly_kills: Int
 
   """
   Ratio of total wins to losses in Blitz Survival Games
   """
-  winLoss: Float
+  win_loss: Float
 
   """
   Percentage of games won out of total games played in Blitz Survival Games
   """
-  winPercentage: Int
+  win_percentage: Int
 
   """
   Total wins in Solo Blitz Survival Games
@@ -477,14 +487,14 @@ type BlockingDead {
   """
   Amount of zombie kills in Blocking Dead
   """
-  zombieKills: Int
+  zombie_kills: Int
 }
 
 type Boosters {
-  game: [GameBooster]
+  game: [GameBoosters]
 }
 
-type GameBooster {
+type GameBoosters {
   """
   UNIX timestamp of activation date
   """
@@ -528,7 +538,7 @@ type BountyHunters {
   """
   Amount of bounty kills in Bounty Hunters
   """
-  bountyKills: Int
+  bounty_kills: Int
 
   """
   Amount of deaths in Bounty Hunters
@@ -593,12 +603,12 @@ type BuildBattle {
   """
   Correct guesses in Guess The Build
   """
-  correctGuesses: Int
+  correct_guesses: Int
 
   """
   Post-Update games played in all modes
   """
-  gamesPlayed: Int
+  games_played: Int
 
   """
   Custom Hotbar loadout
@@ -613,32 +623,32 @@ type BuildBattle {
   """
   Currently selected backdrop cosmetic
   """
-  selectedBackdrop: String
+  selected_backdrop: String
 
   """
   Currently selected hat cosmetic
   """
-  selectedHat: String
+  selected_hat: String
 
   """
   Currently selected movement trail cosmetic
   """
-  selectedMovementTrail: String
+  selected_movement_trail: String
 
   """
   Currently selected suit cosmetic
   """
-  selectedSuit: String
+  selected_suit: String
 
   """
   Currently selected victory dance cosmetic
   """
-  selectedVictoryDance: String
+  selected_victory_dance: String
 
   """
   Super Votes the player currently has
   """
-  superVotes: Int
+  super_votes: Int
 
   """
   Key-Value pairs of 1-5 star ratings on themes
@@ -648,12 +658,12 @@ type BuildBattle {
   """
   Judging votes on other builds
   """
-  totalVotes: Int
+  total_votes: Int
 
   """
   Win Ratio
   """
-  wR: Int
+  w_r: Int
 
   """
   Wins in all Build Battle modes
@@ -663,22 +673,22 @@ type BuildBattle {
   """
   Wins in Guess The Build
   """
-  winsGuessTheBuild: Int
+  wins_guess_the_build: Int
 
   """
   Wins in Solo Mode
   """
-  winsSoloNormal: Int
+  wins_solo_normal: Int
 
   """
   Wins in Pro Mode
   """
-  winsSoloPro: Int
+  wins_solo_pro: Int
 
   """
   Wins in Teams Mode
   """
-  winsTeamsNormal: Int
+  wins_teams_normal: Int
 }
 
 """
@@ -698,7 +708,7 @@ type Canyon {
   """
   Ratio of wins to games played on Canyon
   """
-  winRatio: Float
+  win_ratio: Float
 }
 
 """
@@ -708,22 +718,22 @@ type Carbine {
   """
   Current progression of the Carbine's Cost Reduction upgrade
   """
-  costReduction: Int
+  cost_reduction: Int
 
   """
   Current progression of the Carbine's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the Carbine's Recoil Reduction upgrade
   """
-  recoilReduction: Int
+  recoil_reduction: Int
 
   """
   Current progression of the Carbine's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
 }
 
 """
@@ -762,7 +772,7 @@ type CreeperAttack {
   """
   Best wave in Football
   """
-  bestWave: Int
+  best_wave: Int
 }
 
 """
@@ -772,12 +782,12 @@ type CvC {
   """
   Total bombs defused as Cop
   """
-  bombsDefused: Int
+  bombs_defused: Int
 
   """
   Total bombs planted as Criminal
   """
-  bombsPlanted: Int
+  bombs_planted: Int
 
   """
   Current coins in Cops vs Crims
@@ -787,12 +797,12 @@ type CvC {
   """
   Total cops killed
   """
-  copKills: Int
+  cop_kills: Int
 
   """
   Total criminals killed
   """
-  criminalKills: Int
+  criminal_kills: Int
 
   """
   Current player stats in CvC Deathmatch
@@ -807,12 +817,12 @@ type CvC {
   """
   Total kills with a grenade
   """
-  grenadeKills: Int
+  grenade_kills: Int
 
   """
   Total headshot kills
   """
-  headshotKills: Int
+  headshot_kills: Int
 
   """
   Current kill/death ratio in Cops vs Crims
@@ -827,12 +837,12 @@ type CvC {
   """
   Current wins on specific maps
   """
-  mapWins: MapWins
+  map_wins: Map_wins
 
   """
   Current monthly kills
   """
-  monthlyKills: Int
+  monthly_kills: Int
 
   """
   Currently purchased perks and upgrades for Cops vs Crims
@@ -842,32 +852,32 @@ type CvC {
   """
   Total individual round wins
   """
-  roundWins: Int
+  round_wins: Int
 
   """
   Currently selected cosmetic appearance for each weapon type
   """
-  selectedCosmetics: SelectedCosmetics
+  selected_cosmetics: Selected_cosmetics
 
   """
   Currently selected nametag prefix in the Cops vs Crims lobby
   """
-  selectedLobbyPrefix: String
+  selected_lobby_prefix: String
 
   """
   Total shots fired
   """
-  shotsFired: Int
+  shots_fired: Int
 
   """
   Whether the lobby nametag prefix is currently enabled
   """
-  showLobbyPrefix: Boolean
+  show_lobby_prefix: Boolean
 
   """
   Current weekly kills
   """
-  weeklyKills: Int
+  weekly_kills: Int
 
   """
   Total wins in Cops vs Crims
@@ -882,12 +892,12 @@ type Deathmatch {
   """
   Total cops killed in CvC Deathmatch
   """
-  copKills: Int
+  cop_kills: Int
 
   """
   Total criminals killed in CvC Deathmatch
   """
-  criminalKills: Int
+  criminal_kills: Int
 
   """
   Total deaths in CvC Deathmatch
@@ -957,7 +967,7 @@ type Equipped {
   """
   Currently equipped victory dance effect
   """
-  victoryDance: String
+  victory_dance: String
 }
 
 """
@@ -967,7 +977,7 @@ type FarmHunt {
   """
   Amount of poop collected in Farm Hunt
   """
-  poopCollected: Int
+  poop_collected: Int
 
   """
   Amount of wins in Farm Hunt
@@ -1037,17 +1047,17 @@ type FourVFour {
   """
   Win/loss ratio in 4v4 Arena
   """
-  winLoss: Float
+  win_loss: Float
 
   """
   Win percentage out of games played in 4v4 Arena
   """
-  winPercentage: Float
+  win_percentage: Float
 
   """
   Highest win streak in 4v4 Arena
   """
-  winStreaks: Int
+  win_streaks: Int
 
   """
   Total wins in 4v4 Arena
@@ -1072,12 +1082,12 @@ type GalaxyWars {
   """
   Amount of rebel kills in Galaxy Wars
   """
-  rebelKills: Int
+  rebel_kills: Int
 
   """
   The number of shots fired in Galaxy Wars
   """
-  shotsFired: Int
+  shots_fired: Int
 
   """
   Amount of wins in Galaxy Wars
@@ -1092,17 +1102,17 @@ type Gamemodes {
   """
   Specific stats in 4v4 Arena
   """
-  fourVFour: FourVFour
+  four_v_four: FourVFour
 
   """
   Specific stats in 1v1 Arena
   """
-  oneVOne: OneVOne
+  one_v_one: OneVOne
 
   """
   Specific stats in 2v2 Arena
   """
-  twoVTwo: TwoVTwo
+  two_v_two: TwoVTwo
 }
 
 type Games {
@@ -1114,13 +1124,13 @@ type Games {
   """
   Total one time achievements completed in the game
   """
-  completedOneTime: Int
+  completed_one_time: Int
 
   """
   Total tiered achievements completed in the game. Each tier counts as a completion
   """
-  completedTiered: Int
-  oneTime: [String]
+  completed_tiered: Int
+  one_time: [String]
 
   """
   Total achievement points in the game
@@ -1130,12 +1140,12 @@ type Games {
   """
   Total achievement points from one time achievements in the game
   """
-  pointsOneTime: Int
+  points_one_time: Int
 
   """
   Total achievement points from tiered achievements in the game
   """
-  pointsTiered: Int
+  points_tiered: Int
   tiered: [Int]
 }
 
@@ -1158,12 +1168,12 @@ type Guild {
   """
   Guild EXP earned in each minigame
   """
-  expByGame: Int
+  exp_by_game: Int
 
   """
   Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.
   """
-  expHistory: JSON
+  exp_history: JSON
 
   """
   Guild id used in hypixel backend
@@ -1173,7 +1183,7 @@ type Guild {
   """
   Ranking in the number of guild coins owned in the legacy guild system
   """
-  legacyRanking: Int
+  legacy_ranking: Int
 
   """
   Guild level
@@ -1193,7 +1203,7 @@ type Guild {
   """
   Array containing the guild's preferred games
   """
-  preferredGames: [String]
+  preferred_games: [String]
   ranks: [RanksListItem]
 
   """
@@ -1204,12 +1214,12 @@ type Guild {
   """
   Formatting code for the guild tag
   """
-  tagColor: String
+  tag_color: String
 
   """
   Formatted tag string e.g. '&b[TAG]'
   """
-  tagFormatted: String
+  tag_formatted: String
 }
 
 """
@@ -1219,12 +1229,12 @@ type HoleInTheWall {
   """
   Highest score in finals in Hole in the Wall
   """
-  highestScoreFinals: Int
+  highest_score_finals: Int
 
   """
   Highest score qualification in Hole in the Wall
   """
-  highestScoreQualification: Int
+  highest_score_qualification: Int
 
   """
   Amount of rounds played in Hole in the Wall
@@ -1233,6 +1243,21 @@ type HoleInTheWall {
 
   """
   Amount of wins in Hole in the Wall
+  """
+  wins: Int
+}
+
+"""
+Stats about Hypixel Says
+"""
+type HypixelSays {
+  """
+  Amount of rounds played in Hypixel Says
+  """
+  rounds: Int
+
+  """
+  Amount of wins in Hypixel Says
   """
   wins: Int
 }
@@ -1254,22 +1279,7 @@ type Hypixelgp {
   """
   Ratio of wins to games played on Hypixel GP
   """
-  winRatio: Float
-}
-
-"""
-Stats about Hypixel Says
-"""
-type HypixelSays {
-  """
-  Amount of rounds played in Hypixel Says
-  """
-  rounds: Int
-
-  """
-  Amount of wins in Hypixel Says
-  """
-  wins: Int
+  win_ratio: Float
 }
 
 type Item {
@@ -1283,7 +1293,7 @@ type Item {
   """
   Item's minecraft id
   """
-  itemId: Int
+  item_id: Int
 
   """
   Array of strings containing item's lore with formatting
@@ -1296,7 +1306,7 @@ type Item {
   name: String
 }
 
-type ITEMID {
+type ITEM_ID {
   """
   Item category, e.g. "misc"
   """
@@ -1305,7 +1315,7 @@ type ITEMID {
   """
   Item's minecraft id
   """
-  itemId: Int
+  item_id: Int
   name: String
 
   """
@@ -1322,7 +1332,7 @@ type ITEMID {
 }
 
 """
-The 'JSON' scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
 
@@ -1343,7 +1353,7 @@ type Junglerush {
   """
   Ratio of wins to games played on Jungle Rush
   """
-  winRatio: Float
+  win_ratio: Float
 }
 
 """
@@ -1353,12 +1363,12 @@ type Knife {
   """
   Current progression of the Knife's Attack Delay upgrade
   """
-  attackDelay: Int
+  attack_delay: Int
 
   """
   Current progression of the Knife's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 }
 
 """
@@ -1368,37 +1378,37 @@ type Links {
   """
   Discord handle, in full format of username#discriminator
   """
-  dISCORD: String
+  DISCORD: String
 
   """
   Link to Hypixel Forums profile
   """
-  hYPIXEL: String
+  HYPIXEL: String
 
   """
   Link to Instagram profile
   """
-  iNSTAGRAM: String
+  INSTAGRAM: String
 
   """
   Link to Mixer channel
   """
-  mIXER: String
+  MIXER: String
 
   """
   Link to Twitch channel
   """
-  tWITCH: String
+  TWITCH: String
 
   """
   Link to Twitter profile
   """
-  tWITTER: String
+  TWITTER: String
 
   """
   Link to YouTube channel
   """
-  yOUTUBE: String
+  YOUTUBE: String
 }
 
 """
@@ -1408,22 +1418,67 @@ type Magnum {
   """
   Current progression of the Magnum's Cost Reduction upgrade
   """
-  costReduction: Int
+  cost_reduction: Int
 
   """
   Current progression of the Magnum's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the Magnum's Recoil Reduction upgrade
   """
-  recoilReduction: Int
+  recoil_reduction: Int
 
   """
   Current progression of the Magnum's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
+}
+
+"""
+Current wins on specific maps
+"""
+type Map_wins {
+  """
+  Current wins on the Alleyway map
+  """
+  alleyway: Int
+
+  """
+  Current wins on the Atomic map
+  """
+  atomic: Int
+
+  """
+  Current wins on the Carrier map
+  """
+  carrier: Int
+
+  """
+  Current wins on the Melon Factory map
+  """
+  melon_factory: Int
+
+  """
+  Current wins on the Overgrown map
+  """
+  overgrown: Int
+
+  """
+  Current wins on the Reserve map
+  """
+  reserve: Int
+
+  """
+  Current wins on the Sandstorm map
+  """
+  sandstorm: Int
+
+  """
+  Current wins on the Temple map
+  """
+  temple: Int
 }
 
 """
@@ -1456,56 +1511,11 @@ type Maps {
   retro: Retro
 }
 
-"""
-Current wins on specific maps
-"""
-type MapWins {
-  """
-  Current wins on the Alleyway map
-  """
-  alleyway: Int
-
-  """
-  Current wins on the Atomic map
-  """
-  atomic: Int
-
-  """
-  Current wins on the Carrier map
-  """
-  carrier: Int
-
-  """
-  Current wins on the Melon Factory map
-  """
-  melonFactory: Int
-
-  """
-  Current wins on the Overgrown map
-  """
-  overgrown: Int
-
-  """
-  Current wins on the Reserve map
-  """
-  reserve: Int
-
-  """
-  Current wins on the Sandstorm map
-  """
-  sandstorm: Int
-
-  """
-  Current wins on the Temple map
-  """
-  temple: Int
-}
-
 type MembersListItem {
   """
   Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.
   """
-  expHistory: JSON
+  exp_history: JSON
 
   """
   Member join date
@@ -1515,12 +1525,12 @@ type MembersListItem {
   """
   Date the member is muted until
   """
-  mutedTill: Int
+  muted_till: Int
 
   """
   How many much the member has contributed to guild quests
   """
-  questParticipation: Int
+  quest_participation: Int
 
   """
   Player rank in the guild
@@ -1540,12 +1550,12 @@ type Miniwalls {
   """
   Amount of arrows that hit their targets in Mini Walls
   """
-  arrowsHit: Int
+  arrows_hit: Int
 
   """
   The number of arrows shot in Mini Walls
   """
-  arrowsShot: Int
+  arrows_shot: Int
 
   """
   Amount of deaths in Mini Walls
@@ -1555,7 +1565,7 @@ type Miniwalls {
   """
   Amount of final kills in Mini Walls
   """
-  finalKills: Int
+  final_kills: Int
 
   """
   Amount of kills in Mini Walls
@@ -1575,12 +1585,12 @@ type Miniwalls {
   """
   Amount of wither damage taken in Mini Walls
   """
-  witherDamage: Float
+  wither_damage: Float
 
   """
   Amount of withers killed in Mini Walls
   """
-  witherKills: Int
+  wither_kills: Int
 }
 
 """
@@ -1610,7 +1620,7 @@ type Olympus {
   """
   Ratio of wins to games played on Olympus
   """
-  winRatio: Float
+  win_ratio: Float
 }
 
 """
@@ -1655,17 +1665,17 @@ type OneVOne {
   """
   Win/loss ratio in 1v1 Arena
   """
-  winLoss: Float
+  win_loss: Float
 
   """
   Win percentage out of games played in 1v1 Arena
   """
-  winPercentage: Float
+  win_percentage: Float
 
   """
   Highest win streak in 1v1 Arena
   """
-  winStreaks: Int
+  win_streaks: Int
 
   """
   Total wins in 1v1 Arena
@@ -1680,17 +1690,17 @@ type PartyGames {
   """
   Amount of wins in Party Games
   """
-  wins1: Int
+  wins_1: Int
 
   """
   Amount of wins in Party Games
   """
-  wins2: Int
+  wins_2: Int
 
   """
   Amount of wins in Party Games
   """
-  wins3: Int
+  wins_3: Int
 }
 
 """
@@ -1750,24 +1760,24 @@ type Pistol {
   """
   Current progression of the Pistol's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the Pistol's Recoil Reduction upgrade
   """
-  recoilReduction: Int
+  recoil_reduction: Int
 
   """
   Current progression of the Pistol's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
 }
 
 type Player {
   """
   Total achievement points
   """
-  achievementPoints: Int
+  achievement_points: Int
 
   """
   Current Hypixel Experience
@@ -1777,22 +1787,22 @@ type Player {
   """
   Date of first Hypixel login
   """
-  firstLogin: Int
+  first_login: Int
 
   """
   Total gifts received from other players
   """
-  giftsReceived: Int
+  gifts_received: Int
 
   """
   Total gifts sent to other players
   """
-  giftsSent: Int
+  gifts_sent: Int
 
   """
   Whether player is a contributor to Slothpixel
   """
-  isContributor: Boolean
+  is_contributor: Boolean
 
   """
   Player karma
@@ -1807,17 +1817,17 @@ type Player {
   """
   Latest minigame played
   """
-  lastGame: String
+  last_game: String
 
   """
   Date of latest Hypixel login
   """
-  lastLogin: Int
+  last_login: Int
 
   """
   Date of latest Hypixel logout
   """
-  lastLogout: Int
+  last_logout: Int
 
   """
   Player level with precision of two decimals
@@ -1832,7 +1842,7 @@ type Player {
   """
   Minecraft version the user last logged on Hypixel with
   """
-  mcVersion: String
+  mc_version: String
 
   """
   Is player online
@@ -1847,7 +1857,7 @@ type Player {
   """
   Total quests completed
   """
-  questsCompleted: Int
+  quests_completed: Int
 
   """
   Player rank
@@ -1857,12 +1867,12 @@ type Player {
   """
   Formatted rank string
   """
-  rankFormatted: String
+  rank_formatted: String
 
   """
   Color code for MVP+(+)
   """
-  rankPlusColor: String
+  rank_plus_color: String
 
   """
   Daily reward data
@@ -1877,17 +1887,17 @@ type Player {
   """
   Total coins across all minigames
   """
-  totalCoins: Int
+  total_coins: Int
 
   """
   Total kills across all minigames
   """
-  totalKills: Int
+  total_kills: Int
 
   """
   Total wins across all minigames
   """
-  totalWins: Int
+  total_wins: Int
 
   """
   Player username
@@ -1907,59 +1917,59 @@ type Player2 {
   """
   Current progression of Body Armor Cost upgrade
   """
-  bodyArmorCost: Int
+  body_armor_cost: Int
 
   """
   Current progression of Bounty Hunter upgrade
   """
-  bountyHunter: Int
+  bounty_hunter: Int
 
   """
   Current progression of Pocket Change upgrade
   """
-  pocketChange: Int
+  pocket_change: Int
 
   """
   Current progression of Strength Training upgrade
   """
-  strengthTraining: Int
+  strength_training: Int
 }
 
 type PlayerAchievements {
   """
   Total achievement points
   """
-  achievementPoints: Int
+  achievement_points: Int
 
   """
   Total one time achievements completed
   """
-  completedOneTime: Int
+  completed_one_time: Int
 
   """
   Total tiered achievements completed
   """
-  completedTiered: Int
+  completed_tiered: Int
 
   """
   Total achievements completed
   """
-  completedTotal: Int
+  completed_total: Int
   games: Games
-  rewards: Rewards2
+  rewards: JSON
 }
 
 type PlayerQuests {
   """
   Total challenges completed
   """
-  challengesCompleted: Int
+  challenges_completed: Int
   completions: Completions
 
   """
   Total quests completed
   """
-  questsCompleted: Int
+  quests_completed: Int
 }
 
 type PlayerRecentGamesListItem {
@@ -1969,17 +1979,17 @@ type PlayerRecentGamesListItem {
   mode: String
 }
 
-type PROFILEID {
-  collectionsUnlocked: Int
+type PROFILE_ID {
+  collections_unlocked: Int
 
   """
   Profile name, e.g. Strawberry
   """
-  cuteName: String
-  firstJoin: Int
-  lastSave: Int
+  cute_name: String
+  first_join: Int
+  last_save: Int
   members: [String]
-  profileId: String
+  profile_id: String
 }
 
 """
@@ -1987,21 +1997,21 @@ The start of any query
 """
 type Query {
   """
-  Get watchdog and staff bans
+  Returns information about the number of staff and watchdog server bans
 
   Equivalent to GET /bans
   """
   bans: Bans
 
   """
-  Returns a list of boosters for all server gamemodes.
+  Returns a list of boosters for all server gamemodes
 
   Equivalent to GET /boosters
   """
-  allBoosters: Boosters
+  all_boosters: Boosters
 
   """
-  Returns a list of active boosters for the game specified
+  Returns a list of active boosters for the specified game
 
   Equivalent to GET /boosters/{game}
   """
@@ -2010,14 +2020,14 @@ type Query {
     [Standard](https://github.com/slothpixel/core/wiki/Standard-naming) minigame name
     """
     game: String!
-  ): [GameBooster]
+  ): [GameBoosters]
 
   """
   Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.
 
   Equivalent to GET /leaderboards/{template}
   """
-  getLeaderboardTemplate(template: String!): [JSON]
+  get_leaderboard_template(template: String!): [JSON]
 
   """
   Look up a guild from the name of one of it's members
@@ -2028,12 +2038,12 @@ type Query {
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
+    player_name: String!
 
     """
     Replace uuid fields with player profiles
     """
-    populatePlayers: String = false
+    populate_players: String
   ): Guild
 
   """
@@ -2060,7 +2070,7 @@ type Query {
     limit: Int
 
     """
-    Pages allow you to split the data using the 'limit' param. For example, if
+    Pages allow you to split the data using the `limit` param. For example, if
     there are 23 auctions matching your query and you set the limit to 10, each
     page will return up to the next 10 consecutive results. With 23 results, you
     would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
@@ -2075,21 +2085,21 @@ type Query {
     """
     Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
     """
-    sortBy: String!
+    sort_by: String!
 
     """
-    Define sort order. 'asc' for ascending or 'desc' for descending
+    Define sort order. `asc` for ascending or `desc` for descending
     """
-    sortOrder: String
+    sort_order: String
 
     """
-    'players', 'guilds' or 'skyblock'
+    `players`, `guilds` or `skyblock`
     """
     type: Type!
   ): [JSON]
 
   """
-  Returns player stats of one or up to 16 players. Multiple 'playerName's must be separated by a comma.
+  Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.
 
   Equivalent to GET /players/{playerName}
   """
@@ -2102,7 +2112,7 @@ type Query {
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
+    player_name: String!
   ): Player
 
   """
@@ -2110,11 +2120,11 @@ type Query {
 
   Equivalent to GET /players/{playerName}/achievements
   """
-  playerAchievements(
+  player_achievements(
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
+    player_name: String!
   ): PlayerAchievements
 
   """
@@ -2122,11 +2132,11 @@ type Query {
 
   Equivalent to GET /players/{playerName}/quests
   """
-  playerQuests(
+  player_quests(
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
+    player_name: String!
   ): PlayerQuests
 
   """
@@ -2134,11 +2144,11 @@ type Query {
 
   Equivalent to GET /players/{playerName}/recentGames
   """
-  playerRecentGames(
+  player_recent_games(
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
+    player_name: String!
   ): [PlayerRecentGamesListItem]
 
   """
@@ -2147,7 +2157,7 @@ type Query {
 
   Equivalent to GET /skyblock/auctions/{itemId}
   """
-  skyblockAuction(
+  skyblock_auction(
     """
     Date from which to get auctions. Uses a Unix timestamp with milliseconds.
     E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is
@@ -2159,7 +2169,7 @@ type Query {
     Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
     [items endpoint](https://api.slothpixel.me/api/skyblock/items).
     """
-    itemId: String!
+    item_id: String!
 
     """
     Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g.
@@ -2173,7 +2183,7 @@ type Query {
 
   Equivalent to GET /skyblock/auctions
   """
-  skyblockAuctions(
+  skyblock_auctions(
     """
     Set to false if you want to query historical auctions
     """
@@ -2182,7 +2192,7 @@ type Query {
     """
     Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be"
     """
-    auctionUUID: String
+    auction_uuid: String
 
     """
     Filter entries by passing [MongoDB
@@ -2200,7 +2210,7 @@ type Query {
     """
     Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"
     """
-    itemUUID: String
+    item_uuid: String
 
     """
     Limit number of records returned. Default is 100 and maximum 1000.
@@ -2208,7 +2218,7 @@ type Query {
     limit: Int
 
     """
-    Pages allow you to split the data using the 'limit' param. For example, if
+    Pages allow you to split the data using the `limit` param. For example, if
     there are 23 auctions matching your query and you set the limit to 10, each
     page will return up to the next 10 consecutive results. With 23 results, you
     would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
@@ -2218,12 +2228,12 @@ type Query {
     """
     Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
     """
-    sortBy: String
+    sort_by: String
 
     """
-    Define sort order. 'asc' for ascending or 'desc' for descending
+    Define sort order. `asc` for ascending or `desc` for descending
     """
-    sortOrder: String
+    sort_order: String
   ): [SkyblockAuctionsListItem]
 
   """
@@ -2231,38 +2241,37 @@ type Query {
 
   Equivalent to GET /skyblock/items
   """
-  skyblockItems: SkyblockItems
+  skyblock_items: SkyblockItems
 
   """
   Gets all skyblock profiles for the specified player
 
   Equivalent to GET /skyblock/profiles/{playerName}
   """
-  skyblockProfiles(
+  skyblock_profiles(
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
-  ): [SkyblockProfile]
+    player_name: String!
+  ): SkyblockProfile
 
   """
   If no profile is specified, the last played profile is returned
 
   Equivalent to GET /skyblock/profile/{playerName}/{profileId}
   """
-  # TODO: Strong type
-  skyblockProfile(
+  skyblock_profile(
     """
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
-    playerName: String!
+    player_name: String!
 
     """
     SkyBlock profile id e.g. '498228a732d443589aabd1e97e6806cd' or profile name
     e.g. 'Mango'. Note: profile name can be different (although unlikely) for
     different members of a co-op!
     """
-    profileId: String!
+    profile_id: String!
   ): JSON
 }
 
@@ -2317,7 +2326,7 @@ type Retro {
   """
   Ratio of wins to games played on Retro
   """
-  winRatio: Float
+  win_ratio: Float
 }
 
 """
@@ -2332,29 +2341,22 @@ type Rewards {
   """
   Daily rewards claimed
   """
-  claimedDaily: Int
+  claimed_daily: Int
 
   """
   Best streak
   """
-  streakBest: Int
+  streak_best: Int
 
   """
   Current streak
   """
-  streakCurrent: Int
+  streak_current: Int
 
   """
   Current reward tokens
   """
   tokens: Int
-}
-
-type Rewards2 {
-  """
-  Timestamp of reward goal claimed
-  """
-  _200: Int
 }
 
 """
@@ -2364,22 +2366,22 @@ type Rifle {
   """
   Current progression of the Rifle's Cost Reduction upgrade
   """
-  costReduction: Int
+  cost_reduction: Int
 
   """
   Current progression of the Rifle's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the Rifle's Recoil Reduction upgrade
   """
-  recoilReduction: Int
+  recoil_reduction: Int
 
   """
   Current progression of the Rifle's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
 }
 
 """
@@ -2425,7 +2427,7 @@ type SantaSays {
 """
 Currently selected cosmetic appearance for each weapon type
 """
-type SelectedCosmetics {
+type Selected_cosmetics {
   """
   Currently selected Carbine cosmetic
   """
@@ -2469,12 +2471,12 @@ type Settings {
   """
   Is auto armor enabled
   """
-  autoArmor: Boolean
+  auto_armor: Boolean
 
   """
   Current kit selected as default in Blitz Survival Games
   """
-  defaultKit: String
+  default_kit: String
 }
 
 """
@@ -2484,22 +2486,22 @@ type Shotgun {
   """
   Current progression of the Shotgun's Cost Reduction upgrade
   """
-  costReduction: Int
+  cost_reduction: Int
 
   """
   Current progression of the Shotgun's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the Shotgun's Recoil Reduction upgrade
   """
-  recoilReduction: Int
+  recoil_reduction: Int
 
   """
   Current progression of the Shotgun's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
 }
 
 """
@@ -2528,27 +2530,27 @@ type Skills {
 }
 
 type SkyblockAuction {
-  auctions: Auctions
+  auctions: JSON
 
   """
   Average price in the selected time period
   """
-  averagePrice: Int
+  average_price: Int
 
   """
   Largest price in the selected time period
   """
-  maxPrice: Int
+  max_price: Int
 
   """
   Median price in the selected time period
   """
-  medianPrice: Int
+  median_price: Int
 
   """
   Lowest price in the selected time period
   """
-  minPrice: Int
+  min_price: Int
 
   """
   Total sold items in the selected time period
@@ -2558,7 +2560,7 @@ type SkyblockAuction {
   """
   Standard deviation of prices in the selected time period
   """
-  standardDeviation: Int
+  standard_deviation: Int
 }
 
 """
@@ -2579,14 +2581,14 @@ type SkyblockAuctionsListItem {
   UNIX timestamp of auction end date
   """
   end: Int
-  highestBidAmount: Int
+  highest_bid_amount: Int
   item: Item
 
   """
   UNIX timestamp of auction start date
   """
   start: Int
-  startingBid: Int
+  starting_bid: Int
 
   """
   Item rarity, e.g. "RARE"
@@ -2600,11 +2602,11 @@ type SkyblockAuctionsListItem {
 }
 
 type SkyblockItems {
-  iTEMID: ITEMID
+  ITEM_ID: ITEM_ID
 }
 
 type SkyblockProfile {
-  pROFILEID: PROFILEID
+  PROFILE_ID: PROFILE_ID
 }
 
 """
@@ -2614,22 +2616,22 @@ type Smg {
   """
   Current progression of the SMG's Cost Reduction upgrade
   """
-  costReduction: Int
+  cost_reduction: Int
 
   """
   Current progression of the SMG's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the SMG's Recoil Reduction upgrade
   """
-  recoilReduction: Int
+  recoil_reduction: Int
 
   """
   Current progression of the SMG's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
 }
 
 """
@@ -2639,22 +2641,22 @@ type Sniper {
   """
   Current progression of the Sniper's Target Acquire upgrade
   """
-  chargeBonus: Int
+  charge_bonus: Int
 
   """
   Current progression of the Sniper's Cost Reduction upgrade
   """
-  costReduction: Int
+  cost_reduction: Int
 
   """
   Current progression of the Sniper's Damage Increase upgrade
   """
-  damageIncrease: Int
+  damage_increase: Int
 
   """
   Current progression of the Sniper's Reload Speed Reduction upgrade
   """
-  reloadSpeedReduction: Int
+  reload_speed_reduction: Int
 }
 
 type Staff {
@@ -2676,52 +2678,52 @@ type Stats {
   """
   Player stats in the Arcade Games
   """
-  arcade: Arcade
+  Arcade: Arcade
 
   """
   Player stats in Arena Brawl
   """
-  arena: Arena
+  Arena: Arena
 
   """
   Player stats in Bedwars
   """
-  bedWars: BedWars
+  BedWars: BedWars
 
   """
   Player stats in Blitz Survival Games
   """
-  blitz: Blitz
+  Blitz: Blitz
 
   """
   Player stats in Build Battle
   """
-  buildBattle: BuildBattle
+  BuildBattle: BuildBattle
 
   """
   Player stats in Cops vs Crims
   """
-  cvC: CvC
+  CvC: CvC
 
   """
   Player stats in Duels
   """
-  duels: Duels
+  Duels: Duels
 
   """
   Player stats in Murder Mystery
   """
-  murderMystery: MurderMystery
+  MurderMystery: MurderMystery
 
   """
   Current stats in Turbo Kart Racers
   """
-  tKR: TKR
+  TKR: TKR
 
   """
   Player stats in Warlords
   """
-  warlords: Warlords
+  Warlords: Warlords
 }
 
 """
@@ -2731,27 +2733,27 @@ type TKR {
   """
   Ratio of banana hits to bananas slipped on
   """
-  bananaRatio: Float
+  banana_ratio: Float
 
   """
   Total bananas slipped on in Turbo Kart Racers
   """
-  bananasReceived: Int
+  bananas_received: Int
 
   """
   Total successful hits by your bananas in Turbo Kart Racers
   """
-  bananasSent: Int
+  bananas_sent: Int
 
   """
   Total powerups collected in Turbo Kart Racers
   """
-  boxPickups: Int
+  box_pickups: Int
 
   """
   Total coins picked up in Turbo Kart Racers
   """
-  coinPickups: Int
+  coin_pickups: Int
 
   """
   Current coins in Turbo Kart Racers
@@ -2941,17 +2943,17 @@ type TwoVTwo {
   """
   Win/loss ratio in 2v2 Arena
   """
-  winLoss: Float
+  win_loss: Float
 
   """
   Win percentage out of games played in 2v2 Arena
   """
-  winPercentage: Float
+  win_percentage: Float
 
   """
   Highest win streak in 2v2 Arena
   """
-  winStreaks: Int
+  win_streaks: Int
 
   """
   Total wins in 2v2 Arena
@@ -2984,7 +2986,7 @@ type Watchdog {
   """
   Watchdog's bans in the last minute
   """
-  lastMinute: Int
+  last_minute: Int
 
   """
   Total Watchdog bans, ever
@@ -2999,12 +3001,12 @@ type Zombies {
   """
   Best round in Zombies
   """
-  bestRound: Int
+  best_round: Int
 
   """
   Amount of bullets hit in Zombies
   """
-  bulletsHit: Int
+  bullets_hit: Int
 
   """
   Amount of deaths in Zombies
@@ -3014,7 +3016,7 @@ type Zombies {
   """
   Amount of doors opened in Zombies
   """
-  doorsOpened: Int
+  doors_opened: Int
 
   """
   Amount of headshots in Zombies
@@ -3024,17 +3026,17 @@ type Zombies {
   """
   Amount of players revived in Zombies
   """
-  playersRevived: Int
+  players_revived: Int
 
   """
   Total rounds survived in Zombies
   """
-  totalRoundsSurvived: Int
+  total_rounds_survived: Int
 
   """
   Amount of windows repaired in Zombies
   """
-  windowsRepaired: Int
+  windows_repaired: Int
 
   """
   Amount of wins in Zombies
@@ -3044,5 +3046,5 @@ type Zombies {
   """
   Amount of zombie kills in Zombies
   """
-  zombieKills: Int
+  zombie_kills: Int
 }

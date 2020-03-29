@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const { promisify } = require('util');
 const fs = require('fs');
 const graphqlExpress = require('express-graphql');
@@ -26,7 +27,7 @@ const graphql = graphqlExpress({
       return buildBansAsync();
     },
 
-    allBoosters() {
+    all_boosters() {
       return buildBoostersAsync();
     },
 
@@ -35,35 +36,35 @@ const graphql = graphqlExpress({
       return data[game];
     },
 
-    getLeaderboardTemplate({ template }) {
+    get_leaderboard_template({ template }) {
       return leaderboardsAsync(undefined, template);
     },
 
-    guild({ playerName, populatePlayers }) {
-      return getGuildFromPlayerAsync(playerName, populatePlayers);
+    guild({ player_name, populate_players }) {
+      return getGuildFromPlayerAsync(player_name, populate_players);
     },
 
     leaderboards(params) {
       return leaderboardsAsync(params, null);
     },
 
-    player({ playerName /* , fields */ }) {
-      // TODO: Remove 'fields' param from the /players/{playerName} route.
+    async player({ player_name /* , fields */ }) {
+      // TODO: Remove 'fields' param from the /players/{player_name} route.
       // If someone wants specific fields, they should use graphql.
-      return getPlayerAsync(playerName);
+      return getPlayerAsync(player_name);
     },
 
-    async playerAchievements({ playerName }) {
-      const player = await getPlayerAsync(playerName);
+    async playerAchievements({ player_name }) {
+      const player = await getPlayerAsync(player_name);
       return player.achievements;
     },
 
-    async playerQuests({ playerName }) {
-      const player = await getPlayerAsync(playerName);
+    async playerQuests({ player_name }) {
+      const player = await getPlayerAsync(player_name);
       return player.quests;
     },
 
-    playerRecentGames({ username }) {
+    player_recent_games({ username }) {
       // TODO: Extract common code from here and spec.js
       return new Promise((resolve, reject) => {
         getUUID(username, (err, uuid) => {
@@ -91,26 +92,26 @@ const graphql = graphqlExpress({
       });
     },
 
-    skyblockAuction(/* { from, itemId, to } */) {
+    skyblock_auction(/* { from, item_id, to } */) {
       // TODO
       return {};
     },
 
-    skyblockAuctions(/* params */) {
+    skyblock_auctions(/* params */) {
       // TODO
       return {};
     },
 
-    async skyblockItems() {
+    async skyblock_items() {
       return JSON.parse(await redisGetAsync('skyblock_items'));
     },
 
-    skyblockProfiles(/* { playerName } */) {
+    skyblock_profiles(/* { player_name } */) {
       // TODO
       return {};
     },
 
-    skyblockProfile(/* { playerName, profileId } */) {
+    skyblock_profile(/* { player_name, profile_id } */) {
       // TODO
       return {};
     },

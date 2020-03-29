@@ -1352,4 +1352,5 @@ const spec = {
     },
   },
 };
+
 module.exports = spec;
