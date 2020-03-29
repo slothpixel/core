@@ -3,6 +3,7 @@ const async = require('async');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const buildPlayer = require('../store/buildPlayer');
+const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
@@ -1022,6 +1023,10 @@ const spec = {
                         category: auctionObject.properties.category,
                         item_id: auctionObject.properties.item.properties.item_id,
                         texture: auctionObject.properties.item.properties.attributes.properties.texture,
+                        bazaar: {
+                          type: 'boolean',
+                          description: 'Set to true if the item can be found in the bazaar',
+                        },
                       },
                     },
                   },
@@ -1038,6 +1043,141 @@ const spec = {
               return res.status(500);
             }
             return res.json(JSON.parse(items));
+          });
+        },
+      },
+    },
+    '/skyblock/bazaar/{itemId}': {
+      get: {
+        tags: [
+          'skyblock',
+        ],
+        summary: 'Get bazaar data for an item',
+        description: 'Get bazaar data for an item bu ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint.',
+        parameters: [itemIdParam],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    quick_status: {
+                      buyPrice: {
+                        type: 'number',
+                      },
+                      buyVolume: {
+                        type: 'integer',
+                      },
+                      buyMovingWeek: {
+                        type: 'integer',
+                      },
+                      buyOrders: {
+                        type: 'integer',
+                      },
+                      sellPrice: {
+                        type: 'number',
+                      },
+                      sellVolume: {
+                        type: 'integer',
+                      },
+                      sellMovingWeek: {
+                        type: 'integer',
+                      },
+                      sellOrders: {
+                        type: 'integer',
+                      },
+                    },
+                    buy_summary: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          amount: {
+                            type: 'integer',
+                          },
+                          pricePerUnit: {
+                            type: 'number',
+                          },
+                          orders: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                    sell_summary: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          amount: {
+                            type: 'integer',
+                          },
+                          pricePerUnit: {
+                            type: 'number',
+                          },
+                          orders: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                    week_historic: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          timestamp: {
+                            type: 'integer',
+                          },
+                          nowBuyVolume: {
+                            type: 'integer',
+                          },
+                          nowSellVolume: {
+                            type: 'integer',
+                          },
+                          buyCoins: {
+                            type: 'number',
+                          },
+                          buyVolume: {
+                            type: 'integer',
+                          },
+                          buys: {
+                            type: 'integer',
+                          },
+                          sellCoins: {
+                            type: 'integer',
+                          },
+                          sellVolume: {
+                            type: 'integer',
+                          },
+                          sells: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/bazaar/:id',
+        func: (req, res, cb) => {
+          const itemId = req.params.id;
+          redis.get('skyblock_bazaar', (err, resp) => {
+            const ids = JSON.parse(resp) || [];
+            if (!ids.includes(itemId)) {
+              return res.status(400).json({ error: 'Invalid itemId' });
+            }
+            buildBazaar(itemId, (err, bazaar) => {
+              if (err) {
+                return cb(err);
+              }
+              return res.json(bazaar);
+            });
           });
         },
       },
