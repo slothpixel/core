@@ -1064,29 +1064,32 @@ const spec = {
                   type: 'object',
                   properties: {
                     quick_status: {
-                      buyPrice: {
-                        type: 'number',
-                      },
-                      buyVolume: {
-                        type: 'integer',
-                      },
-                      buyMovingWeek: {
-                        type: 'integer',
-                      },
-                      buyOrders: {
-                        type: 'integer',
-                      },
-                      sellPrice: {
-                        type: 'number',
-                      },
-                      sellVolume: {
-                        type: 'integer',
-                      },
-                      sellMovingWeek: {
-                        type: 'integer',
-                      },
-                      sellOrders: {
-                        type: 'integer',
+                      type: 'object',
+                      properties: {
+                        buyPrice: {
+                          type: 'number',
+                        },
+                        buyVolume: {
+                          type: 'integer',
+                        },
+                        buyMovingWeek: {
+                          type: 'integer',
+                        },
+                        buyOrders: {
+                          type: 'integer',
+                        },
+                        sellPrice: {
+                          type: 'number',
+                        },
+                        sellVolume: {
+                          type: 'integer',
+                        },
+                        sellMovingWeek: {
+                          type: 'integer',
+                        },
+                        sellOrders: {
+                          type: 'integer',
+                        },
                       },
                     },
                     buy_summary: {
