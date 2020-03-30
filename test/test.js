@@ -79,7 +79,7 @@ describe('api', () => {
           .replace(/{playerName}/, 'builder_247')
           .replace(/{game}/, 'SkyWars');
         async.eachSeries(Object.keys(spec.paths[path]), (verb, cb) => {
-          if (path.indexOf('/leaderboards') === 0 || path.indexOf('/sessions') === 0 || path.indexOf('/bans') === 0 || path.endsWith('/recentGames')) {
+          if (path.indexOf('/leaderboards') === 0 || path.indexOf('/sessions') === 0 || path.indexOf('/bans') === 0 || path.endsWith('/recentGames') || path.indexOf('/bazaar') !== -1) {
             return cb(err);
           }
           return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((err, res) => {
