@@ -1973,7 +1973,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the unlock',
                       },
@@ -2247,7 +2247,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2268,7 +2268,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2289,7 +2289,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2310,7 +2310,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2394,7 +2394,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2415,7 +2415,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2436,7 +2436,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2457,7 +2457,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2478,7 +2478,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2499,7 +2499,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2520,7 +2520,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2541,7 +2541,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2562,7 +2562,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2583,7 +2583,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2604,7 +2604,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2625,7 +2625,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2646,7 +2646,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2667,7 +2667,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2688,7 +2688,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2709,7 +2709,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2730,7 +2730,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2751,7 +2751,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2772,7 +2772,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2793,7 +2793,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2814,7 +2814,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2835,7 +2835,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2856,7 +2856,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2877,7 +2877,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2898,7 +2898,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2919,7 +2919,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2940,7 +2940,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -2961,7 +2961,7 @@ const playerObject = {
                         type: 'integer',
                         description: 'Unix timestamp of unlock',
                       },
-                      key:  {
+                      key: {
                         type: 'string',
                         description: 'Name of the upgrade',
                       },
@@ -3016,10 +3016,6 @@ const playerObject = {
                 },
                 playtime_minutes: {
                   description: 'Player\'s playtime in minutes',
-                  type: 'integer',
-                },
-                gapple_eaten: {
-                  description: 'Golden apples eaten',
                   type: 'integer',
                 },
                 enchanted_tier1: {
