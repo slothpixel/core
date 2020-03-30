@@ -2139,6 +2139,8 @@ const playerObject = {
                     },
                   },
                 },
+              },
+            },
             stats_move_1: {
               type: 'integer',
               description: 'Unix timestamp of stats being imported if they played before 0.3.5',
