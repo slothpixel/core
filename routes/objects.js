@@ -1739,7 +1739,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their enderchest inventory NBT data',
+                      description: 'Gzipped byte array of their enderchest inventory NBT data',
                       items: {
                         type: 'integer',
                       },
@@ -1755,7 +1755,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their inventory NBT data',
+                      description: 'Gzipped byte array of their inventory NBT data',
                       items: {
                         type: 'integer',
                       },
@@ -1771,7 +1771,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their armor inventory NBT data',
+                      description: 'Gzipped byte array of their armor inventory NBT data',
                       items: {
                         type: 'integer',
                       },
@@ -1787,7 +1787,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their stash inventory NBT data',
+                      description: 'Gzipped byte array of their stash inventory NBT data',
                       items: {
                         type: 'integer',
                       },
@@ -1803,7 +1803,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their mystic well item\'s NBT data',
+                      description: 'Gzipped byte array of their mystic well item\'s NBT data',
                       items: {
                         type: 'integer',
                       },
@@ -1819,7 +1819,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their mystic well pant\'s NBT data',
+                      description: 'Gzipped byte array of their mystic well pant\'s NBT data',
                       items: {
                         type: 'integer',
                       },
@@ -1835,7 +1835,7 @@ const playerObject = {
                     },
                     data: {
                       type: 'array',
-                      description: 'gzipped byte array of their death recap book',
+                      description: 'Gzipped byte array of their death recap book',
                       items: {
                         type: 'integer',
                       },
@@ -1874,7 +1874,7 @@ const playerObject = {
                 },
                 ended_contracts: {
                   type: 'array',
-                  description: 'recently completed contracts',
+                  description: 'Recently completed contracts',
                   items: {
                     type: 'object',
                     properties: {
@@ -1991,7 +1991,7 @@ const playerObject = {
                 },
                 genesis_allegiance_time: {
                   type: 'integer',
-                  description: 'timestamp of last pledge to a faction',
+                  description: 'Timestamp of last pledge to a faction',
                 },
                 genesis_weekly_perks_claim_item_demon: {
                   type: 'integer',
@@ -2001,14 +2001,14 @@ const playerObject = {
                 },
                 hotbar_favorites: {
                   type: 'array',
-                  description: 'item ids for perfered slots of items',
+                  description: 'Item ids for perfered slots of items',
                   items: {
                     type: 'number',
                   },
                 },
                 reconessence_day: {
                   type: 'integer',
-                  description: 'timestamp of the last time the player used recon essence',
+                  description: 'Timestamp of the last time the player used recon essence',
                 },
                 chat_option_player_chat: {
                   type: 'boolean',
@@ -2037,7 +2037,7 @@ const playerObject = {
                 },
                 last_lycanthropy: {
                   type: 'integer',
-                  description: 'timestamp',
+                  description: 'Timestamp',
                 },
                 recent_kills: {
                   type: 'array',
@@ -2097,142 +2097,6 @@ const playerObject = {
                   type: 'number',
                   description: 'Gold earned during prestige 1',
                 },
-                cash_during_prestige_2: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 2',
-                },
-                cash_during_prestige_3: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 3',
-                },
-                cash_during_prestige_04: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 4',
-                },
-                cash_during_prestige_5: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 5',
-                },
-                cash_during_prestige_6: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 6',
-                },
-                cash_during_prestige_7: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 7',
-                },
-                cash_during_prestige_8: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 8',
-                },
-                cash_during_prestige_9: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 9',
-                },
-                cash_during_prestige_10: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 10',
-                },
-                cash_during_prestige_11: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 11',
-                },
-                cash_during_prestige_12: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 12',
-                },
-                cash_during_prestige_13: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 13',
-                },
-                cash_during_prestige_14: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 14',
-                },
-                cash_during_prestige_15: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 15',
-                },
-                cash_during_prestige_16: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 16',
-                },
-                cash_during_prestige_17: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 17',
-                },
-                cash_during_prestige_18: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 18',
-                },
-                cash_during_prestige_19: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 19',
-                },
-                cash_during_prestige_20: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 20',
-                },
-                cash_during_prestige_21: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 21',
-                },
-                cash_during_prestige_22: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 22',
-                },
-                cash_during_prestige_23: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 23',
-                },
-                cash_during_prestige_24: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 24',
-                },
-                cash_during_prestige_25: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 25',
-                },
-                cash_during_prestige_26: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 26',
-                },
-                cash_during_prestige_27: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 27',
-                },
-                cash_during_prestige_28: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 28',
-                },
-                cash_during_prestige_29: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 29',
-                },
-                cash_during_prestige_30: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 30',
-                },
-                cash_during_prestige_31: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 31',
-                },
-                cash_during_prestige_32: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 32',
-                },
-                cash_during_prestige_33: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 33',
-                },
-                cash_during_prestige_34: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 34',
-                },
-                cash_during_prestige_35: {
-                  type: 'number',
-                  description: 'Gold earned during prestige 35',
-                },
                 unlocks: {
                   description: 'Perks / Upgrades unlocked during prestige 0',
                   type: 'array',
@@ -2275,708 +2139,13 @@ const playerObject = {
                     },
                   },
                 },
-                unlocks_2: {
-                  description: 'Perks / Upgrades unlocked during prestige 2',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_3: {
-                  description: 'Perks / Upgrades unlocked during prestige 3',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_4: {
-                  description: 'Perks / Upgrades unlocked during prestige 4',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_5: {
-                  description: 'Perks / Upgrades unlocked during prestige 5',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_6: {
-                  description: 'Perks / Upgrades unlocked during prestige 6',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_7: {
-                  description: 'Perks / Upgrades unlocked during prestige 7',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_8: {
-                  description: 'Perks / Upgrades unlocked during prestige 8',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_9: {
-                  description: 'Perks / Upgrades unlocked during prestige 9',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_10: {
-                  description: 'Perks / Upgrades unlocked during prestige 10',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_11: {
-                  description: 'Perks / Upgrades unlocked during prestige 11',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_12: {
-                  description: 'Perks / Upgrades unlocked during prestige 12',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_13: {
-                  description: 'Perks / Upgrades unlocked during prestige 13',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_14: {
-                  description: 'Perks / Upgrades unlocked during prestige 14',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_15: {
-                  description: 'Perks / Upgrades unlocked during prestige 15',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_16: {
-                  description: 'Perks / Upgrades unlocked during prestige 16',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_17: {
-                  description: 'Perks / Upgrades unlocked during prestige 17',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_18: {
-                  description: 'Perks / Upgrades unlocked during prestige 18',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_19: {
-                  description: 'Perks / Upgrades unlocked during prestige 19',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_20: {
-                  description: 'Perks / Upgrades unlocked during prestige 20',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_21: {
-                  description: 'Perks / Upgrades unlocked during prestige 21',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_22: {
-                  description: 'Perks / Upgrades unlocked during prestige 22',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_23: {
-                  description: 'Perks / Upgrades unlocked during prestige 23',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_25: {
-                  description: 'Perks / Upgrades unlocked during prestige 24',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_26: {
-                  description: 'Perks / Upgrades unlocked during prestige 26',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_27: {
-                  description: 'Perks / Upgrades unlocked during prestige 27',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_28: {
-                  description: 'Perks / Upgrades unlocked during prestige 28',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_29: {
-                  description: 'Perks / Upgrades unlocked during prestige 29',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_30: {
-                  description: 'Perks / Upgrades unlocked during prestige 30',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_31: {
-                  description: 'Perks / Upgrades unlocked during prestige 31',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_32: {
-                  description: 'Perks / Upgrades unlocked during prestige 32',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_33: {
-                  description: 'Perks / Upgrades unlocked during prestige 33',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_34: {
-                  description: 'Perks / Upgrades unlocked during prestige 34',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-                unlocks_35: {
-                  description: 'Perks / Upgrades unlocked during prestige 35',
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      tier: {
-                        type: 'integer',
-                        description: 'Tier of the upgrade indexed from 0',
-                      },
-                      acquireDate: {
-                        type: 'integer',
-                        description: 'Unix timestamp of unlock',
-                      },
-                      key: {
-                        type: 'string',
-                        description: 'Name of the upgrade',
-                      },
-                    },
-                  },
-                },
-              },
-            },
             stats_move_1: {
               type: 'integer',
               description: 'Unix timestamp of stats being imported if they played before 0.3.5',
             },
             restored_inv_backup_1: {
               type: 'integer',
-              description: 'timestamp of admin inventory restoration',
+              description: 'Timestamp of admin inventory restoration',
             },
             pit_stats_ptl: {
               description: 'All common player stats',
