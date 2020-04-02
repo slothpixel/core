@@ -4,3 +4,4 @@
 .env
 prod.env
 *.log*
+config.js
