@@ -805,11 +805,15 @@ const spec = {
               if (err) {
                 return res.json({ error: err });
               }
-              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (players) => {
-                players.forEach((player) => {
-                  profile.members[player.profile.uuid].player = player.profile;
-                });
-                res.json(profile);
+              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (err, players) => {
+                if (err) {
+                  res.status(500).json({ error: err });
+                } else {
+                  players.forEach((player) => {
+                    profile.members[player.profile.uuid].player = player.profile;
+                  });
+                  res.json(profile);
+                }
               });
             });
           });

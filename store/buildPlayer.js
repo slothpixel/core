@@ -112,7 +112,11 @@ function populatePlayers(players, cb) {
       }
     });
   }, (err, result) => {
-    cb(result);
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, result);
+    }
   });
 }
 
