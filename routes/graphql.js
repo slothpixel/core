@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
 const { promisify } = require('util');
@@ -58,6 +59,51 @@ class BoostersResolver {
   }
 }
 
+class PlayersResolver {
+  player({ player_name /* , fields */ }) {
+    // TODO: Remove 'fields' param from the /players/{player_name} route.
+    // If someone wants specific fields, they should use graphql.
+    return getPlayerAsync(player_name);
+  }
+
+  async achievements({ player_name }) {
+    const player = await getPlayerAsync(player_name);
+    return player.achievements;
+  }
+
+  async quests({ player_name }) {
+    const player = await getPlayerAsync(player_name);
+    return player.quests;
+  }
+
+  recent_games({ player_name }) {
+    // TODO: Extract common code from here and spec.js
+    return new Promise((resolve, reject) => {
+      getUUID(player_name, (err, uuid) => {
+        if (err) {
+          return reject(err);
+        }
+        getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
+          if (err) {
+            return reject(err);
+          }
+          try {
+            return resolve(
+              data.games.map((game) => {
+                game.gameType = typeToStandardName(game.gameType);
+                return game;
+              }),
+            );
+          } catch (e) {
+            return reject(e);
+          }
+        });
+        return undefined;
+      });
+    });
+  }
+}
+
 const graphql = graphqlExpress({
   schema: buildSchema(schema),
   rootValue: {
@@ -81,48 +127,8 @@ const graphql = graphqlExpress({
       return leaderboardsAsync(params, null);
     },
 
-    async player({ player_name /* , fields */ }) {
-      // TODO: Remove 'fields' param from the /players/{player_name} route.
-      // If someone wants specific fields, they should use graphql.
-      return getPlayerAsync(player_name);
-    },
-
-    async playerAchievements({ player_name }) {
-      const player = await getPlayerAsync(player_name);
-      return player.achievements;
-    },
-
-    async playerQuests({ player_name }) {
-      const player = await getPlayerAsync(player_name);
-      return player.quests;
-    },
-
-    player_recent_games({ username }) {
-      // TODO: Extract common code from here and spec.js
-      return new Promise((resolve, reject) => {
-        getUUID(username, (err, uuid) => {
-          if (err) {
-            return reject(err);
-          }
-          getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
-            if (err) {
-              return reject(err);
-            }
-            try {
-              return resolve(
-                data.games.map((game) => {
-                  game.gameType = typeToStandardName(game.gameType);
-                  return game;
-                }),
-              );
-            } catch (e) {
-              return reject(e);
-            }
-          });
-
-          return undefined;
-        });
-      });
+    players() {
+      return new PlayersResolver();
     },
 
     async skyblock_auctions_item({ from, item_id, to }) {

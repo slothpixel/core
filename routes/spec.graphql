@@ -10,7 +10,7 @@ type Query {
   bans: Bans
 
   """
-  Contains information about network boosters
+  Returns information about network boosters
   """
   boosters: BoosterQuery
 
@@ -91,57 +91,9 @@ type Query {
   ): [JSON]
 
   """
-  Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.
-
-  Equivalent to GET /players/{playerName}
+  Returns information about players
   """
-  player(
-    """
-    A comma separated list of fields to include alongside basic stats.
-    """
-    fields: String
-
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): Player
-
-  """
-  Returns player achievement stats
-
-  Equivalent to GET /players/{playerName}/achievements
-  """
-  player_achievements(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): PlayerAchievements
-
-  """
-  Returns player quest completions
-
-  Equivalent to GET /players/{playerName}/quests
-  """
-  player_quests(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): PlayerQuests
-
-  """
-  Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.
-
-  Equivalent to GET /players/{playerName}/recentGames
-  """
-  player_recent_games(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): [PlayerRecentGamesListItem]
+  players: PlayerQuery
 
   """
   Allows you to query past auctions for an item within specified time range.
@@ -272,6 +224,61 @@ type BoosterQuery {
 
   all: [GameBoosters]
 }
+
+type PlayerQuery {
+    """
+    Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.
+
+    Equivalent to GET /players/{playerName}
+    """
+    player(
+      """
+      A comma separated list of fields to include alongside basic stats.
+      """
+      fields: String
+
+      """
+      Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+      """
+      player_name: String!, 
+    ): Player
+
+    """
+    Returns player achievement stats
+
+    Equivalent to GET /players/{playerName}/achievements
+    """
+    achievements(
+      """
+      Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+      """
+      player_name: String!
+    ): PlayerAchievements
+
+    """
+    Returns player quest completions
+
+    Equivalent to GET /players/{playerName}/quests
+    """
+    quests(
+      """
+      Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+      """
+      player_name: String!
+    ): PlayerQuests
+
+    """
+    Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.
+
+    Equivalent to GET /players/{playerName}/recentGames
+    """
+    recent_games(
+      """
+      Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+      """
+      player_name: String!
+    ): [PlayerRecentGamesListItem]
+  }
 
 """
 Player stats in the Arcade Games
@@ -1037,10 +1044,6 @@ type CombatLevels {
   Current Melee Upgrade progression
   """
   melee: Int
-}
-
-type Completions {
-  game: [Int]
 }
 
 """
@@ -2242,7 +2245,8 @@ type PlayerQuests {
   Total challenges completed
   """
   challenges_completed: Int
-  completions: Completions
+  
+  completions: JSON
 
   """
   Total quests completed
