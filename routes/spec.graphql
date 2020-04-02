@@ -2262,19 +2262,6 @@ type PlayerRecentGamesListItem {
   mode: String
 }
 
-type PROFILE_ID {
-  collections_unlocked: Int
-
-  """
-  Profile name, e.g. Strawberry
-  """
-  cute_name: String
-  first_join: Int
-  last_save: Int
-  members: [String]
-  profile_id: String
-}
-
 type RanksListItem {
   created: Int
   default: Boolean

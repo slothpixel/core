@@ -3,9 +3,11 @@ const { promisify } = require('util');
 const fs = require('fs');
 const graphqlExpress = require('express-graphql');
 const { buildSchema } = require('graphql');
-const { getPlayer } = require('../store/buildPlayer');
+const { getPlayer, populatePlayers } = require('../store/buildPlayer');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
+const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
+const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { getGuildFromPlayer } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
@@ -17,8 +19,12 @@ const buildBoostersAsync = promisify(buildBoosters);
 const leaderboardsAsync = promisify(leaderboards);
 const getGuildFromPlayerAsync = promisify(getGuildFromPlayer);
 const getPlayerAsync = promisify(getPlayer);
-const redisGetAsync = promisify(redis.get);
-
+const populatePlayersAsync = promisify(populatePlayers);
+const redisGetAsync = promisify(redis.get).bind(redis);
+const getUUIDAsync = promisify(getUUID);
+const buildProfileAsync = promisify(buildProfile);
+const getAuctionsAsync = promisify(getAuctions);
+const queryAuctionIdAsync = promisify(queryAuctionId);
 
 const graphql = graphqlExpress({
   schema: buildSchema(fs.readFileSync('./routes/spec.graphql', 'utf8')),
@@ -92,30 +98,38 @@ const graphql = graphqlExpress({
       });
     },
 
-    skyblock_auction(/* { from, item_id, to } */) {
-      // TODO
-      return {};
+    async skyblock_auctions_item({ from, item_id, to }) {
+      console.log(`ID: ${item_id}`);
+      const result = await queryAuctionIdAsync(from, to, item_id);
+      console.log(JSON.stringify(result));
+      return result;
     },
 
-    skyblock_auctions(/* params */) {
-      // TODO
-      return {};
+    async skyblock_auctions(params) {
+      return getAuctionsAsync(params);
     },
 
     async skyblock_items() {
       return JSON.parse(await redisGetAsync('skyblock_items'));
     },
 
-    skyblock_profiles(/* { player_name } */) {
-      // TODO
-      return {};
+    async skyblock_profiles({ player_name }) {
+      const uuid = await getUUIDAsync(player_name);
+      const profiles = await redisGetAsync(`skyblock_profiles:${uuid}`);
+      return profiles ? JSON.parse(profiles) : {};
     },
 
-    skyblock_profile(/* { player_name, profile_id } */) {
-      // TODO
-      return {};
-    },
+    async skyblock_profile({ player_name, profile_id }) {
+      const uuid = await getUUIDAsync(player_name);
+      const profile = await buildProfileAsync(uuid, profile_id);
+      const players = await populatePlayersAsync(Object.keys(profile.members).map((uuid) => ({ uuid })));
 
+      players.forEach((player) => {
+        profile.members[player.profile.uuid].player = player.profile;
+      });
+
+      return profile;
+    },
   },
 });
 

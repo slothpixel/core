@@ -5,14 +5,14 @@ const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
-const queryAuctions = require('../store/queryAuctions');
+const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer } = require('../store/buildGuild');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName, getPlayerFields, min, max, median, average, stdDev,
+  logger, generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -847,7 +847,7 @@ const spec = {
         },
         route: () => '/skyblock/auctions',
         func: (req, res) => {
-          queryAuctions(req.query, (error, auctions) => {
+          getAuctions(req.query, (error, auctions) => {
             if (error) {
               return res.status(400).json({ error });
             }
@@ -917,38 +917,10 @@ const spec = {
         },
         route: () => '/skyblock/auctions/:id',
         func: (req, res, cb) => {
-          const now = Date.now();
-          const from = req.query.from || (now - 24 * 60 * 60 * 1000);
-          const to = req.query.to || now;
-          if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
-            return cb(res.status(400).json({ error: "parameters 'from' and 'to' must be integers" }));
-          }
-          redis.zrangebyscore(req.params.id, from, to, (err, auctions) => {
+          queryAuctionId(req.query.from, req.query.to, req.params.id, (err, obj) => {
             if (err) {
-              logger.error(err);
+              return cb(res.status(404).json({ error: err }));
             }
-            const obj = {
-              average_price: 0,
-              median_price: 0,
-              standard_deviation: 0,
-              min_price: 0,
-              max_price: 0,
-              sold: 0,
-              auctions: {},
-            };
-            const priceArray = [];
-            auctions.forEach((auction) => {
-              auction = JSON.parse(auction);
-              const { bids } = auction;
-              if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
-              obj.auctions[auction.end] = auction;
-            });
-            obj.average_price = average(priceArray);
-            obj.median_price = median(priceArray);
-            obj.standard_deviation = stdDev(priceArray);
-            obj.min_price = min(priceArray);
-            obj.max_price = max(priceArray);
-            obj.sold = priceArray.length;
             return res.json(obj);
           });
         },
