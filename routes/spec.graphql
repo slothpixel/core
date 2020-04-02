@@ -1,4 +1,287 @@
 """
+The start of any query
+"""
+type Query {
+  """
+  Returns information about the number of staff and watchdog server bans
+
+  Equivalent to GET /bans
+  """
+  bans: Bans
+
+  """
+  Returns a list of boosters for all server gamemodes
+
+  Equivalent to GET /boosters
+  """
+  all_boosters: Boosters
+
+  """
+  Returns a list of active boosters for the specified game
+
+  Equivalent to GET /boosters/{game}
+  """
+  boosters(
+    """
+    [Standard](https://github.com/slothpixel/core/wiki/Standard-naming) minigame name
+    """
+    game: String!
+  ): [GameBoosters]
+
+  """
+  Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.
+
+  Equivalent to GET /leaderboards/{template}
+  """
+  get_leaderboard_template(template: String!): [JSON]
+
+  """
+  Look up a guild from the name of one of it's members
+
+  Equivalent to GET /guilds/{playerName}
+  """
+  guild(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+
+    """
+    Replace uuid fields with player profiles
+    """
+    populate_players: String
+  ): Guild
+
+  """
+  Returns player or guild leaderboards
+
+  Equivalent to GET /leaderboards
+  """
+  leaderboards(
+    """
+    Choose which data columns will be returned e.g. stats.Arcade.coins. Multiple columns are separated with commas.
+    """
+    columns: String!
+
+    """
+    Filter entries by passing [MongoDB
+    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
+    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
+    """
+    filter: String
+
+    """
+    Limit number of records returned. Default is 100 and maximum 1000.
+    """
+    limit: Int
+
+    """
+    Pages allow you to split the data using the `limit` param. For example, if
+    there are 23 auctions matching your query and you set the limit to 10, each
+    page will return up to the next 10 consecutive results. With 23 results, you
+    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
+    """
+    page: Int
+
+    """
+    Set to "false" to also return admin accounts.
+    """
+    significant: Boolean
+
+    """
+    Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
+    """
+    sort_by: String!
+
+    """
+    Define sort order. `asc` for ascending or `desc` for descending
+    """
+    sort_order: String
+
+    """
+    `players`, `guilds` or `skyblock`
+    """
+    type: Type!
+  ): [JSON]
+
+  """
+  Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.
+
+  Equivalent to GET /players/{playerName}
+  """
+  player(
+    """
+    A comma separated list of fields to include alongside basic stats.
+    """
+    fields: String
+
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+  ): Player
+
+  """
+  Returns player achievement stats
+
+  Equivalent to GET /players/{playerName}/achievements
+  """
+  player_achievements(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+  ): PlayerAchievements
+
+  """
+  Returns player quest completions
+
+  Equivalent to GET /players/{playerName}/quests
+  """
+  player_quests(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+  ): PlayerQuests
+
+  """
+  Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.
+
+  Equivalent to GET /players/{playerName}/recentGames
+  """
+  player_recent_games(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+  ): [PlayerRecentGamesListItem]
+
+  """
+  Allows you to query past auctions for an item within specified time range.
+  Also returns some statistical constants for this data.
+
+  Equivalent to GET /skyblock/auctions/{itemId}
+  """
+  skyblock_auctions_item(
+    """
+    Date from which to get auctions. Uses a Unix timestamp with milliseconds.
+    E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is
+    from past 24 hours.
+    """
+    from: String
+
+    """
+    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
+    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
+    """
+    item_id: String!
+
+    """
+    Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g.
+    to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.
+    """
+    to: String
+  ): SkyblockAuction
+
+  """
+  Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.
+
+  Equivalent to GET /skyblock/auctions
+  """
+  skyblock_auctions(
+    """
+    Set to false if you want to query historical auctions
+    """
+    active: Boolean
+
+    """
+    Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be"
+    """
+    auction_uuid: String
+
+    """
+    Filter entries by passing [MongoDB
+    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
+    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
+    """
+    filter: String
+
+    """
+    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
+    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
+    """
+    id: String
+
+    """
+    Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"
+    """
+    item_uuid: String
+
+    """
+    Limit number of records returned. Default is 100 and maximum 1000.
+    """
+    limit: Int
+
+    """
+    Pages allow you to split the data using the `limit` param. For example, if
+    there are 23 auctions matching your query and you set the limit to 10, each
+    page will return up to the next 10 consecutive results. With 23 results, you
+    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
+    """
+    page: Int
+
+    """
+    Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
+    """
+    sort_by: String
+
+    """
+    Define sort order. `asc` for ascending or `desc` for descending
+    """
+    sort_order: String
+  ): [SkyblockAuctionsListItem]
+
+  """
+  Returns all SkyBlock items found in auctions
+
+  Equivalent to GET /skyblock/items
+  """
+  skyblock_items: SkyblockItems
+
+  """
+  Gets all skyblock profiles for the specified player
+
+  Equivalent to GET /skyblock/profiles/{playerName}
+  """
+  skyblock_profiles(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+  ): SkyblockProfile
+
+  """
+  If no profile is specified, the last played profile is returned
+
+  Equivalent to GET /skyblock/profile/{playerName}/{profileId}
+  """
+  skyblock_profile(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    """
+    player_name: String!
+
+    """
+    SkyBlock profile id e.g. '498228a732d443589aabd1e97e6806cd' or profile name
+    e.g. 'Mango'. Note: profile name can be different (although unlikely) for
+    different members of a co-op!
+    """
+    profile_id: String!
+  ): JSON
+}
+
+"""
 Player stats in the Arcade Games
 """
 type Arcade {
@@ -317,7 +600,7 @@ type BidsListItem {
   """
   Bid UNIX timestamp
   """
-  timestamp: Int
+  timestamp: String
 }
 
 """
@@ -498,7 +781,7 @@ type GameBoosters {
   """
   UNIX timestamp of activation date
   """
-  activated: Int
+  activated: String
 
   """
   Whether the booster is currently active
@@ -1992,289 +2275,6 @@ type PROFILE_ID {
   profile_id: String
 }
 
-"""
-The start of any query
-"""
-type Query {
-  """
-  Returns information about the number of staff and watchdog server bans
-
-  Equivalent to GET /bans
-  """
-  bans: Bans
-
-  """
-  Returns a list of boosters for all server gamemodes
-
-  Equivalent to GET /boosters
-  """
-  all_boosters: Boosters
-
-  """
-  Returns a list of active boosters for the specified game
-
-  Equivalent to GET /boosters/{game}
-  """
-  boosters(
-    """
-    [Standard](https://github.com/slothpixel/core/wiki/Standard-naming) minigame name
-    """
-    game: String!
-  ): [GameBoosters]
-
-  """
-  Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.
-
-  Equivalent to GET /leaderboards/{template}
-  """
-  get_leaderboard_template(template: String!): [JSON]
-
-  """
-  Look up a guild from the name of one of it's members
-
-  Equivalent to GET /guilds/{playerName}
-  """
-  guild(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-
-    """
-    Replace uuid fields with player profiles
-    """
-    populate_players: String
-  ): Guild
-
-  """
-  Returns player or guild leaderboards
-
-  Equivalent to GET /leaderboards
-  """
-  leaderboards(
-    """
-    Choose which data columns will be returned e.g. stats.Arcade.coins. Multiple columns are separated with commas.
-    """
-    columns: String!
-
-    """
-    Filter entries by passing [MongoDB
-    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
-    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
-    """
-    filter: String
-
-    """
-    Limit number of records returned. Default is 100 and maximum 1000.
-    """
-    limit: Int
-
-    """
-    Pages allow you to split the data using the `limit` param. For example, if
-    there are 23 auctions matching your query and you set the limit to 10, each
-    page will return up to the next 10 consecutive results. With 23 results, you
-    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
-    """
-    page: Int
-
-    """
-    Set to "false" to also return admin accounts.
-    """
-    significant: Boolean
-
-    """
-    Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
-    """
-    sort_by: String!
-
-    """
-    Define sort order. `asc` for ascending or `desc` for descending
-    """
-    sort_order: String
-
-    """
-    `players`, `guilds` or `skyblock`
-    """
-    type: Type!
-  ): [JSON]
-
-  """
-  Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.
-
-  Equivalent to GET /players/{playerName}
-  """
-  player(
-    """
-    A comma separated list of fields to include alongside basic stats.
-    """
-    fields: String
-
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): Player
-
-  """
-  Returns player achievement stats
-
-  Equivalent to GET /players/{playerName}/achievements
-  """
-  player_achievements(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): PlayerAchievements
-
-  """
-  Returns player quest completions
-
-  Equivalent to GET /players/{playerName}/quests
-  """
-  player_quests(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): PlayerQuests
-
-  """
-  Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.
-
-  Equivalent to GET /players/{playerName}/recentGames
-  """
-  player_recent_games(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): [PlayerRecentGamesListItem]
-
-  """
-  Allows you to query past auctions for an item within specified time range.
-  Also returns some statistical constants for this data.
-
-  Equivalent to GET /skyblock/auctions/{itemId}
-  """
-  skyblock_auction(
-    """
-    Date from which to get auctions. Uses a Unix timestamp with milliseconds.
-    E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is
-    from past 24 hours.
-    """
-    from: Int
-
-    """
-    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
-    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
-    """
-    item_id: String!
-
-    """
-    Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g.
-    to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.
-    """
-    to: Int
-  ): SkyblockAuction
-
-  """
-  Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.
-
-  Equivalent to GET /skyblock/auctions
-  """
-  skyblock_auctions(
-    """
-    Set to false if you want to query historical auctions
-    """
-    active: Boolean
-
-    """
-    Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be"
-    """
-    auction_uuid: String
-
-    """
-    Filter entries by passing [MongoDB
-    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
-    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
-    """
-    filter: String
-
-    """
-    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
-    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
-    """
-    id: String
-
-    """
-    Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"
-    """
-    item_uuid: String
-
-    """
-    Limit number of records returned. Default is 100 and maximum 1000.
-    """
-    limit: Int
-
-    """
-    Pages allow you to split the data using the `limit` param. For example, if
-    there are 23 auctions matching your query and you set the limit to 10, each
-    page will return up to the next 10 consecutive results. With 23 results, you
-    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
-    """
-    page: Int
-
-    """
-    Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
-    """
-    sort_by: String
-
-    """
-    Define sort order. `asc` for ascending or `desc` for descending
-    """
-    sort_order: String
-  ): [SkyblockAuctionsListItem]
-
-  """
-  Returns all SkyBlock items found in auctions
-
-  Equivalent to GET /skyblock/items
-  """
-  skyblock_items: SkyblockItems
-
-  """
-  Gets all skyblock profiles for the specified player
-
-  Equivalent to GET /skyblock/profiles/{playerName}
-  """
-  skyblock_profiles(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-  ): SkyblockProfile
-
-  """
-  If no profile is specified, the last played profile is returned
-
-  Equivalent to GET /skyblock/profile/{playerName}/{profileId}
-  """
-  skyblock_profile(
-    """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
-    """
-    player_name: String!
-
-    """
-    SkyBlock profile id e.g. '498228a732d443589aabd1e97e6806cd' or profile name
-    e.g. 'Mango'. Note: profile name can be different (although unlikely) for
-    different members of a co-op!
-    """
-    profile_id: String!
-  ): JSON
-}
-
 type RanksListItem {
   created: Int
   default: Boolean
@@ -2533,6 +2533,11 @@ type SkyblockAuction {
   auctions: JSON
 
   """
+  Starting bid of the auction
+  """
+  starting_bid: Int
+
+  """
   Average price in the selected time period
   """
   average_price: Int
@@ -2580,15 +2585,18 @@ type SkyblockAuctionsListItem {
   """
   UNIX timestamp of auction end date
   """
-  end: Int
+  end: String
+
   highest_bid_amount: Int
+
   item: Item
 
   """
   UNIX timestamp of auction start date
   """
-  start: Int
-  starting_bid: Int
+  start: String
+
+  starting_bid: String
 
   """
   Item rarity, e.g. "RARE"
