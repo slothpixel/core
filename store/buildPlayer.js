@@ -3,7 +3,9 @@ const async = require('async');
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
 const getUUID = require('./getUUID');
-const { logger, generateJob, getData } = require('../util/utility');
+const {
+  logger, generateJob, getData, getPlayerFields,
+} = require('../util/utility');
 const redis = require('./redis');
 const cacheFunctions = require('./cacheFunctions');
 const queries = require('./queries');
@@ -90,7 +92,7 @@ function populatePlayers(players, cb) {
         logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
         buildPlayer(uuid, (err, newPlayer) => {
           delete player.uuid;
-          const profile = queries.getPlayerFields(newPlayer);
+          const profile = getPlayerFields(newPlayer);
           profile.uuid = uuid;
           player.profile = profile;
           queries.cachePlayerProfile(profile, () => {
