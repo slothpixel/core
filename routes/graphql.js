@@ -104,6 +104,34 @@ class PlayersResolver {
   }
 }
 
+class SkyblockResolver {
+  all_auctions(args) {
+    return getAuctionsAsync(args);
+  }
+
+  auction({ from, to, item_id }) {
+    return queryAuctionIdAsync(from, to, item_id);
+  }
+
+  async profiles({ player_name }) {
+    const uuid = await getUUIDAsync(player_name);
+    const profiles = await redisGetAsync(`skyblock_profiles:${uuid}`);
+    return profiles ? JSON.parse(profiles) : {};
+  }
+
+  async profile({ player_name, profile_id }) {
+    const uuid = await getUUIDAsync(player_name);
+    const profile = await buildProfileAsync(uuid, profile_id);
+    const players = await populatePlayersAsync(Object.keys(profile.members).map((uuid) => ({ uuid })));
+
+    players.forEach((player) => {
+      profile.members[player.profile.uuid].player = player.profile;
+    });
+
+    return profile;
+  }
+}
+
 const graphql = graphqlExpress({
   schema: buildSchema(schema),
   rootValue: {
@@ -131,37 +159,8 @@ const graphql = graphqlExpress({
       return new PlayersResolver();
     },
 
-    async skyblock_auctions_item({ from, item_id, to }) {
-      console.log(`ID: ${item_id}`);
-      const result = await queryAuctionIdAsync(from, to, item_id);
-      console.log(JSON.stringify(result));
-      return result;
-    },
-
-    async skyblock_auctions(params) {
-      return getAuctionsAsync(params);
-    },
-
-    async skyblock_items() {
-      return JSON.parse(await redisGetAsync('skyblock_items'));
-    },
-
-    async skyblock_profiles({ player_name }) {
-      const uuid = await getUUIDAsync(player_name);
-      const profiles = await redisGetAsync(`skyblock_profiles:${uuid}`);
-      return profiles ? JSON.parse(profiles) : {};
-    },
-
-    async skyblock_profile({ player_name, profile_id }) {
-      const uuid = await getUUIDAsync(player_name);
-      const profile = await buildProfileAsync(uuid, profile_id);
-      const players = await populatePlayersAsync(Object.keys(profile.members).map((uuid) => ({ uuid })));
-
-      players.forEach((player) => {
-        profile.members[player.profile.uuid].player = player.profile;
-      });
-
-      return profile;
+    skyblock() {
+      return new SkyblockResolver();
     },
   },
 });
