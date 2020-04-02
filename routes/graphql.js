@@ -1,8 +1,10 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
 const { promisify } = require('util');
 const fs = require('fs');
 const graphqlExpress = require('express-graphql');
 const { buildSchema } = require('graphql');
+const { game_types: gameTypes } = require('hypixelconstants');
 const { getPlayer, populatePlayers } = require('../store/buildPlayer');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
@@ -26,20 +28,45 @@ const buildProfileAsync = promisify(buildProfile);
 const getAuctionsAsync = promisify(getAuctions);
 const queryAuctionIdAsync = promisify(queryAuctionId);
 
+const gameStandardNames = gameTypes.map((game) => game.standard_name);
+
+let schema = fs.readFileSync('./routes/spec.graphql', 'utf8');
+
+// Dynamic schema generation
+const schemaReplacements = {
+  BOOSTER_QUERY: gameStandardNames.map((game) => `${game}: [GameBooster]`).join('\n'),
+};
+
+Object.entries(schemaReplacements).forEach(([phrase, replacer]) => {
+  schema = schema.replace(`%${phrase}%`, replacer);
+});
+
+// Resolver classes
+class BoostersResolver {
+  constructor() {
+    gameStandardNames.forEach((game) => {
+      this[game] = async () => {
+        const boosters = await buildBoostersAsync();
+        return boosters.boosters[game];
+      };
+    });
+  }
+
+  async all() {
+    const { boosters } = await buildBoostersAsync();
+    return Object.entries(boosters).reduce((prev, [game, value]) => [...prev, { game, boosters: value }], []);
+  }
+}
+
 const graphql = graphqlExpress({
-  schema: buildSchema(fs.readFileSync('./routes/spec.graphql', 'utf8')),
+  schema: buildSchema(schema),
   rootValue: {
     bans() {
       return buildBansAsync();
     },
 
-    all_boosters() {
-      return buildBoostersAsync();
-    },
-
-    async boosters({ game }) {
-      const data = await buildBoostersAsync();
-      return data[game];
+    boosters() {
+      return new BoostersResolver();
     },
 
     get_leaderboard_template({ template }) {

@@ -10,23 +10,9 @@ type Query {
   bans: Bans
 
   """
-  Returns a list of boosters for all server gamemodes
-
-  Equivalent to GET /boosters
+  Contains information about network boosters
   """
-  all_boosters: Boosters
-
-  """
-  Returns a list of active boosters for the specified game
-
-  Equivalent to GET /boosters/{game}
-  """
-  boosters(
-    """
-    [Standard](https://github.com/slothpixel/core/wiki/Standard-naming) minigame name
-    """
-    game: String!
-  ): [GameBoosters]
+  boosters: BoosterQuery
 
   """
   Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.
@@ -279,6 +265,12 @@ type Query {
     """
     profile_id: String!
   ): JSON
+}
+
+type BoosterQuery {
+  %BOOSTER_QUERY%
+
+  all: [GameBoosters]
 }
 
 """
@@ -775,11 +767,12 @@ type BlockingDead {
   zombie_kills: Int
 }
 
-type Boosters {
-  game: [GameBoosters]
+type GameBoosters {
+  game: String
+  boosters: [GameBooster]
 }
 
-type GameBoosters {
+type GameBooster {
   """
   UNIX timestamp of activation date
   """
