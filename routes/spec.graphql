@@ -247,7 +247,7 @@ type Query {
 
   Equivalent to GET /skyblock/items
   """
-  skyblock_items: SkyblockItems
+  skyblock_items: JSON
 
   """
   Gets all skyblock profiles for the specified player
@@ -259,7 +259,7 @@ type Query {
     Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
     player_name: String!
-  ): SkyblockProfile
+  ): JSON
 
   """
   If no profile is specified, the last played profile is returned
@@ -2607,14 +2607,6 @@ type SkyblockAuctionsListItem {
   Auction uuid
   """
   uuid: String
-}
-
-type SkyblockItems {
-  ITEM_ID: ITEM_ID
-}
-
-type SkyblockProfile {
-  PROFILE_ID: PROFILE_ID
 }
 
 """
