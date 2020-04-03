@@ -223,6 +223,16 @@ function generateJob(type, payload) {
     logger.warn('No HYPIXEL_API_KEY env variable set!');
   }
   const opts = {
+    bazaar_products() {
+      return {
+        url: `${apiUrl}/skyblock/bazaar/products?key=${apiKey}`,
+      };
+    },
+    bazaar_product() {
+      return {
+        url: `${apiUrl}/skyblock/bazaar/product?key=${apiKey}&productId=${payload.id}`,
+      };
+    },
     boosters() {
       return {
         url: `${apiUrl}/boosters?key=${apiKey}`,
