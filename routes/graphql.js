@@ -97,6 +97,11 @@ class SkyblockResolver {
     return queryAuctionIdAsync(from, to, item_id);
   }
 
+  async items() {
+    const items = await redisGetAsync('skyblock_items');
+    return items ? JSON.parse(items) : {};
+  }
+
   async profiles({ player_name }) {
     const uuid = await getUUIDAsync(player_name);
     const profiles = await redisGetAsync(`skyblock_profiles:${uuid}`);
