@@ -28,6 +28,7 @@ const getUUIDAsync = promisify(getUUID);
 const buildProfileAsync = promisify(buildProfile);
 const getAuctionsAsync = promisify(getAuctions);
 const queryAuctionIdAsync = promisify(queryAuctionId);
+const getDataAsync = promisify(getData);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
 
@@ -76,30 +77,13 @@ class PlayersResolver {
     return player.quests;
   }
 
-  recent_games({ player_name }) {
-    // TODO: Extract common code from here and spec.js
-    return new Promise((resolve, reject) => {
-      getUUID(player_name, (err, uuid) => {
-        if (err) {
-          return reject(err);
-        }
-        getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
-          if (err) {
-            return reject(err);
-          }
-          try {
-            return resolve(
-              data.games.map((game) => {
-                game.gameType = typeToStandardName(game.gameType);
-                return game;
-              }),
-            );
-          } catch (e) {
-            return reject(e);
-          }
-        });
-        return undefined;
-      });
+  async recent_games({ player_name }) {
+    const uuid = await getUUIDAsync(player_name);
+    const data = await getDataAsync(redis, generateJob('recentgames', { id: uuid }).url);
+
+    return data.games.map((game) => {
+      game.gameType = typeToStandardName(game.gameType);
+      return game;
     });
   }
 }

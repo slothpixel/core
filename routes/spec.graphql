@@ -219,7 +219,7 @@ type SkyblockQuery {
     E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is
     from past 24 hours.
     """
-    from: String
+    from: Float
 
     """
     Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
@@ -231,7 +231,7 @@ type SkyblockQuery {
     Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g.
     to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.
     """
-    to: String
+    to: Float
   ): SkyblockAuction
 
   """
@@ -280,7 +280,7 @@ type Arcade {
   """
   Current coins in the Arcade Games
   """
-  coins: Int
+  coins: Float
 
   """
   Current kills in the Arcade Games
@@ -374,12 +374,12 @@ type Arena {
   """
   Current coins
   """
-  coins: Int
+  coins: Float
 
   """
   Total coins spent in Arena Brawl
   """
-  coins_spent: Int
+  coins_spent: Float
 
   """
   Current Combat Upgrades in Arena Brawl
@@ -487,7 +487,7 @@ type BedWars {
   """
   Current coins in Bedwars
   """
-  coins: Int
+  coins: Float
 
   """
   Total number of deaths
@@ -579,7 +579,7 @@ type BidsListItem {
   """
   Bidded coins
   """
-  amount: Int
+  amount: Float
 
   """
   Bidder's uuid
@@ -594,7 +594,7 @@ type BidsListItem {
   """
   Bid UNIX timestamp
   """
-  timestamp: String
+  timestamp: Float
 }
 
 """
@@ -624,17 +624,17 @@ type Blitz {
   """
   Current coins in Blitz Survival Games
   """
-  coins: Int
+  coins: Float
 
   """
   Total damage dealt in Blitz Survival Games
   """
-  damage: Int
+  damage: Float
 
   """
   Total damage taken in Blitz Survival Games
   """
-  damage_taken: Int
+  damage_taken: Float
 
   """
   Total deaths in Blitz Survival Games
@@ -776,7 +776,7 @@ type GameBooster {
   """
   UNIX timestamp of activation date
   """
-  activated: String
+  activated: Float
 
   """
   Whether the booster is currently active
@@ -1427,7 +1427,7 @@ type Guild {
   """
   Guild creation date
   """
-  created: String
+  created: Float
 
   """
   Guild description
@@ -1442,7 +1442,7 @@ type Guild {
   """
   Guild EXP earned in each minigame
   """
-  exp_by_game: Int
+  exp_by_game: JSON
 
   """
   Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.
@@ -1794,12 +1794,12 @@ type MembersListItem {
   """
   Member join date
   """
-  joined: Int
+  joined: Float
 
   """
   Date the member is muted until
   """
-  muted_till: Int
+  muted_till: Float
 
   """
   How many much the member has contributed to guild quests
@@ -2061,7 +2061,7 @@ type Player {
   """
   Date of first Hypixel login
   """
-  first_login: Int
+  first_login: Float
 
   """
   Total gifts received from other players
@@ -2096,12 +2096,12 @@ type Player {
   """
   Date of latest Hypixel login
   """
-  last_login: Int
+  last_login: Float
 
   """
   Date of latest Hypixel logout
   """
-  last_logout: Int
+  last_logout: Float
 
   """
   Player level with precision of two decimals
@@ -2248,14 +2248,14 @@ type PlayerQuests {
 }
 
 type PlayerRecentGamesListItem {
-  date: Int
+  date: Float
   gameType: String
   map: String
   mode: String
 }
 
 type RanksListItem {
-  created: Int
+  created: Float
   default: Boolean
   name: String
   permissions: [Float]
@@ -2270,22 +2270,22 @@ type ResourcesCollected {
   """
   Total number of diamonds collected from generators
   """
-  diamond: Int
+  diamond: Float
 
   """
   Total number of emeralds collected from generators
   """
-  emerald: Int
+  emerald: Float
 
   """
   Total number of gold collected from generators
   """
-  gold: Int
+  gold: Float
 
   """
   Total number of iron collected from generators
   """
-  iron: Int
+  iron: Float
 }
 
 """
@@ -2564,16 +2564,16 @@ type SkyblockAuctionsListItem {
   """
   UNIX timestamp of auction end date
   """
-  end: String
+  end: Float
 
-  highest_bid_amount: Int
+  highest_bid_amount: Float
 
   item: Item
 
   """
   UNIX timestamp of auction start date
   """
-  start: String
+  start: Float
 
   starting_bid: String
 
@@ -2887,7 +2887,7 @@ type TwoVTwo {
   """
   Total damage dealt in 2v2 Arena
   """
-  damage: Int
+  damage: Float
 
   """
   Total deaths in 2v2 Arena
@@ -2902,7 +2902,7 @@ type TwoVTwo {
   """
   Total health healed in 2v2 Arena
   """
-  healed: Int
+  healed: Float
 
   """
   Kill/death ratio in 2v2 Arena
@@ -2953,7 +2953,7 @@ type Warlords {
   """
   Current coins in Warlords
   """
-  coins: Int
+  coins: Float
 }
 
 type Watchdog {
@@ -2985,7 +2985,7 @@ type Zombies {
   """
   Amount of bullets hit in Zombies
   """
-  bullets_hit: Int
+  bullets_hit: Float
 
   """
   Amount of deaths in Zombies
