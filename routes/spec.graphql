@@ -96,6 +96,8 @@ type Query {
   players: PlayerQuery
 
   skyblock: SkyblockQuery
+
+  metadata: JSON
 }
 
 type BoosterQuery {

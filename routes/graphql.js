@@ -15,6 +15,7 @@ const { getGuildFromPlayer } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
+const { getMetadata } = require('../store/queries');
 const { generateJob, getData, typeToStandardName } = require('../util/utility');
 
 const buildBansAsync = promisify(buildBans);
@@ -29,6 +30,7 @@ const buildProfileAsync = promisify(buildProfile);
 const getAuctionsAsync = promisify(getAuctions);
 const queryAuctionIdAsync = promisify(queryAuctionId);
 const getDataAsync = promisify(getData);
+const getMetadataAsync = promisify(getMetadata);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
 
@@ -150,6 +152,10 @@ const graphql = graphqlExpress({
 
     skyblock() {
       return new SkyblockResolver();
+    },
+
+    metadata() {
+      return getMetadataAsync(null);
     },
   },
 });
