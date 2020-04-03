@@ -93,7 +93,7 @@ class SkyblockResolver {
     return getAuctionsAsync(args);
   }
 
-  auction({ from, to, item_id }) {
+  auctions({ from, to, item_id }) {
     return queryAuctionIdAsync(from, to, item_id);
   }
 
