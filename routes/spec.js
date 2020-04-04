@@ -2,18 +2,18 @@
 const async = require('async');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
-const buildPlayer = require('../store/buildPlayer');
 const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
-const queryAuctions = require('../store/queryAuctions');
-const { buildGuild } = require('../store/buildGuild');
+const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
+const { getGuildFromPlayer } = require('../store/buildGuild');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
-const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/queries');
+const { populatePlayers, getPlayer } = require('../store/buildPlayer');
+const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName, getPlayerFields, min, max, median, average, stdDev,
+  logger, generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -22,55 +22,6 @@ const {
   profileIdParam,
 } = require('./params');
 const packageJson = require('../package.json');
-
-function getPlayer(name, cb) {
-  getUUID(name, (err, uuid) => {
-    if (err) {
-      return cb({ status: 404, message: err });
-    }
-    buildPlayer(uuid, (err, player) => {
-      if (err) {
-        return cb({ status: 500, message: err });
-      }
-      return cb(null, player);
-    });
-  });
-}
-
-function populatePlayers(players, cb) {
-  async.map(players, (player, done) => {
-    const { uuid } = player;
-    getPlayerProfile(uuid, (err, profile, isCached) => {
-      if (err) {
-        logger.error(err);
-      }
-      if (profile === null) {
-        logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
-        buildPlayer(uuid, (err, newPlayer) => {
-          delete player.uuid;
-          const profile = getPlayerFields(newPlayer);
-          profile.uuid = uuid;
-          player.profile = profile;
-          cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        });
-      } else {
-        delete player.uuid;
-        player.profile = profile;
-        if (isCached) {
-          done(err, player);
-        } else {
-          cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        }
-      }
-    });
-  }, (err, result) => {
-    cb(result);
-  });
-}
 
 const auctionObject = {
   type: 'object',
@@ -226,17 +177,22 @@ const spec = {
     },
     {
       name: 'metadata',
-      description: '',
+      description: 'Serivce metadata',
+    },
+    {
+      name: 'health',
+      description: 'Service health',
     },
   ],
   paths: {
     '/players/{playerName}': {
       get: {
+        summary: 'Get player stats by name or uuid',
+        description: 'Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.',
+        operationId: 'getPlayer',
         tags: [
           'player',
         ],
-        summary: 'Get player stats by name or uuid',
-        description: 'Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.',
         parameters: [
           playerNameParam,
           {
@@ -287,11 +243,12 @@ const spec = {
     },
     '/players/{playerName}/achievements': {
       get: {
+        summary: 'In-depth achievement stats',
+        description: 'Returns player achievement stats',
+        operationId: 'getPlayerAchievements',
         tags: [
           'player',
         ],
-        summary: 'In-depth achievement stats',
-        description: 'Returns player achievement stats',
         parameters: [
           playerNameParam,
         ],
@@ -390,11 +347,12 @@ const spec = {
     },
     '/players/{playerName}/quests': {
       get: {
+        summary: 'In-depth quest data',
+        description: 'Returns player quest completions',
+        operationId: 'getPlayerQuests',
         tags: [
           'player',
         ],
-        summary: 'In-depth quest data',
-        description: 'Returns player quest completions',
         parameters: [
           playerNameParam,
         ],
@@ -445,11 +403,12 @@ const spec = {
     },
     '/players/{playerName}/recentGames': {
       get: {
+        summary: 'Get recent games played',
+        description: 'Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.',
+        operationId: 'getPlayerRecentGames',
         tags: [
           'player',
         ],
-        summary: 'Get recent games played',
-        description: 'Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.',
         parameters: [
           playerNameParam,
         ],
@@ -507,10 +466,12 @@ const spec = {
     },
     '/guilds/{playerName}': {
       get: {
+        summary: 'Get guild stats by user\'s username or uuid',
+        description: 'Look up a guild from the name of one of it\'s members',
+        operationId: 'getGuildFromPlayer',
         tags: [
           'guild',
         ],
-        summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
           playerNameParam, populatePlayersParam,
         ],
@@ -647,23 +608,11 @@ const spec = {
         },
         route: () => '/guilds/:player',
         func: (req, res) => {
-          getUUID(req.params.player, (err, uuid) => {
+          getGuildFromPlayer(req.params.player, req.params.populatePlayers, (err, guild) => {
             if (err) {
               return res.status(404).json({ error: err });
             }
-            buildGuild(uuid, (err, guild) => {
-              if (err) {
-                return res.status(404).json({ error: err });
-              }
-              if (req.query.populatePlayers !== undefined) {
-                populatePlayers(guild.members, (players) => {
-                  guild.members = players;
-                  return res.json(guild);
-                });
-              } else {
-                return res.json(guild);
-              }
-            });
+            return res.json(guild);
           });
         },
       },
@@ -756,11 +705,12 @@ const spec = {
       */
     '/skyblock/profiles/{playerName}': {
       get: {
+        summary: 'Get list of player\'s skyblock profiles',
+        description: 'Gets all skyblock profiles for the specified player',
+        operationId: 'getSkyblockProfiles',
         tags: [
           'skyblock',
         ],
-        summary: 'Get list of player\'s skyblock profiles',
-        description: '',
         parameters: [
           playerNameParam,
         ],
@@ -825,11 +775,12 @@ const spec = {
     },
     '/skyblock/profile/{playerName}/{profileId}': {
       get: {
+        summary: 'Return a skyblock profile',
+        description: 'If no profile is specified, the last played profile is returned',
+        operationId: 'getSkyblockPlayerProfile',
         tags: [
           'skyblock',
         ],
-        summary: 'Return a skyblock profile',
-        description: 'If no profile is specified, the last played profile is returned',
         parameters: [
           playerNameParam, profileIdParam,
         ],
@@ -855,11 +806,15 @@ const spec = {
               if (err) {
                 return res.json({ error: err });
               }
-              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (players) => {
-                players.forEach((player) => {
-                  profile.members[player.profile.uuid].player = player.profile;
-                });
-                res.json(profile);
+              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (err, players) => {
+                if (err) {
+                  res.status(500).json({ error: err });
+                } else {
+                  players.forEach((player) => {
+                    profile.members[player.profile.uuid].player = player.profile;
+                  });
+                  res.json(profile);
+                }
               });
             });
           });
@@ -868,11 +823,12 @@ const spec = {
     },
     '/skyblock/auctions': {
       get: {
+        summary: 'Query all skyblock auctions',
+        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
+        operationId: 'getSkyblockAuctions',
         tags: [
           'skyblock',
         ],
-        summary: 'Query all skyblock auctions',
-        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
         parameters: [
           filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam,
           itemIdParam2, sortByParam(false), sortOrderParam,
@@ -892,7 +848,7 @@ const spec = {
         },
         route: () => '/skyblock/auctions',
         func: (req, res) => {
-          queryAuctions(req.query, (error, auctions) => {
+          getAuctions(req.query, (error, auctions) => {
             if (error) {
               return res.status(400).json({ error });
             }
@@ -903,11 +859,12 @@ const spec = {
     },
     '/skyblock/auctions/{itemId}': {
       get: {
+        summary: 'Query past skyblock auctions and their stats by item',
+        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
+        operationId: 'getSkyblockAuctionItem',
         tags: [
           'skyblock',
         ],
-        summary: 'Query past skyblock auctions and their stats by item',
-        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
         parameters: [
           itemIdParam, fromParam, toParam,
         ],
@@ -961,38 +918,10 @@ const spec = {
         },
         route: () => '/skyblock/auctions/:id',
         func: (req, res, cb) => {
-          const now = Date.now();
-          const from = req.query.from || (now - 24 * 60 * 60 * 1000);
-          const to = req.query.to || now;
-          if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
-            return cb(res.status(400).json({ error: "parameters 'from' and 'to' must be integers" }));
-          }
-          redis.zrangebyscore(req.params.id, from, to, (err, auctions) => {
+          queryAuctionId(req.query.from, req.query.to, req.params.id, (err, obj) => {
             if (err) {
-              logger.error(err);
+              return cb(res.status(404).json({ error: err }));
             }
-            const obj = {
-              average_price: 0,
-              median_price: 0,
-              standard_deviation: 0,
-              min_price: 0,
-              max_price: 0,
-              sold: 0,
-              auctions: {},
-            };
-            const priceArray = [];
-            auctions.forEach((auction) => {
-              auction = JSON.parse(auction);
-              const { bids } = auction;
-              if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
-              obj.auctions[auction.end] = auction;
-            });
-            obj.average_price = average(priceArray);
-            obj.median_price = median(priceArray);
-            obj.standard_deviation = stdDev(priceArray);
-            obj.min_price = min(priceArray);
-            obj.max_price = max(priceArray);
-            obj.sold = priceArray.length;
             return res.json(obj);
           });
         },
@@ -1000,11 +929,12 @@ const spec = {
     },
     '/skyblock/items': {
       get: {
+        summary: 'SkyBlock item spec',
+        description: 'Returns all SkyBlock items found in auctions',
+        operationId: 'getSkyblockItems',
         tags: [
           'skyblock',
         ],
-        summary: 'SkyBlock item spec',
-        description: 'Returns all SkyBlock items found in auctions',
         responses: {
           200: {
             description: 'successful operation',
@@ -1150,7 +1080,7 @@ const spec = {
                             type: 'integer',
                           },
                           sellCoins: {
-                            type: 'integer',
+                            type: 'number',
                           },
                           sellVolume: {
                             type: 'integer',
@@ -1187,11 +1117,12 @@ const spec = {
     },
     '/leaderboards': {
       get: {
+        summary: 'Allows query of dynamic leaderboards',
+        description: 'Returns player or guild leaderboards',
+        operationId: 'getLeaderboards',
         tags: [
           'leaderboards',
         ],
-        summary: 'Allows query of dynamic leaderboards',
-        description: 'Returns player or guild leaderboards',
         parameters: [
           typeParam, columnParam, sortByParam(), sortOrderParam, filterParam, limitParam, pageParam, significantParam,
         ],
@@ -1224,11 +1155,12 @@ const spec = {
     },
     '/leaderboards/{template}': {
       get: {
+        summary: 'Get predefined leaderboards',
+        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
+        operationId: 'getLeaderboardTemplate',
         tags: [
           'leaderboards',
         ],
-        summary: 'Get predefined leaderboards',
-        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
         parameters: [
           templateParam,
         ],
@@ -1261,10 +1193,12 @@ const spec = {
     },
     '/boosters': {
       get: {
+        summary: 'Get list of network boosters',
+        description: 'Returns a list of boosters for all server gamemodes',
+        operationId: 'getBoosters',
         tags: [
           'boosters',
         ],
-        summary: 'Get list of network boosters',
         responses: {
           200: {
             description: 'successful operation',
@@ -1332,10 +1266,12 @@ const spec = {
     },
     '/boosters/{game}': {
       get: {
+        summary: 'Get boosters for a specified game',
+        description: 'Returns a list of active boosters for the specified game',
+        operationsId: 'getGameBoosters',
         tags: [
           'boosters',
         ],
-        summary: 'Get boosters for a specified game',
         parameters: [
           gameNameParam,
         ],
@@ -1405,10 +1341,12 @@ const spec = {
     },
     '/bans': {
       get: {
+        summary: 'Get network ban information',
+        description: 'Returns information about the number of staff and watchdog server bans',
+        operationId: 'getBans',
         tags: [
           'bans',
         ],
-        description: 'Get watchdog and staff bans',
         responses: {
           200: {
             description: 'successful operation',
@@ -1468,6 +1406,7 @@ const spec = {
       get: {
         summary: 'GET /metadata',
         description: 'Site metadata',
+        operationId: 'getMetadata',
         tags: [
           'metadata',
         ],
@@ -1500,6 +1439,7 @@ const spec = {
       get: {
         summary: 'GET /health',
         description: 'Get service health data',
+        operationId: 'getHealth',
         tags: ['health'],
         responses: {
           200: {
@@ -1531,4 +1471,5 @@ const spec = {
     },
   },
 };
+
 module.exports = spec;

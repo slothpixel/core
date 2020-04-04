@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
+const getUUID = require('./getUUID');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cacheFunctions = require('./cacheFunctions');
@@ -93,7 +94,25 @@ function buildGuild(uuid, cb) {
   });
 }
 
-module.exports = {
-  getGuildData,
-  buildGuild,
-};
+function getGuildFromPlayer(playerName, populatePlayers, cb) {
+  getUUID(playerName, (err, uuid) => {
+    if (err) {
+      return cb(err, null);
+    }
+    buildGuild(uuid, (err, guild) => {
+      if (err) {
+        return cb(err, null);
+      }
+      if (populatePlayers !== undefined) {
+        populatePlayers(guild.members, (players) => {
+          guild.members = players;
+          return cb(null, guild);
+        });
+      } else {
+        return cb(null, guild);
+      }
+    });
+  });
+}
+
+module.exports = { getGuildFromPlayer, getGuildData };

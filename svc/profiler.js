@@ -5,7 +5,7 @@ const async = require('async');
 const { logger, invokeInterval } = require('../util/utility');
 const { getPlayers, getGuilds, bulkWrite } = require('../store/queries');
 const { getGuildData } = require('../store/buildGuild');
-const buildPlayer = require('../store/buildPlayer');
+const { buildPlayer } = require('../store/buildPlayer');
 
 function updatePlayers(cb) {
   const now = Date.now();

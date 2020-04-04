@@ -6,7 +6,7 @@ const async = require('async');
 const redis = require('./redis');
 const processSkyBlock = require('../processors/processSkyBlock');
 const cacheFunctions = require('./cacheFunctions');
-// const buildPlayer = require('../store/buildPlayer');
+// const { buildPlayer } = require('../store/buildPlayer');
 const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 

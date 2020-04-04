@@ -1,5 +1,6 @@
 const express = require('express');
 const spec = require('./spec');
+const graphql = require('./graphql');
 
 const api = new express.Router();
 
@@ -18,5 +19,8 @@ Object.keys(spec.paths).forEach((path) => {
     api[verb](route(), func);
   });
 });
+
+// API GraphQL endpoint
+api.use('/graphql', graphql);
 
 module.exports = api;

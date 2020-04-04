@@ -160,7 +160,7 @@ module.exports = {
     },
   },
   itemIdParam: {
-    name: 'ItemId',
+    name: 'itemId',
     in: 'path',
     description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
     required: true,
@@ -190,7 +190,7 @@ module.exports = {
     name: 'profileId',
     in: 'path',
     description: 'SkyBlock profile id e.g. \'498228a732d443589aabd1e97e6806cd\' or profile name e.g. \'Mango\'. Note: profile name can be different (although unlikely) for different members of a co-op!',
-    required: false,
+    required: true,
     schema: {
       type: 'string',
     },

@@ -466,6 +466,8 @@ function invokeInterval(func, delay) {
  * Finds the max of the input array
  * */
 function max(array) {
+  if (array.length === 0) return null;
+
   return Math.max.apply(null, array);
 }
 
@@ -473,6 +475,8 @@ function max(array) {
  * Finds the min of the input array
  * */
 function min(array) {
+  if (array.length === 0) return null;
+
   return Math.min.apply(null, array);
 }
 
@@ -480,16 +484,24 @@ function min(array) {
  * Finds the arithmetic mean of the input array
  * */
 function average(data) {
-  return Math.floor((data.reduce(
+  if (data.length === 0) return null;
+
+  const num = Math.floor((data.reduce(
     (a, b) => a + b,
     0,
   ) / data.length));
+
+  if (Number.isNaN(num) || !Number.isFinite(num)) return null;
+
+  return num;
 }
 
 /**
  * Finds the standard deviation of the input array
  * */
 function stdDev(data) {
+  if (data.length === 0) return null;
+
   const avg = average(data);
   const squareDiffs = data.map((value) => {
     const diff = value - avg;
@@ -505,6 +517,8 @@ function stdDev(data) {
  * Finds the median of the input array
  * */
 function median(data) {
+  if (data.length === 0) return null;
+
   data.sort((a, b) => a - b);
   const half = Math.floor(data.length / 2);
   if (data.length % 2) {
