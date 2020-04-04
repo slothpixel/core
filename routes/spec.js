@@ -15,6 +15,7 @@ const { cachePlayerProfile, getPlayerProfile, getMetadata } = require('../store/
 const {
   logger, generateJob, getData, typeToStandardName, getPlayerFields, min, max, median, average, stdDev,
 } = require('../util/utility');
+const parseTimestamp = require('../util/readableTimestamps');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
@@ -962,8 +963,8 @@ const spec = {
         route: () => '/skyblock/auctions/:id',
         func: (req, res, cb) => {
           const now = Date.now();
-          const from = req.query.from || (now - 24 * 60 * 60 * 1000);
-          const to = req.query.to || now;
+          const from = parseTimestamp(req.query.from) || (now - 24 * 60 * 60 * 1000);
+          const to = parseTimestamp(req.query.to) || now;
           if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
             return cb(res.status(400).json({ error: "parameters 'from' and 'to' must be integers" }));
           }
