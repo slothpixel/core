@@ -1080,7 +1080,7 @@ const spec = {
                             type: 'integer',
                           },
                           sellCoins: {
-                            type: 'integer',
+                            type: 'number',
                           },
                           sellVolume: {
                             type: 'integer',

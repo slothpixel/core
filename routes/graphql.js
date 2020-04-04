@@ -7,6 +7,7 @@ const graphqlExpress = require('express-graphql');
 const { buildSchema } = require('graphql');
 const { game_types: gameTypes } = require('hypixelconstants');
 const { getPlayer, populatePlayers } = require('../store/buildPlayer');
+const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
@@ -31,6 +32,7 @@ const getAuctionsAsync = promisify(getAuctions);
 const queryAuctionIdAsync = promisify(queryAuctionId);
 const getDataAsync = promisify(getData);
 const getMetadataAsync = promisify(getMetadata);
+const buildBazaarAsync = promisify(buildBazaar);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
 
@@ -120,6 +122,15 @@ class SkyblockResolver {
     });
 
     return profile;
+  }
+
+  async bazaar({ item_id }) {
+    const resp = await redisGetAsync('skyblock_bazaar');
+    const ids = JSON.parse(resp) || [];
+    if (!ids.includes(item_id)) {
+      throw new Error('Invalid item_id');
+    }
+    return buildBazaarAsync(item_id);
   }
 }
 

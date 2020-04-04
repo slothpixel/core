@@ -273,6 +273,19 @@ type SkyblockQuery {
     """
     profile_id: String!
   ): JSON
+
+  """
+  Get bazaar data for an item bu ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint.
+  
+  Equivalent to GET /skyblock/bazaar/{itemId}
+  """
+  bazaar(
+    """
+    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
+    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
+    """
+    item_id: String!
+  ): SkyblockBazaar
 }
 
 """
@@ -969,6 +982,12 @@ type BuildBattle {
   Wins in Teams Mode
   """
   wins_teams_normal: Int
+}
+
+type Buy_summaryListItem {
+  amount: Int
+  orders: Int
+  pricePerUnit: Float
 }
 
 """
@@ -2256,6 +2275,17 @@ type PlayerRecentGamesListItem {
   mode: String
 }
 
+type Quick_status {
+  buyMovingWeek: Int
+  buyOrders: Int
+  buyPrice: Float
+  buyVolume: Int
+  sellMovingWeek: Int
+  sellOrders: Int
+  sellPrice: Float
+  sellVolume: Int
+}
+
 type RanksListItem {
   created: Float
   default: Boolean
@@ -2445,6 +2475,12 @@ type Selected_cosmetics {
   smg: String
 }
 
+type Sell_summaryListItem {
+  amount: Int
+  orders: Int
+  pricePerUnit: Float
+}
+
 """
 Current settings in Blitz Survival Games
 """
@@ -2588,6 +2624,13 @@ type SkyblockAuctionsListItem {
   Auction uuid
   """
   uuid: String
+}
+
+type SkyblockBazaar {
+  buy_summary: [Buy_summaryListItem]
+  quick_status: Quick_status
+  sell_summary: [Sell_summaryListItem]
+  week_historic: [Week_historicListItem]
 }
 
 """
@@ -2973,6 +3016,18 @@ type Watchdog {
   Total Watchdog bans, ever
   """
   total: Int
+}
+
+type Week_historicListItem {
+  buyCoins: Float
+  buyVolume: Int
+  buys: Int
+  nowBuyVolume: Int
+  nowSellVolume: Int
+  sellCoins: Float
+  sellVolume: Int
+  sells: Int
+  timestamp: Float
 }
 
 """
