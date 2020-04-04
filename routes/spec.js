@@ -17,7 +17,7 @@ const {
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
-  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, itemIdParam2,
+  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
   profileIdParam,
 } = require('./params');
@@ -200,6 +200,7 @@ const spec = {
             in: 'query',
             description: 'A comma separated list of fields to include alongside basic stats.',
             required: false,
+            deprecated: true,
             schema: {
               type: 'string',
             },
@@ -830,8 +831,24 @@ const spec = {
           'skyblock',
         ],
         parameters: [
-          filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam,
-          itemIdParam2, sortByParam(false), sortOrderParam,
+          filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam, sortOrderParam, {
+            name: 'sortBy',
+            in: 'query',
+            description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+          },
+          {
+            name: 'id',
+            in: 'query',
+            description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
+            required: false,
+            schema: {
+              type: 'string',
+            },
+          },
         ],
         responses: {
           200: {
@@ -1124,7 +1141,7 @@ const spec = {
           'leaderboards',
         ],
         parameters: [
-          typeParam, columnParam, sortByParam(), sortOrderParam, filterParam, limitParam, pageParam, significantParam,
+          typeParam, columnParam, sortByParam, sortOrderParam, filterParam, limitParam, pageParam, significantParam,
         ],
         responses: {
           200: {

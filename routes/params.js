@@ -67,15 +67,15 @@ module.exports = {
       type: 'string',
     },
   },
-  sortByParam: (required = true) => ({
+  sortByParam: {
     name: 'sortBy',
     in: 'query',
     description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
-    required,
+    required: true,
     schema: {
       type: 'string',
     },
-  }),
+  },
   sortOrderParam: {
     name: 'sortOrder',
     in: 'query',
@@ -148,15 +148,6 @@ module.exports = {
     required: false,
     schema: {
       type: 'integer',
-    },
-  },
-  itemIdParam2: {
-    name: 'id',
-    in: 'query',
-    description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
-    required: false,
-    schema: {
-      type: 'string',
     },
   },
   itemIdParam: {
