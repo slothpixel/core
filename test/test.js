@@ -77,7 +77,8 @@ describe('api', () => {
       return async.eachSeries(Object.keys(spec.paths), (path, cb) => {
         const replacedPath = path
           .replace(/{playerName}/, 'builder_247')
-          .replace(/{game}/, 'SkyWars');
+          .replace(/{game}/, 'SkyWars')
+          .replace(/{resource}/, 'languages');
         async.eachSeries(Object.keys(spec.paths[path]), (verb, cb) => {
           if (path.indexOf('/leaderboards') === 0 || path.indexOf('/sessions') === 0 || path.indexOf('/bans') === 0 || path.endsWith('/recentGames') || path.indexOf('/bazaar') !== -1) {
             return cb(err);
