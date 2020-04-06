@@ -63,7 +63,7 @@ function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
       return cb(err);
     }
     let profile_id = id;
-    let profiles;
+    let profiles = {};
     if (res) {
       profiles = JSON.parse(res);
       // If no id is specified, use last played profile
@@ -92,7 +92,7 @@ function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
         }
         if (shouldUpdateProfileList) {
           profiles[profile_id] = getStats(profile.members[uuid] || {}, profile.members);
-          updateProfileList(key, profiles);
+          updateProfileList(`skyblock_profiles:${uuid}`, profiles);
         }
         cacheProfile(key, profile, (profile) => cb(null, profile || {}));
       });
