@@ -36,12 +36,25 @@ function getLatestProfile(profiles) {
 }
 
 function updateProfileList(key, profiles) {
-  logger.debug('Executing updateProfileList');
   redis.set(key, JSON.stringify(profiles), (err) => {
     if (err) {
       logger.error(err);
     }
   });
+}
+
+// Destruct some properties from profiles for overview
+function getStats({
+  first_join = null,
+  last_save = null,
+  collections_unlocked = 0,
+}, members = {}) {
+  return {
+    first_join,
+    last_save,
+    collections_unlocked,
+    members: Object.keys(members),
+  };
 }
 
 function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
@@ -78,6 +91,7 @@ function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
           return cb(err);
         }
         if (shouldUpdateProfileList) {
+          profiles[profile_id] = getStats(profile.members[uuid] || {}, profile.members);
           updateProfileList(key, profiles);
         }
         cacheProfile(key, profile, (profile) => cb(null, profile || {}));
@@ -86,19 +100,6 @@ function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
   });
 }
 
-// Destruct some properties from profiles for overview
-function getStats({
-  first_join = null,
-  last_save = null,
-  collections_unlocked = 0,
-}, members = {}) {
-  return {
-    first_join,
-    last_save,
-    collections_unlocked,
-    members: Object.keys(members),
-  };
-}
 /*
 * Create or update list of profiles
  */
