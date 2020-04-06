@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const async = require('async');
+const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const buildBazaar = require('../store/buildBazaar');
@@ -1416,6 +1417,31 @@ const spec = {
             }
             return res.json(bans);
           });
+        },
+      },
+    },
+    '/constants/{resource}': {
+      get: {
+        summary: 'GET /constants',
+        description: 'Get static game data mirrored from the hypixelconstants repository. If no resource is specified, returns an array of available resources.',
+        tags: ['constants'],
+        parameters: [{
+          name: 'resource',
+          in: 'path',
+          description: 'Resource name e.g. `languages`. [List of resources](https://github.com/slothpixel/hypixelconstants/tree/master/build)',
+          required: false,
+          type: 'string',
+        }],
+        route: () => '/constants/:resource?',
+        func: (req, res, cb) => {
+          if (!req.params.resource) {
+            return res.json(Object.keys(constants));
+          }
+          const { resource } = req.params;
+          if (resource in constants) {
+            return res.json(constants[resource]);
+          }
+          return cb();
         },
       },
     },
