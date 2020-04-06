@@ -35,14 +35,24 @@ function getLatestProfile(profiles) {
   return Object.entries(profiles).sort((a, b) => a[1].last_save - b[1].last_save)[0];
 }
 
-function buildProfile(uuid, id = null, cb) {
+function updateProfileList(key, profiles) {
+  logger.debug('Executing updateProfileList');
+  redis.set(key, JSON.stringify(profiles), (err) => {
+    if (err) {
+      logger.error(err);
+    }
+  });
+}
+
+function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
   redis.get(`skyblock_profiles:${uuid}`, (err, res) => {
     if (err) {
       return cb(err);
     }
     let profile_id = id;
+    let profiles;
     if (res) {
-      const profiles = JSON.parse(res);
+      profiles = JSON.parse(res);
       // If no id is specified, use last played profile
       if (id === null) {
         [profile_id] = getLatestProfile(profiles);
@@ -66,6 +76,9 @@ function buildProfile(uuid, id = null, cb) {
       getProfileData(profile_id, (err, profile) => {
         if (err) {
           return cb(err);
+        }
+        if (shouldUpdateProfileList) {
+          updateProfileList(key, profiles);
         }
         cacheProfile(key, profile, (profile) => cb(null, profile || {}));
       });
@@ -100,15 +113,11 @@ function buildProfileList(uuid, profiles = {}) {
     const updateQueue = Object.keys(profiles).filter((id) => !(id in p));
     if (updateQueue.length === 0) return;
     async.each(updateQueue, (id, cb) => {
-      buildProfile(uuid, id, (err, profile) => {
+      buildProfile(uuid, id, false, (err, profile) => {
         p[id] = Object.assign(profiles[id], getStats(profile.members[uuid] || {}, profile.members));
         cb();
       });
-    }, () => redis.set(key, JSON.stringify(p), (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    }));
+    }, () => updateProfileList(key, p));
   });
 }
 

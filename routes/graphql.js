@@ -114,7 +114,7 @@ class SkyblockResolver {
 
   async profile({ player_name, profile_id }) {
     const uuid = await getUUIDAsync(player_name);
-    const profile = await buildProfileAsync(uuid, profile_id);
+    const profile = await buildProfileAsync(uuid, profile_id, true);
     const players = await populatePlayersAsync(Object.keys(profile.members).map((uuid) => ({ uuid })));
 
     players.forEach((player) => {

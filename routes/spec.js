@@ -804,7 +804,7 @@ const spec = {
             if (err) {
               return res.status(404).json({ error: err });
             }
-            buildProfile(uuid, req.params.profile, (err, profile) => {
+            buildProfile(uuid, req.params.profile, true, (err, profile) => {
               if (err) {
                 return res.json({ error: err });
               }
