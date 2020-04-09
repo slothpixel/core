@@ -5,6 +5,7 @@ const getUUID = require('./getUUID');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cacheFunctions = require('./cacheFunctions');
+const { populatePlayers } = require('./buildPlayer');
 const { insertGuild, getGuildByPlayer, removeGuild } = require('./queries');
 
 /*
@@ -94,7 +95,7 @@ function buildGuild(uuid, cb) {
   });
 }
 
-function getGuildFromPlayer(playerName, populatePlayers, cb) {
+function getGuildFromPlayer(playerName, shouldPopulatePlayers, cb) {
   getUUID(playerName, (err, uuid) => {
     if (err) {
       return cb(err, null);
@@ -103,8 +104,11 @@ function getGuildFromPlayer(playerName, populatePlayers, cb) {
       if (err) {
         return cb(err, null);
       }
-      if (populatePlayers !== undefined) {
-        populatePlayers(guild.members, (players) => {
+      if (shouldPopulatePlayers !== undefined) {
+        populatePlayers(guild.members, (err, players) => {
+          if (err) {
+            return cb(err, null);
+          }
           guild.members = players;
           return cb(null, guild);
         });

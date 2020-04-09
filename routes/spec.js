@@ -610,7 +610,7 @@ const spec = {
         },
         route: () => '/guilds/:player',
         func: (req, res) => {
-          getGuildFromPlayer(req.params.player, req.params.populatePlayers, (err, guild) => {
+          getGuildFromPlayer(req.params.player, req.query.populatePlayers, (err, guild) => {
             if (err) {
               return res.status(404).json({ error: err });
             }
