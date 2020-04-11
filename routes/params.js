@@ -171,19 +171,21 @@ module.exports = {
   fromParam: {
     name: 'from',
     in: 'query',
-    description: 'Date from which to get auctions. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is from past 24 hours.',
+    description: 'Date from which to get auctions. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
+    default: 'now-d',
     required: false,
     schema: {
-      type: 'integer',
+      type: 'string',
     },
   },
   toParam: {
     name: 'to',
     in: 'query',
-    description: 'Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.',
+    description: 'Date to get auctions until to. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to reference the date 3 hours ago, use `now-3h`',
+    default: 'now',
     required: false,
     schema: {
-      type: 'integer',
+      type: 'string',
     },
   },
   profileIdParam: {
