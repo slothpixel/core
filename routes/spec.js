@@ -143,7 +143,11 @@ const spec = {
     },
   ],
   info: {
-    description: 'The Slothpixel API provides Hypixel related data.\n',
+    description: `
+The Slothpixel API provides Hypixel related data.
+
+Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
+    `,
     version: packageJson.version,
     title: 'Slothpixel API',
     license: {
