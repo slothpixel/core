@@ -94,6 +94,7 @@ function processStats({
 async function processMember({
   last_save = null,
   first_join = null,
+  pets = [],
   stats = {},
   coin_purse = 0,
   crafted_generators = [],
@@ -159,6 +160,7 @@ async function processMember({
     potion_bag: await getInventory(potion_bag),
     talisman_bag: await getInventory(talisman_bag),
     quiver: await getInventory(quiver),
+    pets,
     skills,
     collection,
     collection_tiers,
