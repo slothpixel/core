@@ -32,7 +32,7 @@ function getProfileData(id, cb) {
 }
 
 function getLatestProfile(profiles) {
-  return Object.entries(profiles).sort((a, b) => a[1].last_save - b[1].last_save)[0];
+  return Object.entries(profiles).sort((a, b) => b[1].last_save - a[1].last_save)[0];
 }
 
 function updateProfileList(key, profiles) {
