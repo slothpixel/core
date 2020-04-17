@@ -194,7 +194,7 @@ function processPlayerData({
         voting: {
           votes_today: votesToday,
           total_votes: total,
-          last_vote: last_vote,
+          last_vote,
         },
         links: Object.assign(defaultLinks, links),
         stats: statsObject,
