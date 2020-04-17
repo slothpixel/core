@@ -6,7 +6,7 @@ const async = require('async');
 const redis = require('./redis');
 const processSkyBlock = require('../processors/processSkyBlock');
 const cacheFunctions = require('./cacheFunctions');
-// const buildPlayer = require('../store/buildPlayer');
+// const { buildPlayer } = require('../store/buildPlayer');
 const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 
@@ -32,17 +32,40 @@ function getProfileData(id, cb) {
 }
 
 function getLatestProfile(profiles) {
-  return Object.entries(profiles).sort((a, b) => a[1].last_save - b[1].last_save)[0];
+  return Object.entries(profiles).sort((a, b) => b[1].last_save - a[1].last_save)[0];
 }
 
-function buildProfile(uuid, id = null, cb) {
+function updateProfileList(key, profiles) {
+  redis.set(key, JSON.stringify(profiles), (err) => {
+    if (err) {
+      logger.error(err);
+    }
+  });
+}
+
+// Destruct some properties from profiles for overview
+function getStats({
+  first_join = null,
+  last_save = null,
+  collections_unlocked = 0,
+}, members = {}) {
+  return {
+    first_join,
+    last_save,
+    collections_unlocked,
+    members: Object.keys(members),
+  };
+}
+
+function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
   redis.get(`skyblock_profiles:${uuid}`, (err, res) => {
     if (err) {
       return cb(err);
     }
     let profile_id = id;
+    let profiles = {};
     if (res) {
-      const profiles = JSON.parse(res);
+      profiles = JSON.parse(res);
       // If no id is specified, use last played profile
       if (id === null) {
         [profile_id] = getLatestProfile(profiles);
@@ -67,25 +90,16 @@ function buildProfile(uuid, id = null, cb) {
         if (err) {
           return cb(err);
         }
+        if (shouldUpdateProfileList) {
+          profiles[profile_id] = Object.assign(profiles[profile_id], getStats(profile.members[uuid] || {}, profile.members));
+          updateProfileList(`skyblock_profiles:${uuid}`, profiles);
+        }
         cacheProfile(key, profile, (profile) => cb(null, profile || {}));
       });
     });
   });
 }
 
-// Destruct some properties from profiles for overview
-function getStats({
-  first_join = null,
-  last_save = null,
-  collections_unlocked = 0,
-}, members = {}) {
-  return {
-    first_join,
-    last_save,
-    collections_unlocked,
-    members: Object.keys(members),
-  };
-}
 /*
 * Create or update list of profiles
  */
@@ -100,15 +114,11 @@ function buildProfileList(uuid, profiles = {}) {
     const updateQueue = Object.keys(profiles).filter((id) => !(id in p));
     if (updateQueue.length === 0) return;
     async.each(updateQueue, (id, cb) => {
-      buildProfile(uuid, id, (err, profile) => {
+      buildProfile(uuid, id, false, (err, profile) => {
         p[id] = Object.assign(profiles[id], getStats(profile.members[uuid] || {}, profile.members));
         cb();
       });
-    }, () => redis.set(key, JSON.stringify(p), (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    }));
+    }, () => updateProfileList(key, p));
   });
 }
 

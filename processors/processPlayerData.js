@@ -56,6 +56,7 @@ function processPlayerData({
   achievements,
   achievementsOneTime,
   achievementRewardsNew = {},
+  achievementTracking = [],
   quests = {},
   challenges = {},
   displayname = null,
@@ -85,7 +86,9 @@ function processPlayerData({
   stats = {},
 }, cb) {
   const achievementPromise = new Promise((resolve) => {
-    resolve(parseAchievements(achievementsOneTime, achievements, achievementRewardsNew));
+    resolve(parseAchievements({
+      oneTime: achievementsOneTime, tiered: achievements, tracked: achievementTracking, rewards: achievementRewardsNew,
+    }));
   });
   const questPromise = new Promise((resolve) => {
     resolve(parseQuests(quests, challenges));

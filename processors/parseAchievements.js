@@ -6,7 +6,12 @@ const { achievements } = constants.achievements;
 /*
 * This function parses player achievements into an object containing all achievement related data.
  */
-function parseAchievements(oneTime = [], tiered = {}, rewards) {
+function parseAchievements({
+  oneTime = [],
+  tiered = {},
+  tracked,
+  rewards,
+}) {
   const startTime = Date.now();
   function getAchievementProperties(a) {
     const split = a.split('_');
@@ -102,6 +107,7 @@ function parseAchievements(oneTime = [], tiered = {}, rewards) {
   });
   obj.completed_total = obj.completed_one_time + obj.completed_tiered;
   obj.games = gameObj;
+  obj.tracked = tracked;
   const rewardsObj = {};
   Object.keys(rewards).forEach((key) => {
     const value = key.split('_').pop();

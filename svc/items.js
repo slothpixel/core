@@ -58,29 +58,36 @@ async function doItems(cb) {
         cb(err);
       }
       const items = JSON.parse(res) || {};
-      ids = ids.filter((id) => !(id in items));
-      logger.info(`${ids.length} IDs aren't currently included`);
+      const newIds = ids.filter((id) => !(id in items));
+      logger.info(`${newIds.length} IDs aren't currently included`);
       let counter = 0;
       async.each(ids, (id, cb) => {
-        getAuctions({
-          'item.attributes.id': id,
-          'item.attributes.modifier': null,
-          'item.name': { $ne: '§fnull' },
-        }, 'tier category item', { limit: 1 }, (err, auction) => {
-          if (err) {
-            return cb(err);
-          }
-          if (auction.length === 0) return cb();
-          counter += 1;
-          items[id] = schemaObject(auction[0]);
-          if (items[id] && items[id].texture === null) {
-            delete items[id].texture;
-          }
+        if (!(id in items)) {
+          getAuctions({
+            'item.attributes.id': id,
+            'item.attributes.modifier': null,
+            'item.name': { $ne: '§fnull' },
+          }, 'tier category item', { limit: 1 }, (err, auction) => {
+            if (err) {
+              return cb(err);
+            }
+            if (auction.length === 0) return cb();
+            counter += 1;
+            items[id] = schemaObject(auction[0]);
+            if (bazaarProducts.includes(id)) {
+              items[id].bazaar = true;
+            }
+            if (items[id] && items[id].texture === null) {
+              delete items[id].texture;
+            }
+            return cb();
+          });
+        } else {
           if (bazaarProducts.includes(id)) {
             items[id].bazaar = true;
           }
           return cb();
-        });
+        }
       }, (err) => {
         if (err) {
           return cb(err);

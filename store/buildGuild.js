@@ -1,9 +1,11 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
+const getUUID = require('./getUUID');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cacheFunctions = require('./cacheFunctions');
+const { populatePlayers } = require('./buildPlayer');
 const { insertGuild, getGuildByPlayer, removeGuild } = require('./queries');
 
 /*
@@ -93,7 +95,28 @@ function buildGuild(uuid, cb) {
   });
 }
 
-module.exports = {
-  getGuildData,
-  buildGuild,
-};
+function getGuildFromPlayer(playerName, shouldPopulatePlayers, cb) {
+  getUUID(playerName, (err, uuid) => {
+    if (err) {
+      return cb(err, null);
+    }
+    buildGuild(uuid, (err, guild) => {
+      if (err) {
+        return cb(err, null);
+      }
+      if (shouldPopulatePlayers !== undefined) {
+        populatePlayers(guild.members, (err, players) => {
+          if (err) {
+            return cb(err, null);
+          }
+          guild.members = players;
+          return cb(null, guild);
+        });
+      } else {
+        return cb(null, guild);
+      }
+    });
+  });
+}
+
+module.exports = { getGuildFromPlayer, getGuildData };

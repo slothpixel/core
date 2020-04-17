@@ -4,8 +4,13 @@
  */
 const config = require('../config');
 const cacheFunctions = require('./cacheFunctions');
+const redis = require('./redis');
 const { logger } = require('../util/utility');
 const { Auction } = require('./models');
+const {
+  min, max, median, average, stdDev,
+} = require('../util/utility');
+const parseTimestamp = require('../util/readableTimestamps');
 
 function cacheAuctions(auctions, key, cb) {
   if (config.ENABLE_AUCTION_CACHE) {
@@ -107,4 +112,50 @@ function getAuctions(query, cb) {
   });
 }
 
-module.exports = getAuctions;
+function queryAuctionId(from, to, itemId, cb) {
+  const now = Date.now();
+  from = from || (now - 24 * 60 * 60 * 1000);
+  to = to || now;
+
+  if (typeof from === 'string') {
+    from = parseTimestamp(from);
+  }
+
+  if (typeof to === 'string') {
+    to = parseTimestamp(to);
+  }
+
+  if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
+    return cb({ error: "parameters 'from' and 'to' must be integers" });
+  }
+  redis.zrangebyscore(itemId, from, to, (err, auctions) => {
+    if (err) {
+      logger.error(err);
+    }
+    const obj = {
+      average_price: 0,
+      median_price: 0,
+      standard_deviation: 0,
+      min_price: 0,
+      max_price: 0,
+      sold: 0,
+      auctions: {},
+    };
+    const priceArray = [];
+    auctions.forEach((auction) => {
+      auction = JSON.parse(auction);
+      const { bids } = auction;
+      if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
+      obj.auctions[auction.end] = auction;
+    });
+    obj.average_price = average(priceArray);
+    obj.median_price = median(priceArray);
+    obj.standard_deviation = stdDev(priceArray);
+    obj.min_price = min(priceArray);
+    obj.max_price = max(priceArray);
+    obj.sold = priceArray.length;
+    return cb(null, obj);
+  });
+}
+
+module.exports = { getAuctions, queryAuctionId };

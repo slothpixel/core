@@ -251,7 +251,7 @@ const playerObject = {
                   type: 'integer',
                 },
                 arrows_shot: {
-                  description: 'The number of arrows shot in Mini Walls',
+                  description: 'The Amount of arrows shot in Mini Walls',
                   type: 'integer',
                 },
                 arrows_hit: {
@@ -268,7 +268,7 @@ const playerObject = {
                 },
                 kit: {
                   description: 'Active kit',
-                  type: 'any',
+                  type: 'string',
                 },
               },
             },
@@ -333,7 +333,7 @@ const playerObject = {
                   type: 'integer',
                 },
                 shots_fired: {
-                  description: 'The number of shots fired in Galaxy Wars',
+                  description: 'The Amount of shots fired in Galaxy Wars',
                   type: 'integer',
                 },
               },
@@ -473,7 +473,7 @@ const playerObject = {
               type: 'integer',
             },
             keys: {
-              description: 'Current number of Magical Chest keys',
+              description: 'Current Amount of Magical Chest keys',
               type: 'integer',
             },
             selected_sword: {
@@ -750,7 +750,7 @@ const playerObject = {
               type: 'integer',
             },
             deaths: {
-              description: 'Total number of deaths',
+              description: 'Total Amount of deaths',
               type: 'integer',
             },
             k_d: {
@@ -762,11 +762,11 @@ const playerObject = {
               type: 'number',
             },
             beds_broken: {
-              description: 'Total number of beds broken',
+              description: 'Total Amount of beds broken',
               type: 'integer',
             },
             beds_lost: {
-              description: 'Total number of beds lost',
+              description: 'Total Amount of beds lost',
               type: 'integer',
             },
             bed_ratio: {
@@ -774,23 +774,23 @@ const playerObject = {
               type: 'number',
             },
             final_kills: {
-              description: 'Total number of final kills',
+              description: 'Total Amount of final kills',
               type: 'integer',
             },
             final_deaths: {
-              description: 'Total number of final deaths',
+              description: 'Total Amount of final deaths',
               type: 'integer',
             },
             final_k_d: {
-              description: 'Total number of final deaths',
+              description: 'Total Amount of final deaths',
               type: 'number',
             },
             void_kills: {
-              description: 'Total number of final deaths',
+              description: 'Total Amount of final deaths',
               type: 'integer',
             },
             void_deaths: {
-              description: 'Total number of final deaths',
+              description: 'Total Amount of final deaths',
               type: 'integer',
             },
             winstreak: {
@@ -832,19 +832,19 @@ const playerObject = {
               type: 'object',
               properties: {
                 iron: {
-                  description: 'Total number of iron collected from generators',
+                  description: 'Total Amount of iron collected from generators',
                   type: 'integer',
                 },
                 gold: {
-                  description: 'Total number of gold collected from generators',
+                  description: 'Total Amount of gold collected from generators',
                   type: 'integer',
                 },
                 diamond: {
-                  description: 'Total number of diamonds collected from generators',
+                  description: 'Total Amount of diamonds collected from generators',
                   type: 'integer',
                 },
                 emerald: {
-                  description: 'Total number of emeralds collected from generators',
+                  description: 'Total Amount of emeralds collected from generators',
                   type: 'integer',
                 },
               },
@@ -911,6 +911,10 @@ const playerObject = {
             loadout: {
               description: 'Custom Hotbar loadout',
               type: 'array',
+              items: {
+                description: 'Hotbar slot loadout',
+                type: 'string',
+              },
             },
             selected_hat: {
               description: 'Currently selected hat cosmetic',
@@ -1263,11 +1267,11 @@ const playerObject = {
               type: 'integer',
             },
             blitz_uses: {
-              description: 'Total number of Blitz Stars used in Blitz Survival Games',
+              description: 'Total Amount of Blitz Stars used in Blitz Survival Games',
               type: 'integer',
             },
             chests_opened: {
-              description: 'Total number of chests opened in Blitz Survival Games',
+              description: 'Total Amount of chests opened in Blitz Survival Games',
               type: 'integer',
             },
             kits_levels: {
@@ -1429,260 +1433,260 @@ const playerObject = {
                   type: 'integer',
                 },
               },
-              deathmatch: {
-                description: 'Current player stats in CvC Deathmatch',
-                type: 'object',
-                properties: {
-                  kills: {
-                    description: 'Total kills in CvC Deathmatch',
-                    type: 'integer',
-                  },
-                  deaths: {
-                    description: 'Total deaths in CvC Deathmatch',
-                    type: 'integer',
-                  },
-                  kd: {
-                    description: 'Current kill/death ratio in CvC Deathmatch',
-                    type: 'number',
-                  },
-                  wins: {
-                    description: 'Total wins in CvC Deathmatch',
-                    type: 'integer',
-                  },
-                  cop_kills: {
-                    description: 'Total cops killed in CvC Deathmatch',
-                    type: 'integer',
-                  },
-                  criminal_kills: {
-                    description: 'Total criminals killed in CvC Deathmatch',
-                    type: 'integer',
-                  },
+            },
+            deathmatch: {
+              description: 'Current player stats in CvC Deathmatch',
+              type: 'object',
+              properties: {
+                kills: {
+                  description: 'Total kills in CvC Deathmatch',
+                  type: 'integer',
+                },
+                deaths: {
+                  description: 'Total deaths in CvC Deathmatch',
+                  type: 'integer',
+                },
+                kd: {
+                  description: 'Current kill/death ratio in CvC Deathmatch',
+                  type: 'number',
+                },
+                wins: {
+                  description: 'Total wins in CvC Deathmatch',
+                  type: 'integer',
+                },
+                cop_kills: {
+                  description: 'Total cops killed in CvC Deathmatch',
+                  type: 'integer',
+                },
+                criminal_kills: {
+                  description: 'Total criminals killed in CvC Deathmatch',
+                  type: 'integer',
                 },
               },
-              perks: {
-                description: 'Currently purchased perks and upgrades for Cops vs Crims',
-                type: 'object',
-                properties: {
-                  player: {
-                    description: 'Character upgrades',
-                    type: 'object',
-                    properties: {
-                      body_armor_cost: {
-                        description: 'Current progression of Body Armor Cost upgrade',
-                        type: 'integer',
-                      },
-                      bounty_hunter: {
-                        description: 'Current progression of Bounty Hunter upgrade',
-                        type: 'integer',
-                      },
-                      pocket_change: {
-                        description: 'Current progression of Pocket Change upgrade',
-                        type: 'integer',
-                      },
-                      strength_training: {
-                        description: 'Current progression of Strength Training upgrade',
-                        type: 'integer',
-                      },
+            },
+            perks: {
+              description: 'Currently purchased perks and upgrades for Cops vs Crims',
+              type: 'object',
+              properties: {
+                player: {
+                  description: 'Character upgrades',
+                  type: 'object',
+                  properties: {
+                    body_armor_cost: {
+                      description: 'Current progression of Body Armor Cost upgrade',
+                      type: 'integer',
                     },
-                  },
-                  carbine: {
-                    description: 'Carbine Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      cost_reduction: {
-                        description: 'Current progression of the Carbine\'s Cost Reduction upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the Carbine\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      recoil_reduction: {
-                        description: 'Current progression of the Carbine\'s Recoil Reduction upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the Carbine\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
+                    bounty_hunter: {
+                      description: 'Current progression of Bounty Hunter upgrade',
+                      type: 'integer',
                     },
-                  },
-                  knife: {
-                    description: 'Knife Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      attack_delay: {
-                        description: 'Current progression of the Knife\'s Attack Delay upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the Knife\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
+                    pocket_change: {
+                      description: 'Current progression of Pocket Change upgrade',
+                      type: 'integer',
                     },
-                  },
-                  magnum: {
-                    description: 'Magnum Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      cost_reduction: {
-                        description: 'Current progression of the Magnum\'s Cost Reduction upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the Magnum\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      recoil_reduction: {
-                        description: 'Current progression of the Magnum\'s Recoil Reduction upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the Magnum\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
-                    },
-                  },
-                  pistol: {
-                    description: 'Pistol Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      damage_increase: {
-                        description: 'Current progression of the Pistol\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      recoil_reduction: {
-                        description: 'Current progression of the Pistol\'s Recoil Reduction upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the Pistol\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
-                    },
-                  },
-                  rifle: {
-                    description: 'Rifle Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      cost_reduction: {
-                        description: 'Current progression of the Rifle\'s Cost Reduction upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the Rifle\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      recoil_reduction: {
-                        description: 'Current progression of the Rifle\'s Recoil Reduction upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the Rifle\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
-                    },
-                  },
-                  shotgun: {
-                    description: 'Shotgun Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      cost_reduction: {
-                        description: 'Current progression of the Shotgun\'s Cost Reduction upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the Shotgun\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      recoil_reduction: {
-                        description: 'Current progression of the Shotgun\'s Recoil Reduction upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the Shotgun\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
-                    },
-                  },
-                  smg: {
-                    description: 'SMG Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      cost_reduction: {
-                        description: 'Current progression of the SMG\'s Cost Reduction upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the SMG\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      recoil_reduction: {
-                        description: 'Current progression of the SMG\'s Recoil Reduction upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the SMG\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
-                    },
-                  },
-                  sniper: {
-                    description: 'Sniper Specialization upgrades',
-                    type: 'object',
-                    properties: {
-                      charge_bonus: {
-                        description: 'Current progression of the Sniper\'s Target Acquire upgrade',
-                        type: 'integer',
-                      },
-                      cost_reduction: {
-                        description: 'Current progression of the Sniper\'s Cost Reduction upgrade',
-                        type: 'integer',
-                      },
-                      damage_increase: {
-                        description: 'Current progression of the Sniper\'s Damage Increase upgrade',
-                        type: 'integer',
-                      },
-                      reload_speed_reduction: {
-                        description: 'Current progression of the Sniper\'s Reload Speed Reduction upgrade',
-                        type: 'integer',
-                      },
+                    strength_training: {
+                      description: 'Current progression of Strength Training upgrade',
+                      type: 'integer',
                     },
                   },
                 },
+                carbine: {
+                  description: 'Carbine Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    cost_reduction: {
+                      description: 'Current progression of the Carbine\'s Cost Reduction upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the Carbine\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    recoil_reduction: {
+                      description: 'Current progression of the Carbine\'s Recoil Reduction upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the Carbine\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                knife: {
+                  description: 'Knife Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    attack_delay: {
+                      description: 'Current progression of the Knife\'s Attack Delay upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the Knife\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                magnum: {
+                  description: 'Magnum Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    cost_reduction: {
+                      description: 'Current progression of the Magnum\'s Cost Reduction upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the Magnum\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    recoil_reduction: {
+                      description: 'Current progression of the Magnum\'s Recoil Reduction upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the Magnum\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                pistol: {
+                  description: 'Pistol Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    damage_increase: {
+                      description: 'Current progression of the Pistol\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    recoil_reduction: {
+                      description: 'Current progression of the Pistol\'s Recoil Reduction upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the Pistol\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                rifle: {
+                  description: 'Rifle Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    cost_reduction: {
+                      description: 'Current progression of the Rifle\'s Cost Reduction upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the Rifle\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    recoil_reduction: {
+                      description: 'Current progression of the Rifle\'s Recoil Reduction upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the Rifle\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                shotgun: {
+                  description: 'Shotgun Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    cost_reduction: {
+                      description: 'Current progression of the Shotgun\'s Cost Reduction upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the Shotgun\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    recoil_reduction: {
+                      description: 'Current progression of the Shotgun\'s Recoil Reduction upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the Shotgun\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                smg: {
+                  description: 'SMG Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    cost_reduction: {
+                      description: 'Current progression of the SMG\'s Cost Reduction upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the SMG\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    recoil_reduction: {
+                      description: 'Current progression of the SMG\'s Recoil Reduction upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the SMG\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
+                sniper: {
+                  description: 'Sniper Specialization upgrades',
+                  type: 'object',
+                  properties: {
+                    charge_bonus: {
+                      description: 'Current progression of the Sniper\'s Target Acquire upgrade',
+                      type: 'integer',
+                    },
+                    cost_reduction: {
+                      description: 'Current progression of the Sniper\'s Cost Reduction upgrade',
+                      type: 'integer',
+                    },
+                    damage_increase: {
+                      description: 'Current progression of the Sniper\'s Damage Increase upgrade',
+                      type: 'integer',
+                    },
+                    reload_speed_reduction: {
+                      description: 'Current progression of the Sniper\'s Reload Speed Reduction upgrade',
+                      type: 'integer',
+                    },
+                  },
+                },
               },
-              selected_cosmetics: {
-                description: 'Currently selected cosmetic appearance for each weapon type',
-                type: 'object',
-                properties: {
-                  carbine: {
-                    description: 'Currently selected Carbine cosmetic',
-                    type: 'string',
-                  },
-                  knife: {
-                    description: 'Currently selected Knife cosmetic',
-                    type: 'string',
-                  },
-                  magnum: {
-                    description: 'Currently selected Magnum cosmetic',
-                    type: 'string',
-                  },
-                  pistol: {
-                    description: 'Currently selected Pistol cosmetic',
-                    type: 'string',
-                  },
-                  rifle: {
-                    description: 'Currently selected Rifle cosmetic',
-                    type: 'string',
-                  },
-                  shotgun: {
-                    description: 'Currently selected Shotgun cosmetic',
-                    type: 'string',
-                  },
-                  smg: {
-                    description: 'Currently selected SMG cosmetic',
-                    type: 'string',
-                  },
+            },
+            selected_cosmetics: {
+              description: 'Currently selected cosmetic appearance for each weapon type',
+              type: 'object',
+              properties: {
+                carbine: {
+                  description: 'Currently selected Carbine cosmetic',
+                  type: 'string',
+                },
+                knife: {
+                  description: 'Currently selected Knife cosmetic',
+                  type: 'string',
+                },
+                magnum: {
+                  description: 'Currently selected Magnum cosmetic',
+                  type: 'string',
+                },
+                pistol: {
+                  description: 'Currently selected Pistol cosmetic',
+                  type: 'string',
+                },
+                rifle: {
+                  description: 'Currently selected Rifle cosmetic',
+                  type: 'string',
+                },
+                shotgun: {
+                  description: 'Currently selected Shotgun cosmetic',
+                  type: 'string',
+                },
+                smg: {
+                  description: 'Currently selected SMG cosmetic',
+                  type: 'string',
                 },
               },
             },
@@ -1695,6 +1699,633 @@ const playerObject = {
             coins: {
               description: 'Current coins in Murder Mystery',
               type: 'integer',
+            },
+          },
+        },
+        Pit: {
+          description: 'Player stats in The Pit',
+          type: 'object',
+          properties: {
+            profile: {
+              description: 'All player data like inventory',
+              type: 'object',
+              properties: {
+                outgoing_offers: {
+                  type: 'array',
+                },
+                contract_choices: {
+                  type: 'array',
+                },
+                last_save: {
+                  type: 'integer',
+                  description: 'Unix timestamp when their stats were last saved',
+                },
+                hat_color: {
+                  type: 'integer',
+                  description: 'Decimal representation of their hat color',
+                },
+                trade_timestamps: {
+                  type: 'array',
+                  description: 'Aray of Unix timestamps of their recent trades',
+                  items: {
+                    type: 'integer',
+                  },
+                },
+                impatient_enabled: {
+                  type: 'boolean',
+                },
+                inv_enderchest: {
+                  type: 'object',
+                  description: 'Enderchest data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their enderchest inventory NBT data',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                inv_contents: {
+                  type: 'object',
+                  description: 'Inventory data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their inventory NBT data',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                inv_armor: {
+                  type: 'object',
+                  description: 'Armor data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their armor inventory NBT data',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                item_stash: {
+                  type: 'object',
+                  description: 'Item stash data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their stash inventory NBT data',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                mystic_well_item: {
+                  type: 'object',
+                  description: 'Mystic well item data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their mystic well item\'s NBT data',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                mystic_well_pants: {
+                  type: 'object',
+                  description: 'Mystic well pants data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their mystic well pant\'s NBT data',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                death_recaps: {
+                  type: 'object',
+                  description: 'Death Recaps data',
+                  properties: {
+                    type: {
+                      type: 'integer',
+                    },
+                    data: {
+                      type: 'array',
+                      description: 'Gzipped byte array of their death recap book',
+                      items: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                cash: {
+                  type: 'number',
+                  description: 'Current Gold',
+                },
+                leaderboard_stats: {
+                  type: 'object',
+                  description: 'Seasonal scores for event leaderboards',
+                },
+                genesis_spawn_in_base: {
+                  type: 'boolean',
+                },
+                selected_perk_0: {
+                  type: 'string',
+                  description: 'Perk key for their first slot',
+                },
+                selected_perk_1: {
+                  type: 'string',
+                  description: 'Perk key for their second slot',
+                },
+                selected_perk_2: {
+                  type: 'string',
+                  description: 'Perk key for their third slot',
+                },
+                selected_perk_3: {
+                  type: 'string',
+                  description: 'Perk key for their fourth slot',
+                },
+                last_contract: {
+                  type: 'integer',
+                },
+                ended_contracts: {
+                  type: 'array',
+                  description: 'Recently completed contracts',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      difficulty: {
+                        type: 'string',
+                      },
+                      gold_reward: {
+                        type: 'integer',
+                      },
+                      requirements: {
+                        type: 'object',
+                      },
+                      progress: {
+                        type: 'object',
+                      },
+                      chunk_of_viles_reward: {
+                        type: 'integer',
+                      },
+                      completion_date: {
+                        type: 'integer',
+                      },
+                      remaining_ticks: {
+                        type: 'integer',
+                      },
+                      key: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+                gold_transactions: {
+                  type: 'array',
+                  description: 'Array of recent trades made',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      amount: {
+                        type: 'integer',
+                        description: 'Amount of gold traded',
+                      },
+                      timestamp: {
+                        type: 'integer',
+                        description: 'Unix timestamp of the trade',
+                      },
+                    },
+                  },
+                },
+                renown: {
+                  type: 'integer',
+                  description: 'Current renown',
+                },
+                hat_enabled: {
+                  type: 'boolean',
+                },
+                genesis_points: {
+                  type: 'integer',
+                },
+                drop_confirm_disabled: {
+                  type: 'boolean',
+                },
+                prestiges: {
+                  type: 'array',
+                  description: 'Details on each prestige',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      index: {
+                        type: 'integer',
+                        description: 'The prestige they are moving to',
+                      },
+                      xp_on_prestige: {
+                        type: 'integer',
+                        description: 'Useful for calculating level',
+                      },
+                      timestamp: {
+                        type: 'integer',
+                        description: 'Unix timestamp of the prestige',
+                      },
+                    },
+                  },
+                },
+                zero_point_three_gold_transfer: {
+                  type: 'boolean',
+                },
+                renown_unlocks: {
+                  description: 'Renown shop upgrades',
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      tier: {
+                        type: 'integer',
+                        description: 'Tier of the unlock indexed from 0',
+                      },
+                      acquireDate: {
+                        type: 'integer',
+                        description: 'Unix timestamp of unlock',
+                      },
+                      key: {
+                        type: 'string',
+                        description: 'Name of the unlock',
+                      },
+                    },
+                  },
+                },
+                selected_launch_trail: {
+                  type: 'string',
+                },
+                selected_leaderboard: {
+                  type: 'string',
+                },
+                last_midfight_disconnect: {
+                  type: 'integer',
+                },
+                genesis_allegiance_time: {
+                  type: 'integer',
+                  description: 'Timestamp of last pledge to a faction',
+                },
+                genesis_weekly_perks_claim_item_demon: {
+                  type: 'integer',
+                },
+                login_messages: {
+                  type: 'array',
+                },
+                hotbar_favorites: {
+                  type: 'array',
+                  description: 'Item ids for perfered slots of items',
+                  items: {
+                    type: 'number',
+                  },
+                },
+                reconessence_day: {
+                  type: 'integer',
+                  description: 'Timestamp of the last time the player used recon essence',
+                },
+                chat_option_player_chat: {
+                  type: 'boolean',
+                },
+                chat_option_misc: {
+                  type: 'boolean',
+                },
+                chat_option_bounties: {
+                  type: 'boolean',
+                },
+                chat_option_prestige_announcements: {
+                  type: 'boolean',
+                },
+                chat_option_streaks: {
+                  type: 'boolean',
+                },
+                chat_option_kill_feed: {
+                  type: 'boolean',
+                },
+                apollo_enabled: {
+                  type: 'boolean',
+                },
+                zero_point_two_xp: {
+                  type: 'integer',
+                  description: 'XP earned before update prestige update',
+                },
+                last_lycanthropy: {
+                  type: 'integer',
+                  description: 'Timestamp',
+                },
+                recent_kills: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      victim: {
+                        type: 'string',
+                        description: 'Victim\'s uuid',
+                      },
+                      timestamp: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+                xp: {
+                  type: 'integer',
+                },
+                bounties: {
+                  type: 'array',
+                  description: 'Array used to contruct their current bounty',
+                  items: {
+                    type: 'object',
+                    description: 'A bounty bump',
+                    properties: {
+                      amount: {
+                        type: 'integer',
+                        description: 'Amount of gold added this bump',
+                      },
+                      timestamp: {
+                        type: 'integer',
+                      },
+                      remainingTicks: {
+                        type: 'integer',
+                        description: 'Usless artifact of borrowed code',
+                      },
+                      issuer: {
+                        type: 'string',
+                        description: 'Usless artifact of borrowed code',
+                      },
+                    },
+                  },
+                },
+                night_quests_enabled: {
+                  type: 'boolean',
+                },
+                genesis_allegiance: {
+                  type: 'string',
+                  description: 'Genesis map faction either "DEMON" or "ANGEL"',
+                },
+                cash_during_prestige_0: {
+                  type: 'number',
+                  description: 'Gold earned during prestige 0',
+                },
+                cash_during_prestige_1: {
+                  type: 'number',
+                  description: 'Gold earned during prestige 1',
+                },
+                unlocks: {
+                  description: 'Perks / Upgrades unlocked during prestige 0',
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      tier: {
+                        type: 'integer',
+                        description: 'Tier of the upgrade indexed from 0',
+                      },
+                      acquireDate: {
+                        type: 'integer',
+                        description: 'Unix timestamp of unlock',
+                      },
+                      key: {
+                        type: 'string',
+                        description: 'Name of the upgrade',
+                      },
+                    },
+                  },
+                },
+                unlocks_1: {
+                  description: 'Perks / Upgrades unlocked during prestige 1',
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      tier: {
+                        type: 'integer',
+                        description: 'Tier of the upgrade indexed from 0',
+                      },
+                      acquireDate: {
+                        type: 'integer',
+                        description: 'Unix timestamp of unlock',
+                      },
+                      key: {
+                        type: 'string',
+                        description: 'Name of the upgrade',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            stats_move_1: {
+              type: 'integer',
+              description: 'Unix timestamp of stats being imported if they played before 0.3.5',
+            },
+            restored_inv_backup_1: {
+              type: 'integer',
+              description: 'Timestamp of admin inventory restoration',
+            },
+            pit_stats_ptl: {
+              description: 'All common player stats',
+              type: 'object',
+              properties: {
+                gapple_eaten: {
+                  description: 'Amount of golden apples eaten',
+                  type: 'integer',
+                },
+                enderchest_opened: {
+                  description: 'Times the player has opened their enderchest',
+                  type: 'integer',
+                },
+                fishing_rod_launched: {
+                  description: 'Times they have cast a fishing rod',
+                  type: 'integer',
+                },
+                blocks_placed: {
+                  description: 'Amount of blocks placed',
+                  type: 'integer',
+                },
+                cash_earned: {
+                  description: 'Lifetime gold earned',
+                  type: 'integer',
+                },
+                launched_by_launchers: {
+                  description: 'Times the player has been launched by a launcher',
+                  type: 'integer',
+                },
+                arrows_fired: {
+                  description: 'Amount of arrows fired',
+                  type: 'integer',
+                },
+                enchanted_tier2: {
+                  description: 'Amount of mystics the player has enchanted to tier two',
+                  type: 'integer',
+                },
+                playtime_minutes: {
+                  description: 'Player\'s playtime in minutes',
+                  type: 'integer',
+                },
+                enchanted_tier1: {
+                  description: 'Amount of mystics the player has enchanted to tier one',
+                  type: 'integer',
+                },
+                chat_messages: {
+                  description: 'Amount of chat messages sent in the pit',
+                  type: 'integer',
+                },
+                bow_damage_received: {
+                  description: 'Bow damage recieved',
+                  type: 'integer',
+                },
+                enchanted_tier3: {
+                  description: 'Amount of mystics the player has enchanted to tier three',
+                  type: 'integer',
+                },
+                kills: {
+                  description: 'Player\'s kills',
+                  type: 'integer',
+                },
+                diamond_items_purchased: {
+                  description: 'Amount of diamond items purchased',
+                  type: 'integer',
+                },
+                deaths: {
+                  description: 'Amount of deaths',
+                  type: 'integer',
+                },
+                soups_drank: {
+                  description: 'Amount of soups drank',
+                  type: 'integer',
+                },
+                ghead_eaten: {
+                  description: 'Amount of golden heads eaten',
+                  type: 'integer',
+                },
+                sword_hits: {
+                  description: 'Times the player has hit another player with a sword',
+                  type: 'integer',
+                },
+                joins: {
+                  description: 'Times the player has joined the Pit',
+                  type: 'integer',
+                },
+                bow_damage_dealt: {
+                  description: 'Total damage dealt via bow',
+                  type: 'integer',
+                },
+                contracts_started: {
+                  description: 'Amount of contracts initiated',
+                  type: 'integer',
+                },
+                damage_received: {
+                  description: 'Total amount of damage received',
+                  type: 'integer',
+                },
+                jumped_into_pit: {
+                  description: 'Amount of the time a player has jumped into mid',
+                  type: 'integer',
+                },
+                melee_damage_received: {
+                  description: 'Total damage received via melee',
+                  type: 'integer',
+                },
+                left_clicks: {
+                  description: 'Amount of left clicks performed',
+                  type: 'integer',
+                },
+                arrow_hits: {
+                  description: 'Amount of arrow hits',
+                  type: 'integer',
+                },
+                damage_dealt: {
+                  description: 'Total damage dealt',
+                  type: 'integer',
+                },
+                assists: {
+                  description: 'Amount of assists',
+                  type: 'integer',
+                },
+                lava_bucket_emptied: {
+                  description: 'Amount of lava buckets emptied',
+                  type: 'integer',
+                },
+                max_streak: {
+                  description: 'Highest streak ever reached',
+                  type: 'integer',
+                },
+                sewer_treasures_found: {
+                  description: 'Amount of sewer treasures found',
+                  type: 'integer',
+                },
+                night_quests_completed: {
+                  description: 'Amount of night quests completed',
+                  type: 'integer',
+                },
+                wheat_farmed: {
+                  description: 'Amount of wheat farmed',
+                  type: 'integer',
+                },
+                dark_pants_crated: {
+                  description: 'Amount of dark pants created by the player',
+                  type: 'integer',
+                },
+                dark_pants_t2: {
+                  description: 'Amount of dark pants enchanted to tier two',
+                  type: 'integer',
+                },
+                hidden_jewel_triggers: {
+                  description: 'Amount of hidden jewels triggered by the player',
+                  type: 'integer',
+                },
+                king_quest_completion: {
+                  description: 'Amount of kings quests completed',
+                  type: 'integer',
+                },
+                gold_from_farming: {
+                  description: 'Amount of hay bales sold to npcs',
+                  type: 'integer',
+                },
+                fished_anything: {
+                  description: 'Times the player has fished anything not just fish',
+                  type: 'integer',
+                },
+                fishes_fished: {
+                  description: 'Times the player has fished just fish',
+                  type: 'integer',
+                },
+                gold_from_selling_fish: {
+                  description: 'Amount of fish sold to npcs',
+                  type: 'integer',
+                },
+              },
             },
           },
         },

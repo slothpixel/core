@@ -67,15 +67,15 @@ module.exports = {
       type: 'string',
     },
   },
-  sortByParam: (required = true) => ({
+  sortByParam: {
     name: 'sortBy',
     in: 'query',
     description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
-    required,
+    required: true,
     schema: {
       type: 'string',
     },
-  }),
+  },
   sortOrderParam: {
     name: 'sortOrder',
     in: 'query',
@@ -150,17 +150,8 @@ module.exports = {
       type: 'integer',
     },
   },
-  itemIdParam2: {
-    name: 'id',
-    in: 'query',
-    description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
-    required: false,
-    schema: {
-      type: 'string',
-    },
-  },
   itemIdParam: {
-    name: 'ItemId',
+    name: 'itemId',
     in: 'path',
     description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
     required: true,
@@ -192,7 +183,7 @@ module.exports = {
     name: 'profileId',
     in: 'path',
     description: 'SkyBlock profile id e.g. \'498228a732d443589aabd1e97e6806cd\' or profile name e.g. \'Mango\'. Note: profile name can be different (although unlikely) for different members of a co-op!',
-    required: false,
+    required: true,
     schema: {
       type: 'string',
     },
