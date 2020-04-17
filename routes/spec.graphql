@@ -2175,6 +2175,11 @@ type Player {
   rewards: Rewards
 
   """
+  Player voting data
+  """
+  voting: Voting
+
+  """
   Player stats across all minigames
   """
   stats: Stats
@@ -2368,6 +2373,23 @@ type Rewards {
   Current reward tokens
   """
   tokens: Int
+}
+
+type Voting {
+  """
+  Votes in the last day
+  """
+  votes_today: Int
+
+  """
+  Total lifetime votes
+  """
+  total_votes: Int
+
+  """
+  Date of latest vote
+  """
+  last_vote: Float
 }
 
 """
