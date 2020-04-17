@@ -82,6 +82,7 @@ function processPlayerData({
   totalRewards = 0,
   totalDailyRewards = 0,
   adsense_tokens = 0,
+  voting: { total = 0, last_vote = null, votesToday = 0 } = {},
   socialMedia: { links = {} } = {},
   stats = {},
 }, cb) {
@@ -189,6 +190,11 @@ function processPlayerData({
           claimed: totalRewards,
           claimed_daily: totalDailyRewards,
           tokens: adsense_tokens,
+        },
+        voting: {
+          votes_today: votesToday,
+          total_votes: total,
+          last_vote,
         },
         links: Object.assign(defaultLinks, links),
         stats: statsObject,

@@ -124,6 +124,24 @@ const playerObject = {
         },
       },
     },
+    voting: {
+      description: 'Player voting data',
+      type: 'object',
+      properties: {
+        votes_today: {
+          description: 'Votes in the last day',
+          type: 'integer',
+        },
+        total_votes: {
+          description: 'Total lifetime votes',
+          type: 'integer',
+        },
+        last_vote: {
+          description: 'Date of latest vote',
+          type: 'integer',
+        },
+      },
+    },
     links: {
       description: 'Social media links',
       type: 'object',
