@@ -10,6 +10,7 @@ const { Auction } = require('./models');
 const {
   min, max, median, average, stdDev,
 } = require('../util/utility');
+const parseTimestamp = require('../util/readableTimestamps');
 
 function cacheAuctions(auctions, key, cb) {
   if (config.ENABLE_AUCTION_CACHE) {
@@ -115,6 +116,14 @@ function queryAuctionId(from, to, itemId, cb) {
   const now = Date.now();
   from = from || (now - 24 * 60 * 60 * 1000);
   to = to || now;
+
+  if (typeof from === 'string') {
+    from = parseTimestamp(from);
+  }
+
+  if (typeof to === 'string') {
+    to = parseTimestamp(to);
+  }
 
   if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
     return cb({ error: "parameters 'from' and 'to' must be integers" });
