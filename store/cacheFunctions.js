@@ -3,7 +3,7 @@ const { logger } = require('../util/utility');
 
 module.exports = {
   read: (req, cb) => {
-    logger.info(`[READCACHE] cache:${req.key}`);
+    logger.debug(`[READCACHE] cache:${req.key}`);
     redis.get(`cache:${req.key}`, (err, data) => {
       if (err) {
         logger.error(`[READCACHE] Error: ${err}`);
@@ -18,7 +18,7 @@ module.exports = {
     });
   },
   write: (req, data, cb) => {
-    logger.info(`[WRITECACHE] cache:${req.key}`);
+    logger.debug(`[WRITECACHE] cache:${req.key}`);
     if (data === undefined) {
       return logger.warn('[WRITECACHE] Cache data is undefined! This should never happen');
     }
