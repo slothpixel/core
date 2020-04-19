@@ -3,12 +3,16 @@
  * All functions should have external dependencies (DB, etc.) passed as parameters
  * */
 const constants = require('hypixelconstants');
-const request = require('request');
+const { fromPromise } = require('universalify');
 const urllib = require('url');
 const uuidV4 = require('uuid/v4');
 const moment = require('moment');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
+const pTimeout = require('p-timeout');
+const { promisify } = require('util');
+
+const got = require('got');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
@@ -299,7 +303,7 @@ function generateJob(type, payload) {
  * Injecting API key for Hypixel API
  * Errors from Hypixel API
  * */
-function getData(redis, url, cb) {
+const getData = fromPromise(async (redis, url) => {
   let u;
   let delay = Number(config.DEFAULT_DELAY);
   let timeout = 20000;
@@ -315,68 +319,47 @@ function getData(redis, url, cb) {
   const mojangApi = parse.host === 'api.mojang.com';
   const target = urllib.format(parse);
   logger.info(`getData: ${target}`);
-  return setTimeout(() => {
-    request({
-      url: target,
-      json: hypixelApi,
+  await pTimeout(delay);
+  try {
+    const { body } = await got(target, {
+      responseType: hypixelApi ? 'json' : 'text',
       timeout,
-    }, (err, res, body) => {
-      if (err
-        || !res
-        || res.statusCode !== 200
-        || !body
-        || (hypixelApi && !body.success)
-      ) {
-        // invalid response
-        if (url.noRetry) {
-          return cb('invalid response');
-        }
-        if (mojangApi) {
-          return cb('Failed to get player uuid', null);
-        }
-        if (body) {
-          logger.error(`[INVALID] error: ${body.cause}, retrying ${target}`);
-          if (body.cause === 'Internal error') {
-            return cb('Internal error');
-          }
-        } else {
-          logger.error(`[INVALID] status: ${res ? res.statusCode : ''}, retrying ${target}`);
-        }
-        return getData(redis, url, cb);
-      }
-      if (hypixelApi && !body.success) {
-        // valid response, but invalid data, retry
-        if (url.noRetry) {
-          return cb('invalid data');
-        }
-        // insert errors to redis for monitoring
-        let failed = 0;
-        const multi = redis.multi()
-          .incr('hypixel_api_error')
-          .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
-        multi.exec((err, resp) => {
-          if (err) {
-            logger.error(err);
-          }
-          [failed] = resp;
-          logger.warn(`Failed API requests in the past minute: ${failed}`);
-          logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
-          let backoff = (body.throttle)
-            ? 3000
-            : 0;
-          backoff += (failed > 50)
-            ? 10 * failed
-            : 0;
-          logger.debug(`getData timout for ${backoff}ms`);
-          return setTimeout(() => {
-            getData(redis, url, cb);
-          }, backoff);
-        });
-      }
-      return cb(null, body);
+      retry: url.noRetry ? 0 : 99,
+      hooks: {
+        afterResponse: [
+          async (response, retryWithMergedOptions) => {
+            if (hypixelApi && !response.body.success) {
+              const multi = redis.multi()
+                .incr('hypixel_api_error')
+                .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
+
+              try {
+                const [failed] = await promisify(multi.exec);
+                logger.warn(`Failed API requests in the past minute: ${failed}`);
+                logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
+              } catch (err) {
+                logger.error(err);
+              }
+              return retryWithMergedOptions();
+            }
+            return response;
+          },
+        ],
+      },
     });
-  }, delay);
-}
+
+    return body;
+  } catch (error) {
+    if (url.noRetry) {
+      throw new Error('Invalid response');
+    }
+    if (mojangApi) {
+      throw new Error('Failed to get player uuid');
+    }
+    logger.error(`[INVALID] error: ${error}`);
+    throw new Error(`[INVALID] error: ${error}`);
+  }
+});
 
 function colorNameToCode(color) {
   if (color === null) {
