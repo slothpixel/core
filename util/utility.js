@@ -16,7 +16,7 @@ const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
 const {
-  max, min, average, median,
+  max, min, average, median, stdDev,
 } = require('./math');
 
 const logger = createLogger({
