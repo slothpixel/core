@@ -9,7 +9,6 @@ const uuidV4 = require('uuid/v4');
 const moment = require('moment');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
-const pTimeout = require('p-timeout');
 const { promisify } = require('util');
 
 const got = require('got');
@@ -324,8 +323,6 @@ const getData = fromPromise(async (redis, url) => {
   const target = urllib.format(urlData);
 
   logger.info(`getData: ${target}`);
-
-  await pTimeout(url.delay);
 
   try {
     const { body } = await got(target, {
