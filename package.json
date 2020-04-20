@@ -21,6 +21,8 @@
     "got": "^10.7.0",
     "graphql": "^14.6.0",
     "hypixelconstants": "^3.2.1",
+    "mean-average": "^1.0.0",
+    "median-average": "^1.0.0",
     "moment": "^2.24.0",
     "mongoose": "^5.8.6",
     "morgan": "^1.9.1",

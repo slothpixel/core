@@ -10,11 +10,14 @@ const moment = require('moment');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
 const { promisify } = require('util');
-
 const got = require('got');
+
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
+const {
+  max, min, average, median,
+} = require('./math');
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -145,9 +148,7 @@ function typeToStandardName(name) {
 /**
  * Determines if a player has contributed to the development of Slothpixel
  */
-function isContributor(uuid) {
-  return uuid in contributors;
-}
+const isContributor = (uuid) => contributors.includes(uuid);
 
 /**
 * Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
@@ -447,71 +448,6 @@ function invokeInterval(func, delay) {
       setTimeout(invoker, delay);
     });
   }());
-}
-
-/**
- * Finds the max of the input array
- * */
-function max(array) {
-  if (array.length === 0) return null;
-
-  return Math.max.apply(null, array);
-}
-
-/**
- * Finds the min of the input array
- * */
-function min(array) {
-  if (array.length === 0) return null;
-
-  return Math.min.apply(null, array);
-}
-
-/**
- * Finds the arithmetic mean of the input array
- * */
-function average(data) {
-  if (data.length === 0) return null;
-
-  const num = Math.floor((data.reduce(
-    (a, b) => a + b,
-    0,
-  ) / data.length));
-
-  if (Number.isNaN(num) || !Number.isFinite(num)) return null;
-
-  return num;
-}
-
-/**
- * Finds the standard deviation of the input array
- * */
-function stdDev(data) {
-  if (data.length === 0) return null;
-
-  const avg = average(data);
-  const squareDiffs = data.map((value) => {
-    const diff = value - avg;
-    const sqrDiff = diff * diff;
-    return sqrDiff;
-  });
-  const avgSquareDiff = average(squareDiffs);
-  const stdDev = Math.sqrt(avgSquareDiff);
-  return Math.floor(stdDev);
-}
-
-/**
- * Finds the median of the input array
- * */
-function median(data) {
-  if (data.length === 0) return null;
-
-  data.sort((a, b) => a - b);
-  const half = Math.floor(data.length / 2);
-  if (data.length % 2) {
-    return data[half];
-  }
-  return Math.floor((data[half - 1] + data[half]) / 2.0);
 }
 
 module.exports = {
