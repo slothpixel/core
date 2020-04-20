@@ -455,7 +455,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             }
             getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
               if (err) {
-                return cb(err);
+                return cb(err.message);
               }
               try {
                 return res.json(data.games.map((game) => {

@@ -22,13 +22,13 @@ function buildBazaar(id, cb) {
     }
     getData(redis, generateJob('bazaar_product', { id }).url, (err, data) => {
       if (err) {
-        return cb(err);
+        return cb(err.message);
       }
       const bazaar = prettify(data);
       cacheFunctions.write({
         key,
         duration: 60,
-      }, bazaar, () => {});
+      }, bazaar, () => { });
       return cb(null, bazaar);
     });
   });

@@ -11,7 +11,7 @@ function getBans(cb) {
   const { url } = generateJob('watchdogstats');
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err, null);
+      return cb(err.message, null);
     }
     return cb(null, {
       watchdog: {

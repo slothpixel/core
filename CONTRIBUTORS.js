@@ -11,4 +11,5 @@ module.exports = {
   f8a9e651e8544abd8fef5a02a75ac25a: {}, // DidiSkywalker
   '27ae0f1720894bd7a11b08e741aa9024': {},
   e2db3b87ae5c4b91a04f7d6f5ef51e27: {}, // zunora
+  '56da43a4088d4a7682b6dd431535015e': {}, // Richienb
 };

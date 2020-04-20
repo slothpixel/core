@@ -20,7 +20,7 @@ function getPlayerData(uuid, cb) {
   });
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err, null);
+      return cb(err.message, null);
     }
     processPlayerData(body.player || {}, (player) => cb(null, player));
   });

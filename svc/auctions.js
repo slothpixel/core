@@ -107,7 +107,7 @@ function getAuctionPage(page, cb) {
   });
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err, null);
+      return cb(err.message, null);
     }
     return cb(null, body);
   });

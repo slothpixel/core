@@ -12,7 +12,7 @@ function getBoosterData(cb) {
   const { url } = generateJob('boosters');
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err, null);
+      return cb(err.message, null);
     }
     const boosters = processBoosters(body);
     return cb(null, boosters);
