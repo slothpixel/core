@@ -5,7 +5,7 @@
 const constants = require('hypixelconstants');
 const { fromPromise } = require('universalify');
 const urllib = require('url');
-const uuidV4 = require('uuid/v4');
+const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
