@@ -304,37 +304,44 @@ function generateJob(type, payload) {
  * Errors from Hypixel API
  * */
 const getData = fromPromise(async (redis, url) => {
-  let u;
-  let delay = Number(config.DEFAULT_DELAY);
-  let timeout = 20000;
-  if (typeof url === 'object' && url && url.url) {
-    u = url.url;
-    delay = url.delay || delay;
-    timeout = url.timeout || timeout;
-  } else {
-    u = url;
+  if (typeof url === 'string') {
+    url = {
+      url,
+    };
   }
-  const parse = urllib.parse(u, true);
-  const hypixelApi = parse.host === 'api.hypixel.net';
-  const mojangApi = parse.host === 'api.mojang.com';
-  const target = urllib.format(parse);
+
+  url = {
+    delay: Number(config.DEFAULT_DELAY),
+    timeout: 20000,
+    retries: 10,
+    ...url,
+  };
+
+  const urlData = urllib.parse(url.url, true);
+  const isHypixelApi = urlData.host === 'api.hypixel.net';
+  const isMojangApi = urlData.host === 'api.mojang.com';
+
+  const target = urllib.format(urlData);
+
   logger.info(`getData: ${target}`);
-  await pTimeout(delay);
+
+  await pTimeout(url.delay);
+
   try {
     const { body } = await got(target, {
-      responseType: hypixelApi ? 'json' : 'text',
-      timeout,
-      retry: url.noRetry ? 0 : 99,
+      responseType: isHypixelApi ? 'json' : 'text',
+      timeout: url.timeout,
+      retry: url.retries,
       hooks: {
         afterResponse: [
           async (response, retryWithMergedOptions) => {
-            if (hypixelApi && !response.body.success) {
+            if (isHypixelApi && !response.body.success) {
               const multi = redis.multi()
                 .incr('hypixel_api_error')
                 .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
 
               try {
-                const [failed] = await promisify(multi.exec);
+                const [failed] = await promisify(multi.exec)();
                 logger.warn(`Failed API requests in the past minute: ${failed}`);
                 logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
               } catch (err) {
@@ -353,7 +360,7 @@ const getData = fromPromise(async (redis, url) => {
     if (url.noRetry) {
       throw new Error('Invalid response');
     }
-    if (mojangApi) {
+    if (isMojangApi) {
       throw new Error('Failed to get player uuid');
     }
     logger.error(`[INVALID] error: ${error}`);

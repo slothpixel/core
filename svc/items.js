@@ -17,7 +17,7 @@ function updateBazaar() {
         return resolve([]);
       }
       redis.set('skyblock_bazaar', JSON.stringify(items), (err) => {
-        if (err) logger.error(err);
+        if (err) logger.error(err.message);
         logger.info('[Bazaar] Updated item IDs');
         return resolve(items);
       });

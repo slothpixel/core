@@ -30,7 +30,6 @@ const getUUIDAsync = promisify(getUUID);
 const buildProfileAsync = promisify(buildProfile);
 const getAuctionsAsync = promisify(getAuctions);
 const queryAuctionIdAsync = promisify(queryAuctionId);
-const getDataAsync = promisify(getData);
 const getMetadataAsync = promisify(getMetadata);
 const buildBazaarAsync = promisify(buildBazaar);
 
@@ -83,7 +82,7 @@ class PlayersResolver {
 
   async recent_games({ player_name }) {
     const uuid = await getUUIDAsync(player_name);
-    const data = await getDataAsync(redis, generateJob('recentgames', { id: uuid }).url);
+    const data = await getData(redis, generateJob('recentgames', { id: uuid }).url);
 
     return data.games.map((game) => {
       game.gameType = typeToStandardName(game.gameType);

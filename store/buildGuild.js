@@ -18,7 +18,7 @@ function getGuildData(id, cb) {
   });
   getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err);
+      return cb(err.message);
     }
     if (body.guild === null) {
       cb(null, null);
@@ -42,7 +42,7 @@ function getGuildID(uuid, cb) {
     });
     getData(redis, url, (err, foundguild) => {
       if (err) {
-        return cb(err);
+        return cb(err.message);
       }
       if (foundguild.guild === null) {
         return cb('Player is not in a guild');
