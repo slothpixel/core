@@ -25,6 +25,7 @@ const pathCosts = {
   '/api/leaderboards': 5,
 };
 
+app.disable('x-powered-by');
 // Compression middleware
 app.use(compression());
 // Get client IP to use for rate limiting;
