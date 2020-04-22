@@ -214,6 +214,8 @@ function getRedisCountHour(redis, prefix, cb) {
   redis.pfcount(...keyArr, cb);
 }
 
+const randomItem = (array) => array[Math.floor(Math.random() * array.length)];
+
 /**
  * Creates a job object for enqueueing that contains details such as the Hypixel endpoint to hit
  * See https://github.com/HypixelDev/PublicAPI/tree/master/Documentation/methods
@@ -222,19 +224,14 @@ function generateJob(type, payload) {
   logger.debug(`generateJob ${type}`);
   const apiUrl = 'https://api.hypixel.net';
   const apiKeys = config.HYPIXEL_API_KEY.split(',');
-  const apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+  const apiKey = randomItem(apiKeys);
   if (apiKey === '') {
     logger.warn('No HYPIXEL_API_KEY env variable set!');
   }
   const opts = {
     bazaar_products() {
       return {
-        url: `${apiUrl}/skyblock/bazaar/products?key=${apiKey}`,
-      };
-    },
-    bazaar_product() {
-      return {
-        url: `${apiUrl}/skyblock/bazaar/product?key=${apiKey}&productId=${payload.id}`,
+        url: `${apiUrl}/skyblock/bazaar?key=${apiKey}`,
       };
     },
     boosters() {
