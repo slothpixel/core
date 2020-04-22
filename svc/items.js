@@ -37,6 +37,7 @@ const schemaObject = (auction) => {
       tier,
       category,
       item_id: item.item_id,
+      damage: item.damage || null,
       texture: item.attributes.texture,
     };
   } catch (e) {
@@ -67,7 +68,7 @@ async function doItems(cb) {
             'item.attributes.id': id,
             'item.attributes.modifier': null,
             'item.name': { $ne: '§fnull' },
-          }, 'tier category item', { limit: 1 }, (err, auction) => {
+          }, 'tier category item', { limit: 1, sort: { end: -1 } }, (err, auction) => {
             if (err) {
               return cb(err);
             }
@@ -77,8 +78,14 @@ async function doItems(cb) {
             if (bazaarProducts.includes(id)) {
               items[id].bazaar = true;
             }
-            if (items[id] && items[id].texture === null) {
-              delete items[id].texture;
+            const item = items[id];
+            if (item) {
+              if (item.texture === null) {
+                delete items[id].texture;
+              }
+              if (item.damage === null || item.texture) {
+                delete items[id].damage;
+              }
             }
             return cb();
           });

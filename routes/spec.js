@@ -70,6 +70,10 @@ const auctionObject = {
           type: 'integer',
           description: 'How many items are for sale in the auction',
         },
+        damage: {
+          type: 'integer',
+          description: 'Damage value of the item. Appears only if not 0',
+        },
         attributes: {
           type: 'object',
           properties: {
@@ -974,6 +978,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                         tier: auctionObject.properties.tier,
                         category: auctionObject.properties.category,
                         item_id: auctionObject.properties.item.properties.item_id,
+                        damage: auctionObject.properties.item.properties.damage,
                         texture: auctionObject.properties.item.properties.attributes.properties.texture,
                         bazaar: {
                           type: 'boolean',
