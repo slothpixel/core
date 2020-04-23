@@ -20,8 +20,6 @@ const getUUID = require('../store/getUUID');
 const { getMetadata } = require('../store/queries');
 const { generateJob, getData, typeToStandardName } = require('../util/utility');
 
-const buildBansAsync = promisify(buildBans);
-const buildBoostersAsync = promisify(buildBoosters);
 const leaderboardsAsync = promisify(leaderboards);
 const getGuildFromPlayerAsync = promisify(getGuildFromPlayer);
 const getPlayerAsync = promisify(getPlayer);
@@ -32,7 +30,6 @@ const buildProfileAsync = promisify(buildProfile);
 const getAuctionsAsync = promisify(getAuctions);
 const queryAuctionIdAsync = promisify(queryAuctionId);
 const getMetadataAsync = promisify(getMetadata);
-const buildBazaarAsync = promisify(buildBazaar);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
 
@@ -52,14 +49,14 @@ class BoostersResolver {
   constructor() {
     gameStandardNames.forEach((game) => {
       this[game] = async () => {
-        const boosters = await buildBoostersAsync();
+        const boosters = await buildBoosters();
         return boosters.boosters[game];
       };
     });
   }
 
   async all() {
-    const { boosters } = await buildBoostersAsync();
+    const { boosters } = await buildBoosters();
     return Object.entries(boosters).reduce((prev, [game, value]) => [...prev, { game, boosters: value }], []);
   }
 }
@@ -130,7 +127,7 @@ class SkyblockResolver {
     if (item_id && !Array.isArray(item_id) && !item_id.includes(',') && !ids.includes(item_id)) {
       throw new Error('Invalid item_id');
     }
-    const products = await buildBazaarAsync();
+    const products = await buildBazaar();
     if (!item_id) {
       return products;
     }
@@ -148,7 +145,7 @@ const graphql = graphqlExpress({
   schema: buildSchema(schema),
   rootValue: {
     bans() {
-      return buildBansAsync();
+      return buildBans();
     },
 
     boosters() {

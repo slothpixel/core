@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 const async = require('async');
 const filterObject = require('filter-obj');
+const { promisify } = require('util');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
@@ -1129,26 +1130,25 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/bazaar/:id',
-        func: (req, res, cb) => {
-          const itemId = req.params.id;
-          redis.get('skyblock_bazaar', (err, resp) => {
-            const ids = JSON.parse(resp) || [];
-            if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
-              return res.status(400).json({ error: 'Invalid itemId' });
+        func: async (request, response) => {
+          const itemId = request.params.id;
+          const data = await promisify(redis.get)('skyblock_bazaar');
+          const ids = JSON.parse(data) || [];
+          if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
+            return response.status(400).json({ error: 'Invalid itemId' });
+          }
+          try {
+            const bazaar = await buildBazaar();
+            if (!itemId) {
+              return response.json(bazaar);
             }
-            buildBazaar((err, bazaar) => {
-              if (err) {
-                return cb(err);
-              }
-              if (!itemId) {
-                return res.json(bazaar);
-              }
-              if (itemId.includes(',')) {
-                return res.json(filterObject(bazaar, itemId.split(',')));
-              }
-              return res.json(bazaar[itemId]);
-            });
-          });
+            if (itemId.includes(',')) {
+              return response.json(filterObject(bazaar, itemId.split(',')));
+            }
+            return response.json(bazaar[itemId]);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
@@ -1291,13 +1291,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/boosters',
-        func: (req, res) => {
-          buildBoosters((err, boosters) => {
-            if (err) {
-              return res.status(500).json({ error: err });
-            }
-            return res.json(boosters);
-          });
+        func: async (_, response) => {
+          try {
+            const boosters = await buildBoosters();
+            response.json(boosters);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
@@ -1362,17 +1362,17 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/boosters/:game',
-        func: (req, res) => {
-          const { game } = req.params;
-          buildBoosters((err, boosters) => {
-            if (err) {
-              return res.status(500).json({ error: err });
-            }
+        func: async (request, response) => {
+          const { game } = request.params;
+          try {
+            const boosters = await buildBoosters();
             if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
-              return res.status(400).json({ error: 'Invalid minigame name!' });
+              return response.status(400).json({ error: 'Invalid minigame name!' });
             }
-            return res.json(boosters.boosters[game]);
-          });
+            response.json(boosters.boosters[game]);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
@@ -1429,13 +1429,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/bans',
-        func: (req, res) => {
-          buildBans((err, bans) => {
-            if (err) {
-              return res.status(500).json({ error: err });
-            }
-            return res.json(bans);
-          });
+        func: async (_, response) => {
+          try {
+            response.json(await buildBans());
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
