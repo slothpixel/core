@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const async = require('async');
+const filterObject = require('filter-obj');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
@@ -18,7 +19,7 @@ const {
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
-  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam,
+  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
   profileIdParam,
 } = require('./params');
@@ -1006,109 +1007,112 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         ],
         summary: 'Get bazaar data for an item',
         description: 'Get bazaar data for an item bu ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint.',
-        parameters: [itemIdParam],
+        parameters: [bazaarItemIdParam],
         responses: {
           200: {
             description: 'successful operation',
             content: {
               'application/json': {
                 schema: {
-                  type: 'object',
-                  properties: {
-                    quick_status: {
-                      type: 'object',
-                      properties: {
-                        buyPrice: {
-                          type: 'number',
-                        },
-                        buyVolume: {
-                          type: 'integer',
-                        },
-                        buyMovingWeek: {
-                          type: 'integer',
-                        },
-                        buyOrders: {
-                          type: 'integer',
-                        },
-                        sellPrice: {
-                          type: 'number',
-                        },
-                        sellVolume: {
-                          type: 'integer',
-                        },
-                        sellMovingWeek: {
-                          type: 'integer',
-                        },
-                        sellOrders: {
-                          type: 'integer',
-                        },
-                      },
-                    },
-                    buy_summary: {
-                      type: 'array',
-                      items: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      quick_status: {
                         type: 'object',
                         properties: {
-                          amount: {
-                            type: 'integer',
-                          },
-                          pricePerUnit: {
-                            type: 'number',
-                          },
-                          orders: {
-                            type: 'integer',
-                          },
-                        },
-                      },
-                    },
-                    sell_summary: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          amount: {
-                            type: 'integer',
-                          },
-                          pricePerUnit: {
-                            type: 'number',
-                          },
-                          orders: {
-                            type: 'integer',
-                          },
-                        },
-                      },
-                    },
-                    week_historic: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          timestamp: {
-                            type: 'integer',
-                          },
-                          nowBuyVolume: {
-                            type: 'integer',
-                          },
-                          nowSellVolume: {
-                            type: 'integer',
-                          },
-                          buyCoins: {
+                          buyPrice: {
                             type: 'number',
                           },
                           buyVolume: {
                             type: 'integer',
                           },
-                          buys: {
+                          buyMovingWeek: {
                             type: 'integer',
                           },
-                          sellCoins: {
+                          buyOrders: {
+                            type: 'integer',
+                          },
+                          sellPrice: {
                             type: 'number',
                           },
                           sellVolume: {
                             type: 'integer',
                           },
-                          sells: {
+                          sellMovingWeek: {
                             type: 'integer',
+                          },
+                          sellOrders: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                      buy_summary: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            amount: {
+                              type: 'integer',
+                            },
+                            pricePerUnit: {
+                              type: 'number',
+                            },
+                            orders: {
+                              type: 'integer',
+                            },
+                          },
+                        },
+                      },
+                      sell_summary: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            amount: {
+                              type: 'integer',
+                            },
+                            pricePerUnit: {
+                              type: 'number',
+                            },
+                            orders: {
+                              type: 'integer',
+                            },
+                          },
+                        },
+                      },
+                      week_historic: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            timestamp: {
+                              type: 'integer',
+                            },
+                            nowBuyVolume: {
+                              type: 'integer',
+                            },
+                            nowSellVolume: {
+                              type: 'integer',
+                            },
+                            buyCoins: {
+                              type: 'number',
+                            },
+                            buyVolume: {
+                              type: 'integer',
+                            },
+                            buys: {
+                              type: 'integer',
+                            },
+                            sellCoins: {
+                              type: 'number',
+                            },
+                            sellVolume: {
+                              type: 'integer',
+                            },
+                            sells: {
+                              type: 'integer',
+                            },
                           },
                         },
                       },
@@ -1124,14 +1128,20 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           const itemId = req.params.id;
           redis.get('skyblock_bazaar', (err, resp) => {
             const ids = JSON.parse(resp) || [];
-            if (!ids.includes(itemId)) {
+            if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
               return res.status(400).json({ error: 'Invalid itemId' });
             }
-            buildBazaar(itemId, (err, bazaar) => {
+            buildBazaar((err, bazaar) => {
               if (err) {
                 return cb(err);
               }
-              return res.json(bazaar);
+              if (!itemId) {
+                return res.json(bazaar);
+              }
+              if (itemId.includes(',')) {
+                return res.json(filterObject(bazaar, itemId.split(',')));
+              }
+              return res.json(bazaar[itemId]);
             });
           });
         },
