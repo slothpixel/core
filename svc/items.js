@@ -3,26 +3,27 @@
 * Worker to generate SkyBlock item schema from auction database
  */
 const async = require('async');
+const { promisify } = require('util');
 const redis = require('../store/redis');
 const { getItems, getAuctions } = require('../store/queries');
 const {
   logger, removeFormatting, generateJob, getData, invokeInterval,
 } = require('../util/utility');
 
-function updateBazaar() {
-  return new Promise(((resolve) => {
-    getData(redis, generateJob('bazaar_products').url, (err, data) => {
-      const items = data.productIds;
-      if (err || !items) {
-        return resolve([]);
-      }
-      redis.set('skyblock_bazaar', JSON.stringify(items), (err) => {
-        if (err) logger.error(err.message);
-        logger.info('[Bazaar] Updated item IDs');
-        return resolve(items);
-      });
-    });
-  }));
+async function updateBazaar() {
+  try {
+    const { products } = await getData(redis, generateJob('bazaar_products'));
+    const items = Object.keys(products);
+    try {
+      await promisify(redis.set)('skyblock_bazaar', JSON.stringify(items));
+      logger.info('[Bazaar] Updated item IDs');
+      return items;
+    } catch (error) {
+      logger.error(error.message);
+    }
+  } catch (error) {
+    return [];
+  }
 }
 
 const schemaObject = (auction) => {
