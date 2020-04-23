@@ -1130,7 +1130,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/bazaar/:id',
-        func: async (request, response) => {
+        func: async (request, response, callback) => {
           const itemId = request.params.id;
           const data = await promisify(redis.get)('skyblock_bazaar');
           const ids = JSON.parse(data) || [];
@@ -1147,7 +1147,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             }
             return response.json(bazaar[itemId]);
           } catch (error) {
-            response.status(500).json({ error: error.message });
+            callback(error)
           }
         },
       },
