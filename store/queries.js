@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars,consistent-return,prefer-arrow-callback,func-names */
+const pify = require('pify');
 const db = require('./db');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
@@ -60,13 +61,9 @@ function getPlayerProfile(uuid, cb) {
   });
 }
 
-function insertGuild(id, guild, cb) {
-  Guild.findOneAndUpdate({ id }, guild, { new: true, upsert: true }, function (err) {
-    if (err) {
-      logger.error(err);
-    }
-    return cb(err, guild);
-  });
+async function insertGuild(id, guild) {
+  await pify(Guild.findOneAndUpdate)({ id }, guild, { new: true, upsert: true });
+  return guild;
 }
 
 function getGuild(id, cb) {
@@ -86,16 +83,16 @@ function getGuilds(filter = {}, fields = null, options = {}, cb) {
   });
 }
 
-function getGuildByPlayer(uuid, cb) {
-  Guild.findOne({ 'members.uuid': uuid }, function (err, guild) {
-    if (err) {
-      logger.error(err);
-    }
+async function getGuildByPlayer(uuid) {
+  try {
+    const guild = await pify(Guild.findOne)({ 'members.uuid': uuid });
     if (guild === null) {
-      return cb(err, null);
+      return null;
     }
-    return cb(err, guild.toObject());
-  });
+    return guild.toObject();
+  } catch (err) {
+    logger.error(err);
+  }
 }
 
 function removeGuild(id) {

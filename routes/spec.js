@@ -1,10 +1,10 @@
 /* eslint-disable consistent-return */
 const async = require('async');
 const filterObject = require('filter-obj');
-const { promisify } = require('util');
+const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
-const getUUID = require('../store/getUUID');
+const getUUID = require('../store/get-uuid');
 const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
@@ -454,25 +454,21 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player/recentGames',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              return res.status(404).json({ error: err });
+        func: async (request, response, callback) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              const { games } = await getData(redis, generateJob('recentgames', { id: uuid }).url);
+              response.json(games.map((game) => {
+                game.gameType = typeToStandardName(game.gameType);
+                return game;
+              }));
+            } catch (error) {
+              callback(error.message);
             }
-            getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
-              if (err) {
-                return cb(err.message);
-              }
-              try {
-                return res.json(data.games.map((game) => {
-                  game.gameType = typeToStandardName(game.gameType);
-                  return game;
-                }));
-              } catch (e) {
-                return cb(e);
-              }
-            });
-          });
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
         },
       },
     },
@@ -765,23 +761,23 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/profiles/:player',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              return res.status(404).json({ error: err });
-            }
-            redis.get(`skyblock_profiles:${uuid}`, (err, resp) => {
-              if (err) {
-                return cb(err);
-              }
-              if (resp) {
-                const profiles = JSON.parse(resp) || {};
+        func: async (request, response, callback) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              const data = await pify(redis.get)(`skyblock_profiles:${uuid}`);
+              if (data) {
+                const profiles = JSON.parse(data) || {};
                 // TODO - populatePlayers for each profile
-                return res.json(profiles);
+                return response.json(profiles);
               }
-              return res.json({});
-            });
-          });
+              response.json({});
+            } catch (error) {
+              callback(error);
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
         },
       },
     },
@@ -809,27 +805,28 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/profile/:player/:profile?',
-        func: (req, res) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              return res.status(404).json({ error: err });
-            }
-            buildProfile(uuid, req.params.profile, true, (err, profile) => {
-              if (err) {
-                return res.json({ error: err });
+        func: async (request, response) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              // TODO: Update when buildProfile changed
+              const profile = await pify(buildProfile)(uuid, request.params.profile, true);
+              try {
+                const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
+                players.forEach((player) => {
+                  profile.members[player.profile.uuid].player = player.profile;
+                });
+                response.json(profile);
+              } catch (error) {
+                response.status(500).json({ error });
               }
-              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (err, players) => {
-                if (err) {
-                  res.status(500).json({ error: err });
-                } else {
-                  players.forEach((player) => {
-                    profile.members[player.profile.uuid].player = player.profile;
-                  });
-                  res.json(profile);
-                }
-              });
-            });
-          });
+            } catch (error) {
+              // TODO: Here also
+              response.status(404).json({ error });
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
         },
       },
     },
@@ -1132,7 +1129,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/skyblock/bazaar/:id',
         func: async (request, response, callback) => {
           const itemId = request.params.id;
-          const data = await promisify(redis.get)('skyblock_bazaar');
+          const data = await pify(redis.get)('skyblock_bazaar');
           const ids = JSON.parse(data) || [];
           if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
             return response.status(400).json({ error: 'Invalid itemId' });
@@ -1147,7 +1144,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             }
             return response.json(bazaar[itemId]);
           } catch (error) {
-            callback(error);
+            callback(error.message);
           }
         },
       },

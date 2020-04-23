@@ -1,12 +1,12 @@
 const { fromPromise } = require('universalify');
-const { promisify } = require('util');
+const pify = require('pify');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
 
 exports.read = fromPromise(async (request) => {
   logger.debug(`[READCACHE] cache:${request.key}`);
   try {
-    const data = await promisify(redis.get)(`cache:${request.key}`);
+    const data = await pify(redis.get)(`cache:${request.key}`);
     let result;
     try {
       result = JSON.parse(data);
@@ -31,6 +31,6 @@ exports.write = fromPromise(async (request, data) => {
   } catch (error) {
     return logger.error(`[WRITECACHE] Failed to stringify JSON: ${error}`);
   }
-  await promisify(redis.setex)(`cache:${request.key}`, request.duration, stringData);
+  await pify(redis.setex)(`cache:${request.key}`, request.duration, stringData);
   return undefined;
 });

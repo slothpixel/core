@@ -9,7 +9,7 @@ const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
-const { promisify } = require('util');
+const pify = require('pify');
 const got = require('got');
 
 const config = require('../config');
@@ -336,7 +336,7 @@ const getData = fromPromise(async (redis, url) => {
                 .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
 
               try {
-                const [failed] = await promisify(multi.exec)();
+                const [failed] = await pify(multi.exec)();
                 logger.warn(`Failed API requests in the past minute: ${failed}`);
                 logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
               } catch (err) {

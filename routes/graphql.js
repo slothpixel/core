@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
-const { promisify } = require('util');
+const pify = require('pify');
 const fs = require('fs');
 const graphqlExpress = require('express-graphql');
 const { buildSchema } = require('graphql');
@@ -16,20 +16,18 @@ const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { getGuildFromPlayer } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
-const getUUID = require('../store/getUUID');
+const getUUID = require('../store/get-uuid');
 const { getMetadata } = require('../store/queries');
 const { generateJob, getData, typeToStandardName } = require('../util/utility');
 
-const leaderboardsAsync = promisify(leaderboards);
-const getGuildFromPlayerAsync = promisify(getGuildFromPlayer);
-const getPlayerAsync = promisify(getPlayer);
-const populatePlayersAsync = promisify(populatePlayers);
-const redisGetAsync = promisify(redis.get).bind(redis);
-const getUUIDAsync = promisify(getUUID);
-const buildProfileAsync = promisify(buildProfile);
-const getAuctionsAsync = promisify(getAuctions);
-const queryAuctionIdAsync = promisify(queryAuctionId);
-const getMetadataAsync = promisify(getMetadata);
+const leaderboardsAsync = pify(leaderboards);
+const getGuildFromPlayerAsync = pify(getGuildFromPlayer);
+const getPlayerAsync = pify(getPlayer);
+const redisGetAsync = pify(redis.get).bind(redis);
+const buildProfileAsync = pify(buildProfile);
+const getAuctionsAsync = pify(getAuctions);
+const queryAuctionIdAsync = pify(queryAuctionId);
+const getMetadataAsync = pify(getMetadata);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
 
@@ -79,7 +77,7 @@ class PlayersResolver {
   }
 
   async recent_games({ player_name }) {
-    const uuid = await getUUIDAsync(player_name);
+    const uuid = await getUUID(player_name);
     const data = await getData(redis, generateJob('recentgames', { id: uuid }).url);
 
     return data.games.map((game) => {
@@ -104,15 +102,15 @@ class SkyblockResolver {
   }
 
   async profiles({ player_name }) {
-    const uuid = await getUUIDAsync(player_name);
+    const uuid = await getUUID(player_name);
     const profiles = await redisGetAsync(`skyblock_profiles:${uuid}`);
     return profiles ? JSON.parse(profiles) : {};
   }
 
   async profile({ player_name, profile_id }) {
-    const uuid = await getUUIDAsync(player_name);
+    const uuid = await getUUID(player_name);
     const profile = await buildProfileAsync(uuid, profile_id, true);
-    const players = await populatePlayersAsync(Object.keys(profile.members).map((uuid) => ({ uuid })));
+    const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
 
     players.forEach((player) => {
       profile.members[player.profile.uuid].player = player.profile;

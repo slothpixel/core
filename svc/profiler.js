@@ -68,11 +68,10 @@ function updatePlayers(cb) {
       cb(err);
     }
     async.mapLimit(guilds, 5, (g, cb) => {
-      getGuildData(g.id, (err, guild) => {
-        if (err) {
-          cb(err);
-        }
+      getGuildData(g.id).then((guild) => {
         cb(null, upsertDoc(g.id, guild));
+      }).catch((err) => {
+        cb(err.message);
       });
     }, (err, bulkGuildOps) => {
       if (err) {

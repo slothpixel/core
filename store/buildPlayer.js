@@ -1,8 +1,9 @@
 /* eslint-disable consistent-return */
 const async = require('async');
+const pify = require('pify');
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
-const getUUID = require('./getUUID');
+const getUUID = require('./get-uuid');
 const {
   logger, generateJob, getData, getPlayerFields,
 } = require('../util/utility');
@@ -68,54 +69,44 @@ function buildPlayer(uuid, cb) {
 }
 
 function getPlayer(name, cb) {
-  getUUID(name, (err, uuid) => {
-    if (err) {
-      return cb({ status: 404, message: err });
-    }
+  getUUID(name).then((uuid) => {
     buildPlayer(uuid, (err, player) => {
       if (err) {
         return cb({ status: 500, message: err });
       }
       return cb(null, player);
     });
+  }).catch((err) => {
+    cb({ status: 404, message: err });
   });
 }
 
-function populatePlayers(players, cb) {
-  async.map(players, (player, done) => {
+async function populatePlayers(players) {
+  return async.map(players, async (player) => {
     const { uuid } = player;
-    queries.getPlayerProfile(uuid, (err, profile, isCached) => {
-      if (err) {
-        logger.error(err);
-      }
+    try {
+      const [profile, isCached] = pify(queries.getPlayerProfile, {
+        multiArgs: true,
+      })(uuid);
       if (profile === null) {
         logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
-        buildPlayer(uuid, (err, newPlayer) => {
-          delete player.uuid;
-          const profile = getPlayerFields(newPlayer);
-          profile.uuid = uuid;
-          player.profile = profile;
-          queries.cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        });
-      } else {
+        const newPlayer = await pify(buildPlayer)();
         delete player.uuid;
+        const profile = getPlayerFields(newPlayer);
+        profile.uuid = uuid;
         player.profile = profile;
-        if (isCached) {
-          done(err, player);
-        } else {
-          queries.cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        }
+        await pify(queries.cachePlayerProfile)(profile);
+        return player;
       }
-    });
-  }, (err, result) => {
-    if (err) {
-      cb(err, null);
-    } else {
-      cb(null, result);
+      delete player.uuid;
+      player.profile = profile;
+      if (isCached) {
+        return player;
+      }
+      await pify(queries.cachePlayerProfile)(profile);
+      return player;
+    } catch (error) {
+      logger.error(error);
     }
   });
 }
