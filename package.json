@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "got": "^11.0.2",
+    "filter-obj": "^2.0.1",
     "graphql": "^14.6.0",
     "hypixelconstants": "^3.2.2",
     "moment": "^2.24.0",

@@ -8,6 +8,7 @@ const itemSchema = {
   item_id: 'id',
   count: 'Count',
   name: 'tag.value.display.value.Name',
+  damage: 'Damage',
   lore: 'tag.value.display.value.Lore.value',
   attributes: {
     modifier: 'tag.value.ExtraAttributes.value.modifier',
@@ -63,6 +64,10 @@ function simplifyItem(item) {
       const { texture } = x.attributes;
       if (typeof texture === 'object') {
         x.attributes.texture = getTexture(texture);
+      }
+      // If damage value is 0, remove
+      if (x.damage === null) {
+        delete x.damage;
       }
     }
   });

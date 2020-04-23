@@ -159,6 +159,15 @@ module.exports = {
       type: 'string',
     },
   },
+  bazaarItemIdParam: {
+    name: 'itemId',
+    in: 'path',
+    description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items). Multiple can be specified by seperating them with commas. To get all the items, don\'t specify itemId.',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
   fromParam: {
     name: 'from',
     in: 'query',
