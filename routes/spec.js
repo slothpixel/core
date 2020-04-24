@@ -230,26 +230,28 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player',
-        func: (req, res) => {
-          const players = req.params.player.split(',').slice(0, 15);
-          async.map(players, (player, cb) => {
-            getPlayer(player, (err, player) => {
-              if (err) {
-                return cb(err);
-              }
-              delete player.achievements;
-              delete player.quests;
-              const { fields } = req.query;
+        func: async (request, response) => {
+          const players = request.params.player.split(',').slice(0, 15);
+
+          try {
+            const result = await async.map(players, async (player) => {
+              let player_ = await getPlayer(player);
+              delete player_.achievements;
+              delete player_.quests;
+              const { fields } = request.query;
               if (fields) {
-                player = getPlayerFields(player, fields.split(','));
+                player_ = getPlayerFields(player_, fields.split(','));
               }
-              return cb(null, player);
+              return player_;
             });
-          }, (err, result) => {
-            if (err) return res.status(err.status).json({ error: err.message });
-            if (result.length === 1) return res.json(result[0]);
-            return res.json(result);
-          });
+
+            if (result.length === 1) {
+              return response.json(result[0]);
+            }
+            response.json(result);
+          } catch (error) {
+            response.status(error.status).json({ error: error.message });
+          }
         },
       },
     },
@@ -347,13 +349,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player/achievements',
-        func: (req, res) => {
-          getPlayer(req.params.player, (err, player) => {
-            if (err) {
-              return res.status(err.status).json({ error: err.message });
-            }
-            return res.json(player.achievements);
-          });
+        func: async (request, response) => {
+          try {
+            const { achievements } = await getPlayer(request.params.player);
+            response.json(achievements);
+          } catch (error) {
+            response.status(error.status).json({ error: error.message });
+          }
         },
       },
     },

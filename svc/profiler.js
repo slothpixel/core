@@ -41,17 +41,9 @@ function updatePlayers(cb) {
       cb(err);
     }
     async.mapLimit(players, 10, (p, cb) => {
-      buildPlayer({
-        uuid: p.uuid,
-        caching: {
-          cacheResult: false,
-        },
-      }, (err, player) => {
-        if (err) {
-          cb(err);
-        }
-        cb(null, upsertDoc(p.uuid, player));
-      });
+      buildPlayer(p.uuid, { shouldCache: false }).then((player) => {
+        upsertDoc(p.uuid, player);
+      }).catch(cb);
     }, (err, bulkPlayerOps) => {
       if (err) {
         cb(err);

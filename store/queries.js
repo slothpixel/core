@@ -8,13 +8,9 @@ const {
   Player, Guild, SkyBlockProfile, Auction,
 } = require('./models');
 
-function insertPlayer(uuid, player, cb) {
-  Player.findOneAndUpdate({ uuid }, player, { new: true, upsert: true }, function (err) {
-    if (err) {
-      logger.error(err);
-    }
-    return cb(err, player);
-  });
+async function insertPlayer(uuid, player) {
+  await pify(Player.findOneAndUpdate)({ uuid }, player, { new: true, upsert: true });
+  return player;
 }
 
 function getPlayer(uuid, cb) {
