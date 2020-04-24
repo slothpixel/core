@@ -5,7 +5,7 @@
 const config = require('../config');
 const { logger } = require('../util/utility');
 const profileFields = require('./profileFields');
-const templates = require('./lb-templates');
+const templates = require('./lbTemplates');
 const cacheFunctions = require('./cacheFunctions');
 const {
   Player, Guild,

@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
-const getUUID = require('./get-uuid');
+const getUUID = require('./getUUID');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cachedFunction = require('./cachedFunction');

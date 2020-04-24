@@ -16,7 +16,7 @@ const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { getGuildFromPlayer } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
-const getUUID = require('../store/get-uuid');
+const getUUID = require('../store/getUUID');
 const { getMetadata } = require('../store/queries');
 const { generateJob, getData, typeToStandardName } = require('../util/utility');
 

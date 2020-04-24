@@ -3,7 +3,7 @@ const pify = require('pify');
 const db = require('./db');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
-const lbTemplates = require('./lb-templates');
+const lbTemplates = require('./lbTemplates');
 const {
   Player, Guild, SkyBlockProfile, Auction,
 } = require('./models');
