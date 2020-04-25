@@ -15,7 +15,7 @@ module.exports = async (key, createCache, { cacheDuration = 60, shouldCache = tr
     await write({
       key,
       duration: cacheDuration,
-    });
+    }, result);
   }
 
   return result;

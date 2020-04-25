@@ -99,12 +99,12 @@ function removeGuild(id) {
   });
 }
 
-function insertSkyBlockProfile(profile, cb) {
-  SkyBlockProfile.findOneAndUpdate({}, profile, { new: true, upsert: true }, function (err) {
-    if (err) {
-      logger.error(err);
-    }
-  });
+async function insertSkyBlockProfile(profile) {
+  try {
+    await pify(SkyBlockProfile.findOneAndUpdate)({}, profile, { new: true, upsert: true });
+  } catch (error) {
+    logger.error(error);
+  }
 }
 
 function insertAuction(auction, cb) {

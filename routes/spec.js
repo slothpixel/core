@@ -812,7 +812,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             const uuid = await getUUID(request.params.player);
             try {
               // TODO: Update when buildProfile changed
-              const profile = await pify(buildProfile)(uuid, request.params.profile, true);
+              const profile = await buildProfile(uuid, request.params.profile);
               try {
                 const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
                 players.forEach((player) => {

@@ -1,6 +1,6 @@
 /**
- * Interface to Redis client
- * */
+Interface to Redis client.
+*/
 const redis = require('redis');
 const { logger } = require('../util/utility');
 const config = require('../config');

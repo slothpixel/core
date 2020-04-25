@@ -175,22 +175,23 @@ async function processMember({
   };
 }
 
-function processSkyBlock({
+async function processSkyBlock({
   profile_id = null,
   members = {},
   banking = {},
-}, cb) {
+}) {
   const newMembers = {};
-  async.each(Object.keys(members), async (member) => {
+  await async.each(Object.keys(members), async (member) => {
     newMembers[member] = await processMember(members[member]);
-  }, () => cb({
+  });
+  return {
     profile_id,
     members: newMembers,
     banking: {
       balance: banking.balance || null,
       transactions: banking.transactions || [],
     },
-  }));
+  };
 }
 
 module.exports = processSkyBlock;

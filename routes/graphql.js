@@ -24,7 +24,6 @@ const leaderboardsAsync = pify(leaderboards);
 const getGuildFromPlayerAsync = pify(getGuildFromPlayer);
 const getPlayerAsync = pify(getPlayer);
 const redisGetAsync = pify(redis.get).bind(redis);
-const buildProfileAsync = pify(buildProfile);
 const getAuctionsAsync = pify(getAuctions);
 const queryAuctionIdAsync = pify(queryAuctionId);
 const getMetadataAsync = pify(getMetadata);
@@ -109,7 +108,7 @@ class SkyblockResolver {
 
   async profile({ player_name, profile_id }) {
     const uuid = await getUUID(player_name);
-    const profile = await buildProfileAsync(uuid, profile_id, true);
+    const profile = await buildProfile(uuid, profile_id);
     const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
 
     players.forEach((player) => {
