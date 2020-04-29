@@ -19,7 +19,12 @@ async function getUUID(name) {
 
   return cachedFunction(`uuid:${name.toLowerCase()}`, async () => {
     const url = `https://api.mojang.com/users/profiles/minecraft/${name}`;
+    
     const data = await getData(redis, url);
+    if (!data) {
+      throw new Error('Invalid username!');
+    }
+    
     const uuid = JSON.parse(data).id;
     return uuid;
   }, { cacheDuration: config.UUID_CACHE_SECONDS, shouldCache: config.ENABLE_UUID_CACHE });
