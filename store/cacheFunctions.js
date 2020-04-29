@@ -3,10 +3,13 @@ const pify = require('pify');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
 
+const redisGetAsync = pify(redis.get).bind(redis);
+const redisSetexAsync = pify(redis.setex).bind(redis);
+
 exports.read = fromPromise(async (request) => {
   logger.debug(`[READCACHE] cache:${request.key}`);
   try {
-    const data = await pify(redis.get)(`cache:${request.key}`);
+    const data = await redisGetAsync(`cache:${request.key}`);
     let result;
     try {
       result = JSON.parse(data);
@@ -31,6 +34,6 @@ exports.write = fromPromise(async (request, data) => {
   } catch (error) {
     return logger.error(`[WRITECACHE] Failed to stringify JSON: ${error}`);
   }
-  await pify(redis.setex)(`cache:${request.key}`, request.duration, stringData);
+  await redisSetexAsync(`cache:${request.key}`, request.duration, stringData);
   return undefined;
 });

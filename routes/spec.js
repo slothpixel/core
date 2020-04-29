@@ -26,6 +26,8 @@ const {
 } = require('./params');
 const packageJson = require('../package.json');
 
+const redisGetAsync = pify(redis.get).bind(redis);
+
 const auctionObject = {
   type: 'object',
   description: 'Auction object',
@@ -767,7 +769,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           try {
             const uuid = await getUUID(request.params.player);
             try {
-              const data = await pify(redis.get)(`skyblock_profiles:${uuid}`);
+              const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
               if (data) {
                 const profiles = JSON.parse(data) || {};
                 // TODO - populatePlayers for each profile
@@ -1131,7 +1133,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/skyblock/bazaar/:id',
         func: async (request, response, callback) => {
           const itemId = request.params.id;
-          const data = await pify(redis.get)('skyblock_bazaar');
+          const data = await redisGetAsync('skyblock_bazaar');
           const ids = JSON.parse(data) || [];
           if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
             return response.status(400).json({ error: 'Invalid itemId' });

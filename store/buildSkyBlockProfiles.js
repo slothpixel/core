@@ -10,6 +10,9 @@ const cachedFunction = require('./cachedFunction');
 const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 
+const redisGetAsync = pify(redis.get).bind(redis);
+const redisSetAsync = pify(redis.set).bind(redis);
+
 async function getProfileData(id) {
   try {
     const body = await getData(redis, generateJob('skyblock_profile', {
@@ -27,7 +30,7 @@ function getLatestProfile(profiles) {
 
 async function updateProfileList(key, profiles) {
   try {
-    await pify(redis.set)(key, JSON.stringify(profiles));
+    await redisSetAsync(key, JSON.stringify(profiles));
   } catch (error) {
     logger.error(`Failed to update profile list: ${error}`);
   }
@@ -48,7 +51,7 @@ function getStats({
 }
 
 async function buildProfile(uuid, id = null, { shouldUpdateProfileList = true } = {}) {
-  const result = await pify(redis.get)(`skyblock_profiles:${uuid}`);
+  const result = await redisGetAsync(`skyblock_profiles:${uuid}`);
   let profile_id = id;
   let profiles = {};
 
@@ -86,7 +89,7 @@ Create or update list of profiles
 async function buildProfileList(uuid, profiles = {}) {
   const key = `skyblock_profiles:${uuid}`;
   try {
-    const result = await pify(redis.get)(key);
+    const result = await redisGetAsync(key);
     const profileData = JSON.parse(result) || {};
 
     // TODO: Mark old profiles
