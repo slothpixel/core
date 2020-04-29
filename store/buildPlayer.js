@@ -18,7 +18,7 @@ Currently doesn't support search by name
 async function buildPlayer(uuid, { shouldCache = true } = {}) {
   return cachedFuction(`player:${uuid}`, async () => {
     const body = await getData(redis, generateJob('player', { id: uuid }).url);
-    const playerData = pify(processPlayerData)(body.player || {});
+    const playerData = await pify(processPlayerData)(body.player || {});
 
     if (shouldCache && config.ENABLE_DB_CACHE) {
       await queries.insertPlayer(uuid, playerData);
