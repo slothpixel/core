@@ -10,12 +10,14 @@ const {
   logger, removeFormatting, generateJob, getData, invokeInterval,
 } = require('../util/utility');
 
+const redisSetAsync = pify(redis.set).bind(redis);
+
 async function updateBazaar() {
   try {
     const { products } = await getData(redis, generateJob('bazaar_products'));
     const items = Object.keys(products);
     try {
-      await pify(redis.set)('skyblock_bazaar', JSON.stringify(items));
+      await redisSetAsync('skyblock_bazaar', JSON.stringify(items));
       logger.info('[Bazaar] Updated item IDs');
       return items;
     } catch (error) {
