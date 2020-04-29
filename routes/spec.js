@@ -1130,7 +1130,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-        route: () => '/skyblock/bazaar/:id',
+        route: () => '/skyblock/bazaar/:id?',
         func: async (request, response, callback) => {
           const itemId = request.params.id;
           const data = await redisGetAsync('skyblock_bazaar');

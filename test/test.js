@@ -23,6 +23,7 @@ let app;
 // fake api responses
 nock('https://api.hypixel.net/')
   // fake player stats
+  .persist()
   .get('/player')
   .query(true)
   .reply(200, playerApi)
@@ -80,7 +81,12 @@ describe('api', () => {
           .replace(/{game}/, 'SkyWars')
           .replace(/{resource}/, 'languages');
         async.eachSeries(Object.keys(spec.paths[path]), (verb, cb) => {
-          if (path.indexOf('/leaderboards') === 0 || path.indexOf('/sessions') === 0 || path.indexOf('/bans') === 0 || path.endsWith('/recentGames') || path.indexOf('/bazaar') !== -1) {
+          console.log(`${path}, ${path.indexOf('/bazaar')}`);
+          if (path.indexOf('/leaderboards') === 0
+            || path.indexOf('/sessions') === 0
+            || path.indexOf('/bans') === 0
+            || path.endsWith('/recentGames')
+            || path.indexOf('/bazaar') !== -1) {
             return cb(err);
           }
           return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((err, res) => {
