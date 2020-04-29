@@ -8,8 +8,12 @@ const {
   Player, Guild, SkyBlockProfile, Auction,
 } = require('./models');
 
+const playerFindOneAndUpdateAsync = pify(Player.findOneAndUpdate).bind(Player);
+const guildFindOneAndUpdateAsync = pify(Guild.findOneAndUpdate).bind(Guild);
+const guildFindOne = pify(Guild.findOne).bind(Guild);
+
 async function insertPlayer(uuid, player) {
-  await pify(Player.findOneAndUpdate)({ uuid }, player, { new: true, upsert: true });
+  await playerFindOneAndUpdateAsync({ uuid }, player, { new: true, upsert: true });
   return player;
 }
 
@@ -58,7 +62,7 @@ function getPlayerProfile(uuid, cb) {
 }
 
 async function insertGuild(id, guild) {
-  await pify(Guild.findOneAndUpdate)({ id }, guild, { new: true, upsert: true });
+  await guildFindOneAndUpdateAsync({ id }, guild, { new: true, upsert: true });
   return guild;
 }
 
@@ -81,7 +85,7 @@ function getGuilds(filter = {}, fields = null, options = {}, cb) {
 
 async function getGuildByPlayer(uuid) {
   try {
-    const guild = await pify(Guild.findOne)({ 'members.uuid': uuid });
+    const guild = await guildFindOne({ 'members.uuid': uuid });
     if (guild === null) {
       return null;
     }
