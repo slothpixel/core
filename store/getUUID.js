@@ -12,7 +12,10 @@ function fetchUUID(username, cb) {
   const url = `https://api.mojang.com/users/profiles/minecraft/${username}`;
   return getData(redis, url, (err, body) => {
     if (err) {
-      return cb(err.message, null);
+      return cb(err.message);
+    }
+    if (!body) {
+      return cb('Invalid username!');
     }
     const uuid = JSON.parse(body).id;
     return cb(null, uuid);
