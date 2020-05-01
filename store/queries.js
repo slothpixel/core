@@ -12,9 +12,8 @@ const playerFindOneAndUpdateAsync = pify(Player.findOneAndUpdate).bind(Player);
 const guildFindOneAndUpdateAsync = pify(Guild.findOneAndUpdate).bind(Guild);
 const guildFindOne = pify(Guild.findOne).bind(Guild);
 
-async function insertPlayer(uuid, player) {
-  await playerFindOneAndUpdateAsync({ uuid }, player, { new: true, upsert: true });
-  return player;
+function insertPlayer(uuid, player) {
+  playerFindOneAndUpdateAsync({ uuid }, player, { new: true, upsert: true });
 }
 
 function getPlayer(uuid, cb) {
@@ -105,7 +104,7 @@ function removeGuild(id) {
 
 async function insertSkyBlockProfile(profile) {
   try {
-    await pify(SkyBlockProfile.findOneAndUpdate)({}, profile, { new: true, upsert: true });
+    await pify(SkyBlockProfile.findOneAndUpdate).bind(SkyBlockProfile)({ profile_id: profile.profile_id }, profile, { new: true, upsert: true });
   } catch (error) {
     logger.error(error);
   }
