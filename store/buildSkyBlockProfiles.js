@@ -71,7 +71,7 @@ async function buildProfile(uuid, id = null, { shouldUpdateProfileList = true } 
 
   return cachedFunction(`skyblock_profile:${profile_id}`, async () => {
     const profile = await getProfileData(profile_id);
-    profiles[profile_id] = Object.assign(profiles[profile_id], getStats(profile.members[uuid] || {}, profile.members));
+    profiles[profile_id] = Object.assign(profiles[profile_id] || {}, getStats(profile.members[uuid] || {}, profile.members));
 
     await insertSkyBlockProfile(profile);
 
@@ -91,9 +91,8 @@ async function buildProfileList(uuid, profiles = {}) {
   try {
     const result = await redisGetAsync(key);
     const profileData = JSON.parse(result) || {};
-
     // TODO: Mark old profiles
-    const updateQueue = Object.keys(profiles).filter((id) => !profileData.includes(id));
+    const updateQueue = Object.keys(profiles).filter((id) => !(id in profileData));
 
     if (updateQueue.length === 0) {
       return;
