@@ -48,7 +48,7 @@ async function populatePlayers(players) {
   return async.map(players, async (player) => {
     const { uuid } = player;
     try {
-      const [profile, isCached] = pify(queries.getPlayerProfile, {
+      const [profile, isCached] = await pify(queries.getPlayerProfile, {
         multiArgs: true,
       })(uuid);
       if (profile === null) {
