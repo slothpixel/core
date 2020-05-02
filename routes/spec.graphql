@@ -2646,6 +2646,11 @@ type SkyblockAuctionsListItem {
   Auction uuid
   """
   uuid: String
+  
+  """
+  Auctioneer uuid
+  """
+  auctioneer: String
 }
 
 type SkyblockBazaar {
