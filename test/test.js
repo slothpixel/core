@@ -84,6 +84,7 @@ describe('api', () => {
           if (path.indexOf('/leaderboards') === 0
             || path.indexOf('/sessions') === 0
             || path.indexOf('/bans') === 0
+            || path.indexOf('/skyblock') === 0
             || path.endsWith('/recentGames')
             || path.indexOf('/bazaar') !== -1) {
             return cb(err);
