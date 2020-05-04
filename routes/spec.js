@@ -148,10 +148,13 @@ const spec = {
     },
   ],
   info: {
-    description: `
+    description: `# Introduction
 The Slothpixel API provides Hypixel related data.
 
 Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
+    
+# GraphQL
+    Slothpixel API supports the use of GraphQL query language, and it is recommended for advanced users. [Read more](https://github.com/slothpixel/core/wiki/GraphQL)
     `,
     version: packageJson.version,
     title: 'Slothpixel API',
@@ -160,6 +163,11 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
       url: 'https://opensource.org/licenses/MIT',
     },
   },
+  host: 'api.slothpixel.me',
+  basePath: '/api',
+  produces: [
+    'application/json',
+  ],
   tags: [
     {
       name: 'player',
