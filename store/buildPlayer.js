@@ -17,7 +17,7 @@ Functions to build/cache player object
 async function buildPlayer(uuid, { shouldCache = true } = {}) {
   return cachedFunction(`player:${uuid}`, async () => {
     const body = await getData(redis, generateJob('player', { id: uuid }).url);
-    const playerData = await pify(processPlayerData)(body.player || {});
+    const playerData = processPlayerData(body.player || {});
 
     if (shouldCache && config.ENABLE_DB_CACHE) {
       queries.insertPlayer(uuid, playerData);
@@ -68,7 +68,7 @@ async function populatePlayers(players) {
       await pify(queries.cachePlayerProfile)(profile);
       return player;
     } catch (error) {
-      logger.error(JSON.stringify(error));
+      logger.error(error);
     }
   });
 }
