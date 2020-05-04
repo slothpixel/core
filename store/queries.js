@@ -39,7 +39,7 @@ function cachePlayerProfile(profile, cb) {
   logger.debug(`Caching ${key}`);
   redis.set(key, JSON.stringify(profile), (err) => {
     if (err) {
-      logger.error(err);
+      logger.error(JSON.stringify(err));
     }
     cb(profile);
   });
