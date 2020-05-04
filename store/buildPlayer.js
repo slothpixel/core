@@ -57,7 +57,7 @@ async function populatePlayers(players) {
         const profile = getPlayerFields(newPlayer);
         profile.uuid = uuid;
         player.profile = profile;
-        await pify(queries.cachePlayerProfile)(profile);
+        await queries.cachePlayerProfile(profile);
         return player;
       }
       delete player.uuid;
@@ -65,7 +65,7 @@ async function populatePlayers(players) {
       if (isCached) {
         return player;
       }
-      await pify(queries.cachePlayerProfile)(profile);
+      await queries.cachePlayerProfile(profile);
       return player;
     } catch (error) {
       logger.error(error);
