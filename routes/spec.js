@@ -251,7 +251,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
               return response.json(result[0]);
             }
             response.json(result);
-          } catch (error) {
+          } catch ([error]) {
             response.status(error.status).json({ error: error.message });
           }
         },
