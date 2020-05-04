@@ -91,7 +91,7 @@ function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
           return cb(err);
         }
         if (shouldUpdateProfileList) {
-          profiles[profile_id] = Object.assign(profiles[profile_id], getStats(profile.members[uuid] || {}, profile.members));
+          profiles[profile_id] = Object.assign(profiles[profile_id] || {}, getStats(profile.members[uuid] || {}, profile.members));
           updateProfileList(`skyblock_profiles:${uuid}`, profiles);
         }
         cacheProfile(key, profile, (profile) => cb(null, profile || {}));
@@ -115,7 +115,7 @@ function buildProfileList(uuid, profiles = {}) {
     if (updateQueue.length === 0) return;
     async.each(updateQueue, (id, cb) => {
       buildProfile(uuid, id, false, (err, profile) => {
-        p[id] = Object.assign(profiles[id], getStats(profile.members[uuid] || {}, profile.members));
+        p[id] = Object.assign(profiles[id] || {}, getStats(profile.members[uuid] || {}, profile.members));
         cb();
       });
     }, () => updateProfileList(key, p));
