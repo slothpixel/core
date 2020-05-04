@@ -109,6 +109,10 @@ async function processMember({
   talisman_bag = {},
   quiver = {},
   ender_chest_contents = {},
+  // Fairy souls
+  fairy_souls_collected = 0,
+  fairy_souls = 0,
+  fairy_exchanges = 0,
   ...rest
 }) {
   const getSkills = (regexp) => pickKeys(rest, {
@@ -160,6 +164,9 @@ async function processMember({
     potion_bag: await getInventory(potion_bag),
     talisman_bag: await getInventory(talisman_bag),
     quiver: await getInventory(quiver),
+    fairy_souls_collected,
+    fairy_souls,
+    fairy_exchanges,
     pets,
     skills,
     collection,
