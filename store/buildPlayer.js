@@ -68,7 +68,7 @@ async function populatePlayers(players) {
       await pify(queries.cachePlayerProfile)(profile);
       return player;
     } catch (error) {
-      logger.error(error);
+      logger.error(error.message);
     }
   });
 }
