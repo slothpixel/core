@@ -621,7 +621,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/guilds/:player',
         func: async (req, res, cb) => {
           try {
-            const guild = await getGuildFromPlayer(req.params.player, req.query.populatePlayers);
+            const guild = await getGuildFromPlayer(req.params.player, { shouldPopulatePlayers: req.query.populatePlayers });
             if (guild.guild === null) {
               return res.status(404).json(guild);
             }
