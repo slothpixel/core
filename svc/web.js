@@ -37,12 +37,36 @@ app.route('/healthz').get((req, res) => {
 
 // Rate limiter and API key middleware
 app.use((req, res, cb) => {
+  const apiKey = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.api_key;
+  if (config.ENABLE_API_LIMIT && apiKey) {
+    redis.sismember('api_keys', req.query.key, (err, resp) => {
+      if (err) {
+        cb(err);
+      } else {
+        res.locals.isAPIRequest = resp === 1;
+        cb();
+      }
+    });
+  } else {
+    cb();
+  }
+});
+app.use((req, res, cb) => {
   const ip = req.clientIp;
   res.locals.ip = ip;
 
   res.locals.usageIdentifier = ip;
-  const rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
-  logger.info(`[USER] ${req.user ? req.user.account_id : 'anonymous'} visit ${req.originalUrl}, ip ${ip}`);
+  let rateLimit = '';
+  if (res.locals.isAPIRequest) {
+    const requestAPIKey = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.api_key;
+    res.locals.usageIdentifier = requestAPIKey;
+    rateLimit = config.API_KEY_PER_MIN_LIMIT;
+    logger.info(`[KEY] ${requestAPIKey} visit ${req.originalUrl}, ip ${ip}`);
+  } else {
+    res.locals.usageIdentifier = ip;
+    rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
+    logger.info(`[USER] ${req.user ? req.user.account_id : 'anonymous'} visit ${req.originalUrl}, ip ${ip}`);
+  }
 
   const pathCost = pathCosts[req.path] || Object.hasOwnProperty.call(req.query, 'cached') ? 0 : 1;
   const multi = redis.multi()
@@ -60,6 +84,7 @@ app.use((req, res, cb) => {
     }
     res.set({
       'X-Rate-Limit-Remaining-Minute': rateLimit - resp[0],
+      'X-IP-Address': ip,
     });
     if (!res.locals.isAPIRequest) {
       res.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(resp[2]));
