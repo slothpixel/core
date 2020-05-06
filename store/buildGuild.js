@@ -68,7 +68,7 @@ async function buildGuild(uuid) {
   }, { cacheDuration: config.GUILD_CACHE_SECONDS, shouldCache: config.ENABLE_GUILD_CACHE });
 }
 
-async function getGuildFromPlayer(playerName, shouldPopulatePlayers = false) {
+async function getGuildFromPlayer(playerName, { shouldPopulatePlayers = false } = {}) {
   const guild = await buildGuild(await getUUID(playerName));
   if (shouldPopulatePlayers) {
     const players = await populatePlayers(guild.members);
