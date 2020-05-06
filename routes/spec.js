@@ -13,7 +13,7 @@ const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer } = require('../store/buildGuild');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
-const { populatePlayers, getPlayer } = require('../store/buildPlayer');
+const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
   logger, generateJob, getData, typeToStandardName, getPlayerFields,
@@ -251,8 +251,8 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
               return response.json(result[0]);
             }
             response.json(result);
-          } catch ([error]) {
-            response.status(error.status).json({ error: error.message });
+          } catch (error) {
+            response.status(error instanceof PlayerError ? error.status : 500).json({ error: error.message });
           }
         },
       },

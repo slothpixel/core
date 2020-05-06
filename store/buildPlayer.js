@@ -30,16 +30,24 @@ async function buildPlayer(uuid, { shouldCache = true } = {}) {
   });
 }
 
+class PlayerError extends Error {
+  constructor({ status, message }) {
+    super(message);
+    this.message = message;
+    this.status = status;
+  }
+}
+
 async function getPlayer(name) {
   try {
     const uuid = await getUUID(name);
     try {
       return await buildPlayer(uuid);
     } catch (error) {
-      return { status: 500, message: error.message };
+      throw new PlayerError({ status: 500, message: error.message });
     }
   } catch (error) {
-    return { status: 404, message: error.message };
+    throw new PlayerError({ status: 404, message: error.message });
   }
 }
 
@@ -73,4 +81,6 @@ async function populatePlayers(players) {
   });
 }
 
-module.exports = { buildPlayer, getPlayer, populatePlayers };
+module.exports = {
+  buildPlayer, getPlayer, populatePlayers, PlayerError,
+};
