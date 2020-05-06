@@ -1,19 +1,19 @@
 // https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/datetime/datemath.ts
 const moment = require('moment');
 
-const units = ['y', 'M', 'w', 'd', 'h', 'm', 's'];
+const units = new Set(['y', 'M', 'w', 'd', 'h', 'm', 's']);
 
 function parseDateMath(mathString, time) {
   const strippedMathString = mathString.replace(/\s/g, '');
   const dateTime = time;
   let i = 0;
-  const len = strippedMathString.length;
+  const { length } = strippedMathString;
 
-  while (i < len) {
+  while (i < length) {
     const c = strippedMathString.charAt(i);
     i += 1;
     let type;
-    let num;
+    let number;
 
     if (c === '/') {
       type = 0;
@@ -25,37 +25,37 @@ function parseDateMath(mathString, time) {
       return undefined;
     }
 
-    if (Number.isNaN(parseInt(strippedMathString.charAt(i), 10))) {
-      num = 1;
+    if (Number.isNaN(Number.parseInt(strippedMathString.charAt(i), 10))) {
+      number = 1;
     } else if (strippedMathString.length === 2) {
-      num = strippedMathString.charAt(i);
+      number = strippedMathString.charAt(i);
     } else {
-      const numFrom = i;
-      while (!Number.isNaN(parseInt(strippedMathString.charAt(i), 10))) {
+      const numberFrom = i;
+      while (!Number.isNaN(Number.parseInt(strippedMathString.charAt(i), 10))) {
         i += 1;
         if (i > 10) {
           return undefined;
         }
       }
-      num = parseInt(strippedMathString.substring(numFrom, i), 10);
+      number = Number.parseInt(strippedMathString.slice(numberFrom, i), 10);
     }
 
-    if (type === 0 && num !== 1) {
+    if (type === 0 && number !== 1) {
       return undefined;
     }
 
     const unit = strippedMathString.charAt(i);
     i += 1;
 
-    if (!units.includes(unit)) {
+    if (!units.has(unit)) {
       return undefined;
     }
     if (type === 0) {
       dateTime.startOf(unit);
     } else if (type === 1) {
-      dateTime.add(num, unit);
+      dateTime.add(number, unit);
     } else if (type === 2) {
-      dateTime.subtract(num, unit);
+      dateTime.subtract(number, unit);
     }
   }
 
@@ -80,17 +80,17 @@ function parse(text) {
   let index;
   let parseString;
 
-  if (text.substring(0, 3) === 'now') {
+  if (text.slice(0, 3) === 'now') {
     time = moment.utc();
-    mathString = text.substring(3);
+    mathString = text.slice(3);
   } else {
     index = text.indexOf('||');
     if (index === -1) {
       parseString = text;
       mathString = '';
     } else {
-      parseString = text.substring(0, index);
-      mathString = text.substring(index + 2);
+      parseString = text.slice(0, Math.max(0, index));
+      mathString = text.slice(Math.max(0, index + 2));
     }
 
     time = moment(parseString, moment.ISO_8601);

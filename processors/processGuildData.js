@@ -48,14 +48,14 @@ function getLevel(exp) {
   return 100;
 }
 
-function changeObjKeys(obj) {
-  Object.keys(obj).forEach((game) => {
+function changeObjectKeys(object) {
+  Object.keys(object).forEach((game) => {
     const standardName = utility.typeToStandardName(game);
     if (standardName !== game) {
-      delete Object.assign(obj, { [standardName]: obj[game] })[game];
+      delete Object.assign(object, { [standardName]: object[game] })[game];
     }
   });
-  return obj;
+  return object;
 }
 
 /*
@@ -77,32 +77,33 @@ function getPreferredGames(games) {
   return games.map((game) => utility.typeToStandardName(game));
 }
 
-function processMembers(members) {
-  const arr = [];
-  function processMember({
+function processMember({
+  uuid,
+  rank,
+  joined,
+  questParticipation = 0,
+  expHistory = [],
+  mutedTill = null,
+}) {
+  return {
     uuid,
-    rank,
+    rank: rank
+      .replace('MEMBER', 'Member')
+      .replace('OFFICER', 'Officer')
+      .replace('GUILDMASTER', 'Guild Master'),
     joined,
-    questParticipation = 0,
-    expHistory = [],
-    mutedTill = null,
-  }) {
-    return {
-      uuid,
-      rank: rank
-        .replace('MEMBER', 'Member')
-        .replace('OFFICER', 'Officer')
-        .replace('GUILDMASTER', 'Guild Master'),
-      joined,
-      quest_participation: questParticipation,
-      exp_history: expHistory,
-      muted_till: mutedTill,
-    };
-  }
+    quest_participation: questParticipation,
+    exp_history: expHistory,
+    muted_till: mutedTill,
+  };
+}
+
+function processMembers(members) {
+  const array = [];
   members.forEach((member) => {
-    arr.push(processMember(member));
+    array.push(processMember(member));
   });
-  return arr;
+  return array;
 }
 
 function processGuildData({
@@ -122,7 +123,7 @@ function processGuildData({
   guildExpByGameType = {},
 }) {
   const expHistory = {};
-  const expByGame = changeObjKeys(guildExpByGameType);
+  const expByGame = changeObjectKeys(guildExpByGameType);
   const processedMembers = processMembers(members);
   Object.assign(expHistory, processedMembers[0].exp_history);
   processedMembers.forEach((member) => {

@@ -18,7 +18,7 @@ const guildApi = require('./data/guild');
 const boosterApi = require('./data/boosters');
 
 // these are loaded later, as the database needs to be created when these are required
-let db;
+let database;
 let app;
 // fake api responses
 nock('https://api.hypixel.net/')
@@ -41,24 +41,56 @@ nock('https://api.hypixel.net/')
 before(function setup(done) {
   this.timeout(60000);
   async.series([
-    function wipeRedis(cb) {
+    function wipeRedis(callback) {
       console.log('wiping redis');
-      redis.flushdb((err, success) => {
-        console.log(err, success);
-        cb(err);
+      redis.flushdb((error, success) => {
+        console.log(error, success);
+        callback(error);
       });
     },
-    function initDB(cb) {
-      db = require('../store/db');
-      cb();
+    function initDB(callback) {
+      database = require('../store/database');
+      callback();
     },
-    function startServices(cb) {
+    function startServices(callback) {
       console.log('starting services');
       app = require('../svc/web');
-      cb();
+      callback();
     },
   ], done);
 });
+
+function testWhiteListedRoutes(done, key) {
+  async.eachSeries(
+    [
+      `/api${key}`, // Docs
+    ], (i, callback) => {
+      supertest(app).get(i).end((error, response) => {
+        if (error) {
+          return callback(error);
+        }
+
+        assert.notEqual(response.statusCode, 429);
+        return callback();
+      });
+    },
+    done,
+  );
+}
+
+function testRateCheckedRoute(done) {
+  async.timesSeries(10, (i, callback) => {
+    setTimeout(() => {
+      supertest(app).get('/api/players/builder_247').end((error, response) => {
+        if (error) {
+          return callback(error);
+        }
+        assert.equal(response.statusCode, 200);
+        return callback();
+      });
+    }, i * 300);
+  }, done);
+}
 
 describe('parseStats', () => {
   it('should return parsed player stats', () => {
@@ -67,39 +99,39 @@ describe('parseStats', () => {
   });
 });
 describe('api', () => {
-  it('should get API spec', function testAPISpec(cb) {
+  it('should get API spec', function testAPISpec(callback) {
     this.timeout(5000);
-    supertest(app).get('/api').end((err, res) => {
-      if (err) {
-        return cb(err);
+    supertest(app).get('/api').end((error, response) => {
+      if (error) {
+        return callback(error);
       }
-      const spec = res.body;
-      return async.eachSeries(Object.keys(spec.paths), (path, cb) => {
+      const spec = response.body;
+      return async.eachSeries(Object.keys(spec.paths), (path, callback_) => {
         const replacedPath = path
           .replace(/{playerName}/, 'builder_247')
           .replace(/{game}/, 'SkyWars')
           .replace(/{resource}/, 'languages');
-        async.eachSeries(Object.keys(spec.paths[path]), (verb, cb) => {
+        async.eachSeries(Object.keys(spec.paths[path]), (verb, callback__) => {
           console.log(`${path}, ${path.indexOf('/bazaar')}`);
           if (path.indexOf('/leaderboards') === 0
             || path.indexOf('/sessions') === 0
             || path.indexOf('/bans') === 0
             || path.indexOf('/skyblock') === 0
             || path.endsWith('/recentGames')
-            || path.indexOf('/bazaar') !== -1) {
-            return cb(err);
+            || path.includes('/bazaar')) {
+            return callback__(error);
           }
-          return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((err, res) => {
+          return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((error, response) => {
             // console.log(verb, replacedPath, res.body);
             if (replacedPath.startsWith('/admin')) {
-              assert.equal(res.statusCode, 403);
+              assert.equal(response.statusCode, 403);
             } else {
-              assert.equal(res.statusCode, 200);
+              assert.equal(response.statusCode, 200);
             }
-            return cb(err);
+            return callback__(error);
           });
-        }, cb);
-      }, cb);
+        }, callback_);
+      }, callback);
     });
   });
 });
@@ -111,62 +143,31 @@ describe('api limits', () => {
       .del('user_usage_count')
       .del('usage_count')
       .sadd('api_keys', 'KEY')
-      .exec((err) => {
-        if (err) {
-          return done(err);
+      .exec((error) => {
+        if (error) {
+          return done(error);
         }
 
         return done();
       });
   });
-  function testWhiteListedRoutes(done, key) {
-    async.eachSeries(
-      [
-        `/api${key}`, // Docs
-      ], (i, cb) => {
-        supertest(app).get(i).end((err, res) => {
-          if (err) {
-            return cb(err);
-          }
-
-          assert.notEqual(res.statusCode, 429);
-          return cb();
-        });
-      },
-      done,
-    );
-  }
-
-  function testRateCheckedRoute(done) {
-    async.timesSeries(10, (i, cb) => {
-      setTimeout(() => {
-        supertest(app).get('/api/players/builder_247').end((err, res) => {
-          if (err) {
-            return cb(err);
-          }
-          assert.equal(res.statusCode, 200);
-          return cb();
-        });
-      }, i * 300);
-    }, done);
-  }
 
   it('should be able to make API calls without key with whitelisted routes unaffected. One call should fail as rate limit is hit. Last ones should succeed as they are whitelisted', function testNoApiLimit(done) {
     this.timeout(25000);
-    testWhiteListedRoutes((err) => {
-      if (err) {
-        done(err);
+    testWhiteListedRoutes((error) => {
+      if (error) {
+        done(error);
       } else {
-        testRateCheckedRoute((err) => {
-          if (err) {
-            done(err);
+        testRateCheckedRoute((error) => {
+          if (error) {
+            done(error);
           } else {
-            supertest(app).get('/api/players/builder_247').end((err, res) => {
-              if (err) {
-                done(err);
+            supertest(app).get('/api/players/builder_247').end((error, response) => {
+              if (error) {
+                done(error);
               }
-              assert.equal(res.statusCode, 429);
-              assert.equal(res.body.error, 'monthly api limit exceeded');
+              assert.equal(response.statusCode, 429);
+              assert.equal(response.body.error, 'monthly api limit exceeded');
 
               testWhiteListedRoutes(done, '');
             });

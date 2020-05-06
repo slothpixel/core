@@ -3,21 +3,21 @@
  * */
 // const request = require('request');
 // const config = require('../config');
-const db = require('../store/db');
+const database = require('../store/database');
 const redis = require('../store/redis');
 const { logger } = require('../util/utility');
 
 // const apiKey = config.HYPIXEL_API_KEY;
 
 function invokeInterval(func) {
-  db.once('open', () => {
-  // invokes the function immediately, waits for callback, waits the delay, and then calls it again
+  database.once('open', () => {
+    // invokes the function immediately, waits for callback, waits the delay, and then calls it again
     (function invoker() {
       logger.info(`running ${func.name}`);
       console.time(func.name);
-      func((err, result) => {
-        if (err) {
-          logger.error(err);
+      func((error, result) => {
+        if (error) {
+          logger.error(error);
         }
         const final = result || {
           metric: 1,
@@ -33,33 +33,33 @@ function invokeInterval(func) {
   });
 }
 
-function redisUsage(cb) {
-  redis.info((err) => {
-    if (err) {
-      return cb(err);
+function redisUsage(callback) {
+  redis.info((error) => {
+    if (error) {
+      return callback(error);
     }
-    return cb(err, {
+    return callback(error, {
       metric: Number(redis.server_info.used_memory),
       threshold: 2.5 * (10 ** 9),
     });
   });
 }
 
-function mongoUsage(cb) {
-  db.db.stats((err, data) => {
-    cb(err, {
+function mongoUsage(callback) {
+  database.db.stats((error, data) => {
+    callback(error, {
       metric: Number(data.storageSize),
       threshold: 4 * (10 ** 11),
     });
   });
 }
 
-function hypixelApi(cb) {
-  redis.get('hypixel_api_error', (err, reply) => {
-    if (err) {
-      return cb(err);
+function hypixelApi(callback) {
+  redis.get('hypixel_api_error', (error, reply) => {
+    if (error) {
+      return callback(error);
     }
-    return cb(err, {
+    return callback(error, {
       metric: Number(reply),
       threshold: 1,
     });

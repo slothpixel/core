@@ -11,14 +11,14 @@ const {
   Player, Guild,
 } = require('./models');
 
-function cacheLeaderboard(lb, key, cb) {
+function cacheLeaderboard(lb, key, callback) {
   if (config.ENABLE_LEADERBOARD_CACHE) {
     cacheFunctions.write({
       key,
       duration: config.LEADERBOARD_CACHE_SECONDS,
     }, lb);
   }
-  return cb(lb);
+  return callback(lb);
 }
 
 function getQueryFields(type, columns = '') {
@@ -34,20 +34,20 @@ function createQuery({
   sortBy, sortOrder = 'desc', limit = 100, filter = '{}', significant = true, page = 0,
 }) {
   let error;
-  let filterObj = {};
+  let filterObject = {};
   if (sortBy === undefined) {
     error = 'No sortBy parameter!';
   }
   try {
-    filterObj = JSON.parse(filter);
-  } catch (e) {
-    error = `Failed to parse filter JSON: ${e.message}`;
+    filterObject = JSON.parse(filter);
+  } catch (error_) {
+    error = `Failed to parse filter JSON: ${error_.message}`;
   }
   // TODO - Later remove non ADMIN ranked admin accounts
   if (significant === true) {
-    filterObj.rank = { $ne: 'ADMIN' };
+    filterObject.rank = { $ne: 'ADMIN' };
   }
-  filterObj[sortBy] = { $ne: null };
+  filterObject[sortBy] = { $ne: null };
   if (limit > 1000) {
     limit = 1000;
   }
@@ -55,7 +55,7 @@ function createQuery({
     ? 1
     : -1;
   return {
-    filter: filterObj,
+    filter: filterObject,
     options: {
       limit: Number(limit),
       skip: page * limit,
@@ -70,24 +70,24 @@ function createQuery({
 
 function transformData(data) {
   // Remove _id field from each entry
-  return data.map((doc) => {
-    const obj = doc._doc;
-    delete obj._id;
+  return data.map((document) => {
+    const object = document._doc;
+    delete object._id;
     // Change extra columns from nested objects to keys
-    if (Object.hasOwnProperty.call(obj, 'stats')) {
-      Object.keys(obj.stats).forEach((game) => {
-        const gameObj = obj.stats[game];
-        Object.keys(gameObj).forEach((stat) => {
-          obj[`${game}_${stat}`] = gameObj[stat];
+    if (Object.hasOwnProperty.call(object, 'stats')) {
+      Object.keys(object.stats).forEach((game) => {
+        const gameObject = object.stats[game];
+        Object.keys(gameObject).forEach((stat) => {
+          object[`${game}_${stat}`] = gameObject[stat];
         });
       });
-      delete obj.stats;
+      delete object.stats;
     }
-    return obj;
+    return object;
   });
 }
 
-function executeQuery(type, query, fields, cb) {
+function executeQuery(type, query, fields, callback) {
   let Model;
   if (type === 'guilds') {
     Model = Guild;
@@ -96,18 +96,18 @@ function executeQuery(type, query, fields, cb) {
   }
   const { filter, options, error } = createQuery(query);
   if (error) {
-    return cb(error);
+    return callback(error);
   }
-  Model.find(filter, fields, options, (err, res) => {
-    if (err) {
-      logger.error(err);
-      return cb('Query failed');
+  Model.find(filter, fields, options, (error_, result) => {
+    if (error_) {
+      logger.error(error_);
+      return callback('Query failed');
     }
-    cb(null, transformData(res));
+    callback(null, transformData(result));
   });
 }
 
-function getLeaderboards(query, template, cb) {
+function getLeaderboards(query, template, callback) {
   if (template) {
     const [type, subtype] = template.split('_');
     if (templates[type].items[subtype] !== undefined) {
@@ -115,7 +115,7 @@ function getLeaderboards(query, template, cb) {
       cacheFunctions.read({ key }, (lb) => {
         if (lb) {
           logger.debug(`Cache hit for ${key}`);
-          return cb(null, lb);
+          return callback(null, lb);
         }
         const model = (type === 'general' || type === 'games')
           ? 'players'
@@ -125,27 +125,27 @@ function getLeaderboards(query, template, cb) {
           limit: 1000,
         };
         const fields = getQueryFields(model, templates[type].items[subtype].fields.join());
-        executeQuery(model, query, fields, (err, data) => {
-          if (err) {
-            return cb(err);
+        executeQuery(model, query, fields, (error, data) => {
+          if (error) {
+            return callback(error);
           }
-          cacheLeaderboard(data, key, (lb) => cb(null, lb));
+          cacheLeaderboard(data, key, (lb) => callback(null, lb));
         });
       });
     } else {
-      cb('Invalid template name!');
+      callback('Invalid template name!');
     }
   } else {
     const { type } = query;
     if (type !== 'players' && type !== 'guilds') {
-      return cb('No valid type parameter!');
+      return callback('No valid type parameter!');
     }
     const fields = getQueryFields(type, query.columns);
-    executeQuery(type, query, fields, (err, lb) => {
-      if (err) {
-        return cb(err);
+    executeQuery(type, query, fields, (error, lb) => {
+      if (error) {
+        return callback(error);
       }
-      cb(null, lb);
+      callback(null, lb);
     });
   }
 }

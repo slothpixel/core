@@ -9,7 +9,7 @@ const cachedFunction = require('./cachedFunction');
 const redis = require('./redis');
 
 async function getUUID(name) {
-  if ((/^[0-9a-f]{32}$/i).test(removeDashes(name))) {
+  if ((/^[\da-f]{32}$/i).test(removeDashes(name))) {
     return removeDashes(name);
   }
 

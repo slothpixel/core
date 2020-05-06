@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars,consistent-return,prefer-arrow-callback,func-names */
 const pify = require('pify');
-const db = require('./db');
+const database = require('./database');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
 const lbTemplates = require('./lbTemplates');
@@ -18,21 +18,21 @@ function insertPlayer(uuid, player) {
   playerFindOneAndUpdateAsync({ uuid }, player, { new: true, upsert: true });
 }
 
-function getPlayer(uuid, cb) {
-  Player.findOne({ uuid }, function (err, player) {
-    if (err) {
-      logger.error(err);
+function getPlayer(uuid, callback) {
+  Player.findOne({ uuid }, function (error, player) {
+    if (error) {
+      logger.error(error);
     }
-    return cb(err, player);
+    return callback(error, player);
   });
 }
 
-function getPlayers(filter = {}, fields = null, options = {}, cb) {
-  Player.find(filter, fields, options, (err, res) => {
-    if (err) {
-      logger.error(err);
+function getPlayers(filter = {}, fields = null, options = {}, callback) {
+  Player.find(filter, fields, options, (error, result) => {
+    if (error) {
+      logger.error(error);
     }
-    cb(err, res.map((model) => model.toObject()));
+    callback(error, result.map((model) => model.toObject()));
   });
 }
 
@@ -47,18 +47,18 @@ async function cachePlayerProfile(profile) {
   return profile;
 }
 
-function getPlayerProfile(uuid, cb) {
+function getPlayerProfile(uuid, callback) {
   const key = `profile:${uuid}`;
   logger.debug(`Trying to get profile ${uuid} from cache`);
-  redis.get(key, (err, reply) => {
-    if (err) {
-      logger.error(err);
+  redis.get(key, (error, reply) => {
+    if (error) {
+      logger.error(error);
     }
     if (reply) {
       logger.debug(`Cache hit for profile ${uuid}`);
-      return cb(err, JSON.parse(reply), true);
+      return callback(error, JSON.parse(reply), true);
     }
-    return cb(null, null, false);
+    return callback(null, null, false);
   });
 }
 
@@ -67,20 +67,20 @@ async function insertGuild(id, guild) {
   return guild;
 }
 
-function getGuild(id, cb) {
-  Guild.findOne({ id }, function (err, guild) {
-    if (err) {
-      logger.error(err);
+function getGuild(id, callback) {
+  Guild.findOne({ id }, function (error, guild) {
+    if (error) {
+      logger.error(error);
     }
-    return cb(err, guild);
+    return callback(error, guild);
   });
 }
-function getGuilds(filter = {}, fields = null, options = {}, cb) {
-  Guild.find(filter, fields, options, (err, res) => {
-    if (err) {
-      logger.error(err);
+function getGuilds(filter = {}, fields = null, options = {}, callback) {
+  Guild.find(filter, fields, options, (error, result) => {
+    if (error) {
+      logger.error(error);
     }
-    cb(err, res.map((model) => model.toObject()));
+    callback(error, result.map((model) => model.toObject()));
   });
 }
 
@@ -91,15 +91,15 @@ async function getGuildByPlayer(uuid) {
       return null;
     }
     return guild.toObject();
-  } catch (err) {
-    logger.error(err);
+  } catch (error) {
+    logger.error(error);
   }
 }
 
 function removeGuild(id) {
-  Guild.findOneAndRemove({ id }, (err) => {
-    if (err) {
-      logger.error(err);
+  Guild.findOneAndRemove({ id }, (error) => {
+    if (error) {
+      logger.error(error);
     }
   });
 }
@@ -112,16 +112,16 @@ async function insertSkyBlockProfile(profile) {
   }
 }
 
-function insertAuction(auction, cb) {
-  Auction.findOneAndUpdate({ uuid: auction.uuid }, auction, { new: true, upsert: true }, function (err) {
-    if (err) {
-      logger.error(err);
+function insertAuction(auction, callback) {
+  Auction.findOneAndUpdate({ uuid: auction.uuid }, auction, { new: true, upsert: true }, function (error) {
+    if (error) {
+      logger.error(error);
     }
-    return cb(err);
+    return callback(error);
   });
 }
 
-function bulkWrite(type, ops, options = {}, cb) {
+function bulkWrite(type, ops, options = {}, callback) {
   let Model;
   switch (type) {
     default:
@@ -134,33 +134,33 @@ function bulkWrite(type, ops, options = {}, cb) {
     case 'auction':
       Model = Auction;
   }
-  Model.collection.bulkWrite(ops, options, (err, res) => {
-    if (err) {
-      return cb(err, null);
+  Model.collection.bulkWrite(ops, options, (error, result) => {
+    if (error) {
+      return callback(error, null);
     }
-    logger.debug(`[bulkWrite ${type}] nUpserted: ${res.nUpserted} nModified: ${res.nModified}`);
+    logger.debug(`[bulkWrite ${type}] nUpserted: ${result.nUpserted} nModified: ${result.nModified}`);
   });
 }
 
-function getAuctions(filter, fields = null, options, cb) {
-  Auction.find(filter, fields, options, (err, res) => {
-    if (err) {
-      return cb(err, null);
+function getAuctions(filter, fields = null, options, callback) {
+  Auction.find(filter, fields, options, (error, result) => {
+    if (error) {
+      return callback(error, null);
     }
-    cb(null, res.map((model) => model.toObject()));
+    callback(null, result.map((model) => model.toObject()));
   });
 }
 
-function getItems(cb) {
-  Auction.distinct('item.attributes.id', function (err, ids) {
-    if (err) {
-      return cb(err, null);
+function getItems(callback) {
+  Auction.distinct('item.attributes.id', function (error, ids) {
+    if (error) {
+      return callback(error, null);
     }
-    cb(null, ids);
+    callback(null, ids);
   });
 }
 
-function getMetadata(req, callback) {
+function getMetadata(request, callback) {
   // TODO - Add API status
   callback(null, { leaderboards: lbTemplates });
 }

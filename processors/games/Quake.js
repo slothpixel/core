@@ -76,13 +76,13 @@ module.exports = ({
   };
 
   packages.forEach((p) => {
-    const [key, val] = p.split('.');
+    const [key, value] = p.split('.');
 
-    if (val) {
-      if (Object.keys(cosmetics).indexOf(`${key}s`) === -1) {
-        cosmetics[`${key}s`] = [val];
+    if (value) {
+      if (!Object.keys(cosmetics).includes(`${key}s`)) {
+        cosmetics[`${key}s`] = [value];
       } else {
-        cosmetics[`${key}s`].push(val);
+        cosmetics[`${key}s`].push(value);
       }
     } else {
       cosmetics.misc.push(key);

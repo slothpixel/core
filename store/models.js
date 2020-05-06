@@ -5,9 +5,9 @@ const options = {
   timestamps: true,
   id: false,
   toObject: {
-    transform(doc, ret) {
-      delete ret._id;
-      return ret;
+    transform(document, returnValue) {
+      delete returnValue._id;
+      return returnValue;
     },
   },
 };

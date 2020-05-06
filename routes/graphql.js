@@ -52,7 +52,7 @@ class BoostersResolver {
 
   async all() {
     const { boosters } = await buildBoosters();
-    return Object.entries(boosters).reduce((prev, [game, value]) => [...prev, { game, boosters: value }], []);
+    return Object.entries(boosters).reduce((previous, [game, value]) => [...previous, { game, boosters: value }], []);
   }
 }
 
@@ -85,8 +85,8 @@ class PlayersResolver {
 }
 
 class SkyblockResolver {
-  all_auctions(args) {
-    return getAuctionsAsync(args);
+  all_auctions(arguments_) {
+    return getAuctionsAsync(arguments_);
   }
 
   auctions({ from, to, item_id }) {
@@ -155,8 +155,8 @@ const graphql = graphqlExpress({
       return getGuildFromPlayer(player_name, populate_players);
     },
 
-    leaderboards(params) {
-      return leaderboardsAsync(params, null);
+    leaderboards(parameters) {
+      return leaderboardsAsync(parameters, null);
     },
 
     players() {

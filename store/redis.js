@@ -9,8 +9,8 @@ logger.info(`connecting ${config.REDIS_URL}`);
 const client = redis.createClient(config.REDIS_URL, {
   detect_buffers: true,
 });
-client.on('error', (err) => {
-  logger.error(err);
+client.on('error', (error) => {
+  logger.error(error);
   process.exit(1);
 });
 module.exports = client;

@@ -43,39 +43,39 @@ const schemaObject = (auction) => {
       damage: item.damage || null,
       texture: item.attributes.texture,
     };
-  } catch (e) {
+  } catch (error) {
     logger.warn(`Found bad item in DB: ${JSON.stringify(auction)}`);
   }
 };
 
-async function doItems(cb) {
+async function doItems(callback) {
   const bazaarProducts = await updateBazaar();
-  getItems((err, ids) => {
-    if (err) {
-      logger.error(err);
-      cb(err);
+  getItems((error, ids) => {
+    if (error) {
+      logger.error(error);
+      callback(error);
     }
     logger.info(`Found ${ids.length} item IDs from the database`);
-    redis.get('skyblock_items', (err, res) => {
-      if (err) {
-        logger.error(err);
-        cb(err);
+    redis.get('skyblock_items', (error, response) => {
+      if (error) {
+        logger.error(error);
+        callback(error);
       }
-      const items = JSON.parse(res) || {};
+      const items = JSON.parse(response) || {};
       const newIds = ids.filter((id) => !(id in items));
       logger.info(`${newIds.length} IDs aren't currently included`);
       let counter = 0;
-      async.each(ids, (id, cb) => {
+      async.each(ids, (id, callback_) => {
         if (!(id in items)) {
           getAuctions({
             'item.attributes.id': id,
             'item.attributes.modifier': null,
             'item.name': { $ne: '§fnull' },
-          }, 'tier category item', { limit: 1, sort: { end: -1 } }, (err, auction) => {
-            if (err) {
-              return cb(err);
+          }, 'tier category item', { limit: 1, sort: { end: -1 } }, (error_, auction) => {
+            if (error_) {
+              return callback_(error_);
             }
-            if (auction.length === 0) return cb();
+            if (auction.length === 0) return callback_();
             counter += 1;
             items[id] = schemaObject(auction[0]);
             if (bazaarProducts.includes(id)) {
@@ -90,22 +90,22 @@ async function doItems(cb) {
                 delete items[id].damage;
               }
             }
-            return cb();
+            return callback_();
           });
         } else {
           if (bazaarProducts.includes(id)) {
             items[id].bazaar = true;
           }
-          return cb();
+          return callback_();
         }
-      }, (err) => {
-        if (err) {
-          return cb(err);
+      }, (error) => {
+        if (error) {
+          return callback(error);
         }
-        redis.set('skyblock_items', JSON.stringify(items), (err) => {
-          if (err) logger.error(err);
+        redis.set('skyblock_items', JSON.stringify(items), (error) => {
+          if (error) logger.error(error);
           logger.info(`${counter} new items discovered`);
-          return cb();
+          return callback();
         });
       });
     });

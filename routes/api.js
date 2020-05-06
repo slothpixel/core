@@ -5,8 +5,8 @@ const graphql = require('./graphql');
 const api = new express.Router();
 
 // API spec
-api.get('/', (req, res) => {
-  res.json(spec);
+api.get('/', (_, response) => {
+  response.json(spec);
 });
 
 // API endpoints

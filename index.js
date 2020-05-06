@@ -7,8 +7,8 @@ const pm2 = require('pm2');
 const async = require('async');
 const { apps } = require('./manifest.json');
 
-const args = process.argv.slice(2);
-const group = args[0] || process.env.GROUP;
+const arguments_ = process.argv.slice(2);
+const group = arguments_[0] || process.env.GROUP;
 
 if (process.env.PROVIDER === 'gce') {
   cp.execSync('curl -H "Metadata-Flavor: Google" -L http://metadata.google.internal/computeMetadata/v1/project/attributes/env > /usr/src/.env');
@@ -18,23 +18,23 @@ if (process.env.ROLE) {
   require(`./svc/${process.env.ROLE}.js`);
 } else if (group) {
   pm2.connect(() => {
-    async.each(apps, (app, cb) => {
+    async.each(apps, (app, callback) => {
       if (group === app.group) {
         console.log(app.script, app.instances);
         pm2.start(app.script, {
           instances: app.instances,
           restartDelay: 10000,
-        }, (err) => {
-          if (err) {
+        }, (error) => {
+          if (error) {
             // Log the error and continue
-            console.error(err);
+            console.error(error);
           }
-          cb();
+          callback();
         });
       }
-    }, (err) => {
-      if (err) {
-        console.error(err);
+    }, (error) => {
+      if (error) {
+        console.error(error);
       }
       pm2.disconnect();
     });

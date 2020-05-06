@@ -8,6 +8,9 @@ const {
   pickKeys,
 } = require('../../util/utility');
 
+// TODO - Decode the inventory data to more readable format
+const getInventory = (object) => object.data;
+
 function mergeStats({
   chat_messages = 0,
   playtime_minutes = 0,
@@ -71,10 +74,8 @@ function mergeStats({
   const getCoinsDuringPrestige = (regexp) => pickKeys(rest, {
     regexp,
     keyMap: (key) => key.replace(regexp, ''),
-    valueMap: (val) => Math.round(val),
+    valueMap: (value) => Math.round(value),
   });
-  // TODO - Decode the inventory data to more readable format
-  const getInventory = (obj) => obj.data;
 
   return {
     kills,
