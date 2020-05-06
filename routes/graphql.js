@@ -21,8 +21,6 @@ const { getMetadata } = require('../store/queries');
 const { generateJob, getData, typeToStandardName } = require('../util/utility');
 
 const leaderboardsAsync = pify(leaderboards);
-const getGuildFromPlayerAsync = pify(getGuildFromPlayer);
-const getPlayerAsync = pify(getPlayer);
 const redisGetAsync = pify(redis.get).bind(redis);
 const getAuctionsAsync = pify(getAuctions);
 const queryAuctionIdAsync = pify(queryAuctionId);
@@ -62,16 +60,16 @@ class PlayersResolver {
   player({ player_name /* , fields */ }) {
     // TODO: Remove 'fields' param from the /players/{player_name} route.
     // If someone wants specific fields, they should use graphql.
-    return getPlayerAsync(player_name);
+    return getPlayer(player_name);
   }
 
   async achievements({ player_name }) {
-    const player = await getPlayerAsync(player_name);
+    const player = await getPlayer(player_name);
     return player.achievements;
   }
 
   async quests({ player_name }) {
-    const player = await getPlayerAsync(player_name);
+    const player = await getPlayer(player_name);
     return player.quests;
   }
 
@@ -154,7 +152,7 @@ const graphql = graphqlExpress({
     },
 
     guild({ player_name, populate_players }) {
-      return getGuildFromPlayerAsync(player_name, populate_players);
+      return getGuildFromPlayer(player_name, populate_players);
     },
 
     leaderboards(params) {
