@@ -16,7 +16,7 @@ const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName, getPlayerFields,
+  generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -998,14 +998,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/items',
-        func: (_, response) => {
-          redis.get('skyblock_items', (error, items) => {
-            if (error) {
-              logger.error(error);
-              return response.status(500);
-            }
+        func: async (_, response, callback) => {
+          try {
+            const items = await redisGetAsync('skyblock_items');
             return response.json(JSON.parse(items));
-          });
+          } catch (error) {
+            callback(error);
+          }
         },
       },
     },
