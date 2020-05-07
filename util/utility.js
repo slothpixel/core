@@ -154,6 +154,8 @@ const isContributor = (uuid) => contributors.includes(uuid);
 * Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
  */
 function getNestedObjects(object = {}, path = '') {
+  path = path.split('.');
+
   for (const element of path) {
     if (object[element] === undefined) {
       return object;
