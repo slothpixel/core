@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 const async = require('async');
 const filterObject = require('filter-obj');
+const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
@@ -12,18 +13,20 @@ const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer } = require('../store/buildGuild');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
-const { populatePlayers, getPlayer } = require('../store/buildPlayer');
+const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName, getPlayerFields,
+  generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
   profileIdParam,
-} = require('./params');
+} = require('./parameters');
 const packageJson = require('../package.json');
+
+const redisGetAsync = pify(redis.get).bind(redis);
 
 const auctionObject = {
   type: 'object',
@@ -237,26 +240,28 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player',
-        func: (req, res) => {
-          const players = req.params.player.split(',').slice(0, 15);
-          async.map(players, (player, cb) => {
-            getPlayer(player, (err, player) => {
-              if (err) {
-                return cb(err);
-              }
-              delete player.achievements;
-              delete player.quests;
-              const { fields } = req.query;
+        func: async (request, response) => {
+          const players = request.params.player.split(',').slice(0, 15);
+
+          try {
+            const result = await async.map(players, async (player) => {
+              let player_ = await getPlayer(player);
+              delete player_.achievements;
+              delete player_.quests;
+              const { fields } = request.query;
               if (fields) {
-                player = getPlayerFields(player, fields.split(','));
+                player_ = getPlayerFields(player_, fields.split(','));
               }
-              return cb(null, player);
+              return player_;
             });
-          }, (err, result) => {
-            if (err) return res.status(err.status).json({ error: err.message });
-            if (result.length === 1) return res.json(result[0]);
-            return res.json(result);
-          });
+
+            if (result.length === 1) {
+              return response.json(result[0]);
+            }
+            response.json(result);
+          } catch (error) {
+            response.status(error instanceof PlayerError ? error.status : 500).json({ error: error.message });
+          }
         },
       },
     },
@@ -354,13 +359,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player/achievements',
-        func: (req, res) => {
-          getPlayer(req.params.player, (err, player) => {
-            if (err) {
-              return res.status(err.status).json({ error: err.message });
-            }
-            return res.json(player.achievements);
-          });
+        func: async (request, response) => {
+          try {
+            const { achievements } = await getPlayer(request.params.player);
+            response.json(achievements);
+          } catch (error) {
+            response.status(error.status).json({ error: error.message });
+          }
         },
       },
     },
@@ -410,13 +415,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player/quests',
-        func: (req, res) => {
-          getPlayer(req.params.player, (err, player) => {
-            if (err) {
-              return res.status(err.status).json({ error: err.message });
-            }
-            return res.json(player.quests);
-          });
+        func: async (request, response) => {
+          try {
+            const { quests } = await getPlayer(request.params.player);
+            return response.json(quests);
+          } catch (error) {
+            return response.status(error.status).json({ error: error.message });
+          }
         },
       },
     },
@@ -461,25 +466,21 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/players/:player/recentGames',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              return res.status(404).json({ error: err });
+        func: async (request, response, callback) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              const { games } = await getData(redis, generateJob('recentgames', { id: uuid }).url);
+              response.json(games.map((game) => {
+                game.gameType = typeToStandardName(game.gameType);
+                return game;
+              }));
+            } catch (error) {
+              callback(error.message);
             }
-            getData(redis, generateJob('recentgames', { id: uuid }).url, (err, data) => {
-              if (err) {
-                return cb(err.message);
-              }
-              try {
-                return res.json(data.games.map((game) => {
-                  game.gameType = typeToStandardName(game.gameType);
-                  return game;
-                }));
-              } catch (e) {
-                return cb(e);
-              }
-            });
-          });
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
         },
       },
     },
@@ -626,13 +627,16 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/guilds/:player',
-        func: (req, res) => {
-          getGuildFromPlayer(req.params.player, req.query.populatePlayers, (err, guild) => {
-            if (err) {
-              return res.status(404).json({ error: err });
+        func: async (request, response, callback) => {
+          try {
+            const guild = await getGuildFromPlayer(request.params.player, { shouldPopulatePlayers: request.query.populatePlayers });
+            if (guild.guild === null) {
+              return response.status(404).json(guild);
             }
-            return res.json(guild);
-          });
+            return response.json(guild);
+          } catch (error) {
+            callback(error);
+          }
         },
       },
     },
@@ -772,23 +776,23 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/profiles/:player',
-        func: (req, res, cb) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              return res.status(404).json({ error: err });
-            }
-            redis.get(`skyblock_profiles:${uuid}`, (err, resp) => {
-              if (err) {
-                return cb(err);
-              }
-              if (resp) {
-                const profiles = JSON.parse(resp) || {};
+        func: async (request, response, callback) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
+              if (data) {
+                const profiles = JSON.parse(data) || {};
                 // TODO - populatePlayers for each profile
-                return res.json(profiles);
+                return response.json(profiles);
               }
-              return res.json({});
-            });
-          });
+              response.json({});
+            } catch (error) {
+              callback(error);
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
         },
       },
     },
@@ -816,27 +820,27 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/profile/:player/:profile?',
-        func: (req, res) => {
-          getUUID(req.params.player, (err, uuid) => {
-            if (err) {
-              return res.status(404).json({ error: err });
-            }
-            buildProfile(uuid, req.params.profile, true, (err, profile) => {
-              if (err) {
-                return res.json({ error: err });
+        func: async (request, response) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              // TODO: Update when buildProfile changed
+              const profile = await buildProfile(uuid, request.params.profile);
+              try {
+                const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
+                players.forEach((player) => {
+                  profile.members[player.profile.uuid].player = player.profile;
+                });
+                response.json(profile);
+              } catch (error) {
+                response.status(500).json({ error });
               }
-              populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })), (err, players) => {
-                if (err) {
-                  res.status(500).json({ error: err });
-                } else {
-                  players.forEach((player) => {
-                    profile.members[player.profile.uuid].player = player.profile;
-                  });
-                  res.json(profile);
-                }
-              });
-            });
-          });
+            } catch (error) {
+              response.status(404).json({ error: error.message });
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
         },
       },
     },
@@ -882,12 +886,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/auctions',
-        func: (req, res) => {
-          getAuctions(req.query, (error, auctions) => {
+        func: (request, response) => {
+          getAuctions(request.query, (error, auctions) => {
             if (error) {
-              return res.status(400).json({ error });
+              return response.status(400).json({ error });
             }
-            return res.json(auctions);
+            return response.json(auctions);
           });
         },
       },
@@ -952,12 +956,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/auctions/:id',
-        func: (req, res, cb) => {
-          queryAuctionId(req.query.from, req.query.to, req.params.id, (err, obj) => {
-            if (err) {
-              return cb(res.status(404).json({ error: err }));
+        func: (request, response, callback) => {
+          queryAuctionId(request.query.from, request.query.to, request.params.id, (error, object) => {
+            if (error) {
+              return callback(response.status(404).json({ error }));
             }
-            return res.json(obj);
+            return response.json(object);
           });
         },
       },
@@ -1002,14 +1006,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/items',
-        func: (req, res) => {
-          redis.get('skyblock_items', (err, items) => {
-            if (err) {
-              logger.error(err);
-              return res.status(500);
-            }
-            return res.json(JSON.parse(items));
-          });
+        func: async (_, response, callback) => {
+          try {
+            const items = await redisGetAsync('skyblock_items');
+            return response.json(JSON.parse(items));
+          } catch (error) {
+            callback(error);
+          }
         },
       },
     },
@@ -1136,27 +1139,26 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-        route: () => '/skyblock/bazaar/:id',
-        func: (req, res, cb) => {
-          const itemId = req.params.id;
-          redis.get('skyblock_bazaar', (err, resp) => {
-            const ids = JSON.parse(resp) || [];
-            if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
-              return res.status(400).json({ error: 'Invalid itemId' });
+        route: () => '/skyblock/bazaar/:id?',
+        func: async (request, response, callback) => {
+          const itemId = request.params.id;
+          const data = await redisGetAsync('skyblock_bazaar');
+          const ids = JSON.parse(data) || [];
+          if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
+            return response.status(400).json({ error: 'Invalid itemId' });
+          }
+          try {
+            const bazaar = await buildBazaar();
+            if (!itemId) {
+              return response.json(bazaar);
             }
-            buildBazaar((err, bazaar) => {
-              if (err) {
-                return cb(err);
-              }
-              if (!itemId) {
-                return res.json(bazaar);
-              }
-              if (itemId.includes(',')) {
-                return res.json(filterObject(bazaar, itemId.split(',')));
-              }
-              return res.json(bazaar[itemId]);
-            });
-          });
+            if (itemId.includes(',')) {
+              return response.json(filterObject(bazaar, itemId.split(',')));
+            }
+            return response.json(bazaar[itemId]);
+          } catch (error) {
+            callback(error.message);
+          }
         },
       },
     },
@@ -1188,12 +1190,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/leaderboards',
-        func: (req, res) => {
-          leaderboards(req.query, null, (error, lb) => {
+        func: (request, response) => {
+          leaderboards(request.query, null, (error, lb) => {
             if (error) {
-              return res.status(400).json({ error });
+              return response.status(400).json({ error });
             }
-            return res.json(lb);
+            return response.json(lb);
           });
         },
       },
@@ -1226,12 +1228,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/leaderboards/:template',
-        func: (req, res, cb) => {
-          leaderboards(req.query, req.params.template, (error, lb) => {
+        func: (request, response, callback) => {
+          leaderboards(request.query, request.params.template, (error, lb) => {
             if (error) {
-              return cb(res.status(400).json({ error }));
+              return callback(response.status(400).json({ error }));
             }
-            return res.json(lb);
+            return response.json(lb);
           });
         },
       },
@@ -1299,13 +1301,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/boosters',
-        func: (req, res) => {
-          buildBoosters((err, boosters) => {
-            if (err) {
-              return res.status(500).json({ error: err });
-            }
-            return res.json(boosters);
-          });
+        func: async (_, response) => {
+          try {
+            const boosters = await buildBoosters();
+            response.json(boosters);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
@@ -1370,17 +1372,17 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/boosters/:game',
-        func: (req, res) => {
-          const { game } = req.params;
-          buildBoosters((err, boosters) => {
-            if (err) {
-              return res.status(500).json({ error: err });
-            }
+        func: async (request, response) => {
+          const { game } = request.params;
+          try {
+            const boosters = await buildBoosters();
             if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
-              return res.status(400).json({ error: 'Invalid minigame name!' });
+              return response.status(400).json({ error: 'Invalid minigame name!' });
             }
-            return res.json(boosters.boosters[game]);
-          });
+            response.json(boosters.boosters[game]);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
@@ -1437,13 +1439,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/bans',
-        func: (req, res) => {
-          buildBans((err, bans) => {
-            if (err) {
-              return res.status(500).json({ error: err });
-            }
-            return res.json(bans);
-          });
+        func: async (_, response) => {
+          try {
+            response.json(await buildBans());
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },
@@ -1460,15 +1461,15 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           type: 'string',
         }],
         route: () => '/constants/:resource?',
-        func: (req, res, cb) => {
-          if (!req.params.resource) {
-            return res.json(Object.keys(constants));
+        func: (request, response, callback) => {
+          if (!request.params.resource) {
+            return response.json(Object.keys(constants));
           }
-          const { resource } = req.params;
+          const { resource } = request.params;
           if (resource in constants) {
-            return res.json(constants[resource]);
+            return response.json(constants[resource]);
           }
-          return cb();
+          return callback();
         },
       },
     },
@@ -1495,12 +1496,12 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/metadata',
-        func: (req, res, cb) => {
-          getMetadata(req, (err, result) => {
-            if (err) {
-              return cb(err);
+        func: (request, response, callback) => {
+          getMetadata(request, (error, result) => {
+            if (error) {
+              return callback(error);
             }
-            return res.json(result);
+            return response.json(result);
           });
         },
       },
@@ -1520,21 +1521,21 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/health/:metric?',
-        func: (req, res, cb) => {
-          redis.hgetall('health', (err, result) => {
-            if (err) {
-              return cb(err);
+        func: (request, response, callback) => {
+          redis.hgetall('health', (error, result) => {
+            if (error) {
+              return callback(error);
             }
-            const response = result || {};
-            Object.keys(response).forEach((key) => {
-              response[key] = JSON.parse(response[key]);
+            const data = result || {};
+            Object.keys(data).forEach((key) => {
+              data[key] = JSON.parse(data[key]);
             });
-            if (!req.params.metric) {
-              return res.json(response);
+            if (!request.params.metric) {
+              return response.json(data);
             }
-            const single = response[req.params.metric];
+            const single = data[request.params.metric];
             const healthy = single.metric < single.threshold;
-            return res.status(healthy ? 200 : 500).json(single);
+            return response.status(healthy ? 200 : 500).json(single);
           });
         },
       },

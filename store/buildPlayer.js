@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const async = require('async');
+const pify = require('pify');
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
 const getUUID = require('./getUUID');
@@ -7,117 +8,79 @@ const {
   logger, generateJob, getData, getPlayerFields,
 } = require('../util/utility');
 const redis = require('./redis');
-const cacheFunctions = require('./cacheFunctions');
+const cachedFunction = require('./cachedFunction');
 const queries = require('./queries');
 
 /*
-* Functions to build/cache player object
-* Currently doesn't support search by name
+Functions to build/cache player object
  */
-function getPlayerData(uuid, cb) {
-  const { url } = generateJob('player', {
-    id: uuid,
-  });
-  getData(redis, url, (err, body) => {
-    if (err) {
-      return cb(err.message, null);
+async function buildPlayer(uuid, { shouldCache = true } = {}) {
+  return cachedFunction(`player:${uuid}`, async () => {
+    const body = await getData(redis, generateJob('player', { id: uuid }).url);
+    const playerData = processPlayerData(body.player || {});
+
+    if (shouldCache && config.ENABLE_DB_CACHE) {
+      queries.insertPlayer(uuid, playerData);
     }
-    processPlayerData(body.player || {}, (player) => cb(null, player));
+
+    return playerData;
+  }, {
+    cacheDuration: config.PLAYER_CACHE_SECONDS,
+    shouldCache: shouldCache && config.ENABLE_PLAYER_CACHE,
   });
 }
 
-function cachePlayer(player, uuid, key, caching, cb) {
-  if (caching.cacheResult === false) return cb(player);
-  if (config.ENABLE_PLAYER_CACHE) {
-    cacheFunctions.write({
-      key,
-      duration: config.PLAYER_CACHE_SECONDS,
-    }, player);
+class PlayerError extends Error {
+  constructor({ status, message }) {
+    super(message);
+    this.message = message;
+    this.status = status;
   }
-  if (config.ENABLE_DB_CACHE) {
-    queries.insertPlayer(uuid, player, (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
-  }
-  return cb(player);
 }
 
-function buildPlayer(uuid, cb) {
-  let u;
-  const caching = uuid.caching || {};
-  if (typeof uuid === 'object') {
-    u = uuid.uuid;
-  } else {
-    u = uuid;
-  }
-  const key = `player:${u}`;
-  cacheFunctions.read({ key }, (player) => {
-    if (player) {
-      logger.debug(`Cache hit for player ${u}`);
-      return cb(null, player);
+async function getPlayer(name) {
+  try {
+    const uuid = await getUUID(name);
+    try {
+      return await buildPlayer(uuid);
+    } catch (error) {
+      throw new PlayerError({ status: 500, message: error.message });
     }
-    getPlayerData(u, (err, player) => {
-      if (err) {
-        return cb(err);
-      }
-      cachePlayer(player, u, key, caching, (player) => cb(null, player));
-    });
-  });
+  } catch (error) {
+    throw new PlayerError({ status: 404, message: error.message });
+  }
 }
 
-function getPlayer(name, cb) {
-  getUUID(name, (err, uuid) => {
-    if (err) {
-      return cb({ status: 404, message: err });
-    }
-    buildPlayer(uuid, (err, player) => {
-      if (err) {
-        return cb({ status: 500, message: err });
-      }
-      return cb(null, player);
-    });
-  });
-}
-
-function populatePlayers(players, cb) {
-  async.map(players, (player, done) => {
+async function populatePlayers(players) {
+  return async.map(players, async (player) => {
     const { uuid } = player;
-    queries.getPlayerProfile(uuid, (err, profile, isCached) => {
-      if (err) {
-        logger.error(err);
-      }
+    try {
+      const [profile, isCached] = await pify(queries.getPlayerProfile, {
+        multiArgs: true,
+      })(uuid);
       if (profile === null) {
         logger.debug(`[populatePlayers] ${uuid} not found in DB, generating...`);
-        buildPlayer(uuid, (err, newPlayer) => {
-          delete player.uuid;
-          const profile = getPlayerFields(newPlayer);
-          profile.uuid = uuid;
-          player.profile = profile;
-          queries.cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        });
-      } else {
+        const newPlayer = await buildPlayer(uuid);
         delete player.uuid;
+        const profile = getPlayerFields(newPlayer);
+        profile.uuid = uuid;
         player.profile = profile;
-        if (isCached) {
-          done(err, player);
-        } else {
-          queries.cachePlayerProfile(profile, () => {
-            done(err, player);
-          });
-        }
+        await queries.cachePlayerProfile(profile);
+        return player;
       }
-    });
-  }, (err, result) => {
-    if (err) {
-      cb(err, null);
-    } else {
-      cb(null, result);
+      delete player.uuid;
+      player.profile = profile;
+      if (isCached) {
+        return player;
+      }
+      await queries.cachePlayerProfile(profile);
+      return player;
+    } catch (error) {
+      logger.error(error);
     }
   });
 }
 
-module.exports = { buildPlayer, getPlayer, populatePlayers };
+module.exports = {
+  buildPlayer, getPlayer, populatePlayers, PlayerError,
+};

@@ -12,14 +12,14 @@ const {
 } = require('../util/utility');
 const parseTimestamp = require('../util/readableTimestamps');
 
-function cacheAuctions(auctions, key, cb) {
+function cacheAuctions(auctions, key, callback) {
   if (config.ENABLE_AUCTION_CACHE) {
     cacheFunctions.write({
       key,
       duration: config.AUCTION_CACHE_SECONDS,
     }, auctions);
   }
-  return cb(auctions);
+  return callback(auctions);
 }
 
 /*
@@ -42,14 +42,14 @@ function createQuery({
   sortBy = 'end', sortOrder = 'desc', limit = 100, filter = '{}', active = true, page = 0,
 }, easyFilter) {
   let error;
-  let filterObj = {};
+  let filterObject = {};
   try {
-    filterObj = Object.assign(easyFilter, JSON.parse(filter));
-  } catch (e) {
-    error = `Failed to parse filter JSON: ${e.message}`;
+    filterObject = Object.assign(easyFilter, JSON.parse(filter));
+  } catch (error_) {
+    error = `Failed to parse filter JSON: ${error_.message}`;
   }
   if (active) {
-    filterObj.end = { $gt: Date.now() };
+    filterObject.end = { $gt: Date.now() };
   }
   if (limit > 1000) {
     limit = 1000;
@@ -58,7 +58,7 @@ function createQuery({
     ? 1
     : -1;
   return {
-    filter: filterObj,
+    filter: filterObject,
     options: {
       limit: Number(limit),
       skip: page * limit,
@@ -73,46 +73,46 @@ function createQuery({
 
 // Remove _id and __v fields from each entry
 function transformData(data) {
-  return data.map((doc) => {
-    const obj = doc._doc;
-    delete obj._id;
-    delete obj.__v;
-    return obj;
+  return data.map((document) => {
+    const object = document._doc;
+    delete object._id;
+    delete object.__v;
+    return object;
   });
 }
 
-function executeQuery(query, cb) {
+function executeQuery(query, callback) {
   const easyFilter = easyFilterQuery(query);
   const { filter, options, error } = createQuery(query, easyFilter);
   if (error) {
-    return cb(error);
+    return callback(error);
   }
-  Auction.find(filter, null, options, (err, res) => {
-    if (err) {
-      logger.error(err);
-      return cb('Query failed');
+  Auction.find(filter, null, options, (error_, result) => {
+    if (error_) {
+      logger.error(error_);
+      return callback('Query failed');
     }
-    cb(null, transformData(res));
+    callback(null, transformData(result));
   });
 }
 
-function getAuctions(query, cb) {
+function getAuctions(query, callback) {
   const key = `auctions:${JSON.stringify(query)}`;
   cacheFunctions.read({ key }, (auctions) => {
     if (auctions) {
       logger.debug(`Cache hit for ${key}`);
-      return cb(null, auctions);
+      return callback(null, auctions);
     }
-    executeQuery(query, (err, data) => {
-      if (err) {
-        cb(err);
+    executeQuery(query, (error, data) => {
+      if (error) {
+        callback(error);
       }
-      cacheAuctions(data, key, (auctions) => cb(null, auctions));
+      cacheAuctions(data, key, (auctions) => callback(null, auctions));
     });
   });
 }
 
-function queryAuctionId(from, to, itemId, cb) {
+function queryAuctionId(from, to, itemId, callback) {
   const now = Date.now();
   from = from || (now - 24 * 60 * 60 * 1000);
   to = to || now;
@@ -126,13 +126,13 @@ function queryAuctionId(from, to, itemId, cb) {
   }
 
   if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
-    return cb({ error: "parameters 'from' and 'to' must be integers" });
+    return callback({ error: "parameters 'from' and 'to' must be integers" });
   }
-  redis.zrangebyscore(itemId, from, to, (err, auctions) => {
-    if (err) {
-      logger.error(err);
+  redis.zrangebyscore(itemId, from, to, (error, auctions) => {
+    if (error) {
+      logger.error(error);
     }
-    const obj = {
+    const object = {
       average_price: 0,
       median_price: 0,
       standard_deviation: 0,
@@ -146,15 +146,15 @@ function queryAuctionId(from, to, itemId, cb) {
       auction = JSON.parse(auction);
       const { bids } = auction;
       if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
-      obj.auctions[auction.end] = auction;
+      object.auctions[auction.end] = auction;
     });
-    obj.average_price = average(priceArray);
-    obj.median_price = median(priceArray);
-    obj.standard_deviation = stdDev(priceArray);
-    obj.min_price = min(priceArray);
-    obj.max_price = max(priceArray);
-    obj.sold = priceArray.length;
-    return cb(null, obj);
+    object.average_price = average(priceArray);
+    object.median_price = median(priceArray);
+    object.standard_deviation = stdDev(priceArray);
+    object.min_price = min(priceArray);
+    object.max_price = max(priceArray);
+    object.sold = priceArray.length;
+    return callback(null, object);
   });
 }
 

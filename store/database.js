@@ -9,10 +9,10 @@ const settings = {
   autoIndex: config.NODE_ENV === 'development',
 };
 
-mongoose.connect(config.MONGODB_URL, settings, (err) => {
+mongoose.connect(config.MONGODB_URL, settings, (error) => {
   logger.info(`connecting ${config.MONGODB_URL}`);
-  if (err) {
-    logger.error(`failed db connection: ${err}`);
+  if (error) {
+    logger.error(`failed db connection: ${error}`);
   }
 });
 

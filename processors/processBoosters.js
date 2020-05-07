@@ -1,17 +1,18 @@
 const { IDToStandardName, removeDashes } = require('../util/utility');
 
+function getStackedArray(stacked = []) {
+  if (!Array.isArray(stacked)) stacked = [];
+  return stacked.map((uuid) => removeDashes(uuid));
+}
+
 function buildObject(boosters = []) {
-  const obj = {};
-  function getStackedArray(stacked = []) {
-    if (!Array.isArray(stacked)) stacked = [];
-    return stacked.map((uuid) => removeDashes(uuid));
-  }
+  const object = {};
   boosters.forEach((booster) => {
     const game = IDToStandardName(booster.gameType);
-    if (!Object.hasOwnProperty.call(obj, game)) {
-      obj[game] = [];
+    if (!Object.hasOwnProperty.call(object, game)) {
+      object[game] = [];
     }
-    obj[game].push({
+    object[game].push({
       uuid: booster.purchaserUuid,
       multiplier: booster.amount,
       activated: booster.dateActivated,
@@ -21,7 +22,7 @@ function buildObject(boosters = []) {
       stacked: getStackedArray(booster.stacked),
     });
   });
-  return obj;
+  return object;
 }
 
 function processBoosters(data = {}) {
