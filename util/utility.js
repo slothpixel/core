@@ -95,6 +95,13 @@ function getMonthlyStat(a, b) {
   return diffMonth % 2 === 0 ? a : b;
 }
 
+function fromEntries(array) {
+  return array.reduce((object, [key, value]) => {
+    object[key] = value;
+    return object;
+  }, {});
+}
+
 /*
  * Pick certain keys from obj.
  *
@@ -115,10 +122,9 @@ function pickKeys(object, options) {
   const keyMap = options.keyMap || ((key) => key);
   const valueMap = options.valueMap || ((value) => value);
 
-  return Object.entries(object)
+  return fromEntries(Object.entries(object)
     .filter(([key, value]) => regexp.test(key) && filter(key, value))
-    .map(([key, value]) => [keyMap(key), valueMap(value)])
-    .reduce((previous, [key, value]) => ({ ...previous, [key]: value }), {});
+    .map(([key, value]) => [keyMap(key), valueMap(value)]));
 }
 
 /**
@@ -479,4 +485,5 @@ module.exports = {
   average,
   stdDev,
   median,
+  fromEntries,
 };

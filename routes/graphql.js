@@ -52,7 +52,7 @@ class BoostersResolver {
 
   async all() {
     const { boosters } = await buildBoosters();
-    return Object.entries(boosters).reduce((previous, [game, value]) => [...previous, { game, boosters: value }], []);
+    return Object.entries(boosters).map(([game, boosters]) => ({ game, boosters }));
   }
 }
 
