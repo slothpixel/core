@@ -1022,7 +1022,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           'skyblock',
         ],
         summary: 'Get bazaar data for an item',
-        description: 'Get bazaar data for an item bu ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint.',
+        description: 'Get bazaar data for an item by ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint. If none is specified returns all items.',
         parameters: [bazaarItemIdParam],
         responses: {
           200: {
