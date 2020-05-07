@@ -39,7 +39,7 @@ Quickstart (Docker)
 * Start containers and initialize databases: `docker-compose up`
 * Make some changes and commit them.
 * Submit a pull request. Wait for it to be reviewed and merged.
-* **OPTIONAL** Add your Minecraft UUID to the `contributors.js` file.
+* **OPTIONAL** Add your Minecraft UUID to the `CONTRIBUTORS.js` file.
 * Congratulations! You're a contributor.
 
 Notes

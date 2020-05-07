@@ -13,7 +13,7 @@ const pify = require('pify');
 const got = require('got');
 
 const config = require('../config');
-const contributors = require('../contributors');
+const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
 const {
   max, min, average, median, stdDev,
