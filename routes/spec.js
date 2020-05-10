@@ -4,6 +4,7 @@ const filterObject = require('filter-obj');
 const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
+const buildPlayerStatus = require('../store/buildPlayerStatus');
 const getUUID = require('../store/getUUID');
 const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
@@ -481,6 +482,59 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           } catch (error) {
             response.status(404).json({ error: error.message });
           }
+        },
+      },
+    },
+    '/players/{playerName}/status': {
+      get: {
+        summary: 'Get current player activity',
+        description: 'Returns the current online status and game for a player.',
+        operationId: 'getPlayerStatus',
+        tags: [
+          'player',
+        ],
+        parameters: [
+          playerNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    online: {
+                      type: 'boolean',
+                    },
+                    game: {
+                      type: 'object',
+                      properties: {
+                        type: {
+                          type: 'string',
+                        },
+                        mode: {
+                          type: 'string',
+                        },
+                        map: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            route: () => '/players/:player/status',
+            func: async (request, response) => {
+              try {
+                const data = await buildPlayerStatus(request.params.player);
+                response.json(data);
+              } catch (error) {
+                response.status(500).json(error.message);
+              }
+            },
+          },
         },
       },
     },
