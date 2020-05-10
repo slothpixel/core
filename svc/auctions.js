@@ -71,7 +71,7 @@ function processAndStoreAuctions(auctions = []) {
     }
     // Insert new auction
     if (update === 'full') {
-      decodeData.then((json) => {
+      decodeData(auction.item_bytes).then((json) => {
         [auction.item] = processInventoryData(json);
         delete auction.item_bytes;
         auction.bids = removeAuctionIds(auction.bids);
