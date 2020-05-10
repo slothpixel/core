@@ -140,6 +140,7 @@ class SkyblockResolver {
 
 const graphql = graphqlExpress({
   schema: buildSchema(schema),
+  graphiql: true,
   rootValue: {
     bans() {
       return buildBans();
