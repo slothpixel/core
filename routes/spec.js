@@ -525,16 +525,16 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                 },
               },
             },
-            route: () => '/players/:player/status',
-            func: async (request, response) => {
-              try {
-                const data = await buildPlayerStatus(request.params.player);
-                response.json(data);
-              } catch (error) {
-                response.status(500).json(error.message);
-              }
-            },
           },
+        },
+        route: () => '/players/:player/status',
+        func: async (request, response, callback) => {
+          try {
+            const data = await buildPlayerStatus(request.params.player);
+            response.json(data);
+          } catch (error) {
+            callback(error.message);
+          }
         },
       },
     },
