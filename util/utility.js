@@ -335,9 +335,9 @@ const getData = fromPromise(async (redis, url) => {
       timeout: url.timeout,
       retry: url.retries,
       hooks: {
-        afterResponse: [
-          async (response, retryWithMergedOptions) => {
-            if (isHypixelApi && !response.body.success) {
+        beforeRetry: [
+          async () => {
+            if (isHypixelApi) {
               const multi = redis.multi()
                 .incr('hypixel_api_error')
                 .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
@@ -349,9 +349,7 @@ const getData = fromPromise(async (redis, url) => {
               } catch (error) {
                 logger.error(error);
               }
-              return retryWithMergedOptions();
             }
-            return response;
           },
         ],
       },
