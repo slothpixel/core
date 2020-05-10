@@ -8,7 +8,7 @@ async function getInventory({ data = '' }) {
   if (data === '') return null;
 
   try {
-    return processInventoryData(decodeData(data));
+    return processInventoryData(await decodeData(data));
   } catch (error) {
     logger.error(`getInventory failed: ${error}`);
     return null;
