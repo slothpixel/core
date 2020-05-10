@@ -8,8 +8,8 @@ const redis = require('./redis');
 const { logger } = require('../util/utility');
 const { Auction } = require('./models');
 const {
-  min, max, median, average, stdDev,
-} = require('../util/utility');
+  min, max, median, average, standardDeviation,
+} = require('../util/math');
 const parseTimestamp = require('../util/readableTimestamps');
 
 function cacheAuctions(auctions, key, callback) {
@@ -150,7 +150,7 @@ function queryAuctionId(from, to, itemId, callback) {
     });
     object.average_price = average(priceArray);
     object.median_price = median(priceArray);
-    object.standard_deviation = stdDev(priceArray);
+    object.standard_deviation = standardDeviation(priceArray);
     object.min_price = min(priceArray);
     object.max_price = max(priceArray);
     object.sold = priceArray.length;

@@ -71,12 +71,15 @@ function processAndStoreAuctions(auctions = []) {
     }
     // Insert new auction
     if (update === 'full') {
-      decodeData(auction.item_bytes, (error, json) => {
+      decodeData.then((json) => {
         [auction.item] = processInventoryData(json);
         delete auction.item_bytes;
         auction.bids = removeAuctionIds(auction.bids);
         activeAuctions[uuid] = auction;
-        return callback(error, upsertDocument(uuid, auction));
+        callback(null, upsertDocument(uuid, auction));
+      }).catch((error) => {
+        logger.error(error);
+        callback(error);
       });
     }
     // Only bids have changed

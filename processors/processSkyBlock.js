@@ -5,15 +5,14 @@ const SkyBlockUtils = require('../util/SkyBlockUtils');
 const processInventoryData = require('./processInventoryData');
 
 async function getInventory({ data = '' }) {
-  return new Promise((resolve) => {
-    if (data === '') resolve(null);
-    decodeData(data, (error, json) => {
-      if (error) {
-        logger.error(`getInventory failed: ${error}`);
-      }
-      resolve(processInventoryData(json));
-    });
-  });
+  if (data === '') return null;
+
+  try {
+    return processInventoryData(decodeData(data));
+  } catch (error) {
+    logger.error(`getInventory failed: ${error}`);
+    return null;
+  }
 }
 
 // Process the stats object
