@@ -112,7 +112,7 @@ function getAuctions(query, callback) {
   });
 }
 
-function queryAuctionId(from, to, itemId, callback) {
+function queryAuctionId(from, to, showAuctions = false, itemId, callback) {
   const now = Date.now();
   from = from || (now - 24 * 60 * 60 * 1000);
   to = to || now;
@@ -154,6 +154,9 @@ function queryAuctionId(from, to, itemId, callback) {
     object.min_price = min(priceArray);
     object.max_price = max(priceArray);
     object.sold = priceArray.length;
+    if (!showAuctions) {
+      delete object.auctions;
+    }
     return callback(null, object);
   });
 }

@@ -906,6 +906,16 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         ],
         parameters: [
           itemIdParam, fromParam, toParam,
+          {
+            name: 'showAuctions',
+            in: 'query',
+            description: 'Returns the specified auctions individually',
+            required: false,
+            default: false,
+            schema: {
+              type: 'boolean',
+            },
+          },
         ],
         responses: {
           200: {
@@ -957,7 +967,8 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
         route: () => '/skyblock/auctions/:id',
         func: (request, response, callback) => {
-          queryAuctionId(request.query.from, request.query.to, request.params.id, (error, object) => {
+          const { from, to, showAuctions } = request.query;
+          queryAuctionId(from, to, showAuctions, request.params.id, (error, object) => {
             if (error) {
               return callback(response.status(404).json({ error }));
             }
