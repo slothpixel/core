@@ -11,6 +11,7 @@ const { getPlayer, populatePlayers } = require('../store/buildPlayer');
 const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
+const buildPlayerStatus = require('../store/buildPlayerStatus');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { getGuildFromPlayer } = require('../store/buildGuild');
@@ -81,6 +82,10 @@ class PlayersResolver {
       game.gameType = typeToStandardName(game.gameType);
       return game;
     });
+  }
+
+  async status({ player_name }) {
+    return buildPlayerStatus(player_name);
   }
 }
 

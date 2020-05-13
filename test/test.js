@@ -118,6 +118,7 @@ describe('api', () => {
             || path.indexOf('/bans') === 0
             || path.indexOf('/skyblock') === 0
             || path.endsWith('/recentGames')
+            || path.endsWith('/status')
             || path.includes('/bazaar')) {
             return callback__(error);
           }
