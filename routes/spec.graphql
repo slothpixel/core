@@ -84,8 +84,8 @@ type Query {
     """
     sort_order: String
 
-    """
-    `players`, `guilds` or `skyblock`
+    """  
+    `players`, `guilds` or `skyblock`;
     """
     type: Type!
   ): [JSON]
@@ -159,6 +159,19 @@ type PlayerQuery {
     """
     player_name: String!
   ): [PlayerRecentGamesListItem]
+
+  """
+  Returns the current online status and game for a player.
+
+  Equivalent to GET /players/{playerName}/status
+  """
+  status(
+    """
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+    TODO: Add return type
+    """
+    player_name: String!
+  ): PlayerStatus
 }
 
 type SkyblockQuery {
@@ -2283,6 +2296,17 @@ type PlayerRecentGamesListItem {
   gameType: String
   map: String
   mode: String
+}
+
+type PlayerStatusGame {
+  type: String
+  map: String
+  mode: String
+}
+
+type PlayerStatus {
+  online: Boolean
+  game: PlayerStatusGame
 }
 
 type Quick_status {
