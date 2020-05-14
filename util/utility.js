@@ -96,6 +96,7 @@ function getMonthlyStat(a, b) {
 }
 
 function fromEntries(array) {
+  // eslint-disable-next-line unicorn/no-reduce
   return array.reduce((object, [key, value]) => {
     object[key] = value;
     return object;

@@ -44,7 +44,7 @@ async function getGuildID(uuid) {
       return guild.id;
     }
     return createGuildCache(uuid);
-  } catch (_) {
+  } catch {
     return createGuildCache(uuid);
   }
 }

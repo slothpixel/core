@@ -22,7 +22,7 @@ function parseDateMath(mathString, time) {
     } else if (c === '-') {
       type = 2;
     } else {
-      return undefined;
+      return;
     }
 
     if (Number.isNaN(Number.parseInt(strippedMathString.charAt(i), 10))) {
@@ -34,21 +34,21 @@ function parseDateMath(mathString, time) {
       while (!Number.isNaN(Number.parseInt(strippedMathString.charAt(i), 10))) {
         i += 1;
         if (i > 10) {
-          return undefined;
+          return;
         }
       }
       number = Number.parseInt(strippedMathString.slice(numberFrom, i), 10);
     }
 
     if (type === 0 && number !== 1) {
-      return undefined;
+      return;
     }
 
     const unit = strippedMathString.charAt(i);
     i += 1;
 
     if (!units.has(unit)) {
-      return undefined;
+      return;
     }
     if (type === 0) {
       dateTime.startOf(unit);
@@ -63,7 +63,7 @@ function parseDateMath(mathString, time) {
 }
 
 function parse(text) {
-  if (!text) return undefined;
+  if (!text) return;
 
   if (typeof text !== 'string') {
     if (moment.isMoment(text)) {
@@ -72,7 +72,7 @@ function parse(text) {
     if (moment.isDate(text)) {
       return moment(text);
     }
-    return undefined;
+    return;
   }
 
   let time;

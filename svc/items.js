@@ -23,7 +23,7 @@ async function updateBazaar() {
     } catch (error) {
       logger.error(error.message);
     }
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -43,7 +43,7 @@ const schemaObject = (auction) => {
       damage: item.damage || null,
       texture: item.attributes.texture,
     };
-  } catch (error) {
+  } catch {
     logger.warn(`Found bad item in DB: ${JSON.stringify(auction)}`);
   }
 };
