@@ -20,7 +20,6 @@ exports.read = fromPromise(async (request) => {
   } catch (error) {
     logger.error(`[READCACHE] Error: ${error}`);
   }
-  return undefined;
 });
 
 exports.write = fromPromise(async (request, data) => {
@@ -35,5 +34,4 @@ exports.write = fromPromise(async (request, data) => {
     return logger.error(`[WRITECACHE] Failed to stringify JSON: ${error}`);
   }
   await redisSetexAsync(`cache:${request.key}`, request.duration, stringData);
-  return undefined;
 });

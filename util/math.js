@@ -20,6 +20,10 @@ function min(array) {
   return Math.min(...array);
 }
 
+function totalled(array) {
+  return array.reduce((previousValue, currentValue) => previousValue + currentValue, 0); // eslint-disable-line unicorn/no-reduce
+}
+
 /**
 Get the average value of the input array.
 */
@@ -28,7 +32,7 @@ function average(array) {
     return Number.NaN;
   }
 
-  const result = Math.floor(array.reduce((previousValue, currentValue) => previousValue + currentValue) / array.length);
+  const result = Math.floor(totalled(array) / array.length);
 
   if (!Number.isFinite(result)) {
     return Number.NaN;
