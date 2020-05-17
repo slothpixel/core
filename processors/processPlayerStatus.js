@@ -19,6 +19,6 @@ module.exports = ({
   game: {
     type: gameTypes_.get(type) || null,
     mode: mode === 'LOBBY' ? 'Lobby' : (modes_.get(type) ? modes_.get(type).get(mode) || null : null),
-    map: maps_.get(type) ? maps_.get(type).get(map) || null : null,
+    map: maps_.get(type) ? maps_.get(type).get(map) || null : map || null,
   },
 });
