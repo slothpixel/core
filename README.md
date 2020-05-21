@@ -1,20 +1,10 @@
 core
 ===
 
-<p>
-    <a href="https://discord.gg/ND9bJKK">
-      <img src="https://discordapp.com/api/guilds/323555112553414667/embed.png" alt="Discord" />
-    </a>
-    <a href="https://travis-ci.org/slothpixel/core">
-          <img src="https://travis-ci.org/slothpixel/core.svg?branch=master" alt="Build Status" />
-        </a>
-    <a href="https://lgtm.com/projects/g/slothpixel/core/">
-      <img src="https://img.shields.io/lgtm/grade/javascript/github/slothpixel/core" alt="Code Quality"/>
-    </a>
-    <a href="https://greenkeeper.io/">
-      <img src="https://badges.greenkeeper.io/slothpixel/core.svg" alt="Greenkeeper" />
-    </a>
-</p>
+[![Discord](https://discordapp.com/api/guilds/323555112553414667/embed.png)](https://discord.gg/ND9bJKK)
+[![Build Status](https://travis-ci.org/slothpixel/core.svg?branch=master)](https://travis-ci.org/slothpixel/core)
+[![Code Quality](https://img.shields.io/lgtm/grade/javascript/github/slothpixel/core)](https://lgtm.com/projects/g/slothpixel/core)
+[![Greenkeeper](https://badges.greenkeeper.io/slothpixel/core.svg)](https://greenkeeper.io)
 
 **NOTE:** The Slothpixel API is currently in early development - some features are missing and/or incomplete.
 
