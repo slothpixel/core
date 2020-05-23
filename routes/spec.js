@@ -1024,7 +1024,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           const { from, to, showAuctions } = request.query;
           queryAuctionId(from, to, showAuctions, request.params.id, (error, object) => {
             if (error) {
-              return callback(response.status(404).json({ error }));
+              return callback(response.status(404).json(error));
             }
             return response.json(object);
           });
