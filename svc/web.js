@@ -68,7 +68,7 @@ app.use((req, res, cb) => {
     logger.info(`[USER] ${req.user ? req.user.account_id : 'anonymous'} visit ${req.originalUrl}, ip ${ip}`);
   }
 
-  const pathCost = pathCosts[req.path] || Object.hasOwnProperty.call(req.query, 'cached') ? 0 : 1;
+  const pathCost = pathCosts[req.path] || 1;
   const multi = redis.multi()
     .hincrby('rate_limit', res.locals.usageIdentifier, pathCost)
     .expireat('rate_limit', utility.getStartOfBlockMinutes(1, 1));
