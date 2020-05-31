@@ -78,7 +78,7 @@ function standardDeviation(data) {
 module.exports = {
   max,
   min,
-  stdDev: standardDeviation,
+  standardDeviation,
   average,
   median,
 };

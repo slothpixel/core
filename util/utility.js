@@ -7,17 +7,15 @@ const { fromPromise } = require('universalify');
 const urllib = require('url');
 const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
+const pify = require('pify');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
-const pify = require('pify');
 const got = require('got');
-
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
-const {
-  max, min, average, median, stdDev,
-} = require('./math');
+
+const parseNbt = pify(nbt.parse).bind(nbt);
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -58,16 +56,10 @@ function getRatio(x = 0, y = 0) {
 }
 
 /*
-* Decode SkyBlock inventory data
- */
-function decodeData(string, callback) {
-  const data = Buffer.from(string, 'base64');
-  nbt.parse(data, (error, json) => {
-    if (error) {
-      logger.error(error);
-    }
-    return callback(error, json);
-  });
+Decode SkyBlock inventory data
+*/
+async function decodeData(data) {
+  return parseNbt(Buffer.from(data, 'base64'));
 }
 
 /*
@@ -341,9 +333,9 @@ const getData = fromPromise(async (redis, url) => {
       timeout: url.timeout,
       retry: url.retries,
       hooks: {
-        afterResponse: [
-          async (response, retryWithMergedOptions) => {
-            if (isHypixelApi && !response.body.success) {
+        beforeRetry: [
+          async () => {
+            if (isHypixelApi) {
               const multi = redis.multi()
                 .incr('hypixel_api_error')
                 .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
@@ -355,9 +347,7 @@ const getData = fromPromise(async (redis, url) => {
               } catch (error) {
                 logger.error(error);
               }
-              return retryWithMergedOptions();
             }
-            return response;
           },
         ],
       },
@@ -486,10 +476,5 @@ module.exports = {
   getMonthlyStat,
   pickKeys,
   invokeInterval,
-  min,
-  max,
-  average,
-  stdDev,
-  median,
   fromEntries,
 };
