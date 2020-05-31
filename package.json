@@ -23,7 +23,7 @@
     "graphql": "^14.6.0",
     "hypixelconstants": "^3.2.2",
     "moment": "^2.26.0",
-    "mongoose": "^5.9.15",
+    "mongoose": "^5.9.16",
     "morgan": "^1.10.0",
     "nock": "^12.0.3",
     "pify": "^5.0.0",
