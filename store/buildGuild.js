@@ -4,7 +4,7 @@ const processGuildData = require('../processors/processGuildData');
 const getUUID = require('./getUUID');
 const { logger, generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
-const cacheFunctions = require('./cacheFunctions');
+const cachedFunction = require('./cachedFunction');
 const { populatePlayers } = require('./buildPlayer');
 const { insertGuild, getGuildByPlayer, removeGuild } = require('./queries');
 
@@ -12,111 +12,69 @@ const { insertGuild, getGuildByPlayer, removeGuild } = require('./queries');
 * Functions to build/cache guild object
 * Currently doesn't support search by name
  */
-function getGuildData(id, cb) {
-  const { url } = generateJob('guild', {
+async function getGuildData(id) {
+  const body = await getData(redis, generateJob('guild', {
     id,
-  });
-  getData(redis, url, (err, body) => {
-    if (err) {
-      return cb(err.message);
-    }
-    if (body.guild === null) {
-      cb(null, null);
-      return removeGuild(id);
-    }
-    const guild = processGuildData(body.guild);
-    return cb(null, guild);
-  });
+  }).url);
+  if (body.guild === null) {
+    removeGuild(id);
+    return null;
+  }
+  const guild = processGuildData(body.guild);
+  return guild;
 }
 
-function getGuildID(uuid, cb) {
-  // First check if we have the player in a cached guild
-  getGuildByPlayer(uuid, (err, guild) => {
-    if (!err && guild !== null) {
+async function createGuildCache(uuid) {
+  const guildData = await getData(redis, generateJob('findguild', {
+    id: uuid,
+  }).url);
+
+  if (guildData.guild === null) {
+    return null;
+  }
+
+  return guildData.guild;
+}
+
+async function getGuildID(uuid) {
+  try {
+    const guild = await getGuildByPlayer(uuid);
+    if (guild !== null) {
       logger.debug(`Found cached guild for ${uuid}: ${guild.name}`);
-      return cb(null, guild.id);
+      return guild.id;
     }
-    logger.debug(`Ǹo cached guild found for ${uuid}`);
-    const { url } = generateJob('findguild', {
-      id: uuid,
-    });
-    getData(redis, url, (err, foundguild) => {
-      if (err) {
-        return cb(err.message);
-      }
-      if (foundguild.guild === null) {
-        return cb('Player is not in a guild');
-      }
-      return cb(null, foundguild.guild);
-    });
-  });
-}
-
-function cacheGuild(guild, id, key, cb) {
-  if (config.ENABLE_GUILD_CACHE) {
-    cacheFunctions.write({
-      key,
-      duration: config.GUILD_CACHE_SECONDS,
-    }, guild);
+    return createGuildCache(uuid);
+  } catch {
+    return createGuildCache(uuid);
   }
-  if (config.ENABLE_DB_CACHE) {
-    insertGuild(id, guild, (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
+}
+
+async function buildGuild(uuid) {
+  const id = await getGuildID(uuid);
+  if (id == null) {
+    return { guild: null };
   }
-  return cb(guild);
+  return cachedFunction(`guild:${id}`, async () => {
+    const guild = await getGuildData(id);
+    if (!guild) {
+      return { guild: null };
+    }
+
+    if (config.ENABLE_DB_CACHE) {
+      await insertGuild(id, guild);
+    }
+
+    return guild;
+  }, { cacheDuration: config.GUILD_CACHE_SECONDS, shouldCache: config.ENABLE_GUILD_CACHE });
 }
 
-function buildGuild(uuid, cb) {
-  getGuildID(uuid, (err, id) => {
-    if (err) {
-      return cb(err);
-    }
-    if (id === null) {
-      return cb(null, { guild: null });
-    }
-    const key = `guild:${id}`;
-    cacheFunctions.read({ key }, (guild) => {
-      if (guild) {
-        return cb(null, guild);
-      }
-      getGuildData(id, (err, guild) => {
-        if (err) {
-          return cb(err);
-        }
-        if (guild === null) {
-          return cb(null, { guild: null });
-        }
-        cacheGuild(guild, id, key, (guild) => cb(null, guild));
-      });
-    });
-  });
-}
-
-function getGuildFromPlayer(playerName, shouldPopulatePlayers, cb) {
-  getUUID(playerName, (err, uuid) => {
-    if (err) {
-      return cb(err, null);
-    }
-    buildGuild(uuid, (err, guild) => {
-      if (err) {
-        return cb(err, null);
-      }
-      if (shouldPopulatePlayers !== undefined) {
-        populatePlayers(guild.members, (err, players) => {
-          if (err) {
-            return cb(err, null);
-          }
-          guild.members = players;
-          return cb(null, guild);
-        });
-      } else {
-        return cb(null, guild);
-      }
-    });
-  });
+async function getGuildFromPlayer(playerName, { shouldPopulatePlayers = false } = {}) {
+  const guild = await buildGuild(await getUUID(playerName));
+  if (shouldPopulatePlayers) {
+    const players = await populatePlayers(guild.members);
+    guild.members = players;
+  }
+  return guild;
 }
 
 module.exports = { getGuildFromPlayer, getGuildData };

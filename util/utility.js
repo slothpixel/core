@@ -7,17 +7,15 @@ const { fromPromise } = require('universalify');
 const urllib = require('url');
 const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
+const pify = require('pify');
 const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
-const { promisify } = require('util');
 const got = require('got');
-
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
-const {
-  max, min, average, median, stdDev,
-} = require('./math');
+
+const parseNbt = pify(nbt.parse).bind(nbt);
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -58,16 +56,10 @@ function getRatio(x = 0, y = 0) {
 }
 
 /*
-* Decode SkyBlock inventory data
- */
-function decodeData(string, cb) {
-  const data = Buffer.from(string, 'base64');
-  nbt.parse(data, (err, json) => {
-    if (err) {
-      logger.error(err);
-    }
-    return cb(err, json);
-  });
+Decode SkyBlock inventory data
+*/
+async function decodeData(data) {
+  return parseNbt(Buffer.from(data, 'base64'));
 }
 
 /*
@@ -76,9 +68,9 @@ function decodeData(string, cb) {
  */
 function getWeeklyStat(a, b) {
   const delta = new Date() - new Date(1417237200000);
-  const numWeeks = Math.floor(delta / 604800000);
+  const numberWeeks = Math.floor(delta / 604800000);
 
-  return numWeeks % 2 === 0 ? a : b;
+  return numberWeeks % 2 === 0 ? a : b;
 }
 
 /*
@@ -95,6 +87,14 @@ function getMonthlyStat(a, b) {
   return diffMonth % 2 === 0 ? a : b;
 }
 
+function fromEntries(array) {
+  // eslint-disable-next-line unicorn/no-reduce
+  return array.reduce((object, [key, value]) => {
+    object[key] = value;
+    return object;
+  }, {});
+}
+
 /*
  * Pick certain keys from obj.
  *
@@ -109,16 +109,15 @@ function getMonthlyStat(a, b) {
  *        (key => key).
  *    valueMap: Same as keyMap, but for the values.
  */
-function pickKeys(obj, options) {
+function pickKeys(object, options) {
   const regexp = options.regexp || /.+/;
   const filter = options.filter || (() => true);
   const keyMap = options.keyMap || ((key) => key);
   const valueMap = options.valueMap || ((value) => value);
 
-  return Object.entries(obj)
+  return fromEntries(Object.entries(object)
     .filter(([key, value]) => regexp.test(key) && filter(key, value))
-    .map(([key, value]) => [keyMap(key), valueMap(value)])
-    .reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+    .map(([key, value]) => [keyMap(key), valueMap(value)]));
 }
 
 /**
@@ -153,26 +152,27 @@ const isContributor = (uuid) => contributors.includes(uuid);
 /**
 * Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
  */
-function getNestedObjects(obj = {}, path = '') {
+function getNestedObjects(object = {}, path = '') {
   path = path.split('.');
-  for (let i = 0; i < path.length; i += 1) {
-    if (obj[path[i]] === undefined) {
-      break;
+
+  for (const element of path) {
+    if (object[element] === undefined) {
+      return object;
     }
-    obj = obj[path[i]];
+    object = object[element];
   }
-  return obj;
+  return object;
 }
 
 /**
-* Returns specified+profile fields from a player object
+* Returns specified+profile fields from a player objects
  */
-function getPlayerFields(obj = {}, fields = []) {
-  const res = {};
+function getPlayerFields(object = {}, fields = []) {
+  const result = {};
   fields.concat(profileFields).forEach((field) => {
-    res[field] = getNestedObjects(obj, field);
+    result[field] = getNestedObjects(object, field);
   });
-  return res;
+  return result;
 }
 
 /**
@@ -181,8 +181,8 @@ function getPlayerFields(obj = {}, fields = []) {
  * */
 function getStartOfBlockMinutes(size, offset = 0) {
   const blockS = size * 60;
-  const curTime = Math.floor(new Date() / 1000);
-  const blockStart = curTime - (curTime % blockS);
+  const currentTime = Math.floor(new Date() / 1000);
+  const blockStart = currentTime - (currentTime % blockS);
   return (blockStart + (offset * blockS)).toFixed(0);
 }
 
@@ -196,22 +196,22 @@ function redisCount(redis, prefix) {
   redis.expireat(key, moment().startOf('hour').add(1, 'day').format('X'));
 }
 
-function getRedisCountDay(redis, prefix, cb) {
+function getRedisCountDay(redis, prefix, callback) {
   // Get counts for last 24 hour keys (including current partial hour)
-  const keyArr = [];
+  const keyArray = [];
   for (let i = 0; i < 24; i += 1) {
-    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
+    keyArray.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
   }
-  redis.pfcount(...keyArr, cb);
+  redis.pfcount(...keyArray, callback);
 }
 
-function getRedisCountHour(redis, prefix, cb) {
+function getRedisCountHour(redis, prefix, callback) {
   // Get counts for previous full hour
-  const keyArr = [];
+  const keyArray = [];
   for (let i = 1; i < 2; i += 1) {
-    keyArr.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
+    keyArray.push(`${prefix}:${moment().startOf('hour').subtract(i, 'hour').format('X')}`);
   }
-  redis.pfcount(...keyArr, cb);
+  redis.pfcount(...keyArray, callback);
 }
 
 const randomItem = (array) => array[Math.floor(Math.random() * array.length)];
@@ -228,7 +228,7 @@ function generateJob(type, payload) {
   if (apiKey === '') {
     logger.warn('No HYPIXEL_API_KEY env variable set!');
   }
-  const opts = {
+  const options = {
     bazaar_products() {
       return {
         url: `${apiUrl}/skyblock/bazaar?key=${apiKey}`,
@@ -279,6 +279,11 @@ function generateJob(type, payload) {
         url: `${apiUrl}/skyblock/profile?key=${apiKey}&profile=${payload.id}`,
       };
     },
+    status() {
+      return {
+        url: `${apiUrl}/status?key=${apiKey}&uuid=${payload.id}`,
+      };
+    },
     player() {
       return {
         url: `${apiUrl}/player?key=${apiKey}&uuid=${payload.id}`,
@@ -291,7 +296,7 @@ function generateJob(type, payload) {
     },
 
   };
-  return opts[type]();
+  return options[type]();
 }
 
 /**
@@ -328,23 +333,21 @@ const getData = fromPromise(async (redis, url) => {
       timeout: url.timeout,
       retry: url.retries,
       hooks: {
-        afterResponse: [
-          async (response, retryWithMergedOptions) => {
-            if (isHypixelApi && !response.body.success) {
+        beforeRetry: [
+          async () => {
+            if (isHypixelApi) {
               const multi = redis.multi()
                 .incr('hypixel_api_error')
                 .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
 
               try {
-                const [failed] = await promisify(multi.exec)();
+                const [failed] = await pify(multi.exec)();
                 logger.warn(`Failed API requests in the past minute: ${failed}`);
                 logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
-              } catch (err) {
-                logger.error(err);
+              } catch (error) {
+                logger.error(error);
               }
-              return retryWithMergedOptions();
             }
-            return response;
           },
         ],
       },
@@ -436,10 +439,10 @@ function invokeInterval(func, delay) {
   (function invoker() {
     logger.info(`running ${func.name}`);
     const start = Date.now();
-    return func((err) => {
-      if (err) {
+    return func((error) => {
+      if (error) {
         // log the error, but wait until next interval to retry
-        logger.error(err);
+        logger.error(error);
       }
       logger.info(`${func.name}: ${Date.now() - start}ms`);
       setTimeout(invoker, delay);
@@ -473,9 +476,5 @@ module.exports = {
   getMonthlyStat,
   pickKeys,
   invokeInterval,
-  min,
-  max,
-  average,
-  stdDev,
-  median,
+  fromEntries,
 };

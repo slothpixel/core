@@ -1,33 +1,37 @@
+const { fromPromise } = require('universalify');
+const pify = require('pify');
 const redis = require('./redis');
 const { logger } = require('../util/utility');
 
-module.exports = {
-  read: (req, cb) => {
-    logger.debug(`[READCACHE] cache:${req.key}`);
-    redis.get(`cache:${req.key}`, (err, data) => {
-      if (err) {
-        logger.error(`[READCACHE] Error: ${err}`);
-      }
-      let res = null;
-      try {
-        res = JSON.parse(data);
-      } catch (e) {
-        logger.error(`[READCACHE] Failed parsing cache JSON: ${e}`);
-      }
-      cb(res);
-    });
-  },
-  write: (req, data, cb) => {
-    logger.debug(`[WRITECACHE] cache:${req.key}`);
-    if (data === undefined) {
-      return logger.warn('[WRITECACHE] Cache data is undefined! This should never happen');
-    }
-    let string;
+const redisGetAsync = pify(redis.get).bind(redis);
+const redisSetexAsync = pify(redis.setex).bind(redis);
+
+exports.read = fromPromise(async (request) => {
+  logger.debug(`[READCACHE] cache:${request.key}`);
+  try {
+    const data = await redisGetAsync(`cache:${request.key}`);
+    let result;
     try {
-      string = JSON.stringify(data);
-    } catch (e) {
-      return logger.error(`[WRITECACHE] Failed to stringify JSON: ${e}`);
+      result = JSON.parse(data);
+    } catch (error) {
+      logger.error(`[READCACHE] Failed parsing cache JSON: ${error}`);
     }
-    return redis.setex(`cache:${req.key}`, req.duration, string, cb);
-  },
-};
+    return result;
+  } catch (error) {
+    logger.error(`[READCACHE] Error: ${error}`);
+  }
+});
+
+exports.write = fromPromise(async (request, data) => {
+  logger.debug(`[WRITECACHE] cache:${request.key}`);
+  if (data === undefined) {
+    return logger.warn('[WRITECACHE] Cache data is undefined! This should never happen');
+  }
+  let stringData;
+  try {
+    stringData = JSON.stringify(data);
+  } catch (error) {
+    return logger.error(`[WRITECACHE] Failed to stringify JSON: ${error}`);
+  }
+  await redisSetexAsync(`cache:${request.key}`, request.duration, stringData);
+});

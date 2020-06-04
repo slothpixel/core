@@ -1,10 +1,61 @@
 {
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "plugin:unicorn/recommended"
+  ],
   "rules": {
-    "max-len": ["error", { "code": 180, "ignoreTemplateLiterals": true, "ignoreStrings": true }],
+    "max-len": [
+      "error",
+      {
+        "code": 180,
+        "ignoreTemplateLiterals": true,
+        "ignoreStrings": true
+      }
+    ],
     "no-console": 0,
     "no-shadow": 0,
     "no-param-reassign": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "camelCase": true,
+          "pascalCase": true
+        },
+        "ignore": [
+          "MCGO.js",
+          "SpeedUHC.js",
+          "TNTGames.js",
+          "UHC.js",
+          "getUUID.js",
+          "CONTRIBUTORS.js"
+        ]
+      }
+    ],
+    "unicorn/no-null": 0,
+    "unicorn/no-process-exit": 0,
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ForInStatement",
+        "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+      },
+      {
+        "selector": "LabeledStatement",
+        "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+      },
+      {
+        "selector": "WithStatement",
+        "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+      }
+    ],
+    "consistent-return": 0,
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ]
   }
 }

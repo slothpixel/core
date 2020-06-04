@@ -3,44 +3,37 @@
 * Functions that handle creating, caching and storing SkyBlock profile data
  */
 const async = require('async');
+const pify = require('pify');
 const redis = require('./redis');
 const processSkyBlock = require('../processors/processSkyBlock');
-const cacheFunctions = require('./cacheFunctions');
-// const { buildPlayer } = require('../store/buildPlayer');
+const cachedFunction = require('./cachedFunction');
 const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 
-function cacheProfile(key, profile, cb) {
-  cacheFunctions.write({
-    key,
-    duration: 600,
-  }, profile);
-  insertSkyBlockProfile(profile);
-  cb(profile);
-}
+const redisGetAsync = pify(redis.get).bind(redis);
+const redisSetAsync = pify(redis.set).bind(redis);
 
-function getProfileData(id, cb) {
-  const { url } = generateJob('skyblock_profile', {
-    id,
-  });
-  getData(redis, url, (err, body) => {
-    if (err) {
-      logger.error(`Failed getting skyblock profile: ${err.message}`);
-    }
-    processSkyBlock((body || {}).profile || {}, (profile) => cb(null, profile));
-  });
+async function getProfileData(id) {
+  try {
+    const body = await getData(redis, generateJob('skyblock_profile', {
+      id,
+    }).url);
+    return processSkyBlock((body || {}).profile || {});
+  } catch (error) {
+    logger.error(`Failed getting skyblock profile: ${error.message}`);
+  }
 }
 
 function getLatestProfile(profiles) {
   return Object.entries(profiles).sort((a, b) => b[1].last_save - a[1].last_save)[0];
 }
 
-function updateProfileList(key, profiles) {
-  redis.set(key, JSON.stringify(profiles), (err) => {
-    if (err) {
-      logger.error(err);
-    }
-  });
+async function updateProfileList(key, profiles) {
+  try {
+    await redisSetAsync(key, JSON.stringify(profiles));
+  } catch (error) {
+    logger.error(`Failed to update profile list: ${error}`);
+  }
 }
 
 // Destruct some properties from profiles for overview
@@ -57,69 +50,63 @@ function getStats({
   };
 }
 
-function buildProfile(uuid, id = null, shouldUpdateProfileList = true, cb) {
-  redis.get(`skyblock_profiles:${uuid}`, (err, res) => {
-    if (err) {
-      return cb(err);
+async function buildProfile(uuid, id = null, { shouldUpdateProfileList = true } = {}) {
+  const result = await redisGetAsync(`skyblock_profiles:${uuid}`);
+  let profile_id = id;
+  let profiles = {};
+
+  if (result) {
+    profiles = JSON.parse(result);
+    // If no id is specified, use last played profile
+    if (id === null) {
+      [profile_id] = getLatestProfile(profiles);
+    } else if (id.length < 32) {
+      profile_id = Object.keys(profiles).find((profile) => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
     }
-    let profile_id = id;
-    let profiles = {};
-    if (res) {
-      profiles = JSON.parse(res);
-      // If no id is specified, use last played profile
-      if (id === null) {
-        [profile_id] = getLatestProfile(profiles);
-      } else if (id.length < 32) {
-        profile_id = Object.keys(profiles).find((profile) => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
-      }
-    } else {
-      // buildPlayer(uuid, () => {});
+  }
+
+  if (profile_id === null || profile_id.length !== 32) {
+    throw new Error('Profile not found!');
+  }
+
+  return cachedFunction(`skyblock_profile:${profile_id}`, async () => {
+    const profile = await getProfileData(profile_id);
+    profiles[profile_id] = Object.assign(profiles[profile_id] || {}, getStats(profile.members[uuid] || {}, profile.members));
+
+    await insertSkyBlockProfile(profile);
+
+    if (shouldUpdateProfileList) {
+      await updateProfileList(`skyblock_profiles:${uuid}`, profiles);
     }
-    if (profile_id === null) {
-      return cb('Profile not found!');
-    }
-    const key = `skyblock_profile:${profile_id}`;
-    cacheFunctions.read({ key }, (profile) => {
-      if (profile) {
-        return cb(null, profile);
-      }
-      if (profile_id.length !== 32) {
-        return cb('Profile not found!');
-      }
-      getProfileData(profile_id, (err, profile) => {
-        if (err) {
-          return cb(err);
-        }
-        if (shouldUpdateProfileList) {
-          profiles[profile_id] = Object.assign(profiles[profile_id], getStats(profile.members[uuid] || {}, profile.members));
-          updateProfileList(`skyblock_profiles:${uuid}`, profiles);
-        }
-        cacheProfile(key, profile, (profile) => cb(null, profile || {}));
-      });
-    });
-  });
+
+    return profile;
+  }, { cacheDuration: 600 });
 }
 
 /*
-* Create or update list of profiles
- */
-function buildProfileList(uuid, profiles = {}) {
+Create or update list of profiles
+*/
+async function buildProfileList(uuid, profiles = {}) {
   const key = `skyblock_profiles:${uuid}`;
-  redis.get(key, (err, res) => {
-    if (err) {
-      return logger.error(`Failed getting profile list hash from redis: ${err}`);
+  try {
+    const result = await redisGetAsync(key);
+    const profileData = JSON.parse(result) || {};
+    // TODO: Mark old profiles
+    const updateQueue = Object.keys(profiles).filter((id) => !(id in profileData));
+
+    if (updateQueue.length === 0) {
+      return;
     }
-    const p = JSON.parse(res) || {};
-    // TODO - Mark old profiles
-    const updateQueue = Object.keys(profiles).filter((id) => !(id in p));
-    if (updateQueue.length === 0) return;
-    async.each(updateQueue, (id, cb) => {
-      buildProfile(uuid, id, false, (err, profile) => {
-        p[id] = Object.assign(profiles[id], getStats(profile.members[uuid] || {}, profile.members));
-        cb();
-      });
-    }, () => updateProfileList(key, p));
-  });
+
+    await async.each(updateQueue, async (id) => {
+      const profile = await buildProfile(uuid, id, { shouldUpdateProfileList: false });
+      profileData[id] = { ...profiles[id], ...getStats(profile.members[uuid] || {}, profile.members) };
+    });
+
+    await updateProfileList(key, profileData);
+  } catch (error) {
+    logger.error(`Failed to get profile list hash from redis: ${error}`);
+  }
 }
 
 module.exports = {

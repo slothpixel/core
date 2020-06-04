@@ -5,15 +5,14 @@ const SkyBlockUtils = require('../util/SkyBlockUtils');
 const processInventoryData = require('./processInventoryData');
 
 async function getInventory({ data = '' }) {
-  return new Promise((resolve) => {
-    if (data === '') resolve(null);
-    decodeData(data, (err, json) => {
-      if (err) {
-        logger.error(`getInventory failed: ${err}`);
-      }
-      resolve(processInventoryData(json));
-    });
-  });
+  if (data === '') return null;
+
+  try {
+    return processInventoryData(await decodeData(data));
+  } catch (error) {
+    logger.error(`getInventory failed: ${error}`);
+    return null;
+  }
 }
 
 // Process the stats object
@@ -90,6 +89,19 @@ function processStats({
   };
 }
 
+const getUnlockedTier = (array) => {
+  const o = {};
+  array.forEach((gen) => {
+    const regex = /_(-*\d+)$/;
+    const name = gen.replace(regex, '');
+    const tier = Number((regex.exec(gen) || [])[1] || -1);
+    if (o[name] < tier || !(name in o)) {
+      o[name] = tier;
+    }
+  });
+  return o;
+};
+
 // TODO - Parse health, defence, intelligence etc.
 async function processMember({
   last_save = null,
@@ -109,12 +121,16 @@ async function processMember({
   talisman_bag = {},
   quiver = {},
   ender_chest_contents = {},
+  // Fairy souls
+  fairy_souls_collected = 0,
+  fairy_souls = 0,
+  fairy_exchanges = 0,
   ...rest
 }) {
   const getSkills = (regexp) => pickKeys(rest, {
     regexp,
     keyMap: (key) => key.replace(regexp, ''),
-    valueMap: (val) => SkyBlockUtils.getLevelByXp(val),
+    valueMap: (value) => SkyBlockUtils.getLevelByXp(value),
   });
   const getSlayer = ({
     claimed_levels = {},
@@ -133,18 +149,6 @@ async function processMember({
       4: boss_kills_tier_3,
     },
   });
-  const getUnlockedTier = (array) => {
-    const o = {};
-    array.forEach((gen) => {
-      const regex = /_(-*\d+)$/;
-      const name = gen.replace(regex, '');
-      const tier = Number((regex.exec(gen) || [])[1] || -1);
-      if (o[name] < tier || !(name in o)) {
-        o[name] = tier;
-      }
-    });
-    return o;
-  };
   const collection_tiers = getUnlockedTier(unlocked_coll_tiers);
   const skills = getSkills(/^experience_skill_(?!runecrafting)/);
   skills.runecrafting = SkyBlockUtils.getLevelByXp(rest.experience_skill_runecrafting, true);
@@ -160,6 +164,9 @@ async function processMember({
     potion_bag: await getInventory(potion_bag),
     talisman_bag: await getInventory(talisman_bag),
     quiver: await getInventory(quiver),
+    fairy_souls_collected,
+    fairy_souls,
+    fairy_exchanges,
     pets,
     skills,
     collection,
@@ -175,22 +182,23 @@ async function processMember({
   };
 }
 
-function processSkyBlock({
+async function processSkyBlock({
   profile_id = null,
   members = {},
   banking = {},
-}, cb) {
+}) {
   const newMembers = {};
-  async.each(Object.keys(members), async (member) => {
+  await async.each(Object.keys(members), async (member) => {
     newMembers[member] = await processMember(members[member]);
-  }, () => cb({
+  });
+  return {
     profile_id,
     members: newMembers,
     banking: {
       balance: banking.balance || null,
       transactions: banking.transactions || [],
     },
-  }));
+  };
 }
 
 module.exports = processSkyBlock;

@@ -138,7 +138,7 @@ function getLevelByXp(xp = 0, runecrafting) {
 function getSlayerLevel({ claimedLevels }) {
   let level = 0;
   Object.keys(claimedLevels).forEach((levelName) => {
-    const _level = parseInt(levelName.split('_').pop(), 10);
+    const _level = Number.parseInt(levelName.split('_').pop(), 10);
     if (_level > level) level = _level;
   });
   return level;

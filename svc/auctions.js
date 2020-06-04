@@ -25,9 +25,9 @@ function updatePrices(auction) {
     highest_bid_amount,
     item,
   };
-  redis.zadd([item.attributes.id, end, JSON.stringify(data)], (err) => {
-    if (err) {
-      logger.error(err);
+  redis.zadd([item.attributes.id, end, JSON.stringify(data)], (error) => {
+    if (error) {
+      logger.error(error);
     }
   });
 }
@@ -47,34 +47,39 @@ function getUpdateType(auction) {
   return 'none';
 }
 
+function removeAuctionIds(bids) {
+  bids.forEach((bid) => delete bid.auction_id);
+  return bids;
+}
+
+function upsertDocument(uuid, update) {
+  return {
+    updateOne: {
+      update: { $set: update },
+      filter: { uuid },
+      upsert: true,
+    },
+  };
+}
+
 function processAndStoreAuctions(auctions = []) {
-  function removeAuctionIds(bids) {
-    bids.forEach((bid) => delete bid.auction_id);
-    return bids;
-  }
-  function upsertDoc(uuid, update) {
-    return {
-      updateOne: {
-        update: { $set: update },
-        filter: { uuid },
-        upsert: true,
-      },
-    };
-  }
-  async.map(auctions, (auction, cb) => {
+  async.map(auctions, (auction, callback) => {
     const { uuid } = auction;
     const update = getUpdateType(auction);
     if (update === 'none') {
-      return cb();
+      return callback();
     }
     // Insert new auction
     if (update === 'full') {
-      decodeData(auction.item_bytes, (err, json) => {
+      decodeData(auction.item_bytes).then((json) => {
         [auction.item] = processInventoryData(json);
         delete auction.item_bytes;
         auction.bids = removeAuctionIds(auction.bids);
         activeAuctions[uuid] = auction;
-        return cb(err, upsertDoc(uuid, auction));
+        callback(null, upsertDocument(uuid, auction));
+      }).catch((error) => {
+        logger.error(error);
+        callback(error);
       });
     }
     // Only bids have changed
@@ -82,56 +87,56 @@ function processAndStoreAuctions(auctions = []) {
       activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
       activeAuctions[uuid].highest_bid_amount = auction.highest_bid_amount;
       activeAuctions[uuid].end = auction.end;
-      return cb(null, upsertDoc(uuid, {
+      return callback(null, upsertDocument(uuid, {
         bids: activeAuctions[uuid].bids,
         end: auction.end,
         highest_bid_amount: auction.highest_bid_amount,
       }));
     }
-  }, (err, bulkAuctionOps) => {
-    if (err) {
-      return logger.error(`auction processing failed: ${err}`);
+  }, (error, bulkAuctionOps) => {
+    if (error) {
+      return logger.error(`auction processing failed: ${error}`);
     }
     // Remove empty elements from array
     bulkAuctionOps = bulkAuctionOps.filter(Boolean);
     if (bulkAuctionOps.length === 0) return;
-    return bulkWrite('auction', bulkAuctionOps, { ordered: false }, (err) => {
-      logger.error(`Failed bulkWrite: ${err.stack}`);
+    return bulkWrite('auction', bulkAuctionOps, { ordered: false }, (error) => {
+      logger.error(`Failed bulkWrite: ${error.stack}`);
     });
   });
 }
 
-function getAuctionPage(page, cb) {
+function getAuctionPage(page, callback) {
   const { url } = generateJob('skyblock_auctions', {
     page,
   });
-  getData(redis, url, (err, body) => {
-    if (err) {
-      return cb(err.message, null);
+  getData(redis, url, (error, body) => {
+    if (error) {
+      return callback(error.message, null);
     }
-    return cb(null, body);
+    return callback(null, body);
   });
 }
 
-function updateListings(cb) {
-  getAuctionPage(0, (err, data) => {
-    if (err) {
-      return cb('Failed to update listings!');
+function updateListings(callback) {
+  getAuctionPage(0, (error, data) => {
+    if (error) {
+      return callback('Failed to update listings!');
     }
     logger.info(`[updateListings] Retrieving ${data.totalAuctions} auctions from ${data.totalPages} pages.`);
     const timestamp = new Date(data.lastUpdated);
     logger.info(`Data last updated at ${timestamp.toLocaleString()}`);
     processAndStoreAuctions(data.auctions);
-    async.each([...Array(data.totalPages).keys()].slice(1), (page, cb) => {
-      getAuctionPage(page, (err, data) => {
-        if (err) {
-          cb(`Failed getting auction page ${page}: ${err}`);
+    async.each([...new Array(data.totalPages).keys()].slice(1), (page, callback_) => {
+      getAuctionPage(page, (error_, data) => {
+        if (error_) {
+          callback_(`Failed getting auction page ${page}: ${error_}`);
         }
         processAndStoreAuctions(data.auctions);
-        cb();
+        callback_();
       });
     });
-    cb();
+    callback();
   });
 }
 

@@ -7,18 +7,19 @@ const { getPlayers, getGuilds, bulkWrite } = require('../store/queries');
 const { getGuildData } = require('../store/buildGuild');
 const { buildPlayer } = require('../store/buildPlayer');
 
-function updatePlayers(cb) {
+function upsertDocument(id, update) {
+  return {
+    updateOne: {
+      update: { $set: update },
+      filter: (update.uuid)
+        ? { uuid: id }
+        : { id },
+    },
+  };
+}
+
+function updatePlayers(callback) {
   const now = Date.now();
-  function upsertDoc(id, update) {
-    return {
-      updateOne: {
-        update: { $set: update },
-        filter: (update.uuid)
-          ? { uuid: id }
-          : { id },
-      },
-    };
-  }
   /*
   * In order to update, player data must be older than 12 hours
   * and they have had to logged on in the past month
@@ -36,52 +37,43 @@ function updatePlayers(cb) {
       $lt: new Date(now - 12 * 60 * 60 * 1000),
     },
   };
-  getPlayers(playerFilter, 'uuid', { limit: 100 }, (err, players) => {
-    if (err) {
-      cb(err);
+  getPlayers(playerFilter, 'uuid', { limit: 100 }, (error, players) => {
+    if (error) {
+      callback(error);
     }
-    async.mapLimit(players, 10, (p, cb) => {
-      buildPlayer({
-        uuid: p.uuid,
-        caching: {
-          cacheResult: false,
-        },
-      }, (err, player) => {
-        if (err) {
-          cb(err);
-        }
-        cb(null, upsertDoc(p.uuid, player));
-      });
-    }, (err, bulkPlayerOps) => {
-      if (err) {
-        cb(err);
+    async.mapLimit(players, 10, (p, callback_) => {
+      buildPlayer(p.uuid, { shouldCache: false }).then((player) => {
+        upsertDocument(p.uuid, player);
+      }).catch(callback_);
+    }, (error, bulkPlayerOps) => {
+      if (error) {
+        callback(error);
       }
-      if (bulkPlayerOps.length === 0) cb();
-      bulkWrite('player', bulkPlayerOps, { ordered: false }, (err) => {
-        logger.error(`bulkWrite failed: ${err}`);
-        cb();
+      if (bulkPlayerOps.length === 0) callback();
+      bulkWrite('player', bulkPlayerOps, { ordered: false }, (error) => {
+        logger.error(`bulkWrite failed: ${error}`);
+        callback();
       });
     });
   });
-  getGuilds(guildFilter, 'id', { limit: 20 }, (err, guilds) => {
-    if (err) {
-      cb(err);
+  getGuilds(guildFilter, 'id', { limit: 20 }, (error, guilds) => {
+    if (error) {
+      callback(error);
     }
-    async.mapLimit(guilds, 5, (g, cb) => {
-      getGuildData(g.id, (err, guild) => {
-        if (err) {
-          cb(err);
-        }
-        cb(null, upsertDoc(g.id, guild));
+    async.mapLimit(guilds, 5, (g, callback_) => {
+      getGuildData(g.id).then((guild) => {
+        callback_(null, upsertDocument(g.id, guild));
+      }).catch((error) => {
+        callback_(error.message);
       });
-    }, (err, bulkGuildOps) => {
-      if (err) {
-        cb(err);
+    }, (error, bulkGuildOps) => {
+      if (error) {
+        callback(error);
       }
-      if (bulkGuildOps.length === 0) cb();
-      bulkWrite('guild', bulkGuildOps, { ordered: false }, (err) => {
-        logger.error(`bulkWrite failed: ${err}`);
-        cb();
+      if (bulkGuildOps.length === 0) callback();
+      bulkWrite('guild', bulkGuildOps, { ordered: false }, (error) => {
+        logger.error(`bulkWrite failed: ${error}`);
+        callback();
       });
     });
   });

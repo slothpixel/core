@@ -85,15 +85,24 @@ function processPlayerData({
   voting: { total = 0, last_vote = null, votesToday = 0 } = {},
   socialMedia: { links = {} } = {},
   stats = {},
-}, cb) {
-  const achievementPromise = new Promise((resolve) => {
-    resolve(parseAchievements({
+}) {
+  let achievements_;
+  try {
+    achievements_ = parseAchievements({
       oneTime: achievementsOneTime, tiered: achievements, tracked: achievementTracking, rewards: achievementRewardsNew,
-    }));
-  });
-  const questPromise = new Promise((resolve) => {
-    resolve(parseQuests(quests, challenges));
-  });
+    });
+  } catch (error) {
+    logger.error(`Failed parsing achievements: ${error}`);
+  }
+
+  let quests_;
+
+  try {
+    quests_ = parseQuests(quests, challenges);
+  } catch (error) {
+    logger.error(`Failed parsing quests: ${error}`);
+  }
+
   const defaultLinks = {
     TWITTER: null,
     YOUTUBE: null,
@@ -147,61 +156,52 @@ function processPlayerData({
   });
   // Update SkyBlock profiles
   buildProfileList(uuid, statsObject.SkyBlock.profiles);
-  let achievementObj = {};
-  let questObject = {};
   const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);
   const newRankPlusColor = colorNameToCode(rankPlusColor);
   const newPrefix = betterFormatting(prefix);
   const rankPlusPlusColor = colorNameToCode(monthlyRankColor);
-  Promise.all([achievementPromise, questPromise])
-    .then((values) => {
-      [achievementObj, questObject] = values;
-    }, (err) => {
-      logger.error(`Failed parsing quest or achievements: ${err}`);
-    }).then(() => {
-      cb({
-        uuid,
-        username: displayname,
-        online: getOnlineStatus(lastLogin, lastLogout),
-        rank: newRank,
-        rank_plus_color: newRankPlusColor,
-        rank_formatted: generateFormattedRank(newRank, newRankPlusColor, newPrefix, rankPlusPlusColor),
-        prefix: newPrefix,
-        karma,
-        exp: networkExp,
-        level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
-        achievement_points: achievementPoints,
-        quests_completed: questObject.quests_completed,
-        total_kills: totalKills,
-        total_wins: totalWins,
-        total_coins: totalCoins,
-        mc_version: mcVersionRp,
-        first_login: getFirstLogin(firstLogin, _id),
-        last_login: lastLogin,
-        last_logout: lastLogout,
-        last_game: typeToStandardName(mostRecentGameType),
-        language: userLanguage,
-        gifts_sent: realBundlesGiven,
-        gifts_received: realBundlesReceived,
-        is_contributor: isContributor(uuid),
-        rewards: {
-          streak_current: rewardScore,
-          streak_best: rewardHighScore,
-          claimed: totalRewards,
-          claimed_daily: totalDailyRewards,
-          tokens: adsense_tokens,
-        },
-        voting: {
-          votes_today: votesToday,
-          total_votes: total,
-          last_vote,
-        },
-        links: Object.assign(defaultLinks, links),
-        stats: statsObject,
-        achievements: achievementObj,
-        quests: questObject,
-      });
-    });
+  return {
+    uuid,
+    username: displayname,
+    online: getOnlineStatus(lastLogin, lastLogout),
+    rank: newRank,
+    rank_plus_color: newRankPlusColor,
+    rank_formatted: generateFormattedRank(newRank, newRankPlusColor, newPrefix, rankPlusPlusColor),
+    prefix: newPrefix,
+    karma,
+    exp: networkExp,
+    level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
+    achievement_points: achievementPoints,
+    quests_completed: quests_.quests_completed,
+    total_kills: totalKills,
+    total_wins: totalWins,
+    total_coins: totalCoins,
+    mc_version: mcVersionRp,
+    first_login: getFirstLogin(firstLogin, _id),
+    last_login: lastLogin,
+    last_logout: lastLogout,
+    last_game: typeToStandardName(mostRecentGameType),
+    language: userLanguage,
+    gifts_sent: realBundlesGiven,
+    gifts_received: realBundlesReceived,
+    is_contributor: isContributor(uuid),
+    rewards: {
+      streak_current: rewardScore,
+      streak_best: rewardHighScore,
+      claimed: totalRewards,
+      claimed_daily: totalDailyRewards,
+      tokens: adsense_tokens,
+    },
+    voting: {
+      votes_today: votesToday,
+      total_votes: total,
+      last_vote,
+    },
+    links: Object.assign(defaultLinks, links),
+    stats: statsObject,
+    achievements: achievements_,
+    quests: quests_,
+  };
 }
 
 module.exports = processPlayerData;

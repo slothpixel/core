@@ -3,7 +3,7 @@ Finds the max of the input array
 */
 function max(array) {
   if (array.length === 0) {
-    return NaN;
+    return Number.NaN;
   }
 
   return Math.max(...array);
@@ -14,10 +14,14 @@ Finds the min of the input array
 */
 function min(array) {
   if (array.length === 0) {
-    return NaN;
+    return Number.NaN;
   }
 
   return Math.min(...array);
+}
+
+function totalled(array) {
+  return array.reduce((previousValue, currentValue) => previousValue + currentValue, 0); // eslint-disable-line unicorn/no-reduce
 }
 
 /**
@@ -25,13 +29,13 @@ Get the average value of the input array.
 */
 function average(array) {
   if (array.length === 0) {
-    return NaN;
+    return Number.NaN;
   }
 
-  const result = Math.floor(array.reduce((previousValue, currentValue) => previousValue + currentValue) / array.length);
+  const result = Math.floor(totalled(array) / array.length);
 
   if (!Number.isFinite(result)) {
-    return NaN;
+    return Number.NaN;
   }
 
   return result;
@@ -42,7 +46,7 @@ Get the median average value of the input array.
 */
 function median(array) {
   if (array.length === 0) {
-    return NaN;
+    return Number.NaN;
   }
 
   const sortedArray = array.sort((a, b) => a - b);
@@ -57,7 +61,7 @@ function median(array) {
 /**
 Finds the standard deviation of the input array
 */
-function stdDev(data) {
+function standardDeviation(data) {
   if (data.length === 0) return null;
 
   const avg = average(data);
@@ -67,14 +71,14 @@ function stdDev(data) {
     return sqrDiff;
   });
   const avgSquareDiff = average(squareDiffs);
-  const stdDev = Math.sqrt(avgSquareDiff);
-  return Math.floor(stdDev);
+  const standardDeviation_ = Math.sqrt(avgSquareDiff);
+  return Math.floor(standardDeviation_);
 }
 
 module.exports = {
   max,
   min,
-  stdDev,
+  standardDeviation,
   average,
   median,
 };
