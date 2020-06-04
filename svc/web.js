@@ -37,13 +37,16 @@ app.route('/healthz').get((req, res) => {
 
 // Rate limiter and API key middleware
 app.use((req, res, cb) => {
-  const apiKey = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.api_key;
-  if (config.ENABLE_API_LIMIT && apiKey) {
-    redis.sismember('api_keys', req.query.key, (err, resp) => {
+  const apiKey = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.key;
+  if (apiKey) {
+    redis.get(`api_keys:${apiKey}`, (err, resp) => {
       if (err) {
         cb(err);
       } else {
-        res.locals.isAPIRequest = resp === 1;
+        if (resp) {
+          res.locals.key = JSON.parse(resp);
+          res.locals.isAPIRequest = 1;
+        }
         cb();
       }
     });
@@ -58,14 +61,14 @@ app.use((req, res, cb) => {
   res.locals.usageIdentifier = ip;
   let rateLimit = '';
   if (res.locals.isAPIRequest) {
-    const requestAPIKey = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.api_key;
-    res.locals.usageIdentifier = requestAPIKey;
-    rateLimit = config.API_KEY_PER_MIN_LIMIT;
-    logger.info(`[KEY] ${requestAPIKey} visit ${req.originalUrl}, ip ${ip}`);
+    const { key } = res.locals;
+    res.locals.usageIdentifier = key.key;
+    rateLimit = key.limit;
+    logger.info(`[KEY] ${key.app} visit ${req.originalUrl}, ip ${ip}`);
   } else {
     res.locals.usageIdentifier = ip;
     rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
-    logger.info(`[USER] ${req.user ? req.user.account_id : 'anonymous'} visit ${req.originalUrl}, ip ${ip}`);
+    logger.info(`[USER] anonymous visit ${req.originalUrl}, ip ${ip}`);
   }
 
   const pathCost = pathCosts[req.path] || 1;
@@ -95,7 +98,7 @@ app.use((req, res, cb) => {
         error: 'rate limit exceeded',
       });
     }
-    if (config.ENABLE_API_LIMIT && !whitelistedPaths.includes(req.path) && !res.locals.isAPIRequest && Number(resp[2]) >= config.API_FREE_LIMIT) {
+    if (!whitelistedPaths.includes(req.path) && !res.locals.isAPIRequest && Number(resp[2]) >= config.API_FREE_LIMIT) {
       return res.status(429).json({
         error: 'monthly api limit exceeded',
       });
