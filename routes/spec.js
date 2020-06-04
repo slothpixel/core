@@ -167,6 +167,21 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
       url: 'https://opensource.org/licenses/MIT',
     },
   },
+  components: {
+    securitySchemes: {
+      key: {
+        type: 'apiKey',
+        name: 'key',
+        description: `Use an API key to remove monthly call limits and to receive higher rate limits.
+      
+      Usage example: https://api.slothpixel.me/api/players/slothpixel?key=YOUR-API-KEY
+      
+      API key can also be sent using the authorization header "Authorization: Bearer YOUR-API-KEY"
+      `,
+        in: 'query',
+      },
+    },
+  },
   host: 'api.slothpixel.me',
   basePath: '/api',
   produces: [

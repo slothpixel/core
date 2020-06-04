@@ -37,14 +37,41 @@ app.route('/healthz').get((_, response) => {
 
 // Rate limiter and API key middleware
 app.use((request, response, callback) => {
+  const apiKey = (request.headers.authorization && request.headers.authorization.replace('Bearer ', '')) || request.query.key;
+  if (apiKey) {
+    redis.get(`api_keys:${apiKey}`, (error, data) => {
+      if (error) {
+        callback(error);
+      } else {
+        if (data) {
+          response.locals.key = JSON.parse(data);
+          response.locals.isAPIRequest = 1;
+        }
+        callback();
+      }
+    });
+  } else {
+    callback();
+  }
+});
+app.use((request, response, callback) => {
   const ip = request.clientIp;
   response.locals.ip = ip;
 
   response.locals.usageIdentifier = ip;
-  const rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
-  logger.info(`[USER] ${request.user ? request.user.account_id : 'anonymous'} visit ${request.originalUrl}, ip ${ip}`);
+  let rateLimit = '';
+  if (response.locals.isAPIRequest) {
+    const { key } = response.locals;
+    response.locals.usageIdentifier = key.key;
+    rateLimit = key.limit;
+    logger.info(`[KEY] ${key.app} visit ${request.originalUrl}, ip ${ip}`);
+  } else {
+    response.locals.usageIdentifier = ip;
+    rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
+    logger.info(`[USER] anonymous visit ${request.originalUrl}, ip ${ip}`);
+  }
 
-  const pathCost = pathCosts[request.path] || Object.hasOwnProperty.call(request.query, 'cached') ? 0 : 1;
+  const pathCost = pathCosts[request.path] || 1;
   const multi = redis.multi()
     .hincrby('rate_limit', response.locals.usageIdentifier, pathCost)
     .expireat('rate_limit', utility.getStartOfBlockMinutes(1, 1));
@@ -60,6 +87,7 @@ app.use((request, response, callback) => {
     }
     response.set({
       'X-Rate-Limit-Remaining-Minute': rateLimit - data[0],
+      'X-IP-Address': ip,
     });
     if (!response.locals.isAPIRequest) {
       response.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(data[2]));
@@ -70,7 +98,7 @@ app.use((request, response, callback) => {
         error: 'rate limit exceeded',
       });
     }
-    if (config.ENABLE_API_LIMIT && !whitelistedPaths.has(request.path) && !response.locals.isAPIRequest && Number(data[2]) >= config.API_FREE_LIMIT) {
+    if (!whitelistedPaths.has(request.path) && !response.locals.isAPIRequest && Number(data[2]) >= config.API_FREE_LIMIT) {
       return response.status(429).json({
         error: 'monthly api limit exceeded',
       });
