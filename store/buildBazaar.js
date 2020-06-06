@@ -6,4 +6,4 @@ const { getData, generateJob } = require('../util/utility');
 module.exports = async () => cachedFunction('bazaar', async () => {
   const { products } = await getData(redis, generateJob('bazaar_products').url);
   return products;
-});
+}, { cacheDuration: 15 });
