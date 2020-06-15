@@ -37,6 +37,8 @@ async function createGuildCache(uuid) {
 }
 
 async function getGuildID(uuid) {
+  return createGuildCache(uuid);
+  /*
   try {
     const guild = await getGuildByPlayer(uuid);
     if (guild !== null) {
@@ -47,6 +49,7 @@ async function getGuildID(uuid) {
   } catch {
     return createGuildCache(uuid);
   }
+   */
 }
 
 async function buildGuild(uuid) {
