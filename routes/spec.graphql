@@ -2608,22 +2608,22 @@ type SkyblockAuction {
   """
   Average price in the selected time period
   """
-  average_price: Int
+  average_price: Float
 
   """
   Largest price in the selected time period
   """
-  max_price: Int
+  max_price: Float
 
   """
   Median price in the selected time period
   """
-  median_price: Int
+  median_price: Float
 
   """
   Lowest price in the selected time period
   """
-  min_price: Int
+  min_price: Float
 
   """
   Total sold items in the selected time period
