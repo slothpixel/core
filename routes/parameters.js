@@ -100,6 +100,7 @@ module.exports = {
     in: 'query',
     description: 'Filter entries by passing [MongoDB query](https://docs.mongodb.com/manual/reference/operator/query/) filter object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)',
     required: false,
+    deprecated: true,
     schema: {
       type: 'string',
     },
