@@ -7,7 +7,7 @@ const pify = require('pify');
 const redis = require('./redis');
 const processSkyBlock = require('../processors/processSkyBlock');
 const cachedFunction = require('./cachedFunction');
-const { insertSkyBlockProfile } = require('./queries');
+// const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 
 const redisGetAsync = pify(redis.get).bind(redis);
@@ -73,7 +73,7 @@ async function buildProfile(uuid, id = null, { shouldUpdateProfileList = true } 
     const profile = await getProfileData(profile_id);
     profiles[profile_id] = Object.assign(profiles[profile_id] || {}, getStats(profile.members[uuid] || {}, profile.members));
 
-    await insertSkyBlockProfile(profile);
+    // insertSkyBlockProfile(profile);
 
     if (shouldUpdateProfileList) {
       await updateProfileList(`skyblock_profiles:${uuid}`, profiles);

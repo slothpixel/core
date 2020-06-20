@@ -2,11 +2,11 @@
 const config = require('../config');
 const processGuildData = require('../processors/processGuildData');
 const getUUID = require('./getUUID');
-const { logger, generateJob, getData } = require('../util/utility');
+const { generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cachedFunction = require('./cachedFunction');
 const { populatePlayers } = require('./buildPlayer');
-const { insertGuild, getGuildByPlayer, removeGuild } = require('./queries');
+const { insertGuild, removeGuild } = require('./queries');
 
 /*
 * Functions to build/cache guild object
@@ -64,7 +64,7 @@ async function buildGuild(uuid) {
     }
 
     if (config.ENABLE_DB_CACHE) {
-      await insertGuild(id, guild);
+      insertGuild(id, guild);
     }
 
     return guild;

@@ -26,7 +26,7 @@ async function getUUID(name) {
     }
 
     const { uuid } = JSON.parse(data);
-    return uuid;
+    return removeDashes(uuid);
   }, { cacheDuration: config.UUID_CACHE_SECONDS, shouldCache: config.ENABLE_UUID_CACHE });
 }
 
