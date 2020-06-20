@@ -23,8 +23,6 @@ const { generateJob, getData, typeToStandardName } = require('../util/utility');
 
 const leaderboardsAsync = pify(leaderboards);
 const redisGetAsync = pify(redis.get).bind(redis);
-const getAuctionsAsync = pify(getAuctions);
-const queryAuctionIdAsync = pify(queryAuctionId);
 const getMetadataAsync = pify(getMetadata);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
@@ -90,14 +88,14 @@ class PlayersResolver {
 }
 
 class SkyblockResolver {
-  all_auctions(arguments_) {
-    return getAuctionsAsync(arguments_);
+  all_auctions(...arguments_) {
+    return getAuctions(...arguments_);
   }
 
   auctions({
     from, to, show_auctions, item_id,
   }) {
-    return queryAuctionIdAsync(from, to, show_auctions, item_id);
+    return queryAuctionId(from, to, show_auctions, item_id);
   }
 
   async items() {

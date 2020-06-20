@@ -2,15 +2,19 @@
 /*
 * Allows custom DB queries for auctions API endpoint
  */
+const pify = require('pify');
 const config = require('../config');
 const cacheFunctions = require('./cacheFunctions');
-const redis = require('./redis');
+const cachedFunction = require('./cachedFunction');
+const redis = pify(require('./redis'));
 const { logger } = require('../util/utility');
 const { Auction } = require('./models');
 const {
   min, max, median, average, standardDeviation,
 } = require('../util/math');
 const parseTimestamp = require('../util/readableTimestamps');
+
+const findAuction = pify(Auction).find;
 
 function cacheAuctions(auctions, key, callback) {
   if (config.ENABLE_AUCTION_CACHE) {
@@ -26,7 +30,7 @@ function cacheAuctions(auctions, key, callback) {
 * Allows some filtering with simple parameters instead of user
 * having to create MongoDB queries, stringifying and decoding them...
  */
-function easyFilterQuery({
+function createFilterQuery({
   tier, category, auctionUUID, itemUUID, id,
 }) {
   const filter = {};
@@ -81,38 +85,25 @@ function transformData(data) {
   });
 }
 
-function executeQuery(query, callback) {
-  const easyFilter = easyFilterQuery(query);
-  const { filter, options, error } = createQuery(query, easyFilter);
+async function executeQuery(query) {
+  const { filter, options, error } = createQuery(query, createFilterQuery(query));
   if (error) {
-    return callback(error);
+    throw new Error(error);
   }
-  Auction.find(filter, null, options, (error_, result) => {
-    if (error_) {
-      logger.error(error_);
-      return callback('Query failed');
-    }
-    callback(null, transformData(result));
-  });
+
+  try {
+    const result = await findAuction(filter, null, options);
+    return transformData(result);
+  } catch {
+    throw new Error('Query failed');
+  }
 }
 
-function getAuctions(query, callback) {
-  const key = `auctions:${JSON.stringify(query)}`;
-  cacheFunctions.read({ key }, (auctions) => {
-    if (auctions) {
-      logger.debug(`Cache hit for ${key}`);
-      return callback(null, auctions);
-    }
-    executeQuery(query, (error, data) => {
-      if (error) {
-        callback(error);
-      }
-      cacheAuctions(data, key, (auctions) => callback(null, auctions));
-    });
-  });
+async function getAuctions(query) {
+  return cachedFunction(`auctions:${JSON.stringify(query)}`, async () => executeQuery(query), { shouldCache: config.ENABLE_AUCTION_CACHE, cacheDuration: config.AUCTION_CACHE_SECONDS });
 }
 
-function queryAuctionId(from, to, showAuctions = false, itemId, callback) {
+async function queryAuctionId(from, to, showAuctions = false, itemId) {
   const now = Date.now();
   from = from || (now - 24 * 60 * 60 * 1000);
   to = to || now;
@@ -126,13 +117,12 @@ function queryAuctionId(from, to, showAuctions = false, itemId, callback) {
   }
 
   if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
-    return callback({ error: "parameters 'from' and 'to' must be integers" });
+    throw new TypeError("Parameters 'from' and 'to' must be integers");
   }
-  redis.zrangebyscore(itemId, from, to, (error, auctions) => {
-    if (error) {
-      logger.error(error);
-    }
-    const object = {
+
+  try {
+    const auctions = await redis.zrangebyscore(itemId, from, to);
+    const result = {
       average_price: 0,
       median_price: 0,
       standard_deviation: 0,
@@ -146,19 +136,21 @@ function queryAuctionId(from, to, showAuctions = false, itemId, callback) {
       auction = JSON.parse(auction);
       const { bids } = auction;
       if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
-      object.auctions[auction.end] = auction;
+      result.auctions[auction.end] = auction;
     });
-    object.average_price = average(priceArray);
-    object.median_price = median(priceArray);
-    object.standard_deviation = standardDeviation(priceArray);
-    object.min_price = min(priceArray);
-    object.max_price = max(priceArray);
-    object.sold = priceArray.length;
+    result.average_price = average(priceArray);
+    result.median_price = median(priceArray);
+    result.standard_deviation = standardDeviation(priceArray);
+    result.min_price = min(priceArray);
+    result.max_price = max(priceArray);
+    result.sold = priceArray.length;
     if (!showAuctions) {
-      delete object.auctions;
+      delete result.auctions;
     }
-    return callback(null, object);
-  });
+    return result;
+  } catch (error) {
+    logger.error(error);
+  }
 }
 
 module.exports = { getAuctions, queryAuctionId };
