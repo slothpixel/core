@@ -16,16 +16,6 @@ const parseTimestamp = require('../util/readableTimestamps');
 
 const findAuction = pify(Auction).find;
 
-function cacheAuctions(auctions, key, callback) {
-  if (config.ENABLE_AUCTION_CACHE) {
-    cacheFunctions.write({
-      key,
-      duration: config.AUCTION_CACHE_SECONDS,
-    }, auctions);
-  }
-  return callback(auctions);
-}
-
 /*
 * Allows some filtering with simple parameters instead of user
 * having to create MongoDB queries, stringifying and decoding them...
