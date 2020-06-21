@@ -4,7 +4,6 @@
  */
 const pify = require('pify');
 const config = require('../config');
-const cacheFunctions = require('./cacheFunctions');
 const cachedFunction = require('./cachedFunction');
 const redis = pify(require('./redis'));
 const { logger } = require('../util/utility');
