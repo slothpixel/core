@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const {
   logger,
   DBToStandardName,
@@ -34,7 +33,7 @@ function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
 
 function getFirstLogin(firstLogin, _id) {
   // Get date from MongoDB ObjectId
-  const betterDate = mongoose.Types.ObjectId(_id).getTimestamp().getTime();
+  const betterDate = Number.parseInt(_id.slice(0, 8), 16) * 1000;
   return (betterDate < firstLogin)
     ? betterDate
     : firstLogin;
