@@ -121,6 +121,7 @@ async function processMember({
   talisman_bag = {},
   quiver = {},
   ender_chest_contents = {},
+  wardrobe_contents = {},
   // Fairy souls
   fairy_souls_collected = 0,
   fairy_souls = 0,
@@ -159,6 +160,7 @@ async function processMember({
     coin_purse: Math.round(coin_purse),
     inventory: await getInventory(inv_contents),
     armor: await getInventory(inv_armor),
+    wardrobe: await getInventory(wardrobe_contents),
     ender_chest: await getInventory(ender_chest_contents),
     fishing_bag: await getInventory(fishing_bag),
     potion_bag: await getInventory(potion_bag),
