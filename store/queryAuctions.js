@@ -108,7 +108,7 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
   if (Number.isNaN(Number(fromDate)) || Number.isNaN(Number(toDate))) {
     throw new TypeError("Parameters 'from' and 'to' must be integers");
   }
-  return cachedFunction(`auctions:${from}:${to}`, async () => {
+  return cachedFunction(`auctions:${itemId}:${from}:${to}`, async () => {
     try {
       const auctions = await redis.zrangebyscore(itemId, fromDate, toDate);
       const result = {
