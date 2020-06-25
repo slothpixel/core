@@ -955,13 +955,13 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/auctions',
-        func: (request, response) => {
-          getAuctions(request.query, (error, auctions) => {
-            if (error) {
-              return response.status(400).json({ error });
-            }
-            return response.json(auctions);
-          });
+        func: async (request, response) => {
+          try {
+            const auctions = await getAuctions(request.query);
+            response.json(auctions);
+          } catch (error) {
+            response.status(400).json({ error });
+          }
         },
       },
     },
@@ -1035,14 +1035,14 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/auctions/:id',
-        func: (request, response, callback) => {
+        func: async (request, response, callback) => {
           const { from, to, showAuctions } = request.query;
-          queryAuctionId(from, to, showAuctions, request.params.id, (error, object) => {
-            if (error) {
-              return callback(response.status(404).json(error));
-            }
-            return response.json(object);
-          });
+          try {
+            const result = await queryAuctionId(from, to, showAuctions, request.params.id);
+            response.json(result);
+          } catch (error) {
+            callback(response.status(404).json({ error: error.message }));
+          }
         },
       },
     },
