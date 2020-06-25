@@ -94,52 +94,53 @@ async function getAuctions(query) {
 
 async function queryAuctionId(from, to, showAuctions = false, itemId) {
   const now = Date.now();
-  from = from || (now - 24 * 60 * 60 * 1000);
-  to = to || now;
+  let fromDate = from || (now - 24 * 60 * 60 * 1000);
+  let toDate = to || now;
 
   if (typeof from === 'string') {
-    from = parseTimestamp(from);
+    fromDate = parseTimestamp(from);
   }
 
   if (typeof to === 'string') {
-    to = parseTimestamp(to);
+    toDate = parseTimestamp(to);
   }
 
-  if (Number.isNaN(Number(from)) || Number.isNaN(Number(to))) {
+  if (Number.isNaN(Number(fromDate)) || Number.isNaN(Number(toDate))) {
     throw new TypeError("Parameters 'from' and 'to' must be integers");
   }
-
-  try {
-    const auctions = await redis.zrangebyscore(itemId, from, to);
-    const result = {
-      average_price: 0,
-      median_price: 0,
-      standard_deviation: 0,
-      min_price: 0,
-      max_price: 0,
-      sold: 0,
-      auctions: {},
-    };
-    const priceArray = [];
-    auctions.forEach((auction) => {
-      auction = JSON.parse(auction);
-      const { bids } = auction;
-      if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
-      result.auctions[auction.end] = auction;
-    });
-    result.average_price = average(priceArray);
-    result.median_price = median(priceArray);
-    result.standard_deviation = standardDeviation(priceArray);
-    result.min_price = min(priceArray);
-    result.max_price = max(priceArray);
-    result.sold = priceArray.length;
-    if (!showAuctions) {
-      delete result.auctions;
+  return cachedFunction(`auctions:${from}:${to}`, async () => {
+    try {
+      const auctions = await redis.zrangebyscore(itemId, fromDate, toDate);
+      const result = {
+        average_price: 0,
+        median_price: 0,
+        standard_deviation: 0,
+        min_price: 0,
+        max_price: 0,
+        sold: 0,
+        auctions: {},
+      };
+      const priceArray = [];
+      auctions.forEach((auction) => {
+        auction = JSON.parse(auction);
+        const { bids } = auction;
+        if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
+        result.auctions[auction.end] = auction;
+      });
+      result.average_price = average(priceArray);
+      result.median_price = median(priceArray);
+      result.standard_deviation = standardDeviation(priceArray);
+      result.min_price = min(priceArray);
+      result.max_price = max(priceArray);
+      result.sold = priceArray.length;
+      if (!showAuctions) {
+        delete result.auctions;
+      }
+      return result;
+    } catch (error) {
+      logger.error(error);
     }
-    return result;
-  } catch (error) {
-    logger.error(error);
-  }
+  }, { cacheDuration: 60 });
 }
 
 module.exports = { getAuctions, queryAuctionId };
