@@ -13,7 +13,7 @@ const {
 } = require('../util/math');
 const parseTimestamp = require('../util/readableTimestamps');
 
-const findAuction = pify(Auction).find;
+const findAuction = pify(Auction.find).bind(Auction);
 
 /*
 * Allows some filtering with simple parameters instead of user
