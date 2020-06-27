@@ -1,19 +1,19 @@
-const mongoose = require('mongoose');
-const config = require('../config');
+/**
+ * Interface to PostgreSQL client
+ * */
+const pg = require('pg');
+const knex = require('knex');
 const { logger } = require('../util/utility');
+const config = require('../config');
 
-const settings = {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
-  autoIndex: config.NODE_ENV === 'development',
-};
-
-mongoose.connect(config.MONGODB_URL, settings, (error) => {
-  logger.info(`connecting ${config.MONGODB_URL}`);
-  if (error) {
-    logger.error(`failed db connection: ${error}`);
-  }
+// remember: all values returned from the server are either NULL or a string
+pg.types.setTypeParser(20, (value) => (value === null ? null : Number.parseInt(value, 10)));
+logger.info(`connecting ${config.POSTGRES_URL}`);
+const database = knex({
+  client: 'pg',
+  connection: config.POSTGRES_URL,
 });
-
-module.exports = mongoose.connection;
+database.on('query-error', (error) => {
+  logger.error(error);
+});
+module.exports = database;

@@ -17,6 +17,7 @@ const defaults = {
   FRONTEND_PORT: 5000,
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
   MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
+  POSTGRES_URL: 'postgresql://postgres:postgres@localhost/slothpixel', // connection string for PostgreSQL
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
   API_FREE_LIMIT: 50000, // number of api requests per month before 429 is returned.
   NO_API_KEY_PER_MIN_LIMIT: 60, // Rate limit per minute if not using an API key
