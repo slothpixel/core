@@ -2,12 +2,12 @@ CREATE TABLE IF NOT EXISTS auctions (
     uuid uuid PRIMARY KEY,
     start integer,
     "end" integer,
-    tier varchar(255),
-    category varchar(255),
-    item jsonb[],
+    tier varchar(32),
+    category varchar(32),
+    item jsonb,
     starting_bid integer,
     highest_bid integer,
-    bids jsonb[],
+    bids jsonb,
     highest_bid_amount integer
 );
 CREATE INDEX IF NOT EXISTS auctions_uuid_idx on auctions(uuid);
