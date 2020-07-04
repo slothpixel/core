@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: docker/postgres.dockerfile
-    image: postgres:10
+    image: postgres:12
     container_name: slothpixel-postgres
     environment:
       POSTGRES_PASSWORD: postgres
