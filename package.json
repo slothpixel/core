@@ -8,7 +8,10 @@
     "test": "mocha --exit",
     "build": "npm install && npm run lintnofix",
     "lint": "eslint . --ext .js,.jsx --fix",
-    "lintnofix": "eslint . --ext .js,.jsx"
+    "lintnofix": "eslint . --ext .js,.jsx",
+    "rediskeys": "redis-cli keys '*' | cut -d':' -f1 | sort | uniq -c",
+    "resetcache": "redis-cli keys 'cache:*' | xargs redis-cli del",
+    "psql": "docker exec -it slothpixel-postgres psql -U postgres -d slothpixel"
   },
   "dependencies": {
     "async": "^3.2.0",
