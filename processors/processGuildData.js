@@ -26,7 +26,7 @@ function getLevel(exp) {
   let level = 0;
 
   // Increments by one from zero to the level cap
-  for (let i = 0; i <= 100; i += 1) {
+  for (let i = 0; i <= 1000; i += 1) {
     // need is the required exp to get to the next level
     let need = 0;
     if (i >= EXP_NEEDED.length) {
@@ -43,9 +43,9 @@ function getLevel(exp) {
     exp -= need;
   }
 
-  // Returns the level cap - currently 100
+  // Returns the level cap - currently 1000
   // If changed here, also change in for loop above
-  return 100;
+  return 1000;
 }
 
 function changeObjectKeys(object) {
