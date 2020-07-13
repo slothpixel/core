@@ -12,7 +12,7 @@ const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer } = require('../store/buildGuild');
-const { buildProfile } = require('../store/buildSkyBlockProfiles');
+const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
@@ -849,13 +849,15 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           try {
             const uuid = await getUUID(request.params.player);
             try {
+              let profiles = {};
               const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
               if (data) {
-                const profiles = JSON.parse(data) || {};
+                profiles = JSON.parse(data) || {};
                 // TODO - populatePlayers for each profile
-                return response.json(profiles);
+              } else {
+                profiles = await buildProfileList(uuid);
               }
-              response.json({});
+              return response.json(profiles);
             } catch (error) {
               callback(error);
             }

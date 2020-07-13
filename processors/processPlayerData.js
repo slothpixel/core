@@ -8,7 +8,6 @@ const {
   typeToStandardName,
   isContributor,
 } = require('../util/utility');
-const { buildProfileList } = require('../store/buildSkyBlockProfiles');
 const calculateLevel = require('../util/calculateLevel');
 
 const processStats = require('./games');
@@ -154,8 +153,6 @@ function processPlayerData({
     totalWins += statsObject[game].wins || 0;
     totalCoins += statsObject[game].coins || 0;
   });
-  // Update SkyBlock profiles
-  buildProfileList(uuid, statsObject.SkyBlock.profiles);
   const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);
   const newRankPlusColor = colorNameToCode(rankPlusColor);
   const newPrefix = betterFormatting(prefix);
