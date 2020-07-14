@@ -154,7 +154,7 @@ module.exports = {
   itemIdParam: {
     name: 'itemId',
     in: 'path',
-    description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
+    description: 'Item id, e.g. BAT_RING. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
     required: true,
     schema: {
       type: 'string',

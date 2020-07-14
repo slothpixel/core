@@ -13,7 +13,6 @@ const Pit = require('./Pit');
 const Quake = require('./Quake');
 const SkyClash = require('./SkyClash');
 const SkyWars = require('./SkyWars');
-const SkyBlock = require('./SkyBlock');
 const SpeedUHC = require('./SpeedUHC');
 const SuperSmash = require('./SuperSmash');
 const TNTGames = require('./TNTGames');
@@ -39,7 +38,6 @@ module.exports = {
   Quake,
   SkyClash,
   SkyWars,
-  SkyBlock,
   SpeedUHC,
   SuperSmash,
   TNTGames,

@@ -77,12 +77,12 @@ type Query {
     """
     Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
     """
-    sort_by: String!
+    sortBy: String!
 
     """
     Define sort order. `asc` for ascending or `desc` for descending
     """
-    sort_order: String
+    sortOrder: String
 
     """  
     `players`, `guilds` or `skyblock`;
@@ -220,12 +220,12 @@ type SkyblockQuery {
     """
     Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins
     """
-    sort_by: String
+    sortBy: String
 
     """
     Define sort order. `asc` for ascending or `desc` for descending
     """
-    sort_order: String
+    sortOrder: String
   ): [SkyblockAuctionsListItem]
 
   auctions(
@@ -2675,6 +2675,11 @@ type SkyblockAuctionsListItem {
   Auction uuid
   """
   uuid: String
+  
+  """
+  Auctioneer uuid
+  """
+  auctioneer: String
 }
 
 type SkyblockBazaar {

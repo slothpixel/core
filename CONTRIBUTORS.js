@@ -11,4 +11,5 @@ module.exports = [
   '27ae0f1720894bd7a11b08e741aa9024', // Hardstyles
   'e2db3b87ae5c4b91a04f7d6f5ef51e27', // zunora
   '56da43a4088d4a7682b6dd431535015e', // Richienb
+  'a034e7eeee7d4db6a32472ca348e8f64', // Chris_TheCrafter
 ];
