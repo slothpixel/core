@@ -81,6 +81,7 @@ const runecraftingXp = {
   22: 9800,
   23: 12200,
   24: 15300,
+  25: 19050,
 };
 
 /* const slayerXp = {
