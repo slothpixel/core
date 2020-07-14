@@ -19,6 +19,7 @@ const app = express();
 const whitelistedPaths = new Set([
   '/api', // Docs
   '/api/metadata', // Metadata
+  '/api/skyblock/bazaar', // Bazaar
 ]);
 
 const pathCosts = {
