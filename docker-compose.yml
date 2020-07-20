@@ -11,6 +11,7 @@ services:
     container_name: slothpixel-postgres
     environment:
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: slothpixel
   mongo:
     image: mongo:4
     container_name: slothpixel-mongo
