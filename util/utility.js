@@ -367,7 +367,7 @@ const getData = fromPromise(async (redis, url) => {
       throw new Error('Failed to get player uuid');
     }
     logger.error(`[INVALID] error: ${error}`);
-    throw new Error(`[INVALID] error: ${error}`);
+    throw new Error(`Internal Server Error`);
   }
 });
 
