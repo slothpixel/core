@@ -20,9 +20,9 @@ const parseNbt = pify(nbt.parse).bind(nbt);
 const logger = createLogger({
   transports: [new transports.Console()],
   format: format.combine(
-    format.colorize(),
-    format.timestamp(),
-    format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+      format.colorize(),
+      format.timestamp(),
+      format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
   ),
 });
 if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') logger.level = 'debug';
@@ -116,8 +116,8 @@ function pickKeys(object, options) {
   const valueMap = options.valueMap || ((value) => value);
 
   return fromEntries(Object.entries(object)
-    .filter(([key, value]) => regexp.test(key) && filter(key, value))
-    .map(([key, value]) => [keyMap(key), valueMap(value)]));
+      .filter(([key, value]) => regexp.test(key) && filter(key, value))
+      .map(([key, value]) => [keyMap(key), valueMap(value)]));
 }
 
 /**
@@ -137,7 +137,7 @@ function DBToStandardName(name = '') {
 }
 
 /**
-* Converts minigames type to standard name e.g. QUAKECRAFT => Quake
+ * Converts minigames type to standard name e.g. QUAKECRAFT => Quake
  */
 function typeToStandardName(name) {
   const result = constants.game_types.find((game) => game.type_name === name);
@@ -150,7 +150,7 @@ function typeToStandardName(name) {
 const isContributor = (uuid) => contributors.includes(uuid);
 
 /**
-* Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
+ * Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
  */
 function getNestedObjects(object = {}, path = '') {
   path = path.split('.');
@@ -165,7 +165,7 @@ function getNestedObjects(object = {}, path = '') {
 }
 
 /**
-* Returns specified+profile fields from a player objects
+ * Returns specified+profile fields from a player objects
  */
 function getPlayerFields(object = {}, fields = []) {
   const result = {};
@@ -342,8 +342,8 @@ const getData = fromPromise(async (redis, url) => {
           async () => {
             if (isHypixelApi) {
               const multi = redis.multi()
-                .incr('hypixel_api_error')
-                .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
+                  .incr('hypixel_api_error')
+                  .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
 
               try {
                 const [failed] = await pify(multi.exec)();
@@ -381,71 +381,47 @@ const getData = fromPromise(async (redis, url) => {
 });
 
 function colorNameToCode(color) {
-  if (color === null) {
-    return (null);
+  if (!color) {
+    return null;
   }
-  switch (color.toLowerCase()) {
-    case 'gray':
-      return ('&7');
-    case 'red':
-      return ('&c');
-    case 'green':
-      return ('&a');
-    case 'aqua':
-      return ('&b');
-    case 'gold':
-      return ('&6');
-    case 'light_purple':
-      return ('&d');
-    case 'yellow':
-      return ('&e');
-    case 'white':
-      return ('&f');
-    case 'blue':
-      return ('&9');
-    case 'dark_green':
-      return ('&2');
-    case 'dark_red':
-      return ('&4');
-    case 'dark_aqua':
-      return ('&3');
-    case 'dark_purple':
-      return ('&5');
-    case 'dark_gray':
-      return ('&8');
-    case 'black':
-      return ('&0');
-    default:
-      return (null);
-  }
+  const colors = {
+    black: 0,
+    dark_blue: 1,
+    dark_green: 2,
+    dark_aqua: 3,
+    dark_red: 4,
+    dark_purple: 5,
+    gold: 6,
+    gray: 7,
+    dark_gray: 8,
+    blue: 9,
+    green: 'a',
+    aqua: 'b',
+    red: 'c',
+    light_purple: 'd',
+    yellow: 'e',
+    white: 'f',
+    reset: 'r',
+  };
+  return `&${colors[color.toLowerCase()]}`;
 }
 
 function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   if (prefix) {
     return prefix;
   }
-  switch (rank) {
-    case 'VIP':
-      return '&a[VIP]';
-    case 'VIP_PLUS':
-      return '&a[VIP&6+&a]';
-    case 'MVP':
-      return '&b[MVP]';
-    case 'MVP_PLUS':
-      return `&b[MVP${plusColor}+&b]`;
-    case 'MVP_PLUS_PLUS':
-      return `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`;
-    case 'HELPER':
-      return '&9[HELPER]';
-    case 'MODERATOR':
-      return '&2[MOD]';
-    case 'ADMIN':
-      return '&c[ADMIN]';
-    case 'YOUTUBER':
-      return '&c[&fYOUTUBER&c]';
-    default:
-      return '&7';
-  }
+  const ranks = {
+    VIP: '&a[VIP]',
+    VIP_PLUS: '&a[VIP&6+&a]',
+    MVP: '&b[MVP]',
+    MVP_PLUS: `&b[MVP${plusColor}+&b]`,
+    MVP_PLUS_PLUS: `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`,
+    HELPER: '&9[HELPER]',
+    MODERATOR: '&2[MOD]',
+    ADMIN: '&c[ADMIN]',
+    YOUTUBER: '&c[&fYOUTUBER&c]',
+  };
+  return ranks[rank] || '&7';
 }
 
 function invokeInterval(func, delay) {
