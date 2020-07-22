@@ -366,8 +366,17 @@ const getData = fromPromise(async (redis, url) => {
     if (isMojangApi) {
       throw new Error('Failed to get player uuid');
     }
+    if (error.response && error.response.statusCode) {
+      switch (error.response.statusCode) {
+        case 404:
+          throw new Error('Player does not exist');
+        default:
+          logger.error(`[INVALID] error: ${error}`);
+          throw new Error('An error occurred while getting the player UUID');
+      }
+    }
     logger.error(`[INVALID] error: ${error}`);
-    throw new Error(`Internal Server Error`);
+    throw new Error('Internal Server Error');
   }
 });
 
