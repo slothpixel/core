@@ -20,9 +20,9 @@ const parseNbt = pify(nbt.parse).bind(nbt);
 const logger = createLogger({
   transports: [new transports.Console()],
   format: format.combine(
-      format.colorize(),
-      format.timestamp(),
-      format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+    format.colorize(),
+    format.timestamp(),
+    format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
   ),
 });
 if (config.NODE_ENV === 'development' || config.NODE_ENV === 'test') logger.level = 'debug';
@@ -116,8 +116,8 @@ function pickKeys(object, options) {
   const valueMap = options.valueMap || ((value) => value);
 
   return fromEntries(Object.entries(object)
-      .filter(([key, value]) => regexp.test(key) && filter(key, value))
-      .map(([key, value]) => [keyMap(key), valueMap(value)]));
+    .filter(([key, value]) => regexp.test(key) && filter(key, value))
+    .map(([key, value]) => [keyMap(key), valueMap(value)]));
 }
 
 /**
@@ -342,8 +342,8 @@ const getData = fromPromise(async (redis, url) => {
           async () => {
             if (isHypixelApi) {
               const multi = redis.multi()
-                  .incr('hypixel_api_error')
-                  .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
+                .incr('hypixel_api_error')
+                .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
 
               try {
                 const [failed] = await pify(multi.exec)();
