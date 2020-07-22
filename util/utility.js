@@ -384,44 +384,44 @@ function colorNameToCode(color) {
   if (!color) {
     return null;
   }
-  const colors = {
-    black: 0,
-    dark_blue: 1,
-    dark_green: 2,
-    dark_aqua: 3,
-    dark_red: 4,
-    dark_purple: 5,
-    gold: 6,
-    gray: 7,
-    dark_gray: 8,
-    blue: 9,
-    green: 'a',
-    aqua: 'b',
-    red: 'c',
-    light_purple: 'd',
-    yellow: 'e',
-    white: 'f',
-    reset: 'r',
-  };
-  return `&${colors[color.toLowerCase()]}`;
+  const colors = new Map([
+    ['black', 0],
+    ['dark_blue', 1],
+    ['dark_green', 2],
+    ['dark_aqua', 3],
+    ['dark_red', 4],
+    ['dark_purple', 5],
+    ['gold', 6],
+    ['gray', 7],
+    ['dark_gray', 8],
+    ['blue', 9],
+    ['green', 'a'],
+    ['aqua', 'b'],
+    ['red', 'c'],
+    ['light_purple', 'd'],
+    ['yellow', 'e'],
+    ['white', 'f'],
+    ['reset', 'r'],
+  ]);
+  return `&${colors.get(color.toLowerCase())}`;
 }
 
 function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   if (prefix) {
     return prefix;
   }
-  const ranks = {
-    VIP: '&a[VIP]',
-    VIP_PLUS: '&a[VIP&6+&a]',
-    MVP: '&b[MVP]',
-    MVP_PLUS: `&b[MVP${plusColor}+&b]`,
-    MVP_PLUS_PLUS: `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`,
-    HELPER: '&9[HELPER]',
-    MODERATOR: '&2[MOD]',
-    ADMIN: '&c[ADMIN]',
-    YOUTUBER: '&c[&fYOUTUBER&c]',
-  };
-  return ranks[rank] || '&7';
+  const ranks = new Map([
+    ['VIP', '&a[VIP]'],
+    ['VIP_PLUS', '&a[VIP&6+&a]'],
+    ['MVP', '&b[MVP]'],
+    ['MVP_PLUS', `&b[MVP${plusColor}+&b]`],
+    ['MVP_PLUS_PLUS', `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`],
+    ['HELPER', '&9[HELPER]'],
+    ['MODERATOR', '&2[MOD]'],
+    ['ADMIN', '&c[ADMIN]'],
+    ['YOUTUBER', '&c[&fYOUTUBER&c]'],
+  ]);
+  return ranks.get(rank) || '&7';
 }
 
 function invokeInterval(func, delay) {
