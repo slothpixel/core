@@ -137,7 +137,7 @@ function DBToStandardName(name = '') {
 }
 
 /**
-* Converts minigames type to standard name e.g. QUAKECRAFT => Quake
+ * Converts minigames type to standard name e.g. QUAKECRAFT => Quake
  */
 function typeToStandardName(name) {
   const result = constants.game_types.find((game) => game.type_name === name);
@@ -150,7 +150,7 @@ function typeToStandardName(name) {
 const isContributor = (uuid) => contributors.includes(uuid);
 
 /**
-* Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
+ * Allows you to use dot syntax for nested objects, e.g. 'tag.value.display'
  */
 function getNestedObjects(object = {}, path = '') {
   path = path.split('.');
@@ -165,7 +165,7 @@ function getNestedObjects(object = {}, path = '') {
 }
 
 /**
-* Returns specified+profile fields from a player objects
+ * Returns specified+profile fields from a player objects
  */
 function getPlayerFields(object = {}, fields = []) {
   const result = {};
@@ -366,77 +366,62 @@ const getData = fromPromise(async (redis, url) => {
     if (isMojangApi) {
       throw new Error('Failed to get player uuid');
     }
+    if (error.response && error.response.statusCode) {
+      switch (error.response.statusCode) {
+        case 404:
+          throw new Error('Player does not exist');
+        default:
+          logger.error(`[INVALID] error: ${error}`);
+          throw new Error('An error occurred while getting the player UUID');
+      }
+    }
     logger.error(`[INVALID] error: ${error}`);
-    throw new Error(`Internal Server Error`);
+    throw new Error('Internal Server Error');
   }
 });
 
 function colorNameToCode(color) {
-  if (color === null) {
-    return (null);
+  if (!color) {
+    return null;
   }
-  switch (color.toLowerCase()) {
-    case 'gray':
-      return ('&7');
-    case 'red':
-      return ('&c');
-    case 'green':
-      return ('&a');
-    case 'aqua':
-      return ('&b');
-    case 'gold':
-      return ('&6');
-    case 'light_purple':
-      return ('&d');
-    case 'yellow':
-      return ('&e');
-    case 'white':
-      return ('&f');
-    case 'blue':
-      return ('&9');
-    case 'dark_green':
-      return ('&2');
-    case 'dark_red':
-      return ('&4');
-    case 'dark_aqua':
-      return ('&3');
-    case 'dark_purple':
-      return ('&5');
-    case 'dark_gray':
-      return ('&8');
-    case 'black':
-      return ('&0');
-    default:
-      return (null);
-  }
+  const colors = new Map([
+    ['black', 0],
+    ['dark_blue', 1],
+    ['dark_green', 2],
+    ['dark_aqua', 3],
+    ['dark_red', 4],
+    ['dark_purple', 5],
+    ['gold', 6],
+    ['gray', 7],
+    ['dark_gray', 8],
+    ['blue', 9],
+    ['green', 'a'],
+    ['aqua', 'b'],
+    ['red', 'c'],
+    ['light_purple', 'd'],
+    ['yellow', 'e'],
+    ['white', 'f'],
+    ['reset', 'r'],
+  ]);
+  return `&${colors.get(color.toLowerCase())}`;
 }
 
 function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
   if (prefix) {
     return prefix;
   }
-  switch (rank) {
-    case 'VIP':
-      return '&a[VIP]';
-    case 'VIP_PLUS':
-      return '&a[VIP&6+&a]';
-    case 'MVP':
-      return '&b[MVP]';
-    case 'MVP_PLUS':
-      return `&b[MVP${plusColor}+&b]`;
-    case 'MVP_PLUS_PLUS':
-      return `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`;
-    case 'HELPER':
-      return '&9[HELPER]';
-    case 'MODERATOR':
-      return '&2[MOD]';
-    case 'ADMIN':
-      return '&c[ADMIN]';
-    case 'YOUTUBER':
-      return '&c[&fYOUTUBER&c]';
-    default:
-      return '&7';
-  }
+  const ranks = new Map([
+    ['VIP', '&a[VIP]'],
+    ['VIP_PLUS', '&a[VIP&6+&a]'],
+    ['MVP', '&b[MVP]'],
+    ['MVP_PLUS', `&b[MVP${plusColor}+&b]`],
+    ['MVP_PLUS_PLUS', `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`],
+    ['HELPER', '&9[HELPER]'],
+    ['MODERATOR', '&2[MOD]'],
+    ['ADMIN', '&c[ADMIN]'],
+    ['YOUTUBER', '&c[&fYOUTUBER&c]'],
+  ]);
+  return ranks.get(rank) || '&7';
 }
 
 function invokeInterval(func, delay) {
