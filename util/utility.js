@@ -419,7 +419,7 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
     ['HELPER', '&9[HELPER]'],
     ['MODERATOR', '&2[MOD]'],
     ['ADMIN', '&c[ADMIN]'],
-    ['YOUTUBER', '&c[&fYOUTUBER&c]'],
+    ['YOUTUBER', '&c[&fYOUTUBE&c]'],
   ]);
   return ranks.get(rank) || '&7';
 }
