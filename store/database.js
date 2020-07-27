@@ -12,6 +12,7 @@ const settings = {
 mongoose.connect(config.MONGODB_URL, settings, (error) => {
   logger.info(`connecting ${config.MONGODB_URL}`);
   if (error) {
+    // 🦀
     logger.error(`failed db connection: ${error}`);
   }
 });
