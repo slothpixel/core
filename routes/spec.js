@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return */
+/* eslint-disable consistent-return,no-unused-vars,arrow-body-style */
 const async = require('async');
 const filterObject = require('filter-obj');
 const pify = require('pify');
@@ -958,12 +958,15 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
         route: () => '/skyblock/auctions',
         func: async (request, response) => {
+          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
+          /*
           try {
             const auctions = await getAuctions(request.query);
             response.json(auctions);
           } catch (error) {
             response.status(400).json({ error });
           }
+           */
         },
       },
     },
@@ -1273,12 +1276,15 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
         route: () => '/leaderboards',
         func: (request, response) => {
+          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
+          /*
           leaderboards(request.query, null, (error, lb) => {
             if (error) {
               return response.status(400).json({ error });
             }
             return response.json(lb);
           });
+           */
         },
       },
     },
@@ -1311,12 +1317,15 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
         route: () => '/leaderboards/:template',
         func: (request, response, callback) => {
+          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
+          /*
           leaderboards(request.query, request.params.template, (error, lb) => {
             if (error) {
               return callback(response.status(400).json({ error }));
             }
             return response.json(lb);
           });
+           */
         },
       },
     },
