@@ -8,14 +8,11 @@ const urllib = require('url');
 const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
 const pify = require('pify');
-const nbt = require('prismarine-nbt');
 const { createLogger, format, transports } = require('winston');
 const got = require('got');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
-
-const parseNbt = pify(nbt.parse).bind(nbt);
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -53,13 +50,6 @@ function getRatio(x = 0, y = 0) {
     return null;
   }
   return Number((x / y).toFixed(2));
-}
-
-/*
-Decode SkyBlock inventory data
-*/
-async function decodeData(data) {
-  return parseNbt(Buffer.from(data, 'base64'));
 }
 
 /*
@@ -459,7 +449,6 @@ module.exports = {
   getRedisCountHour,
   removeDashes,
   getRatio,
-  decodeData,
   colorNameToCode,
   generateFormattedRank,
   getWeeklyStat,
