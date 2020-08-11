@@ -11,6 +11,7 @@ const api = require('../routes/api');
 const redis = require('../store/redis');
 const utility = require('../util/utility');
 const config = require('../config');
+require('../util/sentry')();
 
 const { logger, redisCount } = utility;
 

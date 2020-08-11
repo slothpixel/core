@@ -11,6 +11,7 @@
     "lintnofix": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
+    "@sentry/node": "^5.20.1",
     "async": "^3.2.0",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -18,8 +19,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
-    "got": "^11.5.0",
     "filter-obj": "^2.0.1",
+    "got": "^11.5.0",
     "graphql": "^14.6.0",
     "hypixelconstants": "slothpixel/hypixelconstants",
     "moment": "^2.26.0",
