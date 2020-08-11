@@ -891,7 +891,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           },
         },
         route: () => '/skyblock/profile/:player/:profile?',
-        func: async (request, response) => {
+        func: async (request, response, callback) => {
           try {
             const uuid = await getUUID(request.params.player);
             try {
@@ -904,7 +904,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                 });
                 response.json(profile);
               } catch (error) {
-                response.status(500).json({ error });
+                callback(error);
               }
             } catch (error) {
               response.status(404).json({ error: error.message });
