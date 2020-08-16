@@ -33,7 +33,11 @@ function updatePrices(auction) {
 }
 
 async function getInventory({ i }) {
-  return Promise.all(i.map(async (item) => new Item(item, false)));
+  return Promise.all(i.map(async (item) => {
+    const i = await new Item(item, false);
+    i.deleteProperties(['active', 'stats']);
+    return i;
+  }));
 }
 
 /*
