@@ -289,7 +289,7 @@ type SkyblockQuery {
     e.g. 'Mango'. Note: profile name can be different (although unlikely) for
     different members of a co-op!
     """
-    profile_id: String!
+    profile_id: String
   ): JSON
 
   """
