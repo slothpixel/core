@@ -18,7 +18,7 @@ async function getUUID(name) {
   }
 
   return cachedFunction(`uuid:${name.toLowerCase()}`, async () => {
-    const url = `https://api.ashcon.app/mojang/v2/user/${name}`;
+    const url = `https://api.ashcon.app/mojang/v1/user/${name}`;
 
     const data = await getData(redis, url);
     if (!data) {
