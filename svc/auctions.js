@@ -35,7 +35,8 @@ function updatePrices(auction) {
 async function getInventory({ i }) {
   return Promise.all(i.map(async (item) => {
     const i = await new Item(item, false);
-    i.deleteProperties(['active', 'stats']);
+    // We can remove some properties that are unnecessary
+    i.deleteProperties(['active', 'stats', 'rarity']);
     return i;
   }));
 }
