@@ -77,7 +77,7 @@ const auctionObject = {
         },
         damage: {
           type: 'integer',
-          description: 'Damage value of the item. Appears only if not 0',
+          description: 'Damage value of the item.',
         },
         attributes: {
           type: 'object',
@@ -105,6 +105,10 @@ const auctionObject = {
             texture: {
               type: 'string',
               description: 'If the item is a minecraft skull, i.e. a talisman, this property contains the texture id. Textures can be found at http://textures.minecraft.net/texture/{id}',
+            },
+            timestamp: {
+              type: 'integer',
+              description: 'Creation date',
             },
           },
         },
@@ -139,6 +143,89 @@ const auctionObject = {
             description: 'Bid UNIX timestamp',
           },
         },
+      },
+    },
+  },
+};
+
+const inventoryContainer = {
+  type: 'array',
+  description: 'Array of item objects. Empty slots are empty objects.',
+  items: {
+    type: 'object',
+    properties: {
+      active: {
+        type: 'boolean',
+      },
+      name: {
+        type: 'string',
+      },
+      rarity: {
+        type: 'string',
+      },
+      type: {
+        type: 'string',
+      },
+      stats: {
+        type: 'object',
+        properties: {
+          stat: {
+            type: 'integer',
+          },
+        },
+      },
+      damage: {
+        type: 'integer',
+        description: 'Item\'s minecraft damage value',
+      },
+      lore: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+      },
+      attributes: {
+        type: 'object',
+        properties: {
+          modifier: {
+            type: 'string',
+            description: 'E.g. Spicy',
+          },
+          enchantments: {
+            type: 'object',
+            properties: {
+              enchantment: {
+                type: 'integer',
+              },
+            },
+          },
+          anvil_uses: {
+            type: 'integer',
+          },
+          hot_potato_count: {
+            type: 'integer',
+          },
+          origin: {
+            type: 'string',
+          },
+          id: {
+            type: 'string',
+            description: 'Item\'s Hypixel ID',
+          },
+          uuid: {
+            type: 'string',
+          },
+          timestamp: {
+            type: 'integer',
+          },
+        },
+      },
+      item_id: {
+        type: 'string',
+        description: 'Item\'s minecraft id',
+      },
+      count: {
+        type: 'integer',
       },
     },
   },
@@ -885,13 +972,567 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
               'application/json': {
                 schema: {
                   type: 'object',
+                  properties: {
+                    members: {
+                      type: 'object',
+                      properties: {
+                        uuid: {
+                          type: 'object',
+                          properties: {
+                            uuid: {
+                              type: 'string',
+                            },
+                            attributes: {
+                              type: 'object',
+                              properties: {
+                                damage: {
+                                  type: 'integer',
+                                },
+                                health: {
+                                  type: 'number',
+                                },
+                                defense: {
+                                  type: 'number',
+                                },
+                                effective_health: {
+                                  type: 'integer',
+                                },
+                                strength: {
+                                  type: 'number',
+                                },
+                                damage_increase: {
+                                  type: 'number',
+                                },
+                                speed: {
+                                  type: 'number',
+                                },
+                                crit_chance: {
+                                  type: 'number',
+                                },
+                                crit_damage: {
+                                  type: 'number',
+                                },
+                                bonus_attack_speed: {
+                                  type: 'number',
+                                },
+                                intelligence: {
+                                  type: 'number',
+                                },
+                                sea_creature_chance: {
+                                  type: 'integer',
+                                },
+                                magic_find: {
+                                  type: 'number',
+                                },
+                                pet_luck: {
+                                  type: 'number',
+                                },
+                              },
+                            },
+                            first_join_hub: {
+                              type: 'integer',
+                            },
+                            objectives: {
+                              type: 'object',
+                              properties: {
+                                objective: {
+                                  type: 'object',
+                                  properties: {
+                                    status: {
+                                      type: 'string',
+                                    },
+                                    progress: {
+                                      type: 'integer',
+                                    },
+                                    completed_at: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            tutorial: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'string',
+                                },
+                              ],
+                            },
+                            quests: {
+                              type: 'object',
+                              properties: {
+                                quest: {
+                                  type: 'object',
+                                  properties: {
+                                    status: {
+                                      type: 'string',
+                                    },
+                                    activated_at: {
+                                      type: 'integer',
+                                    },
+                                    activated_at_sb: {
+                                      type: 'integer',
+                                    },
+                                    completed_at: {
+                                      type: 'integer',
+                                    },
+                                    completed_at_sb: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            last_death: {
+                              type: 'integer',
+                            },
+                            visited_zones: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'string',
+                                },
+                              ],
+                            },
+                            fishing_treasure_caught: {
+                              type: 'integer',
+                            },
+                            death_count: {
+                              type: 'integer',
+                            },
+                            achievement_spawned_island_types: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'string',
+                                },
+                              ],
+                            },
+                            wardrobe_equipped_slot: {
+                              type: 'integer',
+                            },
+                            sacks_counts: {
+                              type: 'object',
+                              properties: {
+                                ITEM_ID: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            stats: {
+                              type: 'object',
+                              properties: {
+                                total_kills: {
+                                  type: 'integer',
+                                },
+                                total_deaths: {
+                                  type: 'integer',
+                                },
+                                kills: {
+                                  type: 'object',
+                                  properties: {
+                                    name: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                deaths: {
+                                  type: 'object',
+                                  properties: {
+                                    name: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                highest_critical_damage: {
+                                  type: 'integer',
+                                },
+                                ender_crystals_destroyed: {
+                                  type: 'integer',
+                                },
+                                end_race_best_time: {
+                                  type: 'number',
+                                },
+                                chicken_race_best_time: {
+                                  type: 'number',
+                                },
+                                dungeon_hub_best_time: {
+                                  type: 'object',
+                                  properties: {
+                                    type: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                gifts_given: {
+                                  type: 'integer',
+                                },
+                                gifts_received: {
+                                  type: 'integer',
+                                },
+                                items_fished: {
+                                  type: 'object',
+                                  properties: {
+                                    total: {
+                                      type: 'integer',
+                                    },
+                                    normal: {
+                                      type: 'integer',
+                                    },
+                                    treasure: {
+                                      type: 'integer',
+                                    },
+                                    large_treasure: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                auctions: {
+                                  type: 'object',
+                                  properties: {
+                                    created: {
+                                      type: 'integer',
+                                    },
+                                    completed: {
+                                      type: 'integer',
+                                    },
+                                    no_bids: {
+                                      type: 'integer',
+                                    },
+                                    won: {
+                                      type: 'integer',
+                                    },
+                                    bids: {
+                                      type: 'integer',
+                                    },
+                                    highest_bid: {
+                                      type: 'integer',
+                                    },
+                                    total_fees: {
+                                      type: 'integer',
+                                    },
+                                    gold_earned: {
+                                      type: 'integer',
+                                    },
+                                    gold_spent: {
+                                      type: 'integer',
+                                    },
+                                    sold: {
+                                      type: 'object',
+                                      properties: {
+                                        rare: {
+                                          type: 'integer',
+                                        },
+                                        epic: {
+                                          type: 'integer',
+                                        },
+                                        uncommon: {
+                                          type: 'integer',
+                                        },
+                                        legendary: {
+                                          type: 'integer',
+                                        },
+                                        common: {
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                    bought: {
+                                      type: 'object',
+                                      properties: {
+                                        rare: {
+                                          type: 'integer',
+                                        },
+                                        uncommon: {
+                                          type: 'integer',
+                                        },
+                                        epic: {
+                                          type: 'integer',
+                                        },
+                                        legendary: {
+                                          type: 'integer',
+                                        },
+                                        common: {
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                winter_records: {
+                                  type: 'object',
+                                  properties: {
+                                    snowballs_hit: {
+                                      type: 'integer',
+                                    },
+                                    damage: {
+                                      type: 'integer',
+                                    },
+                                    magma_cube_damage: {
+                                      type: 'integer',
+                                    },
+                                    cannonballs_hit: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                pet_milestones: {
+                                  type: 'object',
+                                  properties: {
+                                    ore_mined: {
+                                      type: 'integer',
+                                    },
+                                    sea_creatures_killed: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            inventory: inventoryContainer,
+                            armor: inventoryContainer,
+                            talisman_bag: inventoryContainer,
+                            fishing_bag: inventoryContainer,
+                            potion_bag: inventoryContainer,
+                            ender_chest: inventoryContainer,
+                            candy_bag: inventoryContainer,
+                            wardrobe: inventoryContainer,
+                            last_save: {
+                              type: 'integer',
+                            },
+                            first_join: {
+                              type: 'integer',
+                            },
+                            coin_purse: {
+                              type: 'integer',
+                            },
+                            fairy_souls_collected: {
+                              type: 'integer',
+                            },
+                            fairy_souls: {
+                              type: 'integer',
+                            },
+                            fairy_exchanges: {
+                              type: 'integer',
+                            },
+                            pets: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'object',
+                                  properties: {
+                                    type: {
+                                      type: 'string',
+                                    },
+                                    exp: {
+                                      type: 'number',
+                                    },
+                                    active: {
+                                      type: 'boolean',
+                                    },
+                                    tier: {
+                                      type: 'string',
+                                    },
+                                    heldItem: {
+                                      type: 'null',
+                                    },
+                                    candyUsed: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                            skills: {
+                              type: 'object',
+                              properties: {
+                                skill: {
+                                  type: 'object',
+                                  properties: {
+                                    xp: {
+                                      type: 'number',
+                                    },
+                                    level: {
+                                      type: 'integer',
+                                    },
+                                    maxLevel: {
+                                      type: 'integer',
+                                    },
+                                    xpCurrent: {
+                                      type: 'integer',
+                                    },
+                                    xpForNext: {
+                                      type: 'integer',
+                                    },
+                                    progress: {
+                                      type: 'number',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            collection: {
+                              type: 'object',
+                              properties: {
+                                ITEM_ID: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            collection_tiers: {
+                              type: 'object',
+                              properties: {
+                                ITEM_ID: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            collections_unlocked: {
+                              type: 'integer',
+                            },
+                            minions: {
+                              type: 'object',
+                              properties: {
+                                TYPE: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            slayer: {
+                              type: 'object',
+                              properties: {
+                                type: {
+                                  type: 'object',
+                                  properties: {
+                                    claimed_levels: {
+                                      type: 'integer',
+                                    },
+                                    xp: {
+                                      type: 'integer',
+                                    },
+                                    xp_for_next: {
+                                      type: 'integer',
+                                    },
+                                    kills_tier: {
+                                      type: 'object',
+                                      properties: {
+                                        1: {
+                                          type: 'integer',
+                                        },
+                                        2: {
+                                          type: 'integer',
+                                        },
+                                        3: {
+                                          type: 'integer',
+                                        },
+                                        4: {
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            pet_score: {
+                              type: 'integer',
+                            },
+                            bonuses: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'object',
+                                  properties: {
+                                    type: {
+                                      type: 'string',
+                                    },
+                                    bonus: {
+                                      type: 'object',
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                            player: {
+                              type: 'object',
+                              properties: {
+                                uuid: {
+                                  type: 'string',
+                                },
+                                username: {
+                                  type: 'string',
+                                },
+                                first_login: {
+                                  type: 'integer',
+                                },
+                                last_login: {
+                                  type: 'integer',
+                                },
+                                level: {
+                                  type: 'number',
+                                },
+                                achievement_points: {
+                                  type: 'integer',
+                                },
+                                karma: {
+                                  type: 'integer',
+                                },
+                                rank_formatted: {
+                                  type: 'string',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    banking: {
+                      type: 'object',
+                      properties: {
+                        balance: {
+                          type: 'number',
+                        },
+                        transactions: {
+                          type: 'array',
+                          items: [
+                            {
+                              type: 'object',
+                              properties: {
+                                amount: {
+                                  type: 'integer',
+                                },
+                                timestamp: {
+                                  type: 'integer',
+                                },
+                                action: {
+                                  type: 'string',
+                                },
+                                initiator_name: {
+                                  type: 'string',
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                    unlocked_minions: {
+                      type: 'object',
+                      properties: {
+                        MINION_TYPE: {
+                          type: 'integer',
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },
           },
         },
         route: () => '/skyblock/profile/:player/:profile?',
-        func: async (request, response) => {
+        func: async (request, response, callback) => {
           try {
             const uuid = await getUUID(request.params.player);
             try {
@@ -904,7 +1545,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                 });
                 response.json(profile);
               } catch (error) {
-                response.status(500).json({ error });
+                callback(error);
               }
             } catch (error) {
               response.status(404).json({ error: error.message });

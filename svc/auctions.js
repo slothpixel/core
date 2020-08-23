@@ -3,11 +3,11 @@
 * Worker to replicate SkyBlock auction data from the Hypixel API
  */
 const async = require('async');
+const { Item, decodeData } = require('skyblock-parser');
 const redis = require('../store/redis');
 const {
-  logger, generateJob, getData, decodeData, invokeInterval,
+  logger, generateJob, getData, invokeInterval,
 } = require('../util/utility');
-const processInventoryData = require('../processors/processInventoryData');
 const { bulkWrite } = require('../store/queries');
 
 const activeAuctions = {};
@@ -30,6 +30,15 @@ function updatePrices(auction) {
       logger.error(error);
     }
   });
+}
+
+async function getInventory({ i }) {
+  return Promise.all(i.map(async (item) => {
+    const i = await new Item(item, false);
+    // We can remove some properties that are unnecessary
+    i.deleteProperties(['active', 'stats', 'rarity']);
+    return i;
+  }));
 }
 
 /*
@@ -62,82 +71,68 @@ function upsertDocument(uuid, update) {
   };
 }
 
-function processAndStoreAuctions(auctions = []) {
-  async.map(auctions, (auction, callback) => {
-    const { uuid } = auction;
-    const update = getUpdateType(auction);
-    if (update === 'none') {
-      return callback();
-    }
-    // Insert new auction
-    if (update === 'full') {
-      decodeData(auction.item_bytes).then((json) => {
-        [auction.item] = processInventoryData(json);
+async function processAndStoreAuctions(auctions = []) {
+  try {
+    let bulkAuctionOps = await Promise.all(auctions.map(async (auction) => {
+      const { uuid } = auction;
+      const update = getUpdateType(auction);
+      if (update === 'none') {
+        return;
+      }
+      // Insert new auction
+      if (update === 'full') {
+        const json = await decodeData(Buffer.from(auction.item_bytes, 'base64'));
+        [auction.item] = await getInventory(json);
         delete auction.item_bytes;
         auction.bids = removeAuctionIds(auction.bids);
         activeAuctions[uuid] = auction;
-        callback(null, upsertDocument(uuid, auction));
-      }).catch((error) => {
-        logger.error(error);
-        callback(error);
-      });
-    }
-    // Only bids have changed
-    if (update === 'partial') {
-      activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
-      activeAuctions[uuid].highest_bid_amount = auction.highest_bid_amount;
-      activeAuctions[uuid].end = auction.end;
-      return callback(null, upsertDocument(uuid, {
-        bids: activeAuctions[uuid].bids,
-        end: auction.end,
-        highest_bid_amount: auction.highest_bid_amount,
-      }));
-    }
-  }, (error, bulkAuctionOps) => {
-    if (error) {
-      return logger.error(`auction processing failed: ${error}`);
-    }
+        return upsertDocument(uuid, auction);
+      }
+      // Only bids have changed
+      if (update === 'partial') {
+        activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
+        activeAuctions[uuid].highest_bid_amount = auction.highest_bid_amount;
+        activeAuctions[uuid].end = auction.end;
+        upsertDocument(uuid, {
+          bids: activeAuctions[uuid].bids,
+          end: auction.end,
+          highest_bid_amount: auction.highest_bid_amount,
+        });
+      }
+    }));
     // Remove empty elements from array
     bulkAuctionOps = bulkAuctionOps.filter(Boolean);
     if (bulkAuctionOps.length === 0) return;
     return bulkWrite('auction', bulkAuctionOps, { ordered: false }, (error) => {
       logger.error(`Failed bulkWrite: ${error.stack}`);
     });
-  });
+  } catch (error) {
+    return logger.error(`auction processing failed: ${error}`);
+  }
 }
 
-function getAuctionPage(page, callback) {
+async function getAuctionPage(page) {
   const { url } = generateJob('skyblock_auctions', {
     page,
   });
-  getData(redis, url, (error, body) => {
-    if (error) {
-      return callback(error.message, null);
-    }
-    return callback(null, body);
-  });
+  return getData(redis, url);
 }
 
-function updateListings(callback) {
-  getAuctionPage(0, (error, data) => {
-    if (error) {
-      return callback('Failed to update listings!');
-    }
-    logger.info(`[updateListings] Retrieving ${data.totalAuctions} auctions from ${data.totalPages} pages.`);
-    const timestamp = new Date(data.lastUpdated);
+async function updateListings(callback) {
+  try {
+    const firstPage = await getAuctionPage(0);
+    logger.info(`[updateListings] Retrieving ${firstPage.totalAuctions} auctions from ${firstPage.totalPages} pages.`);
+    const timestamp = new Date(firstPage.lastUpdated);
     logger.info(`Data last updated at ${timestamp.toLocaleString()}`);
-    processAndStoreAuctions(data.auctions);
-    async.each([...new Array(data.totalPages).keys()].slice(1), (page, callback_) => {
-      getAuctionPage(page, (error_, data) => {
-        if (error_) {
-          callback_(`Failed getting auction page ${page}: ${error_}`);
-        }
-        processAndStoreAuctions(data.auctions);
-        callback_();
-      });
+    processAndStoreAuctions(firstPage.auctions);
+    await async.each([...new Array(firstPage.totalPages).keys()].slice(1), async (page) => {
+      const data = await getAuctionPage(page);
+      await processAndStoreAuctions(data.auctions);
     });
     callback();
-  });
+  } catch {
+    return callback('Failed to update listings!');
+  }
 }
 
 invokeInterval(updateListings, 2 * 60 * 1000);
