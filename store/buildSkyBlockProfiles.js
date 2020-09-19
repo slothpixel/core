@@ -60,6 +60,9 @@ async function buildProfileList(uuid) {
       id: uuid,
     }).url);
     const { profiles } = body;
+    if (profiles === null) {
+      return {};
+    }
     profiles.forEach((profile) => {
       const { cute_name, members } = profile;
       newProfiles[profile.profile_id] = { cute_name, ...getStats(members[uuid] || {}, members) };
