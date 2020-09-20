@@ -57,6 +57,7 @@ app.use((request, response, callback) => {
 });
 app.use((request, response, callback) => {
   const ip = request.clientIp;
+  const agent = request.headers['user-agent'] || null;
   response.locals.ip = ip;
 
   response.locals.usageIdentifier = ip;
@@ -65,11 +66,11 @@ app.use((request, response, callback) => {
     const { key } = response.locals;
     response.locals.usageIdentifier = key.key;
     rateLimit = key.limit;
-    logger.info(`[KEY] ${key.app} visit ${request.originalUrl}, ip ${ip}`);
+    logger.info(`[KEY] ${key.app} visit ${request.originalUrl}, ip ${ip} via ${agent}`);
   } else {
     response.locals.usageIdentifier = ip;
     rateLimit = config.NO_API_KEY_PER_MIN_LIMIT;
-    logger.info(`[USER] anonymous visit ${request.originalUrl}, ip ${ip}`);
+    logger.info(`[USER] anonymous visit ${request.originalUrl}, ip ${ip} via ${agent}`);
   }
 
   const pathCost = pathCosts[request.path] || 1;
