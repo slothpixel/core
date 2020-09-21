@@ -221,7 +221,7 @@ function generateJob(type, payload) {
   const options = {
     bazaar_products() {
       return {
-        url: `${apiUrl}/skyblock/bazaar?key=${apiKey}`,
+        url: `${apiUrl}/skyblock/bazaar`,
       };
     },
     boosters() {
@@ -261,7 +261,7 @@ function generateJob(type, payload) {
     },
     skyblock_auctions() {
       return {
-        url: `${apiUrl}/skyblock/auctions?key=${apiKey}&page=${payload.page}`,
+        url: `${apiUrl}/skyblock/auctions?page=${payload.page}`,
       };
     },
     skyblock_profiles() {
