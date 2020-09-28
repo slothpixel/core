@@ -5,6 +5,7 @@ const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
+const buildPlayerFriends = require('../store/buildPlayerFriends');
 const getUUID = require('../store/getUUID');
 const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
@@ -628,10 +629,8 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/players/:player/friends',
         func: async (request, response, callback) => {
           try {
-            const uuid = await getUUID(request.params.player);
             try {
-              const data = await getData(redis, generateJob('friends', { id: uuid }).url);
-              response.json(data.records.map(({_id, ...keepAttrs}) => keepAttrs));
+              response.json(buildPlayerFriends(request.params.player));
             } catch (error) {
               callback(error.message);
             }
