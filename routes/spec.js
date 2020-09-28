@@ -587,6 +587,60 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
       },
     },
+      '/players/{playerName}/friends': {
+      get: {
+        summary: 'Get friends for a given player',
+        description: 'Returns friendships for given player.',
+        operationId: 'getPlayerFriends',
+        tags: [
+          'player',
+        ],
+        parameters: [
+          playerNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      uuidSender: {
+                        type: 'string',
+                      },
+                      uuidReceiver: {
+                        type: 'string',
+                      },
+                      started: {
+                        type: 'integer',
+                      }
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/players/:player/friends',
+        func: async (request, response, callback) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              const data = await getData(redis, generateJob('friends', { id: uuid }).url);
+              response.json(data.records.map(({_id, ...keepAttrs}) => keepAttrs));
+            } catch (error) {
+              callback(error.message);
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
+        },
+      },
+    },
     '/players/{playerName}/status': {
       get: {
         summary: 'Get current player activity',
