@@ -10,7 +10,8 @@ const cachedFunction = require('./cachedFunction');
 const { logger, generateJob, getData } = require('../util/utility');
 
 const redisGetAsync = pify(redis.get).bind(redis);
-const redisSetAsync = pify(redis.set).bind(redis);
+// const redisSetAsync = pify(redis.set).bind(redis);
+const redisSetExAsync = pify(redis.setex).bind(redis);
 
 async function getProfileData(id) {
   try {
@@ -29,7 +30,7 @@ function getLatestProfile(profiles) {
 
 async function updateProfileList(key, profiles) {
   try {
-    await redisSetAsync(key, JSON.stringify(profiles));
+    await redisSetExAsync(key, 24 * 60 * 60, JSON.stringify(profiles)); // Expire after 1 day
   } catch (error) {
     logger.error(`Failed to update profile list: ${error}`);
   }
