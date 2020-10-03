@@ -2347,6 +2347,88 @@ const playerObject = {
             },
           },
         },
+        Smash: {
+          description: 'Player stats in Smash Heroes',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in Smash Heroes',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Amount of kills in Smash Heroes',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Amount of deaths in Smash Heroes',
+              type: 'integer',
+            },
+            smash_level: {
+              description: 'Player\'s Smash Level',
+              type: 'integer',
+            },
+            kd: {
+              description: 'Current kill/death ratio in Smash Heroes',
+              type: 'number',
+            },
+            wins: {
+              description: 'Amount of wins in Smash Heroes',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Amount of losses in Smash Heroes',
+              type: 'integer',
+            },
+            quits: {
+              description: 'Number of times the player has left mid-game in Smash Heroes',
+              type: 'integer',
+            },
+            win_streak: {
+              description: 'Current consecutive wins in Smash Heroes',
+              type: 'integer',
+            },
+            wl: {
+              description: 'Current win/loss ratio in Smash Heroes',
+              type: 'number',
+            },
+            games_played: {
+              description: 'Total number of Smash Heroes games played',
+              type: 'integer',
+            },
+            weekly_kills: {
+              description: 'Current weekly kills in Smash Heroes',
+              type: 'integer',
+            },
+            weekly_wins: {
+              description: 'Current weekly wins in Smash Heroes',
+              type: 'integer',
+            },
+            weekly_losses: {
+              description: 'Current weekly losses in Smash Heroes',
+              type: 'integer',
+            },
+            weekly_games_played: {
+              description: 'Smash Heroes games played this week',
+              type: 'integer',
+            },
+            monthly_kills: {
+              description: 'Current monthly kills in Smash Heroes',
+              type: 'integer',
+            },
+            monthly_wins: {
+              description: 'Current monthly wins in Smash Heroes',
+              type: 'integer',
+            },
+            monthly_losses: {
+              description: 'Current monthly losses in Smash Heroes',
+              type: 'integer',
+            },
+            monthly_games_played: {
+              description: 'Smash Heroes games played this month',
+              type: 'integer',
+            },
+          },
+        },
       },
     },
   },
