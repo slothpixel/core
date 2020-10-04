@@ -2325,7 +2325,6 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
       },
     },
-  },
-};
+  };
 
 module.exports = spec;
