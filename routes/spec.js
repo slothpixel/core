@@ -1660,6 +1660,10 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                       description: 'Largest price in the selected time period',
                       type: 'integer',
                     },
+                    lowest_bin: {
+                      description: 'Lowest price in the selected time period on Buy It Now',
+                      type: 'integer',
+                    },
                     sold: {
                       description: 'Total sold items in the selected time period',
                       type: 'integer',
