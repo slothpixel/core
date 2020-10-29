@@ -117,14 +117,17 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
         standard_deviation: 0,
         min_price: 0,
         max_price: 0,
+        lowest_bin: 0,
         sold: 0,
         auctions: {},
       };
       const priceArray = [];
+      const binArray = [];
       auctions.forEach((auction) => {
         auction = JSON.parse(auction);
         const { bids } = auction;
         if (bids.length > 0) priceArray.push(bids[bids.length - 1].amount / auction.item.count);
+        if ("bin" in auction && auction.bin) binArray.push(auction.highest_bid_amount / auction.item.count);
         result.auctions[auction.end] = auction;
       });
       result.average_price = average(priceArray);
@@ -132,6 +135,7 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
       result.standard_deviation = standardDeviation(priceArray);
       result.min_price = min(priceArray);
       result.max_price = max(priceArray);
+      result.lowest_bin = min(binArray);
       result.sold = priceArray.length;
       if (!showAuctions) {
         delete result.auctions;
