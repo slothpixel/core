@@ -1320,7 +1320,7 @@ type Duels {
   blitz_duel_hype_train_kit_wins: Int
   blitz_duel_kills: Int
   blitz_duel_kit_wins: Int
-  blitz_duel_layout_paladin_5: Int
+  blitz_duel_layout_paladin_5: Layout
   blitz_duel_losses: Int
   blitz_duel_melee_hits: Int
   blitz_duel_melee_swings: Int
@@ -1502,8 +1502,8 @@ type Duels {
   kills: Int
   kit_menu_option: String
   kit_wins: Int
-  layout_bridge_duel_layout: Int
-  layout_combo_duel_layout: Int
+  layout_bridge_duel_layout: Layout
+  layout_combo_duel_layout: Layout
   layout_uhc_duel_layout: Layout
   leaderboardpage_win_streak: Int
   leaderboardpage_wins: Int
