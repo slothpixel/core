@@ -1320,7 +1320,7 @@ type Duels {
   blitz_duel_hype_train_kit_wins: Int
   blitz_duel_kills: Int
   blitz_duel_kit_wins: Int
-  blitz_duel_layout_paladin_5: Int
+  blitz_duel_layout_paladin_5: Layout
   blitz_duel_losses: Int
   blitz_duel_melee_hits: Int
   blitz_duel_melee_swings: Int
@@ -1647,10 +1647,10 @@ type Duels {
   sw_duel_rounds_played: Int
   sw_duel_scout_kit_wins: Int
   sw_duel_wins: Int
-  sw_duels_kit_new2: Int
+  sw_duels_kit_new2: String
   sw_duels_kit_new3: String
-  sw_duels_kit_new: Int
-  sw_duels_kit: Int
+  sw_duels_kit_new: String
+  sw_duels_kit: String
   sw_tournament_bow_hits: Int
   sw_tournament_damage_dealt: Int
   sw_tournament_deaths: Int
