@@ -1718,6 +1718,64 @@ const playerObject = {
               description: 'Current coins in Murder Mystery',
               type: 'integer',
             },
+            wins: {
+              description: 'Current wins in Murder Mystery',
+              type: 'integer',
+            },
+            games_played: {
+              description: 'Current games played in Murder Mystery',
+              type: 'integer',
+            },
+            win_loss_ratio: {
+              description: 'Current win/loss ratio in Murder Mystery. Dying as innocent, murderer, or detective (or in assassins) counts as a loss.',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Current kills in Murder Mystery',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in Murder Mystery',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'Current kill/death ratio in Murder Mystery',
+              type: 'integer',
+            },
+            times_hero: {
+              description: 'Number of times the player was the hero (killed the murderer without being detective) in Murder Mystery',
+              type: 'integer',
+            },
+            boxes: {
+              description: 'Stats for loot crates in Murder Mystery',
+              type: 'object',
+              properties: {
+                current: {
+                  description: 'Current amount of loot crates',
+                  type: 'integer',
+                },
+                opened: {
+                  description: 'Amount of loot crates opened',
+                  type: 'integer',
+                },
+                commons: {
+                  description: 'Amount of commons earned from loot crates',
+                  type: 'integer',
+                },
+                rares: {
+                  description: 'Amount of rares earned from loot crates',
+                  type: 'integer',
+                },
+                epics: {
+                  description: 'Amount of epics earned from loot crates',
+                  type: 'integer',
+                },
+                legendaries: {
+                  description: 'Amount of legendaries earned from loot crates',
+                  type: 'integer',
+                },
+              },
+            },
           },
         },
         Pit: {
