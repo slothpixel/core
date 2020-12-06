@@ -1,8 +1,8 @@
 /*
 * SkyWars
  */
-const { getLevelForExp } = require('../../util/calculateSkyWarsLevel')
-const { getRatio } = require('../../util/utility')
+const { getLevelForExp } = require('../../util/calculateSkyWarsLevel');
+const { getRatio } = require('../../util/utility');
 
 module.exports = ({
   coins = 0,
@@ -22,7 +22,7 @@ module.exports = ({
   blocks_broken = 0,
   soul_well = 0,
   soul_well_rares = 0,
-  soul_well_legendaries,
+  soul_well_legendaries = 0,
 }) => ({
   coins,
   wins,
