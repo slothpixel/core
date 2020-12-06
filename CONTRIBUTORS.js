@@ -13,4 +13,5 @@ module.exports = [
   '56da43a4088d4a7682b6dd431535015e', // Richienb
   'a034e7eeee7d4db6a32472ca348e8f64', // Chris_TheCrafter
   '5dcafb2fbd764a858b253c22079ce358', // MrZillaGold
+  '3f4a49baca57430b824d669e03604217', // BananaFalls
 ];

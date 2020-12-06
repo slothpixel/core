@@ -2429,6 +2429,100 @@ const playerObject = {
             },
           },
         },
+        SkyWars: {
+          description: 'Player stats in SkyWars',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in SkyWars',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Total wins in SkyWars',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Total losses in SkyWars',
+              type: 'integer',
+            },
+            win_loss_ratio: {
+              description: 'Current win/loss ratio in SkyWars',
+              type: 'integer',
+            },
+            skywars_experience: {
+              description: 'Current experience in SkyWars',
+              type: 'integer',
+            },
+            level: {
+              description: 'Current level in SkyWars',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Current kills in SkyWars',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in SkyWars',
+              type: 'integer',
+            },
+            assists: {
+              description: 'Current assists in SkyWars',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'Current kill/death ratio in SkyWars',
+              type: 'integer',
+            },
+            souls_gathered: {
+              description: 'Total souls gathered in SkyWars',
+              type: 'integer',
+            },
+            souls: {
+              description: 'Current souls in the soul well in SkyWars',
+              type: 'integer',
+            },
+            arrows_shot: {
+              description: 'Total arrows shot in SkyWars',
+              type: 'integer',
+            },
+            arrows_hit: {
+              description: 'Total arrows hit in SkyWars',
+              type: 'integer',
+            },
+            arrow_hit_miss_ratio: {
+              description: 'Current arrow hit/miss ratio in SkyWars',
+              type: 'integer',
+            },
+            eggs_thrown: {
+              description: 'Total eggs thrown in SkyWars',
+              type: 'integer',
+            },
+            enderpearls_thrown: {
+              description: 'Total enderpearls thrown in SkyWars',
+              type: 'integer',
+            },
+            blocks_placed: {
+              description: 'Totla blocks placed in SkyWars',
+              type: 'integer',
+            },
+            blocks_broken: {
+              description: 'Current blocks broken in SkyWars',
+              type: 'integer',
+            },
+            soul_well_uses: {
+              description: 'Current soul well uses in SkyWars',
+              type: 'integer',
+            },
+            soul_well_rares: {
+              description: 'Number of rares a player has gotten from the soul well in SkyWars',
+              type: 'integer',
+            },
+            soul_well_legendaries: {
+              description: 'Number of legendaries a player has gotten from the soul well in SkyWars',
+              type: 'integer',
+            },
+          },
+        },
       },
     },
   },
