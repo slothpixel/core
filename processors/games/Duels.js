@@ -33,13 +33,10 @@ const pickGamemode = (object, gamePrefix) => ({
 module.exports = ({
   all_modes_gold_title_prestige = null,
   all_modes_iron_title_prestige = null,
-  amount_healed_standard = 0,
-  amount_healed = 0,
   best_overall_winstreak = 0,
   blitz_duels_kit = 0,
   blitz_iron_title_prestige = 0,
   blitz_rookie_title_prestige = 0,
-  blocks_broken = 0,
   blocks_placed = 0,
   bow_hits = 0,
   bow_shots = 0,
@@ -85,9 +82,6 @@ module.exports = ({
   ...rest
 }) => ({
   general: {
-    amount_healed,
-    amount_healed_standard,
-    blocks_broken,
     blocks_placed,
     bow_hits,
     bow_shots,
