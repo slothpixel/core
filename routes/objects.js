@@ -2747,6 +2747,68 @@ const playerObject = {
             },
           },
         },
+        MegaWalls: {
+          description: 'Player stats in Mega Walls',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in Mega Walls',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Current kills in Mega Walls',
+              type: 'integer',
+            },
+            assists: {
+              description: 'Current assists in Mega Walls',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in Mega Walls',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'Current kill/death ratio in Mega Walls',
+              type: 'integer',
+            },
+            final_kills: {
+              description: 'Current final kills in Mega Walls',
+              type: 'integer',
+            },
+            final_assists: {
+              description: 'Current final assists in Mega Walls',
+              type: 'integer',
+            },
+            final_deaths: {
+              description: 'Current final deaths in Mega Walls',
+              type: 'integer',
+            },
+            final_kill_death_ratio: {
+              description: 'Current final kill/death ratio in Mega Walls',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Current wins in Mega Walls',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Current losses in Mega Walls',
+              type: 'integer',
+            },
+            win_loss_ratio: {
+              description: 'Current win/loss ratio in Mega Walls',
+              type: 'integer',
+            },
+            wither_damage: {
+              description: 'The amount of damage the player has done to Withers in Mega Walls',
+              type: 'integer',
+            },
+            defending_kills: {
+              description: 'The number of kills the player has gotten while defending their wither in Mega Walls',
+              type: 'integer',
+            },
+          },
+        },
       },
     },
   },
