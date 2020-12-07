@@ -733,6 +733,50 @@ const playerObject = {
               description: 'Current coins in Warlords',
               type: 'integer',
             },
+            kills: {
+              description: 'Current kills in Warlords',
+              type: 'integer',
+            },
+            assists: {
+              description: 'Current assists in Warlords',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in Warlords',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'The players current kill/death in Warlords',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Current wins in Warlords',
+              type: 'integer',
+            },
+            wins_capturetheflag: {
+              description: 'Current Capture the Flag wins in Warlords',
+              type: 'integer',
+            },
+            wins_domination: {
+              description: 'Current Domination wins in Warlords',
+              type: 'integer',
+            },
+            wins_teamdeathmatch: {
+              description: 'Current Team Deathmatch wins in Warlords',
+              type: 'integer',
+            },
+            weapons_repaired: {
+              description: 'Current number of weapons repaired in Warlords',
+              type: 'integer',
+            },
+            flags_captured: {
+              description: 'Current number of flags captured in Warlords',
+              type: 'integer',
+            },
+            flags_returned: {
+              description: 'Current number of flags returned in Warlords',
+              type: 'integer',
+            },
           },
         },
         BedWars: {
