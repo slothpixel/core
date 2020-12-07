@@ -2581,6 +2581,128 @@ const playerObject = {
             },
           },
         },
+        TNT: {
+          description: 'Player stats in the TNT Games',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in the TNT Games',
+              type: 'integer',
+            },
+            gamemodes: {
+              description: 'Stats for specific gamemodes in the TNT Games',
+              type: 'object',
+              properties: {
+                tnt_run: {
+                  description: 'Stats for TNT Run',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in TNT Run',
+                      type: 'integer',
+                    },
+                    losses: {
+                      description: 'Total losses in TNT Run',
+                      type: 'integer',
+                    },
+                    win_loss_ratio: {
+                      description: 'The players win/loss ratio in TNT Run',
+                      type: 'integer',
+                    },
+                    record_time_survived: {
+                      description: 'The players record for longest time survived in TNT Run in seconds',
+                      type: 'integer',
+                    },
+                  },
+                },
+                pvp_run: {
+                  description: 'Stats for PVP Run',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in PvP Run',
+                      type: 'integer',
+                    },
+                    losses: {
+                      description: 'Total losses in PvP Run',
+                      type: 'integer',
+                    },
+                    win_loss_ratio: {
+                      description: 'The players win/loss ratio in PvP Run',
+                      type: 'integer',
+                    },
+                    kills: {
+                      description: 'Total kills in PvP Runs',
+                      type: 'integer',
+                    },
+                    record_time_survived: {
+                      description: 'The players record for longest time survived in PvP Run in seconds',
+                      type: 'integer',
+                    },
+                  },
+                },
+                tnt_tag: {
+                  description: 'Stats for TNT Tag',
+                  type: 'object',
+                  properties: {
+                    kills: {
+                      description: 'Total kills in TNT Tag',
+                      type: 'integer',
+                    },
+                    wins: {
+                      description: 'Total wins in TNT Tag',
+                      type: 'integer',
+                    },
+                  },
+                },
+                bow_spleef: {
+                  description: 'Stats for Bowspleef',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in Bowspleef',
+                      type: 'integer',
+                    },
+                    losses: {
+                      description: 'Total losses in Bowspleef',
+                      type: 'integer',
+                    },
+                    win_loss_ratio: {
+                      description: 'The players win/loss ratio in Bowspleef',
+                      type: 'integer',
+                    },
+                  },
+                },
+                wizards: {
+                  description: 'Stats for Wizards',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in Wizards',
+                      type: 'integer',
+                    },
+                    kills: {
+                      description: 'Total kills in Wizards',
+                      type: 'integer',
+                    },
+                    deaths: {
+                      description: 'Total deaths in Wizards',
+                      type: 'integer',
+                    },
+                    assists: {
+                      description: 'Total assists in Wizards',
+                      type: 'integer',
+                    },
+                    kill_death_ratio: {
+                      description: 'The players kill/death ratio in Wizards',
+                      type: 'integer',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   },
