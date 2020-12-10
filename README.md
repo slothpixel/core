@@ -55,5 +55,5 @@ Resources
 
 History
 ---
-* Development started in July 2017
+* Development started in April 2017
 * Project based on [The OpenDota Project](https://github.com/odota/)

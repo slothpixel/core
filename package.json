@@ -30,9 +30,9 @@
     "nock": "^12.0.3",
     "pify": "^5.0.0",
     "pm2": "^4.4.0",
-    "prismarine-nbt": "^1.3.0",
     "redis": "^3.0.2",
     "request-ip": "^2.1.3",
+    "skyblock-parser": "github:slothpixel/skyblock-parser",
     "universalify": "^1.0.0",
     "uuid": "^8.2.0",
     "winston": "^3.2.1"

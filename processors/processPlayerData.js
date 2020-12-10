@@ -168,7 +168,7 @@ function processPlayerData({
     karma,
     exp: networkExp,
     level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
-    achievement_points: achievementPoints,
+    achievement_points: achievementPoints === 0 ? achievements_.achievement_points : achievementPoints,
     quests_completed: quests_.quests_completed,
     total_kills: totalKills,
     total_wins: totalWins,
