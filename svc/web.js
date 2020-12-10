@@ -11,11 +11,11 @@ const api = require('../routes/api');
 const redis = require('../store/redis');
 const utility = require('../util/utility');
 const config = require('../config');
-require('../util/sentry')();
 
 const { logger, redisCount } = utility;
 
 const app = express();
+const Sentry = require('../util/sentry')({ expressApp: app });
 
 const whitelistedPaths = new Set([
   '/api', // Docs
@@ -26,6 +26,10 @@ const whitelistedPaths = new Set([
 const pathCosts = {
   '/api/leaderboards': 5,
 };
+
+// Sentry middleware
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 app.disable('x-powered-by');
 // Compression middleware
@@ -164,6 +168,8 @@ app.use(cors({
   credentials: true,
 }));
 app.use('/api', api);
+
+app.use(Sentry.Handlers.errorHandler());
 
 // 404 route
 app.use((_, response) => {
