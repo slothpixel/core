@@ -22,6 +22,7 @@ async function checkItems(members = {}) {
       const item = inventories.find((i) => i.attributes.id === id);
       // Filter unfit items
       if (![null, undefined].includes(item.attributes.modifier)
+        || id.startsWith('MAP:')
         || item.name === '§fnull'
         || item.rarity_upgrades) return [];
       return [{
