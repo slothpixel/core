@@ -6,7 +6,7 @@ const { logger, removeFormatting } = require('../util/utility');
 // Submit items to the items service
 async function checkItems(members = {}) {
   // We can control sample size to prevent overload
-  if (Math.random() <= Number(config.ITEMS_PERCENT)) {
+  if (Math.random() >= Number(config.ITEMS_PERCENT)) {
     return;
   }
   let inventories = [];
