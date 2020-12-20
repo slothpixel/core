@@ -95,6 +95,15 @@ app.post('/', (request, response, _callback) => {
   }
   response.json({ status: 'ok' });
 });
+app.delete('/:id', (request, response, _callback) => {
+  const { id } = request.params;
+  if (id in itemList) {
+    logger.info(`Deleting entry for item ${id}`);
+    delete itemList[id];
+    updateItemList();
+  }
+  response.json({ status: 'ok' });
+});
 app.use((error, _, response) => response.status(500).json({
   error,
 }));
