@@ -19,7 +19,7 @@ module.exports = ({
   coins,
   wins,
   games_played: games,
-  win_loss_ratio: getRatio(wins, games),
+  win_loss_ratio: getRatio(wins, games - wins),
   kills,
   deaths,
   kill_death_ratio: getRatio(kills, deaths),
