@@ -336,9 +336,8 @@ const getData = fromPromise(async (redis, url) => {
                 .expireat('hypixel_api_error', getStartOfBlockMinutes(1, 1));
 
               try {
-                const [failed] = await pify(multi.exec)();
-                logger.warn(`Failed API requests in the past minute: ${failed}`);
-                logger.error(`[INVALID] data: ${target}, retrying ${JSON.stringify(body)}`);
+                const [failed] = await multi.exec();
+                logger.warn(`Failed API requests in the past minute: ${failed[1]}`);
               } catch (error) {
                 logger.error(error);
               }

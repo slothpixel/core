@@ -1,7 +1,6 @@
 /*
 * Worker to generate SkyBlock item schema from inventories processed by web
  */
-const pify = require('pify');
 const express = require('express');
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -10,9 +9,6 @@ const redis = require('../store/redis');
 const {
   logger, generateJob, getData, invokeInterval,
 } = require('../util/utility');
-
-const redisSetAsync = pify(redis.set).bind(redis);
-const redisGetAsync = pify(redis.get).bind(redis);
 
 const app = express();
 const port = config.PORT || config.ITEMS_PORT;
@@ -23,7 +19,7 @@ let itemList = {};
 
 (async function init() {
   try {
-    itemList = JSON.parse(await redisGetAsync('skyblock_items')) || {};
+    itemList = JSON.parse(await redis.get('skyblock_items')) || {};
     const items = Object.keys(itemList);
     logger.info(`Caching existing ${items.length} item IDs`);
     discoveredItems.add(...items);
@@ -35,7 +31,7 @@ let itemList = {};
 async function updateItemList() {
   try {
     logger.info('Updating item list to redis...');
-    await redisSetAsync('skyblock_items', JSON.stringify(itemList));
+    await redis.set('skyblock_items', JSON.stringify(itemList));
   } catch (error) {
     logger.error(`Failed updating skyblock_items: ${error}`);
   }
@@ -46,7 +42,7 @@ async function updateBazaar() {
     const { products } = await getData(redis, generateJob('bazaar_products'));
     bazaarProducts = Object.keys(products);
     try {
-      await redisSetAsync('skyblock_bazaar', JSON.stringify(bazaarProducts));
+      await redis.set('skyblock_bazaar', JSON.stringify(bazaarProducts));
       logger.info('[Bazaar] Updated item IDs');
       let changes = 0;
       discoveredItems.forEach((id) => {

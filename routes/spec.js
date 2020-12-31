@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return,no-unused-vars,arrow-body-style */
 const async = require('async');
 const filterObject = require('filter-obj');
-const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
@@ -26,8 +25,6 @@ const {
   profileIdParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
-
-const redisGetAsync = pify(redis.get).bind(redis);
 
 const auctionObject = {
   type: 'object',
@@ -937,7 +934,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             const uuid = await getUUID(request.params.player);
             try {
               let profiles = {};
-              const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
+              const data = await redis.get(`skyblock_profiles:${uuid}`);
               if (data) {
                 profiles = JSON.parse(data) || {};
                 // TODO - populatePlayers for each profile
@@ -1738,7 +1735,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/skyblock/items',
         func: async (_, response, callback) => {
           try {
-            const items = await redisGetAsync('skyblock_items');
+            const items = await redis.get('skyblock_items');
             return response.json(JSON.parse(items));
           } catch (error) {
             callback(error);
@@ -1872,7 +1869,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/skyblock/bazaar/:id?',
         func: async (request, response, callback) => {
           const itemId = request.params.id;
-          const data = await redisGetAsync('skyblock_bazaar');
+          const data = await redis.get('skyblock_bazaar');
           const ids = JSON.parse(data) || [];
           if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
             return response.status(400).json({ error: 'Invalid itemId' });
