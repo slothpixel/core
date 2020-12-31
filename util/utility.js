@@ -7,7 +7,6 @@ const { fromPromise } = require('universalify');
 const urllib = require('url');
 const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
-const pify = require('pify');
 const { createLogger, format, transports } = require('winston');
 const got = require('got');
 const config = require('../config');
