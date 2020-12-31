@@ -25,7 +25,7 @@ function getLatestProfile(profiles) {
 
 async function updateProfileList(key, profiles) {
   try {
-    await redis.set(key, 3 * 24 * 60 * 60, JSON.stringify(profiles)); // Expire after 3 days
+    await redis.setex(key, 3 * 24 * 60 * 60, JSON.stringify(profiles)); // Expire after 3 days
   } catch (error) {
     logger.error(`Failed to update profile list: ${error}`);
   }
