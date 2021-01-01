@@ -24,6 +24,7 @@ async function checkItems(members = {}) {
       if (![null, undefined].includes(item.attributes.modifier)
         || id.startsWith('MAP:')
         || item.name === '§fnull'
+        || !/[!-~]/.test(item.name)
         || item.rarity_upgrades) return [];
       return [{
         id,
