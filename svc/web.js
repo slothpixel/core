@@ -93,11 +93,11 @@ app.use((request, response, callback) => {
       return callback(error);
     }
     response.set({
-      'X-Rate-Limit-Remaining-Minute': rateLimit - data[0],
+      'X-Rate-Limit-Remaining-Minute': rateLimit - data[0][1],
       'X-IP-Address': ip,
     });
     if (!response.locals.isAPIRequest) {
-      response.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(data[2]));
+      response.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(data[2][1]));
     }
     logger.debug(`rate limit increment ${data}`);
     if (data[0] > rateLimit && config.NODE_ENV !== 'test') {
@@ -105,7 +105,7 @@ app.use((request, response, callback) => {
         error: 'rate limit exceeded',
       });
     }
-    if (!whitelistedPaths.has(request.path) && !response.locals.isAPIRequest && Number(data[2]) >= config.API_FREE_LIMIT) {
+    if (!whitelistedPaths.has(request.path) && !response.locals.isAPIRequest && Number(data[2][1]) >= config.API_FREE_LIMIT) {
       return response.status(429).json({
         error: 'monthly api limit exceeded',
       });

@@ -8,8 +8,6 @@ const {
   Player, Guild, SkyBlockProfile, Auction,
 } = require('./models');
 
-const setAsync = pify(redis.set).bind(redis);
-
 const playerFindOneAndUpdateAsync = pify(Player.findOneAndUpdate).bind(Player);
 const guildFindOneAndUpdateAsync = pify(Guild.findOneAndUpdate).bind(Guild);
 const guildFindOne = pify(Guild.findOne).bind(Guild);
@@ -40,7 +38,7 @@ async function cachePlayerProfile(profile) {
   const key = `profile:${profile.uuid}`;
   logger.debug(`Caching ${key}`);
   try {
-    await setAsync(key, JSON.stringify(profile));
+    await redis.set(key, JSON.stringify(profile));
   } catch (error) {
     logger.error(error);
   }
