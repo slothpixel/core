@@ -1014,27 +1014,27 @@ const playerObject = {
             },
             wins: {
               description: 'Total wins in Duels',
-              type: 'integer'
+              type: 'integer',
             },
             losses: {
               description: 'Total losses in Duels',
-              type: 'integer'
+              type: 'integer',
             },
             kills: {
               description: 'Total kills in Duels',
-              type: 'integer'
+              type: 'integer',
             },
             deaths: {
               description: 'Total deaths in Duels',
-              type: 'integer'
+              type: 'integer',
             },
             kd_ratio: {
               description: 'Ratio of kills to deaths',
-              type: 'number'
+              type: 'number',
             },
             win_loss_ratio: {
               description: 'Ratio of wins to losses',
-              type: 'number'
+              type: 'number',
             },
           },
         },
