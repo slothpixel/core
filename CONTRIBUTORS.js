@@ -14,4 +14,5 @@ module.exports = [
   'a034e7eeee7d4db6a32472ca348e8f64', // Chris_TheCrafter
   '5dcafb2fbd764a858b253c22079ce358', // MrZillaGold
   '3f4a49baca57430b824d669e03604217', // BananaFalls
+  '545ee6e50eb444858ee3abc40b04f367', // danktrain
 ];
