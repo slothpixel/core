@@ -2721,6 +2721,26 @@ type SkyblockBazaar {
 }
 
 """
+Player stats in Skywars
+"""
+type SkyWars {
+  """
+  Current level in SkyWars
+  """
+  level: Float
+
+  """
+  Total wins in SkyWars;
+  """
+  wins: Int
+
+  """
+  Current kills in SkyWars;
+  """
+  kills: Int
+}
+
+"""
 SMG Specialization upgrades
 """
 type Smg {
@@ -2825,6 +2845,11 @@ type Stats {
   Player stats in Murder Mystery
   """
   MurderMystery: MurderMystery
+
+  """
+  Player stats in SkyWars
+  """
+  SkyWars: SkyWars
 
   """
   Current stats in Turbo Kart Racers
