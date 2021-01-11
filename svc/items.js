@@ -7,7 +7,7 @@ const compression = require('compression');
 const config = require('../config');
 const redis = require('../store/redis');
 const {
-  logger, generateJob, getData, invokeInterval,
+  logger, invokeInterval,
 } = require('../util/utility');
 
 const app = express();

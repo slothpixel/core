@@ -1875,7 +1875,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           try {
             const data = await redis.get('skyblock_bazaar');
             if (data === null) {
-              logger.warn('No profucts found, is the bazaar service running?');
+              logger.warn('No products found, is the bazaar service running?');
               return callback('No bazaar items available');
             }
             const bazaar = JSON.parse(data);
