@@ -5,7 +5,6 @@ const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const getUUID = require('../store/getUUID');
-const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
@@ -16,7 +15,7 @@ const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  generateJob, getData, typeToStandardName, getPlayerFields,
+  logger, generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -1873,13 +1872,16 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/skyblock/bazaar/:id?',
         func: async (request, response, callback) => {
           const itemId = request.params.id;
-          const data = await redis.get('skyblock_bazaar');
-          const ids = JSON.parse(data) || [];
-          if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
-            return response.status(400).json({ error: 'Invalid itemId' });
-          }
           try {
-            const bazaar = await buildBazaar();
+            const data = await redis.get('skyblock_bazaar');
+            if (data === null) {
+              logger.warn('No profucts found, is the bazaar service running?');
+              return callback('No bazaar items available');
+            }
+            const bazaar = JSON.parse(data);
+            if (itemId && !itemId.includes(',') && !Object.keys(bazaar).includes(itemId)) {
+              return response.status(400).json({ error: 'Invalid itemId' });
+            }
             if (!itemId) {
               return response.json(bazaar);
             }

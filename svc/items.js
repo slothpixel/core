@@ -39,10 +39,9 @@ async function updateItemList() {
 
 async function updateBazaar() {
   try {
-    const { products } = await getData(redis, generateJob('bazaar_products'));
-    bazaarProducts = Object.keys(products);
+    const data = await redis.get('skyblock_bazaar');
+    bazaarProducts = Object.keys(JSON.parse(data));
     try {
-      await redis.set('skyblock_bazaar', JSON.stringify(bazaarProducts));
       logger.info('[Bazaar] Updated item IDs');
       let changes = 0;
       discoveredItems.forEach((id) => {
