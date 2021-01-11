@@ -240,6 +240,10 @@ const spec = {
 The Slothpixel API provides Hypixel related data.
 
 Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
+
+Consider supporting The Slothpixel Project on Patreon to help cover the hosting costs.
+    
+[Discord](https://discord.gg/ND9bJKK) | [Patreon](https://patreon.com/slothpixel)  
     
 # GraphQL
     Slothpixel API supports the use of GraphQL query language, and it is recommended for advanced users. [Read more](https://github.com/slothpixel/core/wiki/GraphQL)
@@ -1696,7 +1700,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
     '/skyblock/items': {
       get: {
         summary: 'SkyBlock item spec',
-        description: 'Returns all SkyBlock items found in auctions',
+        description: 'Returns all SkyBlock items',
         operationId: 'getSkyblockItems',
         tags: [
           'skyblock',
