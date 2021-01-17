@@ -35,7 +35,7 @@
     "skyblock-parser": "github:slothpixel/skyblock-parser",
     "universalify": "^2.0.0",
     "uuid": "^8.2.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "6.8.0",
