@@ -15,7 +15,7 @@ const activeAuctions = {};
 function updatePrices(auction) {
   const {
     // eslint-disable-next-line camelcase
-    start, end, starting_bid, item, bids, highest_bid_amount,
+    start, end, starting_bid, item, bids, highest_bid_amount, bin = false,
   } = auction;
   const data = {
     start,
@@ -25,6 +25,7 @@ function updatePrices(auction) {
     highest_bid_amount,
     item,
   };
+  if (bin) data.bin = bin;
   redis.zadd([item.attributes.id, end, JSON.stringify(data)], (error) => {
     if (error) {
       logger.error(error);

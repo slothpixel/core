@@ -1,13 +1,11 @@
 /* eslint-disable consistent-return,no-unused-vars,arrow-body-style */
 const async = require('async');
 const filterObject = require('filter-obj');
-const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const buildPlayerFriends = require('../store/buildPlayerFriends');
 const getUUID = require('../store/getUUID');
-const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
@@ -18,7 +16,7 @@ const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  generateJob, getData, typeToStandardName, getPlayerFields,
+  logger, generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -27,8 +25,6 @@ const {
   profileIdParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
-
-const redisGetAsync = pify(redis.get).bind(redis);
 
 const auctionObject = {
   type: 'object',
@@ -244,6 +240,10 @@ const spec = {
 The Slothpixel API provides Hypixel related data.
 
 Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
+
+Consider supporting The Slothpixel Project on Patreon to help cover the hosting costs.
+    
+[Discord](https://discord.gg/ND9bJKK) | [Patreon](https://patreon.com/slothpixel)  
     
 # GraphQL
     Slothpixel API supports the use of GraphQL query language, and it is recommended for advanced users. [Read more](https://github.com/slothpixel/core/wiki/GraphQL)
@@ -989,7 +989,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             const uuid = await getUUID(request.params.player);
             try {
               let profiles = {};
-              const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
+              const data = await redis.get(`skyblock_profiles:${uuid}`);
               if (data) {
                 profiles = JSON.parse(data) || {};
                 // TODO - populatePlayers for each profile
@@ -1712,6 +1712,10 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                       description: 'Largest price in the selected time period',
                       type: 'integer',
                     },
+                    lowest_bin: {
+                      description: 'Lowest price in the selected time period on Buy It Now',
+                      type: 'integer',
+                    },
                     sold: {
                       description: 'Total sold items in the selected time period',
                       type: 'integer',
@@ -1747,7 +1751,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
     '/skyblock/items': {
       get: {
         summary: 'SkyBlock item spec',
-        description: 'Returns all SkyBlock items found in auctions',
+        description: 'Returns all SkyBlock items',
         operationId: 'getSkyblockItems',
         tags: [
           'skyblock',
@@ -1786,7 +1790,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/skyblock/items',
         func: async (_, response, callback) => {
           try {
-            const items = await redisGetAsync('skyblock_items');
+            const items = await redis.get('skyblock_items');
             return response.json(JSON.parse(items));
           } catch (error) {
             callback(error);
@@ -1920,13 +1924,16 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         route: () => '/skyblock/bazaar/:id?',
         func: async (request, response, callback) => {
           const itemId = request.params.id;
-          const data = await redisGetAsync('skyblock_bazaar');
-          const ids = JSON.parse(data) || [];
-          if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
-            return response.status(400).json({ error: 'Invalid itemId' });
-          }
           try {
-            const bazaar = await buildBazaar();
+            const data = await redis.get('skyblock_bazaar');
+            if (data === null) {
+              logger.warn('No products found, is the bazaar service running?');
+              return callback('No bazaar items available');
+            }
+            const bazaar = JSON.parse(data);
+            if (itemId && !itemId.includes(',') && !Object.keys(bazaar).includes(itemId)) {
+              return response.status(400).json({ error: 'Invalid itemId' });
+            }
             if (!itemId) {
               return response.json(bazaar);
             }
@@ -2324,6 +2331,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         },
       },
     },
-  };
+  }
+};
 
-  module.exports = spec;
+module.exports = spec;

@@ -733,6 +733,50 @@ const playerObject = {
               description: 'Current coins in Warlords',
               type: 'integer',
             },
+            kills: {
+              description: 'Current kills in Warlords',
+              type: 'integer',
+            },
+            assists: {
+              description: 'Current assists in Warlords',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in Warlords',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'The players current kill/death in Warlords',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Current wins in Warlords',
+              type: 'integer',
+            },
+            wins_capturetheflag: {
+              description: 'Current Capture the Flag wins in Warlords',
+              type: 'integer',
+            },
+            wins_domination: {
+              description: 'Current Domination wins in Warlords',
+              type: 'integer',
+            },
+            wins_teamdeathmatch: {
+              description: 'Current Team Deathmatch wins in Warlords',
+              type: 'integer',
+            },
+            weapons_repaired: {
+              description: 'Current number of weapons repaired in Warlords',
+              type: 'integer',
+            },
+            flags_captured: {
+              description: 'Current number of flags captured in Warlords',
+              type: 'integer',
+            },
+            flags_returned: {
+              description: 'Current number of flags returned in Warlords',
+              type: 'integer',
+            },
           },
         },
         BedWars: {
@@ -967,6 +1011,30 @@ const playerObject = {
             coins: {
               description: 'Current coins in Duels',
               type: 'integer',
+            },
+            wins: {
+              description: 'Total wins in Duels',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Total losses in Duels',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Total kills in Duels',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Total deaths in Duels',
+              type: 'integer',
+            },
+            kd_ratio: {
+              description: 'Ratio of kills to deaths',
+              type: 'number',
+            },
+            win_loss_ratio: {
+              description: 'Ratio of wins to losses',
+              type: 'number',
             },
           },
         },
@@ -1718,6 +1786,64 @@ const playerObject = {
               description: 'Current coins in Murder Mystery',
               type: 'integer',
             },
+            wins: {
+              description: 'Current wins in Murder Mystery',
+              type: 'integer',
+            },
+            games_played: {
+              description: 'Current games played in Murder Mystery',
+              type: 'integer',
+            },
+            win_loss_ratio: {
+              description: 'Current win/loss ratio in Murder Mystery. Dying as innocent, murderer, or detective (or in assassins) counts as a loss.',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Current kills in Murder Mystery',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in Murder Mystery',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'Current kill/death ratio in Murder Mystery',
+              type: 'integer',
+            },
+            times_hero: {
+              description: 'Number of times the player was the hero (killed the murderer without being detective) in Murder Mystery',
+              type: 'integer',
+            },
+            boxes: {
+              description: 'Stats for loot crates in Murder Mystery',
+              type: 'object',
+              properties: {
+                current: {
+                  description: 'Current amount of loot crates',
+                  type: 'integer',
+                },
+                opened: {
+                  description: 'Amount of loot crates opened',
+                  type: 'integer',
+                },
+                commons: {
+                  description: 'Amount of commons earned from loot crates',
+                  type: 'integer',
+                },
+                rares: {
+                  description: 'Amount of rares earned from loot crates',
+                  type: 'integer',
+                },
+                epics: {
+                  description: 'Amount of epics earned from loot crates',
+                  type: 'integer',
+                },
+                legendaries: {
+                  description: 'Amount of legendaries earned from loot crates',
+                  type: 'integer',
+                },
+              },
+            },
           },
         },
         Pit: {
@@ -2344,6 +2470,366 @@ const playerObject = {
                   type: 'integer',
                 },
               },
+            },
+          },
+        },
+        Smash: {
+          description: 'Player stats in Smash Heroes',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in Smash Heroes',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Amount of kills in Smash Heroes',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Amount of deaths in Smash Heroes',
+              type: 'integer',
+            },
+            smash_level: {
+              description: 'Player\'s Smash Level',
+              type: 'integer',
+            },
+            kd: {
+              description: 'Current kill/death ratio in Smash Heroes',
+              type: 'number',
+            },
+            wins: {
+              description: 'Amount of wins in Smash Heroes',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Amount of losses in Smash Heroes',
+              type: 'integer',
+            },
+            quits: {
+              description: 'Number of times the player has left mid-game in Smash Heroes',
+              type: 'integer',
+            },
+            win_streak: {
+              description: 'Current consecutive wins in Smash Heroes',
+              type: 'integer',
+            },
+            wl: {
+              description: 'Current win/loss ratio in Smash Heroes',
+              type: 'number',
+            },
+            games_played: {
+              description: 'Total number of Smash Heroes games played',
+              type: 'integer',
+            },
+            weekly_kills: {
+              description: 'Current weekly kills in Smash Heroes',
+              type: 'integer',
+            },
+            weekly_wins: {
+              description: 'Current weekly wins in Smash Heroes',
+              type: 'integer',
+            },
+            weekly_losses: {
+              description: 'Current weekly losses in Smash Heroes',
+              type: 'integer',
+            },
+            weekly_games_played: {
+              description: 'Smash Heroes games played this week',
+              type: 'integer',
+            },
+            monthly_kills: {
+              description: 'Current monthly kills in Smash Heroes',
+              type: 'integer',
+            },
+            monthly_wins: {
+              description: 'Current monthly wins in Smash Heroes',
+              type: 'integer',
+            },
+            monthly_losses: {
+              description: 'Current monthly losses in Smash Heroes',
+              type: 'integer',
+            },
+            monthly_games_played: {
+              description: 'Smash Heroes games played this month',
+              type: 'integer',
+            },
+          },
+        },
+        SkyWars: {
+          description: 'Player stats in SkyWars',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in SkyWars',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Total wins in SkyWars',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Total losses in SkyWars',
+              type: 'integer',
+            },
+            win_loss_ratio: {
+              description: 'Current win/loss ratio in SkyWars',
+              type: 'integer',
+            },
+            skywars_experience: {
+              description: 'Current experience in SkyWars',
+              type: 'integer',
+            },
+            level: {
+              description: 'Current level in SkyWars',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Current kills in SkyWars',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in SkyWars',
+              type: 'integer',
+            },
+            assists: {
+              description: 'Current assists in SkyWars',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'Current kill/death ratio in SkyWars',
+              type: 'integer',
+            },
+            souls_gathered: {
+              description: 'Total souls gathered in SkyWars',
+              type: 'integer',
+            },
+            souls: {
+              description: 'Current souls in the soul well in SkyWars',
+              type: 'integer',
+            },
+            arrows_shot: {
+              description: 'Total arrows shot in SkyWars',
+              type: 'integer',
+            },
+            arrows_hit: {
+              description: 'Total arrows hit in SkyWars',
+              type: 'integer',
+            },
+            arrow_hit_miss_ratio: {
+              description: 'Current arrow hit/miss ratio in SkyWars',
+              type: 'integer',
+            },
+            eggs_thrown: {
+              description: 'Total eggs thrown in SkyWars',
+              type: 'integer',
+            },
+            enderpearls_thrown: {
+              description: 'Total enderpearls thrown in SkyWars',
+              type: 'integer',
+            },
+            blocks_placed: {
+              description: 'Totla blocks placed in SkyWars',
+              type: 'integer',
+            },
+            blocks_broken: {
+              description: 'Current blocks broken in SkyWars',
+              type: 'integer',
+            },
+            soul_well_uses: {
+              description: 'Current soul well uses in SkyWars',
+              type: 'integer',
+            },
+            soul_well_rares: {
+              description: 'Number of rares a player has gotten from the soul well in SkyWars',
+              type: 'integer',
+            },
+            soul_well_legendaries: {
+              description: 'Number of legendaries a player has gotten from the soul well in SkyWars',
+              type: 'integer',
+            },
+          },
+        },
+        TNT: {
+          description: 'Player stats in the TNT Games',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in the TNT Games',
+              type: 'integer',
+            },
+            gamemodes: {
+              description: 'Stats for specific gamemodes in the TNT Games',
+              type: 'object',
+              properties: {
+                tnt_run: {
+                  description: 'Stats for TNT Run',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in TNT Run',
+                      type: 'integer',
+                    },
+                    losses: {
+                      description: 'Total losses in TNT Run',
+                      type: 'integer',
+                    },
+                    win_loss_ratio: {
+                      description: 'The players win/loss ratio in TNT Run',
+                      type: 'integer',
+                    },
+                    record_time_survived: {
+                      description: 'The players record for longest time survived in TNT Run in seconds',
+                      type: 'integer',
+                    },
+                  },
+                },
+                pvp_run: {
+                  description: 'Stats for PVP Run',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in PvP Run',
+                      type: 'integer',
+                    },
+                    losses: {
+                      description: 'Total losses in PvP Run',
+                      type: 'integer',
+                    },
+                    win_loss_ratio: {
+                      description: 'The players win/loss ratio in PvP Run',
+                      type: 'integer',
+                    },
+                    kills: {
+                      description: 'Total kills in PvP Runs',
+                      type: 'integer',
+                    },
+                    record_time_survived: {
+                      description: 'The players record for longest time survived in PvP Run in seconds',
+                      type: 'integer',
+                    },
+                  },
+                },
+                tnt_tag: {
+                  description: 'Stats for TNT Tag',
+                  type: 'object',
+                  properties: {
+                    kills: {
+                      description: 'Total kills in TNT Tag',
+                      type: 'integer',
+                    },
+                    wins: {
+                      description: 'Total wins in TNT Tag',
+                      type: 'integer',
+                    },
+                  },
+                },
+                bow_spleef: {
+                  description: 'Stats for Bowspleef',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in Bowspleef',
+                      type: 'integer',
+                    },
+                    losses: {
+                      description: 'Total losses in Bowspleef',
+                      type: 'integer',
+                    },
+                    win_loss_ratio: {
+                      description: 'The players win/loss ratio in Bowspleef',
+                      type: 'integer',
+                    },
+                  },
+                },
+                wizards: {
+                  description: 'Stats for Wizards',
+                  type: 'object',
+                  properties: {
+                    wins: {
+                      description: 'Total wins in Wizards',
+                      type: 'integer',
+                    },
+                    kills: {
+                      description: 'Total kills in Wizards',
+                      type: 'integer',
+                    },
+                    deaths: {
+                      description: 'Total deaths in Wizards',
+                      type: 'integer',
+                    },
+                    assists: {
+                      description: 'Total assists in Wizards',
+                      type: 'integer',
+                    },
+                    kill_death_ratio: {
+                      description: 'The players kill/death ratio in Wizards',
+                      type: 'integer',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        MegaWalls: {
+          description: 'Player stats in Mega Walls',
+          type: 'object',
+          properties: {
+            coins: {
+              description: 'Current coins in Mega Walls',
+              type: 'integer',
+            },
+            kills: {
+              description: 'Current kills in Mega Walls',
+              type: 'integer',
+            },
+            assists: {
+              description: 'Current assists in Mega Walls',
+              type: 'integer',
+            },
+            deaths: {
+              description: 'Current deaths in Mega Walls',
+              type: 'integer',
+            },
+            kill_death_ratio: {
+              description: 'Current kill/death ratio in Mega Walls',
+              type: 'integer',
+            },
+            final_kills: {
+              description: 'Current final kills in Mega Walls',
+              type: 'integer',
+            },
+            final_assists: {
+              description: 'Current final assists in Mega Walls',
+              type: 'integer',
+            },
+            final_deaths: {
+              description: 'Current final deaths in Mega Walls',
+              type: 'integer',
+            },
+            final_kill_death_ratio: {
+              description: 'Current final kill/death ratio in Mega Walls',
+              type: 'integer',
+            },
+            wins: {
+              description: 'Current wins in Mega Walls',
+              type: 'integer',
+            },
+            losses: {
+              description: 'Current losses in Mega Walls',
+              type: 'integer',
+            },
+            win_loss_ratio: {
+              description: 'Current win/loss ratio in Mega Walls',
+              type: 'integer',
+            },
+            wither_damage: {
+              description: 'The amount of damage the player has done to Withers in Mega Walls',
+              type: 'integer',
+            },
+            defending_kills: {
+              description: 'The number of kills the player has gotten while defending their wither in Mega Walls',
+              type: 'integer',
             },
           },
         },

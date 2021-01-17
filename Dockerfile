@@ -4,7 +4,7 @@ RUN apk update && apk add bash && apk add curl && apk add git
 
 ENV NPM_CONFIG_LOGLEVEL warn
 
-ENV NODE_OPTIONS --max-old-space-size=3072
+ENV NODE_OPTIONS --max-old-space-size=2048
 
 COPY . /usr/src
 

@@ -1249,13 +1249,44 @@ type Dragonwars {
 }
 
 """
-Player stats in Duels
+Player's general Duels stats
 """
-type Duels {
+type Duelsgeneral {
   """
   Current coins in Duels
   """
   coins: Int
+  """
+  Total wins in Duels
+  """
+  wins: Int
+  """
+  Total losses in Duels
+  """
+  losses: Int
+  """
+  Total kills in Duels
+  """
+  kills: Int
+  """
+  Total deaths in Duels
+  """
+  deaths: Int
+  """
+  Ratio of kills to deaths
+  """
+  kd_ratio: Float
+  """
+  Ratio of wins to losses
+  """
+  win_loss_ratio: Float
+}
+
+"""
+Player stats in Duels
+"""
+type Duels {
+  general: Duelsgeneral
 }
 
 """
@@ -2690,6 +2721,26 @@ type SkyblockBazaar {
 }
 
 """
+Player stats in Skywars
+"""
+type SkyWars {
+  """
+  Current level in SkyWars
+  """
+  level: Float
+
+  """
+  Total wins in SkyWars;
+  """
+  wins: Int
+
+  """
+  Current kills in SkyWars;
+  """
+  kills: Int
+}
+
+"""
 SMG Specialization upgrades
 """
 type Smg {
@@ -2794,6 +2845,11 @@ type Stats {
   Player stats in Murder Mystery
   """
   MurderMystery: MurderMystery
+
+  """
+  Player stats in SkyWars
+  """
+  SkyWars: SkyWars
 
   """
   Current stats in Turbo Kart Racers

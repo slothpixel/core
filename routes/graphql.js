@@ -8,7 +8,6 @@ const { buildSchema } = require('graphql');
 const filterObject = require('filter-obj');
 const { game_types: gameTypes } = require('hypixelconstants');
 const { getPlayer, populatePlayers } = require('../store/buildPlayer');
-const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
@@ -19,10 +18,11 @@ const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const { getMetadata } = require('../store/queries');
-const { generateJob, getData, typeToStandardName } = require('../util/utility');
+const {
+  logger, generateJob, getData, typeToStandardName,
+} = require('../util/utility');
 
 const leaderboardsAsync = pify(leaderboards);
-const redisGetAsync = pify(redis.get).bind(redis);
 const getMetadataAsync = pify(getMetadata);
 
 const gameStandardNames = gameTypes.map((game) => game.standard_name);
@@ -99,13 +99,13 @@ class SkyblockResolver {
   }
 
   async items() {
-    const items = await redisGetAsync('skyblock_items');
+    const items = await redis.get('skyblock_items');
     return items ? JSON.parse(items) : {};
   }
 
   async profiles({ player_name }) {
     const uuid = await getUUID(player_name);
-    const profiles = await redisGetAsync(`skyblock_profiles:${uuid}`);
+    const profiles = await redis.get(`skyblock_profiles:${uuid}`);
     return profiles ? JSON.parse(profiles) : {};
   }
 
@@ -122,22 +122,25 @@ class SkyblockResolver {
   }
 
   async bazaar({ item_id }) {
-    const resp = await redisGetAsync('skyblock_bazaar');
-    const ids = JSON.parse(resp) || [];
-    if (item_id && !Array.isArray(item_id) && !item_id.includes(',') && !ids.includes(item_id)) {
+    const data = await redis.get('skyblock_bazaar');
+    if (data === null) {
+      logger.warn('No profucts found, is the bazaar service running?');
+      throw new Error('No bazaar items available');
+    }
+    const bazaar = JSON.parse(data);
+    if (item_id && !Array.isArray(item_id) && !item_id.includes(',') && !Object.keys(bazaar).includes(item_id)) {
       throw new Error('Invalid item_id');
     }
-    const products = await buildBazaar();
     if (!item_id) {
-      return products;
+      return bazaar;
     }
     if (Array.isArray(item_id)) {
-      return filterObject(products, item_id);
+      return filterObject(bazaar, item_id);
     }
     if (item_id.includes(',')) {
-      return filterObject(products, item_id.split(','));
+      return filterObject(bazaar, item_id.split(','));
     }
-    return products[item_id];
+    return bazaar[item_id];
   }
 }
 
