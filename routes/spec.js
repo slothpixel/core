@@ -609,10 +609,10 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                   items: {
                     type: 'object',
                     properties: {
-                      uuidSender: {
+                      uuid: {
                         type: 'string',
                       },
-                      uuidReceiver: {
+                      sent_by: {
                         type: 'string',
                       },
                       started: {
@@ -630,7 +630,7 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         func: async (request, response, callback) => {
           try {
             try {
-              response.json(buildPlayerFriends(request.params.player));
+              response.json(await buildPlayerFriends(request.params.player));
             } catch (error) {
               callback(error.message);
             }
