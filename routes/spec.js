@@ -625,237 +625,28 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-      },
-      route: () => '/players/:player/friends',
-      func: async (request, response, callback) => {
-        try {
+        route: () => '/players/:player/friends',
+        func: async (request, response, callback) => {
           try {
-            response.json(await buildPlayerFriends(request.params.player));
+            try {
+              response.json(await buildPlayerFriends(request.params.player));
+            } catch (error) {
+              callback(error.message);
+            }
           } catch (error) {
-            callback(error.message);
+            response.status(404).json({ error: error.message });
           }
-        } catch (error) {
-          response.status(404).json({ error: error.message });
-        }
-      },
-    },
-  },
-  '/players/{playerName}/status': {
-    get: {
-      summary: 'Get current player activity',
-      description: 'Returns the current online status and game for a player.',
-      operationId: 'getPlayerStatus',
-      tags: [
-        'player',
-      ],
-      parameters: [
-        playerNameParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  online: {
-                    type: 'boolean',
-                  },
-                  game: {
-                    type: 'object',
-                    properties: {
-                      type: {
-                        type: 'string',
-                      },
-                      mode: {
-                        type: 'string',
-                      },
-                      map: {
-                        type: 'string',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
         },
       },
-      route: () => '/players/:player/status',
-      func: async (request, response, callback) => {
-        try {
-          const data = await buildPlayerStatus(request.params.player);
-          response.json(data);
-        } catch (error) {
-          callback(error.message);
-        }
-      },
     },
-  },
-  '/guilds/{playerName}': {
-    get: {
-      summary: 'Get guild stats by user\'s username or uuid',
-      description: 'Look up a guild from the name of one of it\'s members',
-      operationId: 'getGuildFromPlayer',
-      tags: [
-        'guild',
-      ],
-      parameters: [
-        playerNameParam, populatePlayersParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  name: {
-                    description: 'Guild\'s name',
-                    type: 'string',
-                  },
-                  id: {
-                    description: 'Guild id used in hypixel backend',
-                    type: 'string',
-                  },
-                  created: {
-                    description: 'Guild creation date',
-                    type: 'string',
-                  },
-                  tag: {
-                    description: 'Guild tag',
-                    type: 'string',
-                  },
-                  tag_color: {
-                    description: 'Formatting code for the guild tag',
-                    type: 'string',
-                  },
-                  tag_formatted: {
-                    description: 'Formatted tag string e.g. \'&b[TAG]\'',
-                    type: 'string',
-                  },
-                  legacy_ranking: {
-                    description: 'Ranking in the number of guild coins owned in the legacy guild system',
-                    type: 'integer',
-                  },
-                  exp: {
-                    description: 'Total guild xp',
-                    type: 'integer',
-                  },
-                  level: {
-                    description: 'Guild level',
-                    type: 'number',
-                  },
-                  exp_by_game: {
-                    description: 'Guild EXP earned in each minigame',
-                    type: 'integer',
-                  },
-                  exp_history: {
-                    description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
-                    type: 'object',
-                  },
-                  description: {
-                    description: 'Guild description',
-                    type: 'string',
-                  },
-                  preferred_games: {
-                    description: 'Array containing the guild\'s preferred games',
-                    type: 'array',
-                    items: {
-                      type: 'string',
-                    },
-                  },
-                  ranks: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        name: {
-                          type: 'string',
-                        },
-                        permissions: {
-                          type: 'array',
-                          items: {
-                            type: 'number',
-                          },
-                        },
-                        default: {
-                          type: 'boolean',
-                        },
-                        tag: {
-                          type: 'string',
-                        },
-                        created: {
-                          type: 'integer',
-                        },
-                        priority: {
-                          type: 'integer',
-                        },
-                      },
-                    },
-                  },
-                  members: {
-                    description: 'Array of players on the guild',
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        uuid: {
-                          description: 'Player UUID',
-                          type: 'string',
-                        },
-                        rank: {
-                          description: 'Player rank in the guild',
-                          type: 'string',
-                        },
-                        joined: {
-                          description: 'Member join date',
-                          type: 'integer',
-                        },
-                        quest_participation: {
-                          description: 'How many much the member has contributed to guild quests',
-                          type: 'integer',
-                        },
-                        exp_history: {
-                          description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
-                          type: 'object',
-                        },
-                        muted_till: {
-                          description: 'Date the member is muted until',
-                          type: 'integer',
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/guilds/:player',
-      func: async (request, response, callback) => {
-        try {
-          const guild = await getGuildFromPlayer(request.params.player, { shouldPopulatePlayers: request.query.populatePlayers });
-          if (guild.guild === null) {
-            return response.status(404).json(guild);
-          }
-          return response.json(guild);
-        } catch (error) {
-          callback(error);
-        }
-      },
-    },
-  },
-  /*
-    '/sessions/{playerName}': {
+    '/players/{playerName}/status': {
       get: {
+        summary: 'Get current player activity',
+        description: 'Returns the current online status and game for a player.',
+        operationId: 'getPlayerStatus',
         tags: [
-          'session',
+          'player',
         ],
-        summary: 'Get guild stats by user\'s username or uuid',
         parameters: [
           playerNameParam,
         ],
@@ -867,20 +658,21 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
                 schema: {
                   type: 'object',
                   properties: {
+                    online: {
+                      type: 'boolean',
+                    },
                     game: {
-                      description: 'Minigame in standard format',
-                      type: 'string',
-                    },
-                    server: {
-                      description: 'Player\'s current server, e.g. mini103M',
-                      type: 'string',
-                    },
-                    players: {
-                      description: 'Array of players on the same server',
-                      type: 'array',
-                      items: {
-                        description: 'Player uuid',
-                        type: 'string',
+                      type: 'object',
+                      properties: {
+                        type: {
+                          type: 'string',
+                        },
+                        mode: {
+                          type: 'string',
+                        },
+                        map: {
+                          type: 'string',
+                        },
                       },
                     },
                   },
@@ -889,19 +681,182 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-        route: () => '/sessions/:player',
-        func: (req, res, cb) => {},
+        route: () => '/players/:player/status',
+        func: async (request, response, callback) => {
+          try {
+            const data = await buildPlayerStatus(request.params.player);
+            response.json(data);
+          } catch (error) {
+            callback(error.message);
+          }
+        },
       },
     },
-      '/friends/{playerName}': {
+    '/guilds/{playerName}': {
+      get: {
+        summary: 'Get guild stats by user\'s username or uuid',
+        description: 'Look up a guild from the name of one of it\'s members',
+        operationId: 'getGuildFromPlayer',
+        tags: [
+          'guild',
+        ],
+        parameters: [
+          playerNameParam, populatePlayersParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      description: 'Guild\'s name',
+                      type: 'string',
+                    },
+                    id: {
+                      description: 'Guild id used in hypixel backend',
+                      type: 'string',
+                    },
+                    created: {
+                      description: 'Guild creation date',
+                      type: 'string',
+                    },
+                    tag: {
+                      description: 'Guild tag',
+                      type: 'string',
+                    },
+                    tag_color: {
+                      description: 'Formatting code for the guild tag',
+                      type: 'string',
+                    },
+                    tag_formatted: {
+                      description: 'Formatted tag string e.g. \'&b[TAG]\'',
+                      type: 'string',
+                    },
+                    legacy_ranking: {
+                      description: 'Ranking in the number of guild coins owned in the legacy guild system',
+                      type: 'integer',
+                    },
+                    exp: {
+                      description: 'Total guild xp',
+                      type: 'integer',
+                    },
+                    level: {
+                      description: 'Guild level',
+                      type: 'number',
+                    },
+                    exp_by_game: {
+                      description: 'Guild EXP earned in each minigame',
+                      type: 'integer',
+                    },
+                    exp_history: {
+                      description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                      type: 'object',
+                    },
+                    description: {
+                      description: 'Guild description',
+                      type: 'string',
+                    },
+                    preferred_games: {
+                      description: 'Array containing the guild\'s preferred games',
+                      type: 'array',
+                      items: {
+                        type: 'string',
+                      },
+                    },
+                    ranks: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          name: {
+                            type: 'string',
+                          },
+                          permissions: {
+                            type: 'array',
+                            items: {
+                              type: 'number',
+                            },
+                          },
+                          default: {
+                            type: 'boolean',
+                          },
+                          tag: {
+                            type: 'string',
+                          },
+                          created: {
+                            type: 'integer',
+                          },
+                          priority: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                    members: {
+                      description: 'Array of players on the guild',
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          uuid: {
+                            description: 'Player UUID',
+                            type: 'string',
+                          },
+                          rank: {
+                            description: 'Player rank in the guild',
+                            type: 'string',
+                          },
+                          joined: {
+                            description: 'Member join date',
+                            type: 'integer',
+                          },
+                          quest_participation: {
+                            description: 'How many much the member has contributed to guild quests',
+                            type: 'integer',
+                          },
+                          exp_history: {
+                            description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                            type: 'object',
+                          },
+                          muted_till: {
+                            description: 'Date the member is muted until',
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/guilds/:player',
+        func: async (request, response, callback) => {
+          try {
+            const guild = await getGuildFromPlayer(request.params.player, { shouldPopulatePlayers: request.query.populatePlayers });
+            if (guild.guild === null) {
+              return response.status(404).json(guild);
+            }
+            return response.json(guild);
+          } catch (error) {
+            callback(error);
+          }
+        },
+      },
+    },
+    /*
+      '/sessions/{playerName}': {
         get: {
           tags: [
-            'friends',
+            'session',
           ],
-          summary: 'Get player\'s friends by user\'s username or uuid',
+          summary: 'Get guild stats by user\'s username or uuid',
           parameters: [
             playerNameParam,
-            },
           ],
           responses: {
             200: {
@@ -909,72 +864,23 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
               content: {
                 'application/json': {
                   schema: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        uuid: {
-                          description: 'Friend\'s uuid',
-                          type: 'string',
-                        },
-                        sent_by: {
-                          description: 'UUID of the player who sent the friend request',
-                          type: 'string',
-                        },
-                        started: {
-                          description: 'Date the friendship started',
-                          type: 'integer',
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      */
-  '/skyblock/profiles/{playerName}': {
-    get: {
-      summary: 'Get list of player\'s skyblock profiles',
-      description: 'Gets all skyblock profiles for the specified player',
-      operationId: 'getSkyblockProfiles',
-      tags: [
-        'skyblock',
-      ],
-      parameters: [
-        playerNameParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  PROFILE_ID: {
                     type: 'object',
                     properties: {
-                      profile_id: {
+                      game: {
+                        description: 'Minigame in standard format',
                         type: 'string',
                       },
-                      cute_name: {
+                      server: {
+                        description: 'Player\'s current server, e.g. mini103M',
                         type: 'string',
-                        description: 'Profile name, e.g. Strawberry',
                       },
-                      first_join: {
-                        type: 'integer',
-                      },
-                      last_save: {
-                        type: 'integer',
-                      },
-                      collections_unlocked: {
-                        type: 'integer',
-                      },
-                      members: {
+                      players: {
+                        description: 'Array of players on the same server',
                         type: 'array',
+                        items: {
+                          description: 'Player uuid',
+                          type: 'string',
+                        },
                       },
                     },
                   },
@@ -982,599 +888,43 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
               },
             },
           },
+          route: () => '/sessions/:player',
+          func: (req, res, cb) => {},
         },
       },
-      route: () => '/skyblock/profiles/:player',
-      func: async (request, response, callback) => {
-        try {
-          const uuid = await getUUID(request.params.player);
-          try {
-            let profiles = {};
-            const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
-            if (data) {
-              profiles = JSON.parse(data) || {};
-              // TODO - populatePlayers for each profile
-            } else {
-              profiles = await buildProfileList(uuid);
-            }
-            return response.json(profiles);
-          } catch (error) {
-            callback(error);
-          }
-        } catch (error) {
-          response.status(404).json({ error: error.message });
-        }
-      },
-    },
-  },
-  '/skyblock/profile/{playerName}/{profileId}': {
-    get: {
-      summary: 'Return a skyblock profile',
-      description: 'If no profile is specified, the last played profile is returned',
-      operationId: 'getSkyblockPlayerProfile',
-      tags: [
-        'skyblock',
-      ],
-      parameters: [
-        playerNameParam, profileIdParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  members: {
-                    type: 'object',
-                    properties: {
-                      uuid: {
+        '/friends/{playerName}': {
+          get: {
+            tags: [
+              'friends',
+            ],
+            summary: 'Get player\'s friends by user\'s username or uuid',
+            parameters: [
+              playerNameParam,
+              },
+            ],
+            responses: {
+              200: {
+                description: 'successful operation',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'array',
+                      items: {
                         type: 'object',
                         properties: {
                           uuid: {
+                            description: 'Friend\'s uuid',
                             type: 'string',
                           },
-                          attributes: {
-                            type: 'object',
-                            properties: {
-                              damage: {
-                                type: 'integer',
-                              },
-                              health: {
-                                type: 'number',
-                              },
-                              defense: {
-                                type: 'number',
-                              },
-                              effective_health: {
-                                type: 'integer',
-                              },
-                              strength: {
-                                type: 'number',
-                              },
-                              damage_increase: {
-                                type: 'number',
-                              },
-                              speed: {
-                                type: 'number',
-                              },
-                              crit_chance: {
-                                type: 'number',
-                              },
-                              crit_damage: {
-                                type: 'number',
-                              },
-                              bonus_attack_speed: {
-                                type: 'number',
-                              },
-                              intelligence: {
-                                type: 'number',
-                              },
-                              sea_creature_chance: {
-                                type: 'integer',
-                              },
-                              magic_find: {
-                                type: 'number',
-                              },
-                              pet_luck: {
-                                type: 'number',
-                              },
-                            },
+                          sent_by: {
+                            description: 'UUID of the player who sent the friend request',
+                            type: 'string',
                           },
-                          first_join_hub: {
+                          started: {
+                            description: 'Date the friendship started',
                             type: 'integer',
-                          },
-                          objectives: {
-                            type: 'object',
-                            properties: {
-                              objective: {
-                                type: 'object',
-                                properties: {
-                                  status: {
-                                    type: 'string',
-                                  },
-                                  progress: {
-                                    type: 'integer',
-                                  },
-                                  completed_at: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                            },
-                          },
-                          tutorial: {
-                            type: 'array',
-                            items: [
-                              {
-                                type: 'string',
-                              },
-                            ],
-                          },
-                          quests: {
-                            type: 'object',
-                            properties: {
-                              quest: {
-                                type: 'object',
-                                properties: {
-                                  status: {
-                                    type: 'string',
-                                  },
-                                  activated_at: {
-                                    type: 'integer',
-                                  },
-                                  activated_at_sb: {
-                                    type: 'integer',
-                                  },
-                                  completed_at: {
-                                    type: 'integer',
-                                  },
-                                  completed_at_sb: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                            },
-                          },
-                          last_death: {
-                            type: 'integer',
-                          },
-                          visited_zones: {
-                            type: 'array',
-                            items: [
-                              {
-                                type: 'string',
-                              },
-                            ],
-                          },
-                          fishing_treasure_caught: {
-                            type: 'integer',
-                          },
-                          death_count: {
-                            type: 'integer',
-                          },
-                          achievement_spawned_island_types: {
-                            type: 'array',
-                            items: [
-                              {
-                                type: 'string',
-                              },
-                            ],
-                          },
-                          wardrobe_equipped_slot: {
-                            type: 'integer',
-                          },
-                          sacks_counts: {
-                            type: 'object',
-                            properties: {
-                              ITEM_ID: {
-                                type: 'integer',
-                              },
-                            },
-                          },
-                          stats: {
-                            type: 'object',
-                            properties: {
-                              total_kills: {
-                                type: 'integer',
-                              },
-                              total_deaths: {
-                                type: 'integer',
-                              },
-                              kills: {
-                                type: 'object',
-                                properties: {
-                                  name: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                              deaths: {
-                                type: 'object',
-                                properties: {
-                                  name: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                              highest_critical_damage: {
-                                type: 'integer',
-                              },
-                              ender_crystals_destroyed: {
-                                type: 'integer',
-                              },
-                              end_race_best_time: {
-                                type: 'number',
-                              },
-                              chicken_race_best_time: {
-                                type: 'number',
-                              },
-                              dungeon_hub_best_time: {
-                                type: 'object',
-                                properties: {
-                                  type: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                              gifts_given: {
-                                type: 'integer',
-                              },
-                              gifts_received: {
-                                type: 'integer',
-                              },
-                              items_fished: {
-                                type: 'object',
-                                properties: {
-                                  total: {
-                                    type: 'integer',
-                                  },
-                                  normal: {
-                                    type: 'integer',
-                                  },
-                                  treasure: {
-                                    type: 'integer',
-                                  },
-                                  large_treasure: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                              auctions: {
-                                type: 'object',
-                                properties: {
-                                  created: {
-                                    type: 'integer',
-                                  },
-                                  completed: {
-                                    type: 'integer',
-                                  },
-                                  no_bids: {
-                                    type: 'integer',
-                                  },
-                                  won: {
-                                    type: 'integer',
-                                  },
-                                  bids: {
-                                    type: 'integer',
-                                  },
-                                  highest_bid: {
-                                    type: 'integer',
-                                  },
-                                  total_fees: {
-                                    type: 'integer',
-                                  },
-                                  gold_earned: {
-                                    type: 'integer',
-                                  },
-                                  gold_spent: {
-                                    type: 'integer',
-                                  },
-                                  sold: {
-                                    type: 'object',
-                                    properties: {
-                                      rare: {
-                                        type: 'integer',
-                                      },
-                                      epic: {
-                                        type: 'integer',
-                                      },
-                                      uncommon: {
-                                        type: 'integer',
-                                      },
-                                      legendary: {
-                                        type: 'integer',
-                                      },
-                                      common: {
-                                        type: 'integer',
-                                      },
-                                    },
-                                  },
-                                  bought: {
-                                    type: 'object',
-                                    properties: {
-                                      rare: {
-                                        type: 'integer',
-                                      },
-                                      uncommon: {
-                                        type: 'integer',
-                                      },
-                                      epic: {
-                                        type: 'integer',
-                                      },
-                                      legendary: {
-                                        type: 'integer',
-                                      },
-                                      common: {
-                                        type: 'integer',
-                                      },
-                                    },
-                                  },
-                                },
-                              },
-                              winter_records: {
-                                type: 'object',
-                                properties: {
-                                  snowballs_hit: {
-                                    type: 'integer',
-                                  },
-                                  damage: {
-                                    type: 'integer',
-                                  },
-                                  magma_cube_damage: {
-                                    type: 'integer',
-                                  },
-                                  cannonballs_hit: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                              pet_milestones: {
-                                type: 'object',
-                                properties: {
-                                  ore_mined: {
-                                    type: 'integer',
-                                  },
-                                  sea_creatures_killed: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                            },
-                          },
-                          inventory: inventoryContainer,
-                          armor: inventoryContainer,
-                          talisman_bag: inventoryContainer,
-                          fishing_bag: inventoryContainer,
-                          potion_bag: inventoryContainer,
-                          ender_chest: inventoryContainer,
-                          candy_bag: inventoryContainer,
-                          wardrobe: inventoryContainer,
-                          last_save: {
-                            type: 'integer',
-                          },
-                          first_join: {
-                            type: 'integer',
-                          },
-                          coin_purse: {
-                            type: 'integer',
-                          },
-                          fairy_souls_collected: {
-                            type: 'integer',
-                          },
-                          fairy_souls: {
-                            type: 'integer',
-                          },
-                          fairy_exchanges: {
-                            type: 'integer',
-                          },
-                          pets: {
-                            type: 'array',
-                            items: [
-                              {
-                                type: 'object',
-                                properties: {
-                                  type: {
-                                    type: 'string',
-                                  },
-                                  exp: {
-                                    type: 'number',
-                                  },
-                                  active: {
-                                    type: 'boolean',
-                                  },
-                                  tier: {
-                                    type: 'string',
-                                  },
-                                  heldItem: {
-                                    type: 'null',
-                                  },
-                                  candyUsed: {
-                                    type: 'integer',
-                                  },
-                                },
-                              },
-                            ],
-                          },
-                          skills: {
-                            type: 'object',
-                            properties: {
-                              skill: {
-                                type: 'object',
-                                properties: {
-                                  xp: {
-                                    type: 'number',
-                                  },
-                                  level: {
-                                    type: 'integer',
-                                  },
-                                  maxLevel: {
-                                    type: 'integer',
-                                  },
-                                  xpCurrent: {
-                                    type: 'integer',
-                                  },
-                                  xpForNext: {
-                                    type: 'integer',
-                                  },
-                                  progress: {
-                                    type: 'number',
-                                  },
-                                },
-                              },
-                            },
-                          },
-                          collection: {
-                            type: 'object',
-                            properties: {
-                              ITEM_ID: {
-                                type: 'integer',
-                              },
-                            },
-                          },
-                          collection_tiers: {
-                            type: 'object',
-                            properties: {
-                              ITEM_ID: {
-                                type: 'integer',
-                              },
-                            },
-                          },
-                          collections_unlocked: {
-                            type: 'integer',
-                          },
-                          minions: {
-                            type: 'object',
-                            properties: {
-                              TYPE: {
-                                type: 'integer',
-                              },
-                            },
-                          },
-                          slayer: {
-                            type: 'object',
-                            properties: {
-                              type: {
-                                type: 'object',
-                                properties: {
-                                  claimed_levels: {
-                                    type: 'integer',
-                                  },
-                                  xp: {
-                                    type: 'integer',
-                                  },
-                                  xp_for_next: {
-                                    type: 'integer',
-                                  },
-                                  kills_tier: {
-                                    type: 'object',
-                                    properties: {
-                                      1: {
-                                        type: 'integer',
-                                      },
-                                      2: {
-                                        type: 'integer',
-                                      },
-                                      3: {
-                                        type: 'integer',
-                                      },
-                                      4: {
-                                        type: 'integer',
-                                      },
-                                    },
-                                  },
-                                },
-                              },
-                            },
-                          },
-                          pet_score: {
-                            type: 'integer',
-                          },
-                          bonuses: {
-                            type: 'array',
-                            items: [
-                              {
-                                type: 'object',
-                                properties: {
-                                  type: {
-                                    type: 'string',
-                                  },
-                                  bonus: {
-                                    type: 'object',
-                                  },
-                                },
-                              },
-                            ],
-                          },
-                          player: {
-                            type: 'object',
-                            properties: {
-                              uuid: {
-                                type: 'string',
-                              },
-                              username: {
-                                type: 'string',
-                              },
-                              first_login: {
-                                type: 'integer',
-                              },
-                              last_login: {
-                                type: 'integer',
-                              },
-                              level: {
-                                type: 'number',
-                              },
-                              achievement_points: {
-                                type: 'integer',
-                              },
-                              karma: {
-                                type: 'integer',
-                              },
-                              rank_formatted: {
-                                type: 'string',
-                              },
-                            },
                           },
                         },
-                      },
-                    },
-                  },
-                  banking: {
-                    type: 'object',
-                    properties: {
-                      balance: {
-                        type: 'number',
-                      },
-                      transactions: {
-                        type: 'array',
-                        items: [
-                          {
-                            type: 'object',
-                            properties: {
-                              amount: {
-                                type: 'integer',
-                              },
-                              timestamp: {
-                                type: 'integer',
-                              },
-                              action: {
-                                type: 'string',
-                              },
-                              initiator_name: {
-                                type: 'string',
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  },
-                  unlocked_minions: {
-                    type: 'object',
-                    properties: {
-                      MINION_TYPE: {
-                        type: 'integer',
                       },
                     },
                   },
@@ -1583,497 +933,980 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-      },
-      route: () => '/skyblock/profile/:player/:profile?',
-      func: async (request, response, callback) => {
-        try {
-          const uuid = await getUUID(request.params.player);
+        */
+    '/skyblock/profiles/{playerName}': {
+      get: {
+        summary: 'Get list of player\'s skyblock profiles',
+        description: 'Gets all skyblock profiles for the specified player',
+        operationId: 'getSkyblockProfiles',
+        tags: [
+          'skyblock',
+        ],
+        parameters: [
+          playerNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    PROFILE_ID: {
+                      type: 'object',
+                      properties: {
+                        profile_id: {
+                          type: 'string',
+                        },
+                        cute_name: {
+                          type: 'string',
+                          description: 'Profile name, e.g. Strawberry',
+                        },
+                        first_join: {
+                          type: 'integer',
+                        },
+                        last_save: {
+                          type: 'integer',
+                        },
+                        collections_unlocked: {
+                          type: 'integer',
+                        },
+                        members: {
+                          type: 'array',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/profiles/:player',
+        func: async (request, response, callback) => {
           try {
-            // TODO: Update when buildProfile changed
-            const profile = await buildProfile(uuid, request.params.profile);
+            const uuid = await getUUID(request.params.player);
             try {
-              const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
-              players.forEach((player) => {
-                profile.members[player.profile.uuid].player = player.profile;
-              });
-              response.json(profile);
+              let profiles = {};
+              const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
+              if (data) {
+                profiles = JSON.parse(data) || {};
+                // TODO - populatePlayers for each profile
+              } else {
+                profiles = await buildProfileList(uuid);
+              }
+              return response.json(profiles);
             } catch (error) {
               callback(error);
             }
           } catch (error) {
             response.status(404).json({ error: error.message });
           }
-        } catch (error) {
-          response.status(404).json({ error: error.message });
-        }
+        },
       },
     },
-  },
-  '/skyblock/auctions': {
-    get: {
-      summary: 'Query all skyblock auctions',
-      description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
-      operationId: 'getSkyblockAuctions',
-      tags: [
-        'skyblock',
-      ],
-      parameters: [
-        filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam, sortOrderParam, {
-          name: 'sortBy',
-          in: 'query',
-          description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
-          required: true,
-          schema: {
-            type: 'string',
-          },
-        },
-        {
-          name: 'id',
-          in: 'query',
-          description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
-          required: false,
-          schema: {
-            type: 'string',
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'array',
-                items: auctionObject,
-              },
-            },
-          },
-        },
-      },
-      route: () => '/skyblock/auctions',
-      func: async (request, response) => {
-        return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-        /*
-          try {
-            const auctions = await getAuctions(request.query);
-            response.json(auctions);
-          } catch (error) {
-            response.status(400).json({ error });
-          }
-           */
-      },
-    },
-  },
-  '/skyblock/auctions/{itemId}': {
-    get: {
-      summary: 'Query past skyblock auctions and their stats by item',
-      description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
-      operationId: 'getSkyblockAuctionItem',
-      tags: [
-        'skyblock',
-      ],
-      parameters: [
-        itemIdParam, fromParam, toParam,
-        {
-          name: 'showAuctions',
-          in: 'query',
-          description: 'Returns the specified auctions individually',
-          required: false,
-          default: false,
-          schema: {
-            type: 'boolean',
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  average_price: {
-                    description: 'Average price in the selected time period',
-                    type: 'integer',
-                  },
-                  median_price: {
-                    description: 'Median price in the selected time period',
-                    type: 'integer',
-                  },
-                  standard_deviation: {
-                    description: 'Standard deviation of prices in the selected time period',
-                    type: 'integer',
-                  },
-                  min_price: {
-                    description: 'Lowest price in the selected time period',
-                    type: 'integer',
-                  },
-                  max_price: {
-                    description: 'Largest price in the selected time period',
-                    type: 'integer',
-                  },
-                  sold: {
-                    description: 'Total sold items in the selected time period',
-                    type: 'integer',
-                  },
-                  auctions: {
-                    description: '',
-                    type: 'object',
-                    properties: {
-                      1577033426093: {
-                        type: 'object',
-                        description: 'Auction object',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/skyblock/auctions/:id',
-      func: async (request, response, callback) => {
-        const { from, to, showAuctions } = request.query;
-        try {
-          const result = await queryAuctionId(from, to, showAuctions, request.params.id);
-          response.json(result);
-        } catch (error) {
-          callback(response.status(404).json({ error: error.message }));
-        }
-      },
-    },
-  },
-  '/skyblock/items': {
-    get: {
-      summary: 'SkyBlock item spec',
-      description: 'Returns all SkyBlock items found in auctions',
-      operationId: 'getSkyblockItems',
-      tags: [
-        'skyblock',
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  ITEM_ID: {
-                    type: 'object',
-                    properties: {
-                      name: {
-                        type: 'string',
-                      },
-                      tier: auctionObject.properties.tier,
-                      category: auctionObject.properties.category,
-                      item_id: auctionObject.properties.item.properties.item_id,
-                      damage: auctionObject.properties.item.properties.damage,
-                      texture: auctionObject.properties.item.properties.attributes.properties.texture,
-                      bazaar: {
-                        type: 'boolean',
-                        description: 'Set to true if the item can be found in the bazaar',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/skyblock/items',
-      func: async (_, response, callback) => {
-        try {
-          const items = await redisGetAsync('skyblock_items');
-          return response.json(JSON.parse(items));
-        } catch (error) {
-          callback(error);
-        }
-      },
-    },
-  },
-  '/skyblock/bazaar/{itemId}': {
-    get: {
-      tags: [
-        'skyblock',
-      ],
-      summary: 'Get bazaar data for an item',
-      description: 'Get bazaar data for an item by ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint. If none is specified returns all items.',
-      parameters: [bazaarItemIdParam],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'array',
-                items: {
+    '/skyblock/profile/{playerName}/{profileId}': {
+      get: {
+        summary: 'Return a skyblock profile',
+        description: 'If no profile is specified, the last played profile is returned',
+        operationId: 'getSkyblockPlayerProfile',
+        tags: [
+          'skyblock',
+        ],
+        parameters: [
+          playerNameParam, profileIdParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
                   type: 'object',
                   properties: {
-                    quick_status: {
+                    members: {
                       type: 'object',
                       properties: {
-                        buyPrice: {
+                        uuid: {
+                          type: 'object',
+                          properties: {
+                            uuid: {
+                              type: 'string',
+                            },
+                            attributes: {
+                              type: 'object',
+                              properties: {
+                                damage: {
+                                  type: 'integer',
+                                },
+                                health: {
+                                  type: 'number',
+                                },
+                                defense: {
+                                  type: 'number',
+                                },
+                                effective_health: {
+                                  type: 'integer',
+                                },
+                                strength: {
+                                  type: 'number',
+                                },
+                                damage_increase: {
+                                  type: 'number',
+                                },
+                                speed: {
+                                  type: 'number',
+                                },
+                                crit_chance: {
+                                  type: 'number',
+                                },
+                                crit_damage: {
+                                  type: 'number',
+                                },
+                                bonus_attack_speed: {
+                                  type: 'number',
+                                },
+                                intelligence: {
+                                  type: 'number',
+                                },
+                                sea_creature_chance: {
+                                  type: 'integer',
+                                },
+                                magic_find: {
+                                  type: 'number',
+                                },
+                                pet_luck: {
+                                  type: 'number',
+                                },
+                              },
+                            },
+                            first_join_hub: {
+                              type: 'integer',
+                            },
+                            objectives: {
+                              type: 'object',
+                              properties: {
+                                objective: {
+                                  type: 'object',
+                                  properties: {
+                                    status: {
+                                      type: 'string',
+                                    },
+                                    progress: {
+                                      type: 'integer',
+                                    },
+                                    completed_at: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            tutorial: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'string',
+                                },
+                              ],
+                            },
+                            quests: {
+                              type: 'object',
+                              properties: {
+                                quest: {
+                                  type: 'object',
+                                  properties: {
+                                    status: {
+                                      type: 'string',
+                                    },
+                                    activated_at: {
+                                      type: 'integer',
+                                    },
+                                    activated_at_sb: {
+                                      type: 'integer',
+                                    },
+                                    completed_at: {
+                                      type: 'integer',
+                                    },
+                                    completed_at_sb: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            last_death: {
+                              type: 'integer',
+                            },
+                            visited_zones: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'string',
+                                },
+                              ],
+                            },
+                            fishing_treasure_caught: {
+                              type: 'integer',
+                            },
+                            death_count: {
+                              type: 'integer',
+                            },
+                            achievement_spawned_island_types: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'string',
+                                },
+                              ],
+                            },
+                            wardrobe_equipped_slot: {
+                              type: 'integer',
+                            },
+                            sacks_counts: {
+                              type: 'object',
+                              properties: {
+                                ITEM_ID: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            stats: {
+                              type: 'object',
+                              properties: {
+                                total_kills: {
+                                  type: 'integer',
+                                },
+                                total_deaths: {
+                                  type: 'integer',
+                                },
+                                kills: {
+                                  type: 'object',
+                                  properties: {
+                                    name: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                deaths: {
+                                  type: 'object',
+                                  properties: {
+                                    name: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                highest_critical_damage: {
+                                  type: 'integer',
+                                },
+                                ender_crystals_destroyed: {
+                                  type: 'integer',
+                                },
+                                end_race_best_time: {
+                                  type: 'number',
+                                },
+                                chicken_race_best_time: {
+                                  type: 'number',
+                                },
+                                dungeon_hub_best_time: {
+                                  type: 'object',
+                                  properties: {
+                                    type: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                gifts_given: {
+                                  type: 'integer',
+                                },
+                                gifts_received: {
+                                  type: 'integer',
+                                },
+                                items_fished: {
+                                  type: 'object',
+                                  properties: {
+                                    total: {
+                                      type: 'integer',
+                                    },
+                                    normal: {
+                                      type: 'integer',
+                                    },
+                                    treasure: {
+                                      type: 'integer',
+                                    },
+                                    large_treasure: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                auctions: {
+                                  type: 'object',
+                                  properties: {
+                                    created: {
+                                      type: 'integer',
+                                    },
+                                    completed: {
+                                      type: 'integer',
+                                    },
+                                    no_bids: {
+                                      type: 'integer',
+                                    },
+                                    won: {
+                                      type: 'integer',
+                                    },
+                                    bids: {
+                                      type: 'integer',
+                                    },
+                                    highest_bid: {
+                                      type: 'integer',
+                                    },
+                                    total_fees: {
+                                      type: 'integer',
+                                    },
+                                    gold_earned: {
+                                      type: 'integer',
+                                    },
+                                    gold_spent: {
+                                      type: 'integer',
+                                    },
+                                    sold: {
+                                      type: 'object',
+                                      properties: {
+                                        rare: {
+                                          type: 'integer',
+                                        },
+                                        epic: {
+                                          type: 'integer',
+                                        },
+                                        uncommon: {
+                                          type: 'integer',
+                                        },
+                                        legendary: {
+                                          type: 'integer',
+                                        },
+                                        common: {
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                    bought: {
+                                      type: 'object',
+                                      properties: {
+                                        rare: {
+                                          type: 'integer',
+                                        },
+                                        uncommon: {
+                                          type: 'integer',
+                                        },
+                                        epic: {
+                                          type: 'integer',
+                                        },
+                                        legendary: {
+                                          type: 'integer',
+                                        },
+                                        common: {
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                winter_records: {
+                                  type: 'object',
+                                  properties: {
+                                    snowballs_hit: {
+                                      type: 'integer',
+                                    },
+                                    damage: {
+                                      type: 'integer',
+                                    },
+                                    magma_cube_damage: {
+                                      type: 'integer',
+                                    },
+                                    cannonballs_hit: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                                pet_milestones: {
+                                  type: 'object',
+                                  properties: {
+                                    ore_mined: {
+                                      type: 'integer',
+                                    },
+                                    sea_creatures_killed: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            inventory: inventoryContainer,
+                            armor: inventoryContainer,
+                            talisman_bag: inventoryContainer,
+                            fishing_bag: inventoryContainer,
+                            potion_bag: inventoryContainer,
+                            ender_chest: inventoryContainer,
+                            candy_bag: inventoryContainer,
+                            wardrobe: inventoryContainer,
+                            last_save: {
+                              type: 'integer',
+                            },
+                            first_join: {
+                              type: 'integer',
+                            },
+                            coin_purse: {
+                              type: 'integer',
+                            },
+                            fairy_souls_collected: {
+                              type: 'integer',
+                            },
+                            fairy_souls: {
+                              type: 'integer',
+                            },
+                            fairy_exchanges: {
+                              type: 'integer',
+                            },
+                            pets: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'object',
+                                  properties: {
+                                    type: {
+                                      type: 'string',
+                                    },
+                                    exp: {
+                                      type: 'number',
+                                    },
+                                    active: {
+                                      type: 'boolean',
+                                    },
+                                    tier: {
+                                      type: 'string',
+                                    },
+                                    heldItem: {
+                                      type: 'null',
+                                    },
+                                    candyUsed: {
+                                      type: 'integer',
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                            skills: {
+                              type: 'object',
+                              properties: {
+                                skill: {
+                                  type: 'object',
+                                  properties: {
+                                    xp: {
+                                      type: 'number',
+                                    },
+                                    level: {
+                                      type: 'integer',
+                                    },
+                                    maxLevel: {
+                                      type: 'integer',
+                                    },
+                                    xpCurrent: {
+                                      type: 'integer',
+                                    },
+                                    xpForNext: {
+                                      type: 'integer',
+                                    },
+                                    progress: {
+                                      type: 'number',
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            collection: {
+                              type: 'object',
+                              properties: {
+                                ITEM_ID: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            collection_tiers: {
+                              type: 'object',
+                              properties: {
+                                ITEM_ID: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            collections_unlocked: {
+                              type: 'integer',
+                            },
+                            minions: {
+                              type: 'object',
+                              properties: {
+                                TYPE: {
+                                  type: 'integer',
+                                },
+                              },
+                            },
+                            slayer: {
+                              type: 'object',
+                              properties: {
+                                type: {
+                                  type: 'object',
+                                  properties: {
+                                    claimed_levels: {
+                                      type: 'integer',
+                                    },
+                                    xp: {
+                                      type: 'integer',
+                                    },
+                                    xp_for_next: {
+                                      type: 'integer',
+                                    },
+                                    kills_tier: {
+                                      type: 'object',
+                                      properties: {
+                                        1: {
+                                          type: 'integer',
+                                        },
+                                        2: {
+                                          type: 'integer',
+                                        },
+                                        3: {
+                                          type: 'integer',
+                                        },
+                                        4: {
+                                          type: 'integer',
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            pet_score: {
+                              type: 'integer',
+                            },
+                            bonuses: {
+                              type: 'array',
+                              items: [
+                                {
+                                  type: 'object',
+                                  properties: {
+                                    type: {
+                                      type: 'string',
+                                    },
+                                    bonus: {
+                                      type: 'object',
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                            player: {
+                              type: 'object',
+                              properties: {
+                                uuid: {
+                                  type: 'string',
+                                },
+                                username: {
+                                  type: 'string',
+                                },
+                                first_login: {
+                                  type: 'integer',
+                                },
+                                last_login: {
+                                  type: 'integer',
+                                },
+                                level: {
+                                  type: 'number',
+                                },
+                                achievement_points: {
+                                  type: 'integer',
+                                },
+                                karma: {
+                                  type: 'integer',
+                                },
+                                rank_formatted: {
+                                  type: 'string',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    banking: {
+                      type: 'object',
+                      properties: {
+                        balance: {
                           type: 'number',
                         },
-                        buyVolume: {
-                          type: 'integer',
+                        transactions: {
+                          type: 'array',
+                          items: [
+                            {
+                              type: 'object',
+                              properties: {
+                                amount: {
+                                  type: 'integer',
+                                },
+                                timestamp: {
+                                  type: 'integer',
+                                },
+                                action: {
+                                  type: 'string',
+                                },
+                                initiator_name: {
+                                  type: 'string',
+                                },
+                              },
+                            },
+                          ],
                         },
-                        buyMovingWeek: {
-                          type: 'integer',
-                        },
-                        buyOrders: {
-                          type: 'integer',
-                        },
-                        sellPrice: {
-                          type: 'number',
-                        },
-                        sellVolume: {
-                          type: 'integer',
-                        },
-                        sellMovingWeek: {
-                          type: 'integer',
-                        },
-                        sellOrders: {
+                      },
+                    },
+                    unlocked_minions: {
+                      type: 'object',
+                      properties: {
+                        MINION_TYPE: {
                           type: 'integer',
                         },
                       },
                     },
-                    buy_summary: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          amount: {
-                            type: 'integer',
-                          },
-                          pricePerUnit: {
-                            type: 'number',
-                          },
-                          orders: {
-                            type: 'integer',
-                          },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/profile/:player/:profile?',
+        func: async (request, response, callback) => {
+          try {
+            const uuid = await getUUID(request.params.player);
+            try {
+              // TODO: Update when buildProfile changed
+              const profile = await buildProfile(uuid, request.params.profile);
+              try {
+                const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
+                players.forEach((player) => {
+                  profile.members[player.profile.uuid].player = player.profile;
+                });
+                response.json(profile);
+              } catch (error) {
+                callback(error);
+              }
+            } catch (error) {
+              response.status(404).json({ error: error.message });
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
+        },
+      },
+    },
+    '/skyblock/auctions': {
+      get: {
+        summary: 'Query all skyblock auctions',
+        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
+        operationId: 'getSkyblockAuctions',
+        tags: [
+          'skyblock',
+        ],
+        parameters: [
+          filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam, sortOrderParam, {
+            name: 'sortBy',
+            in: 'query',
+            description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+          },
+          {
+            name: 'id',
+            in: 'query',
+            description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
+            required: false,
+            schema: {
+              type: 'string',
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: auctionObject,
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/auctions',
+        func: async (request, response) => {
+          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
+          /*
+            try {
+              const auctions = await getAuctions(request.query);
+              response.json(auctions);
+            } catch (error) {
+              response.status(400).json({ error });
+            }
+             */
+        },
+      },
+    },
+    '/skyblock/auctions/{itemId}': {
+      get: {
+        summary: 'Query past skyblock auctions and their stats by item',
+        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
+        operationId: 'getSkyblockAuctionItem',
+        tags: [
+          'skyblock',
+        ],
+        parameters: [
+          itemIdParam, fromParam, toParam,
+          {
+            name: 'showAuctions',
+            in: 'query',
+            description: 'Returns the specified auctions individually',
+            required: false,
+            default: false,
+            schema: {
+              type: 'boolean',
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    average_price: {
+                      description: 'Average price in the selected time period',
+                      type: 'integer',
+                    },
+                    median_price: {
+                      description: 'Median price in the selected time period',
+                      type: 'integer',
+                    },
+                    standard_deviation: {
+                      description: 'Standard deviation of prices in the selected time period',
+                      type: 'integer',
+                    },
+                    min_price: {
+                      description: 'Lowest price in the selected time period',
+                      type: 'integer',
+                    },
+                    max_price: {
+                      description: 'Largest price in the selected time period',
+                      type: 'integer',
+                    },
+                    sold: {
+                      description: 'Total sold items in the selected time period',
+                      type: 'integer',
+                    },
+                    auctions: {
+                      description: '',
+                      type: 'object',
+                      properties: {
+                        1577033426093: {
+                          type: 'object',
+                          description: 'Auction object',
                         },
                       },
                     },
-                    sell_summary: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          amount: {
-                            type: 'integer',
-                          },
-                          pricePerUnit: {
-                            type: 'number',
-                          },
-                          orders: {
-                            type: 'integer',
-                          },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/auctions/:id',
+        func: async (request, response, callback) => {
+          const { from, to, showAuctions } = request.query;
+          try {
+            const result = await queryAuctionId(from, to, showAuctions, request.params.id);
+            response.json(result);
+          } catch (error) {
+            callback(response.status(404).json({ error: error.message }));
+          }
+        },
+      },
+    },
+    '/skyblock/items': {
+      get: {
+        summary: 'SkyBlock item spec',
+        description: 'Returns all SkyBlock items found in auctions',
+        operationId: 'getSkyblockItems',
+        tags: [
+          'skyblock',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    ITEM_ID: {
+                      type: 'object',
+                      properties: {
+                        name: {
+                          type: 'string',
+                        },
+                        tier: auctionObject.properties.tier,
+                        category: auctionObject.properties.category,
+                        item_id: auctionObject.properties.item.properties.item_id,
+                        damage: auctionObject.properties.item.properties.damage,
+                        texture: auctionObject.properties.item.properties.attributes.properties.texture,
+                        bazaar: {
+                          type: 'boolean',
+                          description: 'Set to true if the item can be found in the bazaar',
                         },
                       },
                     },
-                    week_historic: {
-                      type: 'array',
-                      items: {
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/items',
+        func: async (_, response, callback) => {
+          try {
+            const items = await redisGetAsync('skyblock_items');
+            return response.json(JSON.parse(items));
+          } catch (error) {
+            callback(error);
+          }
+        },
+      },
+    },
+    '/skyblock/bazaar/{itemId}': {
+      get: {
+        tags: [
+          'skyblock',
+        ],
+        summary: 'Get bazaar data for an item',
+        description: 'Get bazaar data for an item by ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint. If none is specified returns all items.',
+        parameters: [bazaarItemIdParam],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      quick_status: {
                         type: 'object',
                         properties: {
-                          timestamp: {
-                            type: 'integer',
-                          },
-                          nowBuyVolume: {
-                            type: 'integer',
-                          },
-                          nowSellVolume: {
-                            type: 'integer',
-                          },
-                          buyCoins: {
+                          buyPrice: {
                             type: 'number',
                           },
                           buyVolume: {
                             type: 'integer',
                           },
-                          buys: {
+                          buyMovingWeek: {
                             type: 'integer',
                           },
-                          sellCoins: {
+                          buyOrders: {
+                            type: 'integer',
+                          },
+                          sellPrice: {
                             type: 'number',
                           },
                           sellVolume: {
                             type: 'integer',
                           },
-                          sells: {
+                          sellMovingWeek: {
+                            type: 'integer',
+                          },
+                          sellOrders: {
                             type: 'integer',
                           },
                         },
                       },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/skyblock/bazaar/:id?',
-      func: async (request, response, callback) => {
-        const itemId = request.params.id;
-        const data = await redisGetAsync('skyblock_bazaar');
-        const ids = JSON.parse(data) || [];
-        if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
-          return response.status(400).json({ error: 'Invalid itemId' });
-        }
-        try {
-          const bazaar = await buildBazaar();
-          if (!itemId) {
-            return response.json(bazaar);
-          }
-          if (itemId.includes(',')) {
-            return response.json(filterObject(bazaar, itemId.split(',')));
-          }
-          return response.json(bazaar[itemId]);
-        } catch (error) {
-          callback(error.message);
-        }
-      },
-    },
-  },
-  '/leaderboards': {
-    get: {
-      summary: 'Allows query of dynamic leaderboards',
-      description: 'Returns player or guild leaderboards',
-      operationId: 'getLeaderboards',
-      tags: [
-        'leaderboards',
-      ],
-      parameters: [
-        typeParam, columnParam, sortByParam, sortOrderParam, filterParam, limitParam, pageParam, significantParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {},
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/leaderboards',
-      func: (request, response) => {
-        return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-        /*
-          leaderboards(request.query, null, (error, lb) => {
-            if (error) {
-              return response.status(400).json({ error });
-            }
-            return response.json(lb);
-          });
-           */
-      },
-    },
-  },
-  '/leaderboards/{template}': {
-    get: {
-      summary: 'Get predefined leaderboards',
-      description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
-      operationId: 'getLeaderboardTemplate',
-      tags: [
-        'leaderboards',
-      ],
-      parameters: [
-        templateParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {},
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/leaderboards/:template',
-      func: (request, response, callback) => {
-        return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-        /*
-          leaderboards(request.query, request.params.template, (error, lb) => {
-            if (error) {
-              return callback(response.status(400).json({ error }));
-            }
-            return response.json(lb);
-          });
-           */
-      },
-    },
-  },
-  '/boosters': {
-    get: {
-      summary: 'Get list of network boosters',
-      description: 'Returns a list of boosters for all server gamemodes',
-      operationId: 'getBoosters',
-      tags: [
-        'boosters',
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  game: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        uuid: {
-                          description: 'UUID of booster owner',
-                          type: 'string',
+                      buy_summary: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            amount: {
+                              type: 'integer',
+                            },
+                            pricePerUnit: {
+                              type: 'number',
+                            },
+                            orders: {
+                              type: 'integer',
+                            },
+                          },
                         },
-                        multiplier: {
-                          description: 'Booster coin multiplier',
-                          type: 'number',
+                      },
+                      sell_summary: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            amount: {
+                              type: 'integer',
+                            },
+                            pricePerUnit: {
+                              type: 'number',
+                            },
+                            orders: {
+                              type: 'integer',
+                            },
+                          },
                         },
-                        activated: {
-                          description: 'UNIX timestamp of activation date',
-                          type: 'integer',
-                        },
-                        originalLength: {
-                          description: 'Original duration in seconds',
-                          type: 'integer',
-                        },
-                        length: {
-                          description: 'Current length in seconds',
-                          type: 'integer',
-                        },
-                        active: {
-                          description: 'Whether the booster is currently active',
-                          type: 'boolean',
-                        },
-                        stacked: {
-                          description: 'Array of players that have stacked a booster on the same slot',
-                          type: 'array',
-                          items: {
-                            description: 'Player uuid',
-                            type: 'string',
+                      },
+                      week_historic: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            timestamp: {
+                              type: 'integer',
+                            },
+                            nowBuyVolume: {
+                              type: 'integer',
+                            },
+                            nowSellVolume: {
+                              type: 'integer',
+                            },
+                            buyCoins: {
+                              type: 'number',
+                            },
+                            buyVolume: {
+                              type: 'integer',
+                            },
+                            buys: {
+                              type: 'integer',
+                            },
+                            sellCoins: {
+                              type: 'number',
+                            },
+                            sellVolume: {
+                              type: 'integer',
+                            },
+                            sells: {
+                              type: 'integer',
+                            },
                           },
                         },
                       },
@@ -2084,136 +1917,236 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-      },
-      route: () => '/boosters',
-      func: async (_, response) => {
-        try {
-          const boosters = await buildBoosters();
-          response.json(boosters);
-        } catch (error) {
-          response.status(500).json({ error: error.message });
-        }
+        route: () => '/skyblock/bazaar/:id?',
+        func: async (request, response, callback) => {
+          const itemId = request.params.id;
+          const data = await redisGetAsync('skyblock_bazaar');
+          const ids = JSON.parse(data) || [];
+          if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
+            return response.status(400).json({ error: 'Invalid itemId' });
+          }
+          try {
+            const bazaar = await buildBazaar();
+            if (!itemId) {
+              return response.json(bazaar);
+            }
+            if (itemId.includes(',')) {
+              return response.json(filterObject(bazaar, itemId.split(',')));
+            }
+            return response.json(bazaar[itemId]);
+          } catch (error) {
+            callback(error.message);
+          }
+        },
       },
     },
-  },
-  '/boosters/{game}': {
-    get: {
-      summary: 'Get boosters for a specified game',
-      description: 'Returns a list of active boosters for the specified game',
-      operationsId: 'getGameBoosters',
-      tags: [
-        'boosters',
-      ],
-      parameters: [
-        gameNameParam,
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'array',
-                items: {
+    '/leaderboards': {
+      get: {
+        summary: 'Allows query of dynamic leaderboards',
+        description: 'Returns player or guild leaderboards',
+        operationId: 'getLeaderboards',
+        tags: [
+          'leaderboards',
+        ],
+        parameters: [
+          typeParam, columnParam, sortByParam, sortOrderParam, filterParam, limitParam, pageParam, significantParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {},
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/leaderboards',
+        func: (request, response) => {
+          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
+          /*
+            leaderboards(request.query, null, (error, lb) => {
+              if (error) {
+                return response.status(400).json({ error });
+              }
+              return response.json(lb);
+            });
+             */
+        },
+      },
+    },
+    '/leaderboards/{template}': {
+      get: {
+        summary: 'Get predefined leaderboards',
+        description: 'Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.',
+        operationId: 'getLeaderboardTemplate',
+        tags: [
+          'leaderboards',
+        ],
+        parameters: [
+          templateParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {},
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/leaderboards/:template',
+        func: (request, response, callback) => {
+          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
+          /*
+            leaderboards(request.query, request.params.template, (error, lb) => {
+              if (error) {
+                return callback(response.status(400).json({ error }));
+              }
+              return response.json(lb);
+            });
+             */
+        },
+      },
+    },
+    '/boosters': {
+      get: {
+        summary: 'Get list of network boosters',
+        description: 'Returns a list of boosters for all server gamemodes',
+        operationId: 'getBoosters',
+        tags: [
+          'boosters',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
                   type: 'object',
                   properties: {
-                    uuid: {
-                      description: 'UUID of booster owner',
-                      type: 'string',
-                    },
-                    multiplier: {
-                      description: 'Booster coin multiplier',
-                      type: 'number',
-                    },
-                    activated: {
-                      description: 'UNIX timestamp of activation date',
-                      type: 'integer',
-                    },
-                    originalLength: {
-                      description: 'Original duration in seconds',
-                      type: 'integer',
-                    },
-                    length: {
-                      description: 'Current length in seconds',
-                      type: 'integer',
-                    },
-                    active: {
-                      description: 'Whether the booster is currently active',
-                      type: 'boolean',
-                    },
-                    stacked: {
-                      description: 'Array of players that have stacked a booster on the same slot',
+                    game: {
                       type: 'array',
                       items: {
-                        description: 'Player uuid',
+                        type: 'object',
+                        properties: {
+                          uuid: {
+                            description: 'UUID of booster owner',
+                            type: 'string',
+                          },
+                          multiplier: {
+                            description: 'Booster coin multiplier',
+                            type: 'number',
+                          },
+                          activated: {
+                            description: 'UNIX timestamp of activation date',
+                            type: 'integer',
+                          },
+                          originalLength: {
+                            description: 'Original duration in seconds',
+                            type: 'integer',
+                          },
+                          length: {
+                            description: 'Current length in seconds',
+                            type: 'integer',
+                          },
+                          active: {
+                            description: 'Whether the booster is currently active',
+                            type: 'boolean',
+                          },
+                          stacked: {
+                            description: 'Array of players that have stacked a booster on the same slot',
+                            type: 'array',
+                            items: {
+                              description: 'Player uuid',
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/boosters',
+        func: async (_, response) => {
+          try {
+            const boosters = await buildBoosters();
+            response.json(boosters);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
+        },
+      },
+    },
+    '/boosters/{game}': {
+      get: {
+        summary: 'Get boosters for a specified game',
+        description: 'Returns a list of active boosters for the specified game',
+        operationsId: 'getGameBoosters',
+        tags: [
+          'boosters',
+        ],
+        parameters: [
+          gameNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      uuid: {
+                        description: 'UUID of booster owner',
                         type: 'string',
                       },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      route: () => '/boosters/:game',
-      func: async (request, response) => {
-        const { game } = request.params;
-        try {
-          const boosters = await buildBoosters();
-          if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
-            return response.status(400).json({ error: 'Invalid minigame name!' });
-          }
-          response.json(boosters.boosters[game]);
-        } catch (error) {
-          response.status(500).json({ error: error.message });
-        }
-      },
-    },
-  },
-  '/bans': {
-    get: {
-      summary: 'Get network ban information',
-      description: 'Returns information about the number of staff and watchdog server bans',
-      operationId: 'getBans',
-      tags: [
-        'bans',
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  watchdog: {
-                    type: 'object',
-                    properties: {
-                      last_minute: {
-                        description: 'Watchdog\'s bans in the last minute',
+                      multiplier: {
+                        description: 'Booster coin multiplier',
+                        type: 'number',
+                      },
+                      activated: {
+                        description: 'UNIX timestamp of activation date',
                         type: 'integer',
                       },
-                      daily: {
-                        description: 'Watchdog bans in the last day',
+                      originalLength: {
+                        description: 'Original duration in seconds',
                         type: 'integer',
                       },
-                      total: {
-                        description: 'Total Watchdog bans, ever',
+                      length: {
+                        description: 'Current length in seconds',
                         type: 'integer',
                       },
-                    },
-                  },
-                  staff: {
-                    type: 'object',
-                    properties: {
-                      daily: {
-                        description: 'Staff bans in the last day',
-                        type: 'integer',
+                      active: {
+                        description: 'Whether the booster is currently active',
+                        type: 'boolean',
                       },
-                      total: {
-                        description: 'Total staff bans, ever',
-                        type: 'integer',
+                      stacked: {
+                        description: 'Array of players that have stacked a booster on the same slot',
+                        type: 'array',
+                        items: {
+                          description: 'Player uuid',
+                          type: 'string',
+                        },
                       },
                     },
                   },
@@ -2222,109 +2155,175 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-      },
-      route: () => '/bans',
-      func: async (_, response) => {
-        try {
-          response.json(await buildBans());
-        } catch (error) {
-          response.status(500).json({ error: error.message });
-        }
-      },
-    },
-  },
-  '/constants/{resource}': {
-    get: {
-      summary: 'GET /constants',
-      description: 'Get static game data mirrored from the hypixelconstants repository. If no resource is specified, returns an array of available resources.',
-      tags: ['constants'],
-      parameters: [{
-        name: 'resource',
-        in: 'path',
-        description: 'Resource name e.g. `languages`. [List of resources](https://github.com/slothpixel/hypixelconstants/tree/master/build)',
-        required: false,
-        type: 'string',
-      }],
-      route: () => '/constants/:resource?',
-      func: (request, response, callback) => {
-        if (!request.params.resource) {
-          return response.json(Object.keys(constants));
-        }
-        const { resource } = request.params;
-        if (resource in constants) {
-          return response.json(constants[resource]);
-        }
-        return callback();
+        route: () => '/boosters/:game',
+        func: async (request, response) => {
+          const { game } = request.params;
+          try {
+            const boosters = await buildBoosters();
+            if (!Object.hasOwnProperty.call(boosters.boosters, game)) {
+              return response.status(400).json({ error: 'Invalid minigame name!' });
+            }
+            response.json(boosters.boosters[game]);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
+        },
       },
     },
-  },
-  '/metadata': {
-    get: {
-      summary: 'GET /metadata',
-      description: 'Site metadata',
-      operationId: 'getMetadata',
-      tags: [
-        'metadata',
-      ],
-      responses: {
-        200: {
-          description: 'Success',
-          schema: {
-            type: 'object',
-            properties: {
-              leaderboards: {
-                description: 'Template Leaderboards',
-                type: 'object',
+    '/bans': {
+      get: {
+        summary: 'Get network ban information',
+        description: 'Returns information about the number of staff and watchdog server bans',
+        operationId: 'getBans',
+        tags: [
+          'bans',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    watchdog: {
+                      type: 'object',
+                      properties: {
+                        last_minute: {
+                          description: 'Watchdog\'s bans in the last minute',
+                          type: 'integer',
+                        },
+                        daily: {
+                          description: 'Watchdog bans in the last day',
+                          type: 'integer',
+                        },
+                        total: {
+                          description: 'Total Watchdog bans, ever',
+                          type: 'integer',
+                        },
+                      },
+                    },
+                    staff: {
+                      type: 'object',
+                      properties: {
+                        daily: {
+                          description: 'Staff bans in the last day',
+                          type: 'integer',
+                        },
+                        total: {
+                          description: 'Total staff bans, ever',
+                          type: 'integer',
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
         },
-      },
-      route: () => '/metadata',
-      func: (request, response, callback) => {
-        getMetadata(request, (error, result) => {
-          if (error) {
-            return callback(error);
+        route: () => '/bans',
+        func: async (_, response) => {
+          try {
+            response.json(await buildBans());
+          } catch (error) {
+            response.status(500).json({ error: error.message });
           }
-          return response.json(result);
-        });
-      },
-    },
-  },
-  '/health': {
-    get: {
-      summary: 'GET /health',
-      description: 'Get service health data',
-      operationId: 'getHealth',
-      tags: ['health'],
-      responses: {
-        200: {
-          description: 'Success',
-          schema: {
-            type: 'object',
-          },
         },
       },
-      route: () => '/health/:metric?',
-      func: (request, response, callback) => {
-        redis.hgetall('health', (error, result) => {
-          if (error) {
-            return callback(error);
+    },
+    '/constants/{resource}': {
+      get: {
+        summary: 'GET /constants',
+        description: 'Get static game data mirrored from the hypixelconstants repository. If no resource is specified, returns an array of available resources.',
+        tags: ['constants'],
+        parameters: [{
+          name: 'resource',
+          in: 'path',
+          description: 'Resource name e.g. `languages`. [List of resources](https://github.com/slothpixel/hypixelconstants/tree/master/build)',
+          required: false,
+          type: 'string',
+        }],
+        route: () => '/constants/:resource?',
+        func: (request, response, callback) => {
+          if (!request.params.resource) {
+            return response.json(Object.keys(constants));
           }
-          const data = result || {};
-          Object.keys(data).forEach((key) => {
-            data[key] = JSON.parse(data[key]);
+          const { resource } = request.params;
+          if (resource in constants) {
+            return response.json(constants[resource]);
+          }
+          return callback();
+        },
+      },
+    },
+    '/metadata': {
+      get: {
+        summary: 'GET /metadata',
+        description: 'Site metadata',
+        operationId: 'getMetadata',
+        tags: [
+          'metadata',
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+              properties: {
+                leaderboards: {
+                  description: 'Template Leaderboards',
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+        route: () => '/metadata',
+        func: (request, response, callback) => {
+          getMetadata(request, (error, result) => {
+            if (error) {
+              return callback(error);
+            }
+            return response.json(result);
           });
-          if (!request.params.metric) {
-            return response.json(data);
-          }
-          const single = data[request.params.metric];
-          const healthy = single.metric < single.threshold;
-          return response.status(healthy ? 200 : 500).json(single);
-        });
+        },
       },
     },
-  },
-};
+    '/health': {
+      get: {
+        summary: 'GET /health',
+        description: 'Get service health data',
+        operationId: 'getHealth',
+        tags: ['health'],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+            },
+          },
+        },
+        route: () => '/health/:metric?',
+        func: (request, response, callback) => {
+          redis.hgetall('health', (error, result) => {
+            if (error) {
+              return callback(error);
+            }
+            const data = result || {};
+            Object.keys(data).forEach((key) => {
+              data[key] = JSON.parse(data[key]);
+            });
+            if (!request.params.metric) {
+              return response.json(data);
+            }
+            const single = data[request.params.metric];
+            const healthy = single.metric < single.threshold;
+            return response.status(healthy ? 200 : 500).json(single);
+          });
+        },
+      },
+    },
+  };
 
-module.exports = spec;
+  module.exports = spec;
