@@ -2,15 +2,11 @@
 /*
 * Functions that handle creating, caching and storing SkyBlock profile data
  */
-const pify = require('pify');
 const redis = require('./redis');
 const processSkyBlock = require('../processors/processSkyBlock');
 const cachedFunction = require('./cachedFunction');
 // const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
-
-const redisGetAsync = pify(redis.get).bind(redis);
-const redisSetAsync = pify(redis.set).bind(redis);
 
 async function getProfileData(id) {
   try {
@@ -29,7 +25,7 @@ function getLatestProfile(profiles) {
 
 async function updateProfileList(key, profiles) {
   try {
-    await redisSetAsync(key, JSON.stringify(profiles));
+    await redis.setex(key, 3 * 24 * 60 * 60, JSON.stringify(profiles)); // Expire after 3 days
   } catch (error) {
     logger.error(`Failed to update profile list: ${error}`);
   }
@@ -75,7 +71,7 @@ async function buildProfileList(uuid) {
 }
 
 async function buildProfile(uuid, id = null) {
-  const result = await redisGetAsync(`skyblock_profiles:${uuid}`);
+  const result = await redis.get(`skyblock_profiles:${uuid}`);
   let profile_id = id;
   let profiles = {};
 

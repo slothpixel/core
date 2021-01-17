@@ -1,13 +1,13 @@
 /**
 Interface to Redis client.
 */
-const redis = require('redis');
+const Redis = require('ioredis');
 const { logger } = require('../util/utility');
 const config = require('../config');
 
 logger.info(`connecting ${config.REDIS_URL}`);
-const client = redis.createClient(config.REDIS_URL, {
-  detect_buffers: true,
+const client = new Redis(config.REDIS_URL, {
+  enableAutoPipelining: true,
 });
 client.on('error', (error) => {
   logger.error(error);

@@ -1,13 +1,11 @@
 /* eslint-disable consistent-return,no-unused-vars,arrow-body-style */
 const async = require('async');
 const filterObject = require('filter-obj');
-const pify = require('pify');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const buildPlayerFriends = require('../store/buildPlayerFriends');
 const getUUID = require('../store/getUUID');
-const buildBazaar = require('../store/buildBazaar');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const leaderboards = require('../store/leaderboards');
@@ -18,7 +16,7 @@ const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  generateJob, getData, typeToStandardName, getPlayerFields,
+  logger, generateJob, getData, typeToStandardName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -27,8 +25,6 @@ const {
   profileIdParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
-
-const redisGetAsync = pify(redis.get).bind(redis);
 
 const auctionObject = {
   type: 'object',
@@ -244,6 +240,10 @@ const spec = {
 The Slothpixel API provides Hypixel related data.
 
 Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
+
+Consider supporting The Slothpixel Project on Patreon to help cover the hosting costs.
+    
+[Discord](https://discord.gg/ND9bJKK) | [Patreon](https://patreon.com/slothpixel)  
     
 # GraphQL
     Slothpixel API supports the use of GraphQL query language, and it is recommended for advanced users. [Read more](https://github.com/slothpixel/core/wiki/GraphQL)
@@ -989,13 +989,19 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         try {
           const uuid = await getUUID(request.params.player);
           try {
-            let profiles = {};
-            const data = await redisGetAsync(`skyblock_profiles:${uuid}`);
-            if (data) {
-              profiles = JSON.parse(data) || {};
-              // TODO - populatePlayers for each profile
-            } else {
-              profiles = await buildProfileList(uuid);
+            const uuid = await getUUID(request.params.player);
+            try {
+              let profiles = {};
+              const data = await redis.get(`skyblock_profiles:${uuid}`);
+              if (data) {
+                profiles = JSON.parse(data) || {};
+                // TODO - populatePlayers for each profile
+              } else {
+                profiles = await buildProfileList(uuid);
+              }
+              return response.json(profiles);
+            } catch (error) {
+              callback(error);
             }
             return response.json(profiles);
           } catch (error) {
@@ -1683,47 +1689,51 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
           schema: {
             type: 'boolean',
           },
-        },
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  average_price: {
-                    description: 'Average price in the selected time period',
-                    type: 'integer',
-                  },
-                  median_price: {
-                    description: 'Median price in the selected time period',
-                    type: 'integer',
-                  },
-                  standard_deviation: {
-                    description: 'Standard deviation of prices in the selected time period',
-                    type: 'integer',
-                  },
-                  min_price: {
-                    description: 'Lowest price in the selected time period',
-                    type: 'integer',
-                  },
-                  max_price: {
-                    description: 'Largest price in the selected time period',
-                    type: 'integer',
-                  },
-                  sold: {
-                    description: 'Total sold items in the selected time period',
-                    type: 'integer',
-                  },
-                  auctions: {
-                    description: '',
-                    type: 'object',
-                    properties: {
-                      1577033426093: {
-                        type: 'object',
-                        description: 'Auction object',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    average_price: {
+                      description: 'Average price in the selected time period',
+                      type: 'integer',
+                    },
+                    median_price: {
+                      description: 'Median price in the selected time period',
+                      type: 'integer',
+                    },
+                    standard_deviation: {
+                      description: 'Standard deviation of prices in the selected time period',
+                      type: 'integer',
+                    },
+                    min_price: {
+                      description: 'Lowest price in the selected time period',
+                      type: 'integer',
+                    },
+                    max_price: {
+                      description: 'Largest price in the selected time period',
+                      type: 'integer',
+                    },
+                    lowest_bin: {
+                      description: 'Lowest price in the selected time period on Buy It Now',
+                      type: 'integer',
+                    },
+                    sold: {
+                      description: 'Total sold items in the selected time period',
+                      type: 'integer',
+                    },
+                    auctions: {
+                      description: '',
+                      type: 'object',
+                      properties: {
+                        1577033426093: {
+                          type: 'object',
+                          description: 'Auction object',
+                        },
                       },
                     },
                   },
@@ -1744,37 +1754,37 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
         }
       },
     },
-  },
-  '/skyblock/items': {
-    get: {
-      summary: 'SkyBlock item spec',
-      description: 'Returns all SkyBlock items found in auctions',
-      operationId: 'getSkyblockItems',
-      tags: [
-        'skyblock',
-      ],
-      responses: {
-        200: {
-          description: 'successful operation',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  ITEM_ID: {
-                    type: 'object',
-                    properties: {
-                      name: {
-                        type: 'string',
-                      },
-                      tier: auctionObject.properties.tier,
-                      category: auctionObject.properties.category,
-                      item_id: auctionObject.properties.item.properties.item_id,
-                      damage: auctionObject.properties.item.properties.damage,
-                      texture: auctionObject.properties.item.properties.attributes.properties.texture,
-                      bazaar: {
-                        type: 'boolean',
-                        description: 'Set to true if the item can be found in the bazaar',
+    '/skyblock/items': {
+      get: {
+        summary: 'SkyBlock item spec',
+        description: 'Returns all SkyBlock items',
+        operationId: 'getSkyblockItems',
+        tags: [
+          'skyblock',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    ITEM_ID: {
+                      type: 'object',
+                      properties: {
+                        name: {
+                          type: 'string',
+                        },
+                        tier: auctionObject.properties.tier,
+                        category: auctionObject.properties.category,
+                        item_id: auctionObject.properties.item.properties.item_id,
+                        damage: auctionObject.properties.item.properties.damage,
+                        texture: auctionObject.properties.item.properties.attributes.properties.texture,
+                        bazaar: {
+                          type: 'boolean',
+                          description: 'Set to true if the item can be found in the bazaar',
+                        },
                       },
                     },
                   },
@@ -1783,15 +1793,15 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-      },
-      route: () => '/skyblock/items',
-      func: async (_, response, callback) => {
-        try {
-          const items = await redisGetAsync('skyblock_items');
-          return response.json(JSON.parse(items));
-        } catch (error) {
-          callback(error);
-        }
+        route: () => '/skyblock/items',
+        func: async (_, response, callback) => {
+          try {
+            const items = await redis.get('skyblock_items');
+            return response.json(JSON.parse(items));
+          } catch (error) {
+            callback(error);
+          }
+        },
       },
     },
   },
@@ -1917,22 +1927,28 @@ Currently the API has a rate limit of **60 requests/minute** and **50,000 reques
             },
           },
         },
-      },
-      route: () => '/skyblock/bazaar/:id?',
-      func: async (request, response, callback) => {
-        const itemId = request.params.id;
-        const data = await redisGetAsync('skyblock_bazaar');
-        const ids = JSON.parse(data) || [];
-        if (itemId && !itemId.includes(',') && !ids.includes(itemId)) {
-          return response.status(400).json({ error: 'Invalid itemId' });
-        }
-        try {
-          const bazaar = await buildBazaar();
-          if (!itemId) {
-            return response.json(bazaar);
-          }
-          if (itemId.includes(',')) {
-            return response.json(filterObject(bazaar, itemId.split(',')));
+        route: () => '/skyblock/bazaar/:id?',
+        func: async (request, response, callback) => {
+          const itemId = request.params.id;
+          try {
+            const data = await redis.get('skyblock_bazaar');
+            if (data === null) {
+              logger.warn('No products found, is the bazaar service running?');
+              return callback('No bazaar items available');
+            }
+            const bazaar = JSON.parse(data);
+            if (itemId && !itemId.includes(',') && !Object.keys(bazaar).includes(itemId)) {
+              return response.status(400).json({ error: 'Invalid itemId' });
+            }
+            if (!itemId) {
+              return response.json(bazaar);
+            }
+            if (itemId.includes(',')) {
+              return response.json(filterObject(bazaar, itemId.split(',')));
+            }
+            return response.json(bazaar[itemId]);
+          } catch (error) {
+            callback(error.message);
           }
           return response.json(bazaar[itemId]);
         } catch (error) {

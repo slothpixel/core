@@ -11,6 +11,8 @@
     "lintnofix": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
+    "@sentry/node": "^5.29.0",
+    "@sentry/tracing": "^5.29.0",
     "async": "^3.2.0",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -19,32 +21,32 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "filter-obj": "^2.0.1",
-    "got": "^11.5.0",
+    "got": "^11.8.1",
     "graphql": "^14.6.0",
     "hypixelconstants": "slothpixel/hypixelconstants",
+    "ioredis": "^4.19.4",
     "moment": "^2.26.0",
     "mongoose": "^5.9.22",
     "morgan": "^1.10.0",
     "nock": "^12.0.3",
     "pify": "^5.0.0",
     "pm2": "^4.4.0",
-    "redis": "^3.0.2",
     "request-ip": "^2.1.3",
-    "skyblock-parser": "github:slothpixel/skyblock-parser",
-    "universalify": "^1.0.0",
+    "universalify": "^2.0.0",
+    "skyblock-parser": "0.2.0",
     "uuid": "^8.2.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "6.8.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-plugin-import": "^2.21.2",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^2.5.1",
-    "eslint-plugin-unicorn": "^20.1.0",
+    "eslint-plugin-unicorn": "^26.0.1",
     "mocha": "^7.2.0",
-    "supertest": "^4.0.2"
+    "supertest": "^6.0.1"
   },
   "engines": {
     "node": ">=10"
