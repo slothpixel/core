@@ -3,6 +3,9 @@
     "airbnb",
     "plugin:unicorn/recommended"
   ],
+  "parserOptions": {
+    "ecmaVersion": 11
+  },
   "rules": {
     "max-len": [
       "error",
