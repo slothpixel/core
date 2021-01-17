@@ -4,6 +4,7 @@ const filterObject = require('filter-obj');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
+const buildPlayerFriends = require('../store/buildPlayerFriends');
 const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
@@ -587,6 +588,57 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
       },
     },
+    '/players/{playerName}/friends': {
+      get: {
+        summary: 'Get friends for a given player',
+        description: 'Returns friendships for given player.',
+        operationId: 'getPlayerFriends',
+        tags: [
+          'player',
+        ],
+        parameters: [
+          playerNameParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      uuid: {
+                        type: 'string',
+                      },
+                      sent_by: {
+                        type: 'string',
+                      },
+                      started: {
+                        type: 'integer',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/players/:player/friends',
+        func: async (request, response, callback) => {
+          try {
+            try {
+              response.json(await buildPlayerFriends(request.params.player));
+            } catch (error) {
+              callback(error.message);
+            }
+          } catch (error) {
+            response.status(404).json({ error: error.message });
+          }
+        },
+      },
+    },
     '/players/{playerName}/status': {
       get: {
         summary: 'Get current player activity',
@@ -797,58 +849,14 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
       },
     },
     /*
-    '/sessions/{playerName}': {
-      get: {
-        tags: [
-          'session',
-        ],
-        summary: 'Get guild stats by user\'s username or uuid',
-        parameters: [
-          playerNameParam,
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    game: {
-                      description: 'Minigame in standard format',
-                      type: 'string',
-                    },
-                    server: {
-                      description: 'Player\'s current server, e.g. mini103M',
-                      type: 'string',
-                    },
-                    players: {
-                      description: 'Array of players on the same server',
-                      type: 'array',
-                      items: {
-                        description: 'Player uuid',
-                        type: 'string',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        route: () => '/sessions/:player',
-        func: (req, res, cb) => {},
-      },
-    },
-      '/friends/{playerName}': {
+      '/sessions/{playerName}': {
         get: {
           tags: [
-            'friends',
+            'session',
           ],
-          summary: 'Get player\'s friends by user\'s username or uuid',
+          summary: 'Get guild stats by user\'s username or uuid',
           parameters: [
             playerNameParam,
-            },
           ],
           responses: {
             200: {
@@ -856,21 +864,66 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
               content: {
                 'application/json': {
                   schema: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        uuid: {
-                          description: 'Friend\'s uuid',
+                    type: 'object',
+                    properties: {
+                      game: {
+                        description: 'Minigame in standard format',
+                        type: 'string',
+                      },
+                      server: {
+                        description: 'Player\'s current server, e.g. mini103M',
+                        type: 'string',
+                      },
+                      players: {
+                        description: 'Array of players on the same server',
+                        type: 'array',
+                        items: {
+                          description: 'Player uuid',
                           type: 'string',
                         },
-                        sent_by: {
-                          description: 'UUID of the player who sent the friend request',
-                          type: 'string',
-                        },
-                        started: {
-                          description: 'Date the friendship started',
-                          type: 'integer',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          route: () => '/sessions/:player',
+          func: (req, res, cb) => {},
+        },
+      },
+        '/friends/{playerName}': {
+          get: {
+            tags: [
+              'friends',
+            ],
+            summary: 'Get player\'s friends by user\'s username or uuid',
+            parameters: [
+              playerNameParam,
+              },
+            ],
+            responses: {
+              200: {
+                description: 'successful operation',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          uuid: {
+                            description: 'Friend\'s uuid',
+                            type: 'string',
+                          },
+                          sent_by: {
+                            description: 'UUID of the player who sent the friend request',
+                            type: 'string',
+                          },
+                          started: {
+                            description: 'Date the friendship started',
+                            type: 'integer',
+                          },
                         },
                       },
                     },
@@ -880,8 +933,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             },
           },
         },
-      },
-      */
+        */
     '/skyblock/profiles/{playerName}': {
       get: {
         summary: 'Get list of player\'s skyblock profiles',
@@ -1601,13 +1653,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: async (request, response) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
           /*
-          try {
-            const auctions = await getAuctions(request.query);
-            response.json(auctions);
-          } catch (error) {
-            response.status(400).json({ error });
-          }
-           */
+            try {
+              const auctions = await getAuctions(request.query);
+              response.json(auctions);
+            } catch (error) {
+              response.status(400).json({ error });
+            }
+             */
         },
       },
     },
@@ -1926,13 +1978,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: (request, response) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
           /*
-          leaderboards(request.query, null, (error, lb) => {
-            if (error) {
-              return response.status(400).json({ error });
-            }
-            return response.json(lb);
-          });
-           */
+            leaderboards(request.query, null, (error, lb) => {
+              if (error) {
+                return response.status(400).json({ error });
+              }
+              return response.json(lb);
+            });
+             */
         },
       },
     },
@@ -1967,13 +2019,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: (request, response, callback) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
           /*
-          leaderboards(request.query, request.params.template, (error, lb) => {
-            if (error) {
-              return callback(response.status(400).json({ error }));
-            }
-            return response.json(lb);
-          });
-           */
+            leaderboards(request.query, request.params.template, (error, lb) => {
+              if (error) {
+                return callback(response.status(400).json({ error }));
+              }
+              return response.json(lb);
+            });
+             */
         },
       },
     },
