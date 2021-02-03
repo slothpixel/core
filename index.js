@@ -23,6 +23,7 @@ if (process.env.ROLE) {
         console.log(app.script, app.instances);
         pm2.start(app.script, {
           instances: app.instances,
+          max_memory_restart: '2GB',
           restartDelay: 10000,
         }, (error) => {
           if (error) {
