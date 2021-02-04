@@ -2860,6 +2860,11 @@ type Stats {
   Player stats in Warlords
   """
   Warlords: Warlords
+
+  """
+  Player stats in SkyWars
+  """
+  UHC: UHC
 }
 
 """
@@ -3101,6 +3106,21 @@ enum Type {
   PLAYERS
   GUILDS
   SKYBLOCK
+}
+
+"""
+Player stats in UHC
+"""
+type UHC {
+  """
+  Current level in UHC
+  """
+  level: Float
+
+  """
+  Total wins in UHC;
+  """
+  wins: Int
 }
 
 """
