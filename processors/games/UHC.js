@@ -7,6 +7,8 @@ const {
   getWeeklyStat, getMonthlyStat, getRatio, pickKeys, fromEntries,
 } = require('../../util/utility');
 
+const { getLevelForScore } = require('../../util/calculateUhcLevel');
+
 module.exports = ({
   // General
   coins = 0,
@@ -73,6 +75,7 @@ module.exports = ({
     win_loss: getRatio(wins, deaths),
     win_percentage: getRatio(wins, wins + deaths),
     score,
+    level: getLevelForScore(score),
     heads_eaten,
     weekly_kills: getWeeklyStat(weekly_kills_a, weekly_kills_b),
     weekly_wins: getWeeklyStat(weekly_wins_a, weekly_wins_b),
