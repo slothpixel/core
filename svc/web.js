@@ -156,13 +156,13 @@ app.use((request, response, callback) => {
   });
   callback();
 });
-app.use((request, response, next) => {
+/* app.use((request, response, next) => {
   // Reject request if not GET and Origin header is present and not an approved domain (prevent CSRF)
   if (request.method !== 'GET' && request.header('Origin') && request.header('Origin') !== config.UI_HOST) {
     return response.status(403).json({ error: 'Invalid Origin header' });
   }
   return next();
-});
+}); */
 // CORS headers
 app.use(cors({
   origin: true,
