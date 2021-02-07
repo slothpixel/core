@@ -84,7 +84,7 @@ type Query {
     """
     sortOrder: String
 
-    """  
+    """
     `players`, `guilds` or `skyblock`;
     """
     type: Type!
@@ -2706,7 +2706,7 @@ type SkyblockAuctionsListItem {
   Auction uuid
   """
   uuid: String
-  
+
   """
   Auctioneer uuid
   """
@@ -2714,6 +2714,9 @@ type SkyblockAuctionsListItem {
 }
 
 type SkyblockBazaar {
+  name: String
+  category: String
+  related: [String]
   buy_summary: [Buy_summaryListItem]
   quick_status: Quick_status
   sell_summary: [Sell_summaryListItem]
