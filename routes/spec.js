@@ -1822,10 +1822,6 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                       category: {
                         type: 'string',
                       },
-                      category_color: {
-                        type: 'string',
-                        description: 'Minecraft formatting code of category',
-                      },
                       related: {
                         type: 'array',
                         items: {
