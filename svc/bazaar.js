@@ -11,7 +11,7 @@ async function updateBazaar(callback) {
   try {
     const { products } = await getData(redis, generateJob('bazaar_products').url);
     Object.keys(constants).forEach((key) => {
-      const item = constants[key];
+      const item = { ...constants[key] };
       item.category = `&${item.category_color}${item.category}`;
       delete item.category_color;
       products[key] = Object.assign(products[key], item);
