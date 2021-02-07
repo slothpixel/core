@@ -1803,8 +1803,8 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         tags: [
           'skyblock',
         ],
-        summary: 'Get bazaar data for an item',
-        description: 'Get bazaar data for an item by ID. You can see which items are available in the bazaar via the `/skyblock/items` endpoint. If none is specified returns all items.',
+        summary: 'Get bazaar data for an item or for all items',
+        description: 'Get bazaar data for an item by ID, or for all items. You can see which items are available in the bazaar via the `/skyblock/items` endpoint. If none is specified returns all items.',
         parameters: [bazaarItemIdParam],
         responses: {
           200: {
@@ -1816,6 +1816,23 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                   items: {
                     type: 'object',
                     properties: {
+                      name: {
+                        type: 'string',
+                      },
+                      category: {
+                        type: 'string',
+                      },
+                      category_color: {
+                        type: 'string',
+                        description: 'Minecraft formatting code of category',
+                      },
+                      related: {
+                        type: 'array',
+                        items: {
+                          type: 'string',
+                          description: 'Item ID',
+                        },
+                      },
                       quick_status: {
                         type: 'object',
                         properties: {
@@ -1874,41 +1891,6 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                               type: 'number',
                             },
                             orders: {
-                              type: 'integer',
-                            },
-                          },
-                        },
-                      },
-                      week_historic: {
-                        type: 'array',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            timestamp: {
-                              type: 'integer',
-                            },
-                            nowBuyVolume: {
-                              type: 'integer',
-                            },
-                            nowSellVolume: {
-                              type: 'integer',
-                            },
-                            buyCoins: {
-                              type: 'number',
-                            },
-                            buyVolume: {
-                              type: 'integer',
-                            },
-                            buys: {
-                              type: 'integer',
-                            },
-                            sellCoins: {
-                              type: 'number',
-                            },
-                            sellVolume: {
-                              type: 'integer',
-                            },
-                            sells: {
                               type: 'integer',
                             },
                           },
