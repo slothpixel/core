@@ -9,6 +9,10 @@ const playerObject = {
       description: 'Player username',
       type: 'string',
     },
+    name_history: {
+      description: 'History of usernames the user has joined Hypixel with',
+      type: 'array'
+    },
     online: {
       description: 'Is player online',
       type: 'boolean',
@@ -160,10 +164,6 @@ const playerObject = {
         },
         TWITCH: {
           description: 'Link to Twitch channel',
-          type: 'string',
-        },
-        MIXER: {
-          description: 'Link to Mixer channel',
           type: 'string',
         },
         DISCORD: {
