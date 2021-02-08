@@ -70,6 +70,7 @@ function processPlayerData({
   rankPlusColor = 'RED',
   monthlyRankColor = 'GOLD',
   karma = 0,
+  knownAliases = [],
   networkExp = 0,
   achievementPoints = 0,
   mcVersionRp = null,
@@ -160,6 +161,7 @@ function processPlayerData({
   return {
     uuid,
     username: displayname,
+    name_history: knownAliases,
     online: getOnlineStatus(lastLogin, lastLogout),
     rank: newRank,
     rank_plus_color: newRankPlusColor,
