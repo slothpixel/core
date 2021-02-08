@@ -162,10 +162,6 @@ const playerObject = {
           description: 'Link to Twitch channel',
           type: 'string',
         },
-        MIXER: {
-          description: 'Link to Mixer channel',
-          type: 'string',
-        },
         DISCORD: {
           description: 'Discord handle, in full format of username#discriminator',
           type: 'string',

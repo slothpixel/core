@@ -1735,11 +1735,6 @@ type Links {
   INSTAGRAM: String
 
   """
-  Link to Mixer channel
-  """
-  MIXER: String
-
-  """
   Link to Twitch channel
   """
   TWITCH: String

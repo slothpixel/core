@@ -108,7 +108,6 @@ function processPlayerData({
     YOUTUBE: null,
     INSTAGRAM: null,
     TWITCH: null,
-    MIXER: null,
     DISCORD: null,
     HYPIXEL: null,
   };
