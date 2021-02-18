@@ -11,7 +11,7 @@ const playerObject = {
     },
     name_history: {
       description: 'History of usernames the user has joined Hypixel with',
-      type: 'array'
+      type: 'array',
     },
     online: {
       description: 'Is player online',

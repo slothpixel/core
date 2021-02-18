@@ -30,7 +30,6 @@ module.exports = ({
   shots_fired = 0,
   show_lobby_prefix,
 
-
   // Deathmatch
   kills_deathmatch = 0,
   deaths_deathmatch = 0,

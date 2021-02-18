@@ -1,4 +1,3 @@
-
 /*
 * Functions used to process quest and challenge data
  */

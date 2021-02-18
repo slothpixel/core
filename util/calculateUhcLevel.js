@@ -13,5 +13,5 @@ function getLevelForScore(xp) {
 }
 
 module.exports = {
-  getLevelForScore: getLevelForScore,
+  getLevelForScore,
 };
