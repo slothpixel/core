@@ -72,7 +72,7 @@ function transformData(data) {
 }
 
 async function executeQuery(query) {
-  const { filter, options, error } = createQuery(query, createFilterQuery(query));
+  const { error } = createQuery(query, createFilterQuery(query));
   if (error) {
     throw new Error(error);
   }

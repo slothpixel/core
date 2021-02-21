@@ -9,25 +9,25 @@ const { logger } = require('../util/utility');
 // const apiKey = config.HYPIXEL_API_KEY;
 
 function invokeInterval(func) {
-    // invokes the function immediately, waits for callback, waits the delay, and then calls it again
-    (function invoker() {
-      logger.info(`running ${func.name}`);
-      console.time(func.name);
-      func((error, result) => {
-        if (error) {
-          logger.error(error);
-        }
-        const final = result || {
-          metric: 1,
-          threshold: 0,
-        };
-        final.timestamp = Math.floor(new Date() / 1000);
-        redis.hset('health', func.name, JSON.stringify(final));
-        redis.expire('health', 900);
-        console.timeEnd(func.name);
-        setTimeout(invoker, final && final.delay ? final.delay : 15 * 1000);
-      });
-    }());
+  // invokes the function immediately, waits for callback, waits the delay, and then calls it again
+  (function invoker() {
+    logger.info(`running ${func.name}`);
+    console.time(func.name);
+    func((error, result) => {
+      if (error) {
+        logger.error(error);
+      }
+      const final = result || {
+        metric: 1,
+        threshold: 0,
+      };
+      final.timestamp = Math.floor(new Date() / 1000);
+      redis.hset('health', func.name, JSON.stringify(final));
+      redis.expire('health', 900);
+      console.timeEnd(func.name);
+      setTimeout(invoker, final && final.delay ? final.delay : 15 * 1000);
+    });
+  }());
 }
 
 function redisUsage(callback) {
