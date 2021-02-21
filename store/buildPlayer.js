@@ -9,7 +9,7 @@ const {
 } = require('../util/utility');
 const redis = require('./redis');
 const cachedFunction = require('./cachedFunction');
-const queries = require('./queries');
+const { getPlayerProfile, cachePlayerProfile } = require('./queries');
 
 /*
 Functions to build/cache player object
@@ -20,7 +20,7 @@ async function buildPlayer(uuid, { shouldCache = true } = {}) {
     const playerData = processPlayerData(body.player || {});
 
     if (shouldCache && config.ENABLE_DB_CACHE) {
-      queries.insertPlayer(uuid, playerData);
+      // queries.insertPlayer(uuid, playerData);
     }
 
     return playerData;
@@ -55,7 +55,7 @@ async function populatePlayers(players) {
   return async.map(players, async (player) => {
     const { uuid } = player;
     try {
-      const [profile, isCached] = await pify(queries.getPlayerProfile, {
+      const [profile, isCached] = await pify(getPlayerProfile, {
         multiArgs: true,
       })(uuid);
       if (profile === null) {
@@ -65,7 +65,7 @@ async function populatePlayers(players) {
         const profile = getPlayerFields(newPlayer);
         profile.uuid = uuid;
         player.profile = profile;
-        await queries.cachePlayerProfile(profile);
+        await cachePlayerProfile(profile);
         return player;
       }
       delete player.uuid;
@@ -73,7 +73,7 @@ async function populatePlayers(players) {
       if (isCached) {
         return player;
       }
-      await queries.cachePlayerProfile(profile);
+      await cachePlayerProfile(profile);
       return player;
     } catch (error) {
       logger.error(error);
