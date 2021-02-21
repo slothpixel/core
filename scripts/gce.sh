@@ -7,12 +7,6 @@ gcloud compute instances delete --quiet redis-1
 gcloud compute instances create redis-1 --machine-type n1-standard-1 --image-family ubuntu-1804-lts --image-project gce-uefi-images --disk name=disk-redis --boot-disk-size 10GB --boot-disk-type pd-ssd
 gcloud compute instances add-metadata redis-1 --metadata-from-file startup-script=./scripts/redis.sh
 
-#mongo
-gcloud compute --project "snappy-nomad-263019" disks create "disk-mongo-1" --size "200" --zone "us-central1-b" --type "pd-standard"
-gcloud compute instances delete --quiet mongo-1
-gcloud compute instances create mongo-1 --machine-type n1-highmem-2 --image-family ubuntu-1804-lts --image-project gce-uefi-images --boot-disk-size 10GB --boot-disk-type pd-ssd --disk "name=disk-mongo-1,device-name=persistent-disk-1"
-gcloud compute instances add-metadata mongo-1 --metadata-from-file startup-script=./scripts/mongo.sh
-
 #web, health check, loadbalancer
 gcloud compute forwarding-rules delete --quiet lb-rule
 gcloud compute target-pools delete --quiet lb-pool

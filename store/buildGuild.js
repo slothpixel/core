@@ -6,7 +6,6 @@ const { generateJob, getData } = require('../util/utility');
 const redis = require('./redis');
 const cachedFunction = require('./cachedFunction');
 const { populatePlayers } = require('./buildPlayer');
-const { insertGuild, removeGuild } = require('./queries');
 
 /*
 * Functions to build/cache guild object
@@ -17,7 +16,7 @@ async function getGuildData(id) {
     id,
   }).url);
   if (body.guild === null) {
-    removeGuild(id);
+    // removeGuild(id);
     return null;
   }
   const guild = processGuildData(body.guild);
@@ -64,7 +63,7 @@ async function buildGuild(uuid) {
     }
 
     if (config.ENABLE_DB_CACHE) {
-      insertGuild(id, guild);
+      // insertGuild(id, guild);
     }
 
     return guild;

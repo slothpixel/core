@@ -7,13 +7,10 @@ const config = require('../config');
 const cachedFunction = require('./cachedFunction');
 const redis = pify(require('./redis'));
 const { logger } = require('../util/utility');
-const { Auction } = require('./models');
 const {
   min, max, median, average, standardDeviation,
 } = require('../util/math');
 const parseTimestamp = require('../util/readableTimestamps');
-
-const findAuction = pify(Auction.find).bind(Auction);
 
 /*
 * Allows some filtering with simple parameters instead of user
@@ -75,13 +72,13 @@ function transformData(data) {
 }
 
 async function executeQuery(query) {
-  const { filter, options, error } = createQuery(query, createFilterQuery(query));
+  const { error } = createQuery(query, createFilterQuery(query));
   if (error) {
     throw new Error(error);
   }
 
   try {
-    const result = await findAuction(filter, null, options);
+    const result = {}; // await findAuction(filter, null, options)
     return transformData(result);
   } catch {
     throw new Error('Query failed');
