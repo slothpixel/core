@@ -25,7 +25,7 @@
     "graphql": "^14.6.0",
     "hypixelconstants": "slothpixel/hypixelconstants",
     "ioredis": "^4.19.4",
-    "moment": "^2.26.0",
+    "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "nock": "^12.0.3",
     "pify": "^5.0.0",
