@@ -19,10 +19,8 @@ services:
       environment:
         REDIS_URL: redis://slothpixel-redis:6379/0
         REDIS_TEST_URL: redis://slothpixel-redis:6379/1
-        MONGODB_URL: mongodb://slothpixel-mongo/slothpixel
       volumes:
         - .:/usr/src
       links:
-        - mongo
         - redis
       container_name: slothpixel-core
