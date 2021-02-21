@@ -3,9 +3,6 @@
 
 version: '3'
 services:
-  mongo:
-    image: mongo:4
-    container_name: slothpixel-mongo
   redis:
     image: redis:5
     container_name: slothpixel-redis

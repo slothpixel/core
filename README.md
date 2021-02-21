@@ -18,7 +18,7 @@ Overview
 Tech Stack
 ---
 * Microservices: Node.js
-* Database: MongoDB/Redis
+* Database: Redis
 
 Quickstart (Docker)
 ---

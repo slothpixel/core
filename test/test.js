@@ -18,7 +18,6 @@ const guildApi = require('./data/guild');
 const boosterApi = require('./data/boosters');
 
 // these are loaded later, as the database needs to be created when these are required
-let database;
 let app;
 // fake api responses
 nock('https://api.hypixel.net/')
@@ -47,10 +46,6 @@ before(function setup(done) {
         console.log(error, success);
         callback(error);
       });
-    },
-    function initDB(callback) {
-      database = require('../store/database');
-      callback();
     },
     function startServices(callback) {
       console.log('starting services');

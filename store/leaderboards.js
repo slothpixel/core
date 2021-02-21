@@ -7,9 +7,6 @@ const { logger } = require('../util/utility');
 const profileFields = require('./profileFields');
 const templates = require('./lbTemplates');
 const cacheFunctions = require('./cacheFunctions');
-const {
-  Player, Guild,
-} = require('./models');
 
 function cacheLeaderboard(lb, key, callback) {
   if (config.ENABLE_LEADERBOARD_CACHE) {
@@ -90,9 +87,9 @@ function transformData(data) {
 function executeQuery(type, query, fields, callback) {
   let Model;
   if (type === 'guilds') {
-    Model = Guild;
+    Model = 'Guild';
   } else {
-    Model = Player;
+    Model = 'Player';
   }
   const { filter, options, error } = createQuery(query);
   if (error) {

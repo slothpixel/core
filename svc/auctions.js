@@ -8,7 +8,6 @@ const redis = require('../store/redis');
 const {
   logger, generateJob, getData, invokeInterval,
 } = require('../util/utility');
-const { bulkWrite } = require('../store/queries');
 
 const activeAuctions = {};
 
@@ -74,7 +73,7 @@ function upsertDocument(uuid, update) {
 
 async function processAndStoreAuctions(auctions = []) {
   try {
-    let bulkAuctionOps = await Promise.all(auctions.map(async (auction) => {
+    await Promise.all(auctions.map(async (auction) => {
       const { uuid } = auction;
       const update = getUpdateType(auction);
       if (update === 'none') {
@@ -102,11 +101,6 @@ async function processAndStoreAuctions(auctions = []) {
       }
     }));
     // Remove empty elements from array
-    bulkAuctionOps = bulkAuctionOps.filter(Boolean);
-    if (bulkAuctionOps.length === 0) return;
-    return bulkWrite('auction', bulkAuctionOps, { ordered: false }, (error) => {
-      logger.error(`Failed bulkWrite: ${error.stack}`);
-    });
   } catch (error) {
     return logger.error(`auction processing failed: ${error}`);
   }

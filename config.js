@@ -17,7 +17,6 @@ const defaults = {
   FRONTEND_PORT: 5000,
   ITEMS_PORT: 5100,
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
-  MONGODB_URL: 'mongodb://localhost/slothpixel', // Url of the MongoDB database
   ITEMS_HOST: 'http://localhost:5100', // host of the items server
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
   SENTRY_URL: '',

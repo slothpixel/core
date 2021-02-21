@@ -3,14 +3,12 @@
  * */
 // const request = require('request');
 // const config = require('../config');
-const database = require('../store/database');
 const redis = require('../store/redis');
 const { logger } = require('../util/utility');
 
 // const apiKey = config.HYPIXEL_API_KEY;
 
 function invokeInterval(func) {
-  database.once('open', () => {
     // invokes the function immediately, waits for callback, waits the delay, and then calls it again
     (function invoker() {
       logger.info(`running ${func.name}`);
@@ -30,7 +28,6 @@ function invokeInterval(func) {
         setTimeout(invoker, final && final.delay ? final.delay : 15 * 1000);
       });
     }());
-  });
 }
 
 function redisUsage(callback) {
@@ -41,15 +38,6 @@ function redisUsage(callback) {
     return callback(error, {
       metric: Number(redis.server_info.used_memory),
       threshold: 2.5 * (10 ** 9),
-    });
-  });
-}
-
-function mongoUsage(callback) {
-  database.db.stats((error, data) => {
-    callback(error, {
-      metric: Number(data.storageSize),
-      threshold: 4 * (10 ** 11),
     });
   });
 }
@@ -67,7 +55,6 @@ function hypixelApi(callback) {
 }
 const health = {
   redisUsage,
-  mongoUsage,
   hypixelApi,
 };
 Object.keys(health).forEach((key) => {
