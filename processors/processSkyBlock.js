@@ -17,32 +17,36 @@ async function checkItems(members = {}) {
   // Remove empty inventory slots
   inventories = inventories.filter((i) => 'name' in i);
   // Get unique items
-  const items = [...new Set(inventories.map((i) => i.attributes.id))]
-    .flatMap((id) => {
-      const item = inventories.find((i) => i.attributes.id === id);
-      // Filter unfit items
-      if (![null, undefined].includes(item.attributes.modifier)
-        || id.startsWith('MAP:')
-        || item.name === '§fnull'
-        || !/[!-~]/.test(item.name) || !/[!-~]/.test(item.type)
-        || item.rarity_upgrades) return [];
-      return [{
-        id,
-        name: removeFormatting(item.name),
-        tier: item.rarity,
-        category: item.type || 'misc',
-        damage: item.damage || null,
-        item_id: item.item_id,
-        texture: item.attributes.texture || null,
-      }];
-    });
   try {
-    await got.post(config.ITEMS_HOST, {
-      json: items,
-      responseType: 'json',
-    });
-  } catch (error) {
-    logger.warn(`Failed to insert item updates, is the items service running? ${error}`);
+    const items = [...new Set(inventories.map((i) => i.attributes.id))]
+      .flatMap((id) => {
+        const item = inventories.find((i) => i.attributes.id === id);
+        // Filter unfit items
+        if (![null, undefined].includes(item.attributes.modifier)
+          || id.startsWith('MAP:')
+          || item.name === '§fnull'
+          || !/[!-~]/.test(item.name) || !/[!-~]/.test(item.type)
+          || item.rarity_upgrades) return [];
+        return [{
+          id,
+          name: removeFormatting(item.name),
+          tier: item.rarity,
+          category: item.type || 'misc',
+          damage: item.damage || null,
+          item_id: item.item_id,
+          texture: item.attributes.texture || null,
+        }];
+      });
+    try {
+      await got.post(config.ITEMS_HOST, {
+        json: items,
+        responseType: 'json',
+      });
+    } catch (error) {
+      logger.warn(`Failed to insert item updates, is the items service running? ${error}`);
+    }
+  } catch {
+    // we don't mind
   }
 }
 
