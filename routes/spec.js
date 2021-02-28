@@ -2467,4 +2467,4 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
   },
 };
 
-module.exports = { spec };
+module.exports = spec;
