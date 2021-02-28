@@ -111,7 +111,7 @@ async function getGuildFromPlayer(playerName, { shouldPopulatePlayers = false } 
 }
 
 async function getGuildFromName(guildName) {
-  return await buildGuildFromName(guildName);
+  return buildGuildFromName(guildName);
 }
 
 module.exports = { getGuildFromPlayer, getGuildFromName, getGuildData };
