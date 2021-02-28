@@ -36,7 +36,7 @@ async function createGuildCache(uuid) {
 }
 
 async function createGuildCacheFromName(name) {
-  const guildData = await getData(redis, generateJob('findguild', {
+  const guildData = await getData(redis, generateJob('findguildByName', {
     id: name,
   }).url);
 
@@ -110,8 +110,13 @@ async function getGuildFromPlayer(playerName, { shouldPopulatePlayers = false } 
   return guild;
 }
 
-async function getGuildFromName(guildName) {
-  return buildGuildFromName(guildName);
+async function getGuildFromName(guildName, { shouldPopulatePlayers = false } = {}) {
+  const guild = await buildGuildFromName(guildName);
+  if (shouldPopulatePlayers) {
+    const players = await populatePlayers(guild.members);
+    guild.members = players;
+  }
+  return guild;
 }
 
 module.exports = { getGuildFromPlayer, getGuildFromName, getGuildData };
