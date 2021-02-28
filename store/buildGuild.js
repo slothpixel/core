@@ -35,6 +35,18 @@ async function createGuildCache(uuid) {
   return guildData.guild;
 }
 
+async function createGuildCacheFromName(name) {
+  const guildData = await getData(redis, generateJob('findguild', {
+    id: name,
+  }).url);
+
+  if (guildData.guild === null) {
+    return null;
+  }
+
+  return guildData.guild;
+}
+
 async function getGuildID(uuid) {
   return createGuildCache(uuid);
   /*
@@ -49,6 +61,10 @@ async function getGuildID(uuid) {
     return createGuildCache(uuid);
   }
    */
+}
+
+async function getGuildIDFromName(name) {
+  return createGuildCacheFromName(name);
 }
 
 async function buildGuild(uuid) {
@@ -70,6 +86,21 @@ async function buildGuild(uuid) {
   }, { cacheDuration: config.GUILD_CACHE_SECONDS, shouldCache: config.ENABLE_GUILD_CACHE });
 }
 
+async function buildGuildFromName(name) {
+  const id = await getGuildIDFromName(name);
+  if (id == null) {
+    return { guild: null };
+  }
+  return cachedFunction(`guild:${id}`, async () => {
+    const guild = await getGuildData(id);
+    if (!guild) {
+      return { guild: null };
+    }
+
+    return guild;
+  }, { cacheDuration: config.GUILD_CACHE_SECONDS, shouldCache: config.ENABLE_GUILD_CACHE });
+}
+
 async function getGuildFromPlayer(playerName, { shouldPopulatePlayers = false } = {}) {
   const guild = await buildGuild(await getUUID(playerName));
   if (shouldPopulatePlayers) {
@@ -79,4 +110,8 @@ async function getGuildFromPlayer(playerName, { shouldPopulatePlayers = false } 
   return guild;
 }
 
-module.exports = { getGuildFromPlayer, getGuildData };
+async function getGuildFromName(guildName) {
+  return await buildGuildFromName(guildName);
+}
+
+module.exports = { getGuildFromPlayer, getGuildFromName, getGuildData };
