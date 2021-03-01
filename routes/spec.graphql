@@ -28,9 +28,21 @@ type Query {
   """
   guild(
     """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance. Will use the Guild's Name if you use the syntax name/{guildName} to it.
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance. 
     """
     player_name: String!
+
+    """
+    Replace uuid fields with player profiles
+    """
+    populate_players: String
+  ): Guild
+
+guild_by_name(
+    """
+    Name of the guild.
+    """
+    guild_name: String!
 
     """
     Replace uuid fields with player profiles
