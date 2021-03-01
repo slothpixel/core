@@ -12,8 +12,8 @@ const {
 
 const app = express();
 const port = config.PORT || config.ITEMS_PORT;
-const discoveredItems = new Set();
 
+let discoveredItems;
 let bazaarProducts = [];
 let itemList = {};
 
@@ -22,7 +22,7 @@ let itemList = {};
     itemList = JSON.parse(await redis.get('skyblock_items')) || {};
     const items = Object.keys(itemList);
     logger.info(`Caching existing ${items.length} item IDs`);
-    discoveredItems.add(...items);
+    discoveredItems = new Set(items);
   } catch (error) {
     logger.error(`Failed retrieving skyblock_items from redis: ${error}`);
   }
