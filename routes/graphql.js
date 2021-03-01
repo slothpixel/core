@@ -13,7 +13,7 @@ const buildBoosters = require('../store/buildBoosters');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
-const { getGuildFromPlayer } = require('../store/buildGuild');
+const { getGuildFromPlayer, getGuildFromName } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
@@ -162,6 +162,10 @@ const graphql = graphqlExpress({
 
     guild({ player_name, populate_players }) {
       return getGuildFromPlayer(player_name, populate_players);
+    },
+
+    guild_by_name({ guild_name, populate_players }) {
+      return getGuildFromName(guild_name, populate_players);
     },
 
     leaderboards(parameters) {

@@ -38,6 +38,18 @@ type Query {
     populate_players: String
   ): Guild
 
+  guild_by_name(
+    """
+    Name of the guild.
+    """
+    guild_name: String!
+
+    """
+    Replace uuid fields with player profiles
+    """
+    populate_players: String
+  ): Guild
+
   """
   Returns player or guild leaderboards
 

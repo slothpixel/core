@@ -233,6 +233,11 @@ function generateJob(type, payload) {
         url: `${apiUrl}/findguild?key=${apiKey}&byUuid=${payload.id}`,
       };
     },
+    findguildByName() {
+      return {
+        url: `${apiUrl}/findguild?key=${apiKey}&byName=${payload.id}`,
+      };
+    },
     friends() {
       return {
         url: `${apiUrl}/friends?key=${apiKey}&uuid=${payload.id}`,
