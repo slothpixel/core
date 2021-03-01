@@ -164,7 +164,7 @@ const graphql = graphqlExpress({
       return getGuildFromPlayer(player_name, populate_players);
     },
 
-    guildFromName({ guild_name, populate_players }) {
+    guild_by_name({ guild_name, populate_players }) {
       return getGuildFromName(guild_name, populate_players);
     },
 

@@ -28,7 +28,7 @@ type Query {
   """
   guild(
     """
-    Username or non-dashed UUID of player. UUID should be used when feasible for better performance. 
+    Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
     """
     player_name: String!
 
@@ -38,7 +38,7 @@ type Query {
     populate_players: String
   ): Guild
 
-guild_by_name(
+  guild_by_name(
     """
     Name of the guild.
     """
