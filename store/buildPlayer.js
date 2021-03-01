@@ -17,6 +17,11 @@ Functions to build/cache player object
 async function buildPlayer(uuid, { shouldCache = true } = {}) {
   return cachedFunction(`player:${uuid}`, async () => {
     const body = await getData(redis, generateJob('player', { id: uuid }).url);
+
+    if (body.player === null) {
+      throw new Error('Player has no Hypixel stats!');
+    }
+
     const playerData = processPlayerData(body.player || {});
 
     if (shouldCache && config.ENABLE_DB_CACHE) {
