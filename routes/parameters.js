@@ -15,7 +15,7 @@ module.exports = {
     required: true,
     schema: {
       type: 'string',
-    }
+    },
   },
   gameNameParam: {
     name: 'game',
