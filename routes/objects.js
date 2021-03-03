@@ -916,6 +916,31 @@ const playerObject = {
               type: 'object',
               properties: {},
             },
+            practice: {
+              description: 'Stats for the Bed Wars Practice mode',
+              type: 'object',
+              properties: {
+                selected: {
+                  description: 'Selected Practice mode at the NPC',
+                  type: 'string'
+                },
+                bridging: {
+                  description: 'Statistics for the Bridging Practice mode',
+                  type: 'object',
+                  properties: {}
+                },
+                records: {
+                  description: 'Bed Wars Practice records',
+                  type: 'object',
+                  properties: {}
+                },
+                mlg: {
+                  description: 'Statistics for the MLG Practice mode',
+                  type: 'object',
+                  properties: {}
+                }
+              }
+            }
           },
         },
         BuildBattle: {
