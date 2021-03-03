@@ -21,7 +21,7 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam,
+  profileIdParam, guildNameParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -856,7 +856,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           'guild',
         ],
         parameters: [
-          playerNameParam,
+          guildNameParam,
         ],
         responses: {
           200: {

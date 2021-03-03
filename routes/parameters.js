@@ -8,6 +8,15 @@ module.exports = {
       type: 'string',
     },
   },
+  guildNameParam: {
+    name: 'guildName',
+    in: 'path',
+    description: 'Name of guild.',
+    required: true,
+    schema: {
+      type: 'string',
+    },
+  },
   gameNameParam: {
     name: 'game',
     in: 'path',
