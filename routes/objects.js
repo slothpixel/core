@@ -922,25 +922,25 @@ const playerObject = {
               properties: {
                 selected: {
                   description: 'Selected Practice mode at the NPC',
-                  type: 'string'
+                  type: 'string',
                 },
                 bridging: {
                   description: 'Statistics for the Bridging Practice mode',
                   type: 'object',
-                  properties: {}
+                  properties: {},
                 },
                 records: {
                   description: 'Bed Wars Practice records',
                   type: 'object',
-                  properties: {}
+                  properties: {},
                 },
                 mlg: {
                   description: 'Statistics for the MLG Practice mode',
                   type: 'object',
-                  properties: {}
-                }
-              }
-            }
+                  properties: {},
+                },
+              },
+            },
           },
         },
         BuildBattle: {
