@@ -29,6 +29,7 @@ module.exports = ({
   diamond_resources_collected_bedwars = 0,
   emerald_resources_collected_bedwars = 0,
   packages = [],
+  practice = {},
   ...rest
 }) => {
   const getModeStats = (regexp) => pickKeys(rest, {
@@ -99,5 +100,6 @@ module.exports = ({
     },
     gamemodes,
     packages,
+    practice,
   });
 };
