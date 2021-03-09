@@ -939,6 +939,11 @@ const playerObject = {
                   type: 'object',
                   properties: {},
                 },
+                fireball_jumping: {
+                  description: 'Statistics for the Fireball and TNT Jumping Practice mode',
+                  type: 'object',
+                  properties: {},
+                },
               },
             },
           },
