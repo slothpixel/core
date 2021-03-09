@@ -943,7 +943,7 @@ const playerObject = {
                   description: 'Statistics for the Fireball and TNT Jumping Practice mode',
                   type: 'object',
                   properties: {},
-                }
+                },
               },
             },
           },
