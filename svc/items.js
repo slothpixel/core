@@ -95,6 +95,7 @@ app.delete('/:id', (request, response, _callback) => {
   if (id in itemList) {
     logger.info(`Deleting entry for item ${id}`);
     delete itemList[id];
+    discoveredItems.delete(id);
     updateItemList();
   }
   response.json({ status: 'ok' });
