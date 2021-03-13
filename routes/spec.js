@@ -992,7 +992,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/guilds/name/:name',
         func: async (request, response, callback) => {
           try {
-            const guild = await getGuildFromName(request.params.name);
+            const guild = await getGuildFromName(request.params.name, { shouldPopulatePlayers: request.query.populatePlayers });
             if (guild.guild === null) {
               return response.status(404).json(guild);
             }
@@ -1148,7 +1148,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/guilds/id/:id',
         func: async (request, response, callback) => {
           try {
-            const guild = await getGuildFromID(request.params.id);
+            const guild = await getGuildFromID(request.params.id, { shouldPopulatePlayers: request.query.populatePlayers });
             if (guild.guild === null) {
               return response.status(404).json(guild);
             }
