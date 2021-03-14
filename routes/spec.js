@@ -856,7 +856,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           'guild',
         ],
         parameters: [
-          guildNameParam,
+          guildNameParam, populatePlayersParam,
         ],
         responses: {
           200: {
@@ -1012,7 +1012,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           'guild',
         ],
         parameters: [
-          guildIDParam,
+          guildIDParam, populatePlayersParam,
         ],
         responses: {
           200: {
