@@ -9,7 +9,7 @@ const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const { queryAuctionId } = require('../store/queryAuctions');
-const { getGuildFromPlayer, getGuildFromName } = require('../store/buildGuild');
+const { getGuildFromPlayer, getGuildFromName, getGuildFromID } = require('../store/buildGuild');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
@@ -21,7 +21,7 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam, guildNameParam,
+  profileIdParam, guildNameParam, guildIDParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -856,7 +856,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           'guild',
         ],
         parameters: [
-          guildNameParam,
+          guildNameParam, populatePlayersParam,
         ],
         responses: {
           200: {
@@ -992,7 +992,163 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/guilds/name/:name',
         func: async (request, response, callback) => {
           try {
-            const guild = await getGuildFromName(request.params.name);
+            const guild = await getGuildFromName(request.params.name, { shouldPopulatePlayers: request.query.populatePlayers });
+            if (guild.guild === null) {
+              return response.status(404).json(guild);
+            }
+            return response.json(guild);
+          } catch (error) {
+            callback(error);
+          }
+        },
+      },
+    },
+    '/guilds/id/{guildID}': {
+      get: {
+        summary: 'Get guild stats by the name of the guild',
+        description: 'Look up a guild from the its name',
+        operationId: 'guild',
+        tags: [
+          'guild',
+        ],
+        parameters: [
+          guildIDParam, populatePlayersParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      description: 'Guild\'s name',
+                      type: 'string',
+                    },
+                    id: {
+                      description: 'Guild id used in hypixel backend',
+                      type: 'string',
+                    },
+                    created: {
+                      description: 'Guild creation date',
+                      type: 'string',
+                    },
+                    tag: {
+                      description: 'Guild tag',
+                      type: 'string',
+                    },
+                    tag_color: {
+                      description: 'Formatting code for the guild tag',
+                      type: 'string',
+                    },
+                    tag_formatted: {
+                      description: 'Formatted tag string e.g. \'&b[TAG]\'',
+                      type: 'string',
+                    },
+                    legacy_ranking: {
+                      description: 'Ranking in the number of guild coins owned in the legacy guild system',
+                      type: 'integer',
+                    },
+                    exp: {
+                      description: 'Total guild xp',
+                      type: 'integer',
+                    },
+                    level: {
+                      description: 'Guild level',
+                      type: 'number',
+                    },
+                    exp_by_game: {
+                      description: 'Guild EXP earned in each minigame',
+                      type: 'integer',
+                    },
+                    exp_history: {
+                      description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                      type: 'object',
+                    },
+                    description: {
+                      description: 'Guild description',
+                      type: 'string',
+                    },
+                    preferred_games: {
+                      description: 'Array containing the guild\'s preferred games',
+                      type: 'array',
+                      items: {
+                        type: 'string',
+                      },
+                    },
+                    ranks: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          name: {
+                            type: 'string',
+                          },
+                          permissions: {
+                            type: 'array',
+                            items: {
+                              type: 'number',
+                            },
+                          },
+                          default: {
+                            type: 'boolean',
+                          },
+                          tag: {
+                            type: 'string',
+                          },
+                          created: {
+                            type: 'integer',
+                          },
+                          priority: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                    members: {
+                      description: 'Array playerof players on the guild',
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          uuid: {
+                            description: 'Player UUID',
+                            type: 'string',
+                          },
+                          rank: {
+                            description: 'Player rank in the guild',
+                            type: 'string',
+                          },
+                          joined: {
+                            description: 'Member join date',
+                            type: 'integer',
+                          },
+                          quest_participation: {
+                            description: 'How many much the member has contributed to guild quests',
+                            type: 'integer',
+                          },
+                          exp_history: {
+                            description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                            type: 'object',
+                          },
+                          muted_till: {
+                            description: 'Date the member is muted until',
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/guilds/id/:id',
+        func: async (request, response, callback) => {
+          try {
+            const guild = await getGuildFromID(request.params.id, { shouldPopulatePlayers: request.query.populatePlayers });
             if (guild.guild === null) {
               return response.status(404).json(guild);
             }

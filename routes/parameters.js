@@ -17,6 +17,15 @@ module.exports = {
       type: 'string',
     },
   },
+  guildIDParam: {
+    name: 'guildID',
+    in: 'path',
+    description: 'ID of guild.',
+    required: true,
+    schema: {
+      type: 'string',
+    },
+  },
   gameNameParam: {
     name: 'game',
     in: 'path',

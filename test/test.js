@@ -116,7 +116,8 @@ describe('api', () => {
             || path.endsWith('/status')
             || path.endsWith('/friends')
             || path.includes('/bazaar')
-            || path.includes('/guilds/name')) {
+            || path.includes('/guilds/name')
+            || path.includes('guilds/id')) {
             return callback__(error);
           }
           return supertest(app)[verb](`/api${replacedPath}?q=testsearch`).end((error, response) => {

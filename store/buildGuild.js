@@ -119,4 +119,15 @@ async function getGuildFromName(guildName, { shouldPopulatePlayers = false } = {
   return guild;
 }
 
-module.exports = { getGuildFromPlayer, getGuildFromName, getGuildData };
+async function getGuildFromID(guildID, { shouldPopulatePlayers = false } = {}) {
+  const guild = await getGuildData(guildID);
+  if (shouldPopulatePlayers) {
+    const players = await populatePlayers(guild.members);
+    guild.members = players;
+  }
+  return guild;
+}
+
+module.exports = {
+  getGuildFromPlayer, getGuildFromName, getGuildData, getGuildFromID,
+};
