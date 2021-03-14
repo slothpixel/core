@@ -31,7 +31,7 @@
     "pify": "^5.0.0",
     "pm2": "^4.5.1",
     "request-ip": "^2.1.3",
-    "skyblock-parser": "0.2.3",
+    "skyblock-parser": "0.2.4",
     "universalify": "^2.0.0",
     "uuid": "^8.2.0",
     "winston": "^3.3.3"
