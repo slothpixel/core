@@ -411,6 +411,7 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
     ['MVP_PLUS_PLUS', `${plusPlusColor}[MVP${plusColor}++${plusPlusColor}]`],
     ['HELPER', '&9[HELPER]'],
     ['MODERATOR', '&2[MOD]'],
+    ['GAME_MASTER', '&2[GM]'],
     ['ADMIN', '&c[ADMIN]'],
     ['YOUTUBER', '&c[&fYOUTUBE&c]'],
   ]);
