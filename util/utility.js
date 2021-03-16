@@ -313,7 +313,7 @@ const getData = fromPromise(async (redis, url) => {
 
   url = {
     delay: Number(config.DEFAULT_DELAY),
-    timeout: 20000,
+    timeout: 5000,
     retries: 10,
     ...url,
   };
