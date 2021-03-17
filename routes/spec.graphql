@@ -998,7 +998,7 @@ type BuildBattle {
   """
   Win Ratio
   """
-  w_r: Int
+  w_r: Float
 
   """
   Wins in all Build Battle modes
