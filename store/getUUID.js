@@ -22,9 +22,6 @@ async function getUUID(name) {
     const url = `https://playerdb.co/api/player/minecraft/${name}`;
 
     const response = await getData(redis, url);
-    if (!response) {
-      throw new PlayerError({ status: 400, message: 'Invalid username!' });
-    }
 
     const { data } = response;
     return data.player.raw_id;
