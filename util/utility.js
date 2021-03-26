@@ -348,7 +348,7 @@ const getData = fromPromise(async (redis, url) => {
               }
             }
             if (isMojangApi) {
-              throw new PlayerError({ status: 500, message: 'Failed to get player uuid' });
+              throw new Error('Failed to get player uuid');
             }
           },
         ],
