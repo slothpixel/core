@@ -4,9 +4,10 @@ Functions to convert username to uuid and cache them.
 Returns non-dashed uuid or an error.
 */
 const config = require('../config');
+const redis = require('./redis');
+const { PlayerError } = require("./buildPlayer");
 const { removeDashes, getData } = require('../util/utility');
 const cachedFunction = require('./cachedFunction');
-const redis = require('./redis');
 
 async function getUUID(name) {
   if ((/^[\da-f]{32}$/i).test(removeDashes(name))) {
@@ -14,7 +15,7 @@ async function getUUID(name) {
   }
 
   if (!(/^\w{1,16}$/i).test(name)) {
-    throw new Error('Invalid username or UUID!');
+    throw new PlayerError({ status: 400, message: 'Invalid username or UUID!' });
   }
 
   return cachedFunction(`uuid:${name.toLowerCase()}`, async () => {
@@ -22,7 +23,7 @@ async function getUUID(name) {
 
     const response = await getData(redis, url);
     if (!response) {
-      throw new Error('Invalid username!');
+      throw new PlayerError({ status: 400, message: 'Invalid username!' });
     }
 
     const { data } = response;

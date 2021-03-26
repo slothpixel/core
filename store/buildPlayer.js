@@ -2,12 +2,12 @@
 const async = require('async');
 const pify = require('pify');
 const config = require('../config');
+const redis = require('./redis');
 const processPlayerData = require('../processors/processPlayerData');
 const getUUID = require('./getUUID');
 const {
   logger, generateJob, getData, getPlayerFields,
 } = require('../util/utility');
-const redis = require('./redis');
 const cachedFunction = require('./cachedFunction');
 const { getPlayerProfile, cachePlayerProfile } = require('./queries');
 
@@ -19,7 +19,7 @@ async function buildPlayer(uuid, { shouldCache = true } = {}) {
     const body = await getData(redis, generateJob('player', { id: uuid }).url);
 
     if (body.player === null) {
-      throw new Error('Player has no Hypixel stats!');
+      throw new PlayerError({ status: 404, message: 'Player has no Hypixel stats!' });
     }
 
     const playerData = processPlayerData(body.player || {});
@@ -44,15 +44,12 @@ class PlayerError extends Error {
 }
 
 async function getPlayer(name) {
+  const uuid = await getUUID(name);
+
   try {
-    const uuid = await getUUID(name);
-    try {
-      return await buildPlayer(uuid);
-    } catch (error) {
-      throw new PlayerError({ status: 500, message: error.message });
-    }
+    return await buildPlayer(uuid);
   } catch (error) {
-    throw new PlayerError({ status: 404, message: error.message });
+    throw error;
   }
 }
 
