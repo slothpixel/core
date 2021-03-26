@@ -12,7 +12,7 @@ const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
-const { PlayerError } = require("../store/buildPlayer");
+const { PlayerError } = require('../store/buildPlayer');
 
 const logger = createLogger({
   transports: [new transports.Console()],

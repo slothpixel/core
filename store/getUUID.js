@@ -5,7 +5,7 @@ Returns non-dashed uuid or an error.
 */
 const config = require('../config');
 const redis = require('./redis');
-const { PlayerError } = require("./buildPlayer");
+const { PlayerError } = require('./buildPlayer');
 const { removeDashes, getData } = require('../util/utility');
 const cachedFunction = require('./cachedFunction');
 

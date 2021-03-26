@@ -11,6 +11,14 @@ const {
 const cachedFunction = require('./cachedFunction');
 const { getPlayerProfile, cachePlayerProfile } = require('./queries');
 
+class PlayerError extends Error {
+  constructor({ status, message }) {
+    super(message);
+    this.message = message;
+    this.status = status;
+  }
+}
+
 /*
 Functions to build/cache player object
  */
@@ -35,18 +43,10 @@ async function buildPlayer(uuid, { shouldCache = true } = {}) {
   });
 }
 
-class PlayerError extends Error {
-  constructor({ status, message }) {
-    super(message);
-    this.message = message;
-    this.status = status;
-  }
-}
-
 async function getPlayer(name) {
   const uuid = await getUUID(name);
 
-  return await buildPlayer(uuid);
+  return (await buildPlayer(uuid));
 }
 
 async function populatePlayers(players) {
