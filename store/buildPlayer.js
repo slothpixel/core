@@ -46,11 +46,7 @@ class PlayerError extends Error {
 async function getPlayer(name) {
   const uuid = await getUUID(name);
 
-  try {
-    return await buildPlayer(uuid);
-  } catch (error) {
-    throw error;
-  }
+  return await buildPlayer(uuid);
 }
 
 async function populatePlayers(players) {
