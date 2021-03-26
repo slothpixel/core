@@ -44,8 +44,14 @@ async function buildPlayer(uuid, { shouldCache = true } = {}) {
 }
 
 async function getPlayer(name) {
-  return await getUUID(name)
-      .then(async (uuid) => await buildPlayer(uuid));
+  const player = await getUUID(name)
+      .then(async (uuid) => {
+        const builtPlayer = await buildPlayer(uuid)
+
+        return builtPlayer;
+      });
+
+  return player;
 }
 
 async function populatePlayers(players) {
