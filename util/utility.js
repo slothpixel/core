@@ -2,16 +2,17 @@
  * Provides utility functions.
  * All functions should have external dependencies (DB, etc.) passed as parameters
  * */
-const constants = require('hypixelconstants');
-const { fromPromise } = require('universalify');
-const urllib = require('url');
-const { v4: uuidV4 } = require('uuid');
-const moment = require('moment');
-const { createLogger, format, transports } = require('winston');
 const got = require('got');
+const constants = require('hypixelconstants');
+const urllib = require('url');
+const moment = require('moment');
+const { fromPromise } = require('universalify');
+const { v4: uuidV4 } = require('uuid');
+const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
+const { PlayerError } = require('../store/buildPlayer');
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -347,7 +348,7 @@ const getData = fromPromise(async (redis, url) => {
               }
             }
             if (isMojangApi) {
-              throw new Error('Failed to get player uuid');
+              throw new PlayerError({ status: 500, message: 'Failed to get player uuid' });
             }
           },
         ],
@@ -357,19 +358,19 @@ const getData = fromPromise(async (redis, url) => {
     return body;
   } catch (error) {
     if (url.noRetry) {
-      throw new Error('Invalid response');
+      throw new PlayerError({ status: 500, message: 'Invalid response' });
     }
     if (error.response && error.response.statusCode) {
       switch (error.response.statusCode) {
         case 404:
-          throw new Error('Player does not exist');
+          throw new PlayerError({ status: 404, message: 'Player does not exist' });
         default:
           logger.error(`[INVALID] error: ${error}`);
-          throw new Error('An error occurred while getting the player UUID');
+          throw new PlayerError({ status: error.response.statusCode, message: 'An error occurred while getting the player UUID' });
       }
     }
     logger.error(`[INVALID] error: ${error}`);
-    throw new Error('Internal Server Error');
+    throw new PlayerError({ status: 500, message: 'Internal Server Error' });
   }
 });
 
