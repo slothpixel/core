@@ -45,11 +45,11 @@ async function buildPlayer(uuid, { shouldCache = true } = {}) {
 
 async function getPlayer(name) {
   const player = await getUUID(name)
-      .then(async (uuid) => {
-        const builtPlayer = await buildPlayer(uuid)
+    .then(async (uuid) => {
+      const builtPlayer = await buildPlayer(uuid);
 
-        return builtPlayer;
-      });
+      return builtPlayer;
+    });
 
   return player;
 }
