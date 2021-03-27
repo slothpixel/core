@@ -597,6 +597,11 @@ type BedWars {
   level: Int
 
   """
+  Star Formatted
+  """
+  level_formatted: String
+
+  """
   Total exp
   """
   losses: Int

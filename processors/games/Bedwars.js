@@ -1,5 +1,5 @@
 const { getRatio, pickKeys } = require('../../util/utility');
-const { getLevelForExp } = require('../../util/calculateBedWarsLevel');
+const { getLevelForExp, getLevelFormatted } = require('../../util/calculateBedWarsLevel');
 /*
 * Bedwars
  */
@@ -68,6 +68,7 @@ module.exports = ({
     coins,
     exp: Experience,
     level: getLevelForExp(Experience),
+    level_formatted: getLevelFormatted(getLevelForExp(Experience)),
     wins: wins_bedwars,
     losses: losses_bedwars,
     games_played: games_played_bedwars_1,
