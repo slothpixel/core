@@ -15,6 +15,13 @@ type Query {
   boosters: BoosterQuery
 
   """
+  Returns information about the number of players online in each game
+
+  Equivalent to GET /counts
+  """
+  counts: Counts
+
+  """
   Choose a predefined leaderboard, e.g. "general_level". Possible options can be retrieved from /metadata endpoint.
 
   Equivalent to GET /leaderboards/{template}
@@ -515,6 +522,21 @@ type Attributes {
 type Bans {
   staff: Staff
   watchdog: Watchdog
+}
+
+"""
+Player counts in each gamemode
+"""
+type Counts {
+  """
+  Game counts and counts for each of their modes, if there are any
+  """
+  games: JSON
+
+  """
+  Total players online on the whole network
+  """
+  playerCount: Int
 }
 
 """

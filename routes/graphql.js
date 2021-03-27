@@ -10,6 +10,7 @@ const { game_types: gameTypes } = require('hypixelconstants');
 const { getPlayer, populatePlayers } = require('../store/buildPlayer');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
+const buildCounts = require('../store/buildCounts');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
@@ -154,6 +155,10 @@ const graphql = graphqlExpress({
 
     boosters() {
       return new BoostersResolver();
+    },
+
+    counts() {
+      return buildCounts();
     },
 
     get_leaderboard_template({ template }) {
