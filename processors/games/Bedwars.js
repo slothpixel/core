@@ -1,5 +1,5 @@
 const { getRatio, pickKeys } = require('../../util/utility');
-const { getLevelForExp } = require('../../util/calculateBedWarsLevel');
+const { getLevelForExp, getLevelFormatted } = require('../../util/calculateBedWarsLevel');
 /*
 * Bedwars
  */
@@ -64,10 +64,12 @@ module.exports = ({
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`^${name}_`));
   });
+  const bedwarsLevel = getLevelForExp(Experience);
   return ({
     coins,
     exp: Experience,
-    level: getLevelForExp(Experience),
+    level: bedwarsLevel,
+    level_formatted: getLevelFormatted(bedwarsLevel),
     wins: wins_bedwars,
     losses: losses_bedwars,
     games_played: games_played_bedwars_1,
