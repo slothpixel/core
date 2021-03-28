@@ -228,6 +228,11 @@ function generateJob(type, payload) {
         url: `${apiUrl}/boosters?key=${apiKey}`,
       };
     },
+    counts() {
+      return {
+        url: `${apiUrl}/counts?key=${apiKey}`,
+      };
+    },
     findguild() {
       return {
         url: `${apiUrl}/findguild?key=${apiKey}&byUuid=${payload.id}`,

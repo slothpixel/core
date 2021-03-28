@@ -8,6 +8,7 @@ const buildPlayerFriends = require('../store/buildPlayerFriends');
 const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
+const buildCounts = require('../store/buildCounts');
 const { queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer, getGuildFromName, getGuildFromID } = require('../store/buildGuild');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
@@ -298,6 +299,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     {
       name: 'bans',
       description: 'Ban statistics',
+    },
+    {
+      name: 'counts',
+      description: 'Player counts',
     },
     {
       name: 'metadata',
@@ -2522,6 +2527,37 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: async (_, response) => {
           try {
             response.json(await buildBans());
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
+        },
+      },
+    },
+    '/counts': {
+      get: {
+        summary: 'Get network player counts',
+        description: 'Returns information about player counts in each game',
+        operationId: 'getCounts',
+        tags: [
+          'counts',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {},
+                },
+              },
+            },
+          },
+        },
+        route: () => '/counts',
+        func: async (_, response) => {
+          try {
+            response.json(await buildCounts());
           } catch (error) {
             response.status(500).json({ error: error.message });
           }

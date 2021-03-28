@@ -29,6 +29,7 @@ const defaults = {
   ENABLE_GUILD_CACHE: true, // cache guilds
   ENABLE_BANS_CACHE: true, // cache bans
   ENABLE_BOOSTERS_CACHE: true, // cache boosters
+  ENABLE_COUNTS_STASH: true, // cache counts
   ENABLE_SESSION_CACHE: true, // cache session
   ENABLE_LEADERBOARD_CACHE: true, // cache leaderboards
   ENABLE_AUCTION_CACHE: true, // cache auctions
@@ -38,6 +39,7 @@ const defaults = {
   GUILD_CACHE_SECONDS: 600, // number of seconds to cache guilds
   BANS_CACHE_SECONDS: 30, // number of seconds to cache bans
   BOOSTERS_CACHE_SECONDS: 30, // number of seconds to cache boosters
+  COUNTS_CACHE_SECONDS: 60, // number of seconds to cache counts
   SESSION_CACHE_SECONDS: 60, // number of seconds to cache session
   LEADERBOARD_CACHE_SECONDS: 900, // number of seconds to cache each leaderboard
   AUCTION_CACHE_SECONDS: 60,
