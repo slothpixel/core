@@ -16,24 +16,30 @@ function processGameCounts(data) {
     games: {},
   };
   const { games: games_, playerCount } = data;
-  for (const [game, data_] of Object.entries(games_)) {
-    let cleanName = toMode(game.replace(/_LOBBY/, ''), modes) || game;
-    cleanName = cleanName.split(' ').join('');
+  for (const [rawGame, data_] of Object.entries(games_)) {
+    const cleanGame = toMode(rawGame.replace(/_LOBBY/, ''), modes) || rawGame;
     if (data_.modes && Object.keys(data_.modes).length > 1) {
       const modes_ = {};
-      for (const [mode, count] of Object.entries(data_.modes)) {
-        let cleanMode = toMode(mode, modes) || mode;
-        cleanMode = cleanMode.split(' ').join('');
-        modes_[cleanMode] = count;
+      for (const [rawMode, count] of Object.entries(data_.modes)) {
+        const cleanMode = toMode(rawMode, modes) || rawMode;
+        modes_[rawMode] = {};
+        if (cleanMode !== rawMode) {
+          modes_[rawMode].name = cleanMode;
+        }
+        modes_[rawMode].players = count;
       }
-      object.games[cleanName] = {
-        players: data_.players,
-        modes: modes_,
-      };
+      object.games[rawGame] = {};
+      if (cleanGame !== rawGame) {
+        object.games[rawGame].name = cleanGame;
+      }
+      object.games[rawGame].players = data_.players;
+      object.games[rawGame].modes = modes_;
     } else {
-      object.games[cleanName] = {
-        players: data_.players,
-      };
+      object.games[rawGame] = {};
+      if (cleanGame !== rawGame) {
+        object.games[rawGame].name = cleanGame;
+      }
+      object.games[rawGame].players = data_.players;
     }
   }
   object.playerCount = playerCount;

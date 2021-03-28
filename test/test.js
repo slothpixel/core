@@ -115,6 +115,7 @@ describe('api', () => {
             || path.endsWith('/recentGames')
             || path.endsWith('/status')
             || path.endsWith('/friends')
+            || path.endsWith('/counts')
             || path.includes('/bazaar')
             || path.includes('/guilds/name')
             || path.includes('guilds/id')) {
