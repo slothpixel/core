@@ -92,11 +92,13 @@ async function buildProfile(uuid, id = null) {
   }
 
   // eslint-disable-next-line arrow-body-style
-  return cachedFunction(`skyblock_profile:${profile_id}`, async () => {
+  returned_Profile = await cachedFunction(`skyblock_profile:${profile_id}`, async () => {
     // insertSkyBlockProfile(profile);
 
     return getProfileData(profile_id);
   }, { cacheDuration: 600 });
+  returned_Profile["cute_name"] = profiles[profile_id].cute_name.toLowerCase() //add profile name to the end of the profile
+  return returned_Profile //return appended profile object
 }
 
 module.exports = {
