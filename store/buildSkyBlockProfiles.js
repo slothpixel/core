@@ -97,8 +97,8 @@ async function buildProfile(uuid, id = null) {
 
     return getProfileData(profile_id);
   }, { cacheDuration: 600 });
-  returnedProfile.cute_name = profiles[profile_id].cute_name.toLowerCase(); //add profile name to the end of the profile
-  return returnedProfile; //return appended profile object
+  returnedProfile.cute_name = profiles[profile_id].cute_name || ''; // add profile name to the end of the profile
+  return returnedProfile; // return appended profile object
 }
 
 module.exports = {
