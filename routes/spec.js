@@ -1797,6 +1797,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                                         4: {
                                           type: 'integer',
                                         },
+                                        5: {
+                                          type: 'integer',
+                                        },
                                       },
                                     },
                                   },
