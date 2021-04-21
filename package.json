@@ -23,7 +23,7 @@
     "filter-obj": "^2.0.1",
     "got": "^11.8.1",
     "graphql": "^14.6.0",
-    "hypixelconstants": "slothpixel/hypixelconstants",
+    "hypixelconstants": "^3.3.1",
     "ioredis": "^4.19.4",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
