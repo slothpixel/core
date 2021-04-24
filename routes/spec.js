@@ -1724,6 +1724,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                                     level: {
                                       type: 'integer',
                                     },
+                                    floatLevel: {
+                                      type: 'float',
+                                    },
                                     maxLevel: {
                                       type: 'integer',
                                     },
@@ -1739,6 +1742,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                                   },
                                 },
                               },
+                            },
+                            averageSkillLevel:{
+                              type:'float',
                             },
                             collection: {
                               type: 'object',
