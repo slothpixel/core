@@ -1304,14 +1304,19 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           try {
             const uuid = await getUUID(request.params.player);
             try {
-              let profiles = {};
-              const data = await redis.get(`skyblock_profiles:${uuid}`);
-              if (data) {
-                profiles = JSON.parse(data) || {};
-                // TODO - populatePlayers for each profile
-              } else {
-                profiles = await buildProfileList(uuid);
-              }
+              const profiles = await buildProfileList(uuid);
+              const uuids = new Set();
+              Object.keys(profiles).forEach((profile) => {
+                Object.keys(profiles[profile].members).forEach((member) => {
+                  uuids.add(member);
+                });
+              });
+              const players = await populatePlayers([...uuids].map((uuid) => ({ uuid })));
+              Object.keys(profiles).forEach((profile) => {
+                Object.keys(profiles[profile].members).forEach((member) => {
+                  profiles[profile].members[member].player = players.filter((p) => p.profile.uuid === member)[0].profile;
+                });
+              });
               return response.json(profiles);
             } catch (error) {
               callback(error);
@@ -1910,7 +1915,6 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           try {
             const uuid = await getUUID(request.params.player);
             try {
-              // TODO: Update when buildProfile changed
               const profile = await buildProfile(uuid, request.params.profile);
               try {
                 const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
