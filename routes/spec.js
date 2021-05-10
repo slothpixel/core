@@ -1510,6 +1510,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                                     },
                                   },
                                 },
+                                total_dragon_kills: {
+                                  type: 'integer',
+                                },
                                 deaths: {
                                   type: 'object',
                                   properties: {
@@ -1729,6 +1732,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                                     level: {
                                       type: 'integer',
                                     },
+                                    floatLevel: {
+                                      type: 'number',
+                                    },
                                     maxLevel: {
                                       type: 'integer',
                                     },
@@ -1744,6 +1750,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                                   },
                                 },
                               },
+                            },
+                            average_skill_level: {
+                              type: 'number',
                             },
                             collection: {
                               type: 'object',
