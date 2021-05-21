@@ -77,16 +77,24 @@ function parseAchievements({
     if (Object.hasOwnProperty.call(achievements, game)) {
       const ach = achievements[game].tiered[name];
       if (ach !== undefined) {
-        const tiers = ach.tiers.length;
-        for (let t = 0; t < tiers; t += 1) {
+        const achievementTiers = ach.tiers.length;
+        for (let t = 0; t < achievementTiers; t += 1) {
           const required = ach.tiers[t].amount;
           if (achievement[1] >= required) {
             gameObject[game].points_tiered += ach.tiers[t].points;
             gameObject[game].completed_tiered += 1;
             object.completed_tiered += 1;
           }
-          if (achievement[1] < required || t === tiers - 1) {
-            [, gameObject[game].tiered[name]] = achievement;
+          if (achievement[1] < required || t === achievementTiers - 1) {
+            if (achievement[1] >= required) {
+              gameObject[game].tiered[name] = {
+                currentTier: achievementTiers, currentAmount: achievement[1], maxTier: achievementTiers, maxTierAmount: ach.tiers[achievementTiers - 1].amount,
+              };
+              break;
+            }
+            gameObject[game].tiered[name] = {
+              currentTier: t, currentAmount: achievement[1], maxTier: achievementTiers, maxTierAmount: ach.tiers[achievementTiers - 1].amount,
+            };
             break;
           }
         }
