@@ -21,7 +21,7 @@ function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
     playerRank = rank || newPackageRank || packageRank || null;
   }
 
-  if (playerRank === 'MVP_PLUS' && monthlyPackageRank === 'SUPERSTAR') {
+  if (monthlyPackageRank === 'SUPERSTAR') {
     playerRank = 'MVP_PLUS_PLUS';
   }
 
