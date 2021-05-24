@@ -101,12 +101,12 @@ function parseAchievements({
           if (achievement[1] < required || t === achievementTiers - 1) {
             if (achievement[1] >= required) {
               gameObject[game].tiered[name] = {
-                currentTier: achievementTiers, currentAmount: achievement[1], maxTier: achievementTiers, maxTierAmount: ach.tiers[achievementTiers - 1].amount,
+                current_tier: achievementTiers, current_amount: achievement[1], max_tier: achievementTiers, max_tier_amount: ach.tiers[achievementTiers - 1].amount,
               };
               break;
             }
             gameObject[game].tiered[name] = {
-              currentTier: t, currentAmount: achievement[1], maxTier: achievementTiers, maxTierAmount: ach.tiers[achievementTiers - 1].amount,
+              current_tier: t, current_amount: achievement[1], max_tier: achievementTiers, max_tier_amount: ach.tiers[achievementTiers - 1].amount,
             };
             break;
           }
