@@ -441,19 +441,19 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                         tiered: {
                           type: 'object',
                           achievement_name: {
-                            currentTier: {
+                            current_tier: {
                               description: 'Current Tier of tiered achievement',
                               type: 'integer',
                             },
-                            currentAmount: {
+                            current_amount: {
                               description: 'Current amount of tiered achievement',
                               type: 'integer',
                             },
-                            maxTier: {
+                            max_tier: {
                               description: 'Max tier of tiered achievement',
                               type: 'integer',
                             },
-                            maxTierAmount: {
+                            max_tier_amount: {
                               description: 'Max amount of tiered achievement',
                               type: 'integer',
                             },
