@@ -396,6 +396,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                       type: 'integer',
                       description: 'Total achievement points',
                     },
+                    legacy_achievement_points: {
+                      type: 'integer',
+                      description: 'Total legacy achievement points',
+                    },
                     completed_tiered: {
                       type: 'integer',
                       description: 'Total tiered achievements completed',
@@ -427,11 +431,32 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                             type: 'string',
                           },
                         },
-                        tiered: {
+                        legacy: {
                           type: 'array',
                           items: {
-                            description: 'Achievement name',
-                            type: 'integer',
+                            description: 'All legacy achievements a player has.',
+                            type: 'string',
+                          },
+                        },
+                        tiered: {
+                          type: 'object',
+                          achievement_name: {
+                            current_tier: {
+                              description: 'Current Tier of tiered achievement',
+                              type: 'integer',
+                            },
+                            current_amount: {
+                              description: 'Current amount of tiered achievement',
+                              type: 'integer',
+                            },
+                            max_tier: {
+                              description: 'Max tier of tiered achievement',
+                              type: 'integer',
+                            },
+                            max_tier_amount: {
+                              description: 'Max amount of tiered achievement',
+                              type: 'integer',
+                            },
                           },
                         },
                         completed: {
@@ -456,6 +481,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                         },
                         points_one_time: {
                           description: 'Total achievement points from one time achievements in the game',
+                          type: 'integer',
+                        },
+                        points_legacy: {
+                          description: 'Total achievement points from legacy achievements in the game',
                           type: 'integer',
                         },
                       },
@@ -1165,80 +1194,82 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
       },
     },
     /*
-      '/sessions/{playerName}': {
-        get: {
-          tags: [
-            'session',
-          ],
-          summary: 'Get guild stats by user\'s username or uuid',
-          parameters: [
-            playerNameParam,
-          ],
-          responses: {
-            200: {
-              description: 'successful operation',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      game: {
-                        description: 'Minigame in standard format',
-                        type: 'string',
-                      },
-                      server: {
-                        description: 'Player\'s current server, e.g. mini103M',
-                        type: 'string',
-                      },
-                      players: {
-                        description: 'Array of players on the same server',
-                        type: 'array',
-                        items: {
-                          description: 'Player uuid',
-                          type: 'string',
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          route: () => '/sessions/:player',
-          func: (req, res, cb) => {},
-        },
-      },
-        '/friends/{playerName}': {
-          get: {
-            tags: [
-              'friends',
-            ],
-            summary: 'Get player\'s friends by user\'s username or uuid',
-            parameters: [
-              playerNameParam,
-              },
-            ],
-            responses: {
-              200: {
-                description: 'successful operation',
-                content: {
-                  'application/json': {
-                    schema: {
-                      type: 'array',
-                      items: {
+          '/sessions/{playerName}': {
+            get: {
+              tags: [
+                'session',
+              ],
+              summary: 'Get guild stats by user\'s username or uuid',
+              parameters: [
+                playerNameParam,
+              ],
+              responses: {
+                200: {
+                  description: 'successful operation',
+                  content: {
+                    'application/json': {
+                      schema: {
                         type: 'object',
                         properties: {
-                          uuid: {
-                            description: 'Friend\'s uuid',
+                          game: {
+                            description: 'Minigame in standard format',
                             type: 'string',
                           },
-                          sent_by: {
-                            description: 'UUID of the player who sent the friend request',
+                          server: {
+                            description: 'Player\'s current server, e.g. mini103M',
                             type: 'string',
                           },
-                          started: {
-                            description: 'Date the friendship started',
-                            type: 'integer',
+                          players: {
+                            description: 'Array of players on the same server',
+                            type: 'array',
+                            items: {
+                              description: 'Player uuid',
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              route: () => '/sessions/:player',
+              func: (req, res, cb) => {},
+            },
+          },
+            '/friends/{playerName}': {
+              get: {
+                tags: [
+                  'friends',
+                ],
+                summary: 'Get player\'s friends by user\'s username or uuid',
+                parameters: [
+                  playerNameParam,
+                  },
+                ],
+                responses: {
+                  200: {
+                    description: 'successful operation',
+                    content: {
+                      'application/json': {
+                        schema: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              uuid: {
+                                description: 'Friend\'s uuid',
+                                type: 'string',
+                              },
+                              sent_by: {
+                                description: 'UUID of the player who sent the friend request',
+                                type: 'string',
+                              },
+                              started: {
+                                description: 'Date the friendship started',
+                                type: 'integer',
+                              },
+                            },
                           },
                         },
                       },
@@ -1247,9 +1278,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 },
               },
             },
-          },
-        },
-        */
+            */
     '/skyblock/profiles/{playerName}': {
       get: {
         summary: 'Get list of player\'s skyblock profiles',
@@ -1304,19 +1333,14 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           try {
             const uuid = await getUUID(request.params.player);
             try {
-              const profiles = await buildProfileList(uuid);
-              const uuids = new Set();
-              Object.keys(profiles).forEach((profile) => {
-                Object.keys(profiles[profile].members).forEach((member) => {
-                  uuids.add(member);
-                });
-              });
-              const players = await populatePlayers([...uuids].map((uuid) => ({ uuid })));
-              Object.keys(profiles).forEach((profile) => {
-                Object.keys(profiles[profile].members).forEach((member) => {
-                  profiles[profile].members[member].player = players.filter((p) => p.profile.uuid === member)[0].profile;
-                });
-              });
+              let profiles = {};
+              const data = await redis.get(`skyblock_profiles:${uuid}`);
+              if (data) {
+                profiles = JSON.parse(data) || {};
+                // TODO - populatePlayers for each profile
+              } else {
+                profiles = await buildProfileList(uuid);
+              }
               return response.json(profiles);
             } catch (error) {
               callback(error);
@@ -1924,6 +1948,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           try {
             const uuid = await getUUID(request.params.player);
             try {
+              // TODO: Update when buildProfile changed
               const profile = await buildProfile(uuid, request.params.profile);
               try {
                 const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
@@ -1988,13 +2013,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: async (request, response) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
           /*
-            try {
-              const auctions = await getAuctions(request.query);
-              response.json(auctions);
-            } catch (error) {
-              response.status(400).json({ error });
-            }
-             */
+                      try {
+                        const auctions = await getAuctions(request.query);
+                        response.json(auctions);
+                      } catch (error) {
+                        response.status(400).json({ error });
+                      }
+                       */
         },
       },
     },
@@ -2291,13 +2316,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: (request, response) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
           /*
-            leaderboards(request.query, null, (error, lb) => {
-              if (error) {
-                return response.status(400).json({ error });
-              }
-              return response.json(lb);
-            });
-             */
+                      leaderboards(request.query, null, (error, lb) => {
+                        if (error) {
+                          return response.status(400).json({ error });
+                        }
+                        return response.json(lb);
+                      });
+                       */
         },
       },
     },
@@ -2332,13 +2357,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         func: (request, response, callback) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
           /*
-            leaderboards(request.query, request.params.template, (error, lb) => {
-              if (error) {
-                return callback(response.status(400).json({ error }));
-              }
-              return response.json(lb);
-            });
-             */
+                      leaderboards(request.query, request.params.template, (error, lb) => {
+                        if (error) {
+                          return callback(response.status(400).json({ error }));
+                        }
+                        return response.json(lb);
+                      });
+                       */
         },
       },
     },
