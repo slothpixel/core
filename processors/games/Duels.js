@@ -160,11 +160,11 @@ module.exports = ({
         filter: (key) => key.startsWith('bridge_four_') && !key.endsWith('_kit_wins'),
         keyMap: (key) => key.replace('bridge_four_', '').replace('bridge_', ''),
       }),
-      "2v2v2v2": pickKeys(rest, {
+      '2v2v2v2': pickKeys(rest, {
         filter: (key) => key.startsWith('bridge_2v2v2v2_') && !key.endsWith('_kit_wins'),
         keyMap: (key) => key.replace('bridge_2v2v2v2_', '').replace('bridge_', ''),
       }),
-      "3v3v3v3": pickKeys(rest, {
+      '3v3v3v3': pickKeys(rest, {
         filter: (key) => key.startsWith('bridge_3v3v3v3_') && !key.endsWith('_kit_wins'),
         keyMap: (key) => key.replace('bridge_3v3v3v3_', '').replace('bridge_', ''),
       }),
