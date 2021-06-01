@@ -160,6 +160,14 @@ module.exports = ({
         filter: (key) => key.startsWith('bridge_four_') && !key.endsWith('_kit_wins'),
         keyMap: (key) => key.replace('bridge_four_', '').replace('bridge_', ''),
       }),
+      '2v2v2v2': pickKeys(rest, {
+        filter: (key) => key.startsWith('bridge_2v2v2v2_') && !key.endsWith('_kit_wins'),
+        keyMap: (key) => key.replace('bridge_2v2v2v2_', '').replace('bridge_', ''),
+      }),
+      '3v3v3v3': pickKeys(rest, {
+        filter: (key) => key.startsWith('bridge_3v3v3v3_') && !key.endsWith('_kit_wins'),
+        keyMap: (key) => key.replace('bridge_3v3v3v3_', '').replace('bridge_', ''),
+      }),
     },
     blitz_duel: {
       iron_title_prestige: blitz_iron_title_prestige,
