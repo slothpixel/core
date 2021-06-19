@@ -31,7 +31,7 @@ function betterFormatting(i) {
 }
 
 function removeFormatting(i) {
-  return i.replace(/§./g, '');
+  return i.replace(/§.|⚚|✦|✪/g, '').trim();
 }
 
 function removeDashes(i) {
