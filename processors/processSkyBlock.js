@@ -31,7 +31,7 @@ async function checkItems(members = {}) {
           || item.attributes.rarity_upgrades) return [];
         return [{
           id,
-          name: removeFormatting(item.name),
+          name: removeFormatting(item.name).replace(/⚚|✦|✪/g, '').trim(),
           tier: item.rarity,
           category: item.type || 'misc',
           damage: item.damage || null,
