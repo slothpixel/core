@@ -25,13 +25,13 @@ async function checkItems(members = {}) {
         if (![null, undefined].includes(item.attributes.modifier)
           || id.startsWith('MAP:')
           || item.name === '§fnull'
-          || item.name.endsWith('✪')
-          || item.name.startsWith('Thick ')
           || !/[!-~]/.test(item.name) || !/[!-~]/.test(item.type)
-          || item.rarity_upgrades) return [];
+          || !item.name.match(/[a-z]/i)
+          || item.attributes.wood_singularity_count
+          || item.attributes.rarity_upgrades) return [];
         return [{
           id,
-          name: removeFormatting(item.name),
+          name: removeFormatting(item.name).replace(/⚚|✦|✪/g, '').trim(),
           tier: item.rarity,
           category: item.type || 'misc',
           damage: item.damage || null,
