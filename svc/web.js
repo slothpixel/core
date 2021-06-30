@@ -100,7 +100,7 @@ app.use((request, response, callback) => {
       response.set('X-Rate-Limit-Remaining-Month', config.API_FREE_LIMIT - Number(data[2][1]));
     }
     logger.debug(`rate limit increment ${data}`);
-    if (data[0] > rateLimit && config.NODE_ENV !== 'test') {
+    if (data[0][1] > rateLimit && config.NODE_ENV !== 'test') {
       return response.status(429).json({
         error: 'rate limit exceeded',
       });
