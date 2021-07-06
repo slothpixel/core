@@ -43,6 +43,7 @@ const defaults = {
   SESSION_CACHE_SECONDS: 60, // number of seconds to cache session
   LEADERBOARD_CACHE_SECONDS: 900, // number of seconds to cache each leaderboard
   AUCTION_CACHE_SECONDS: 60,
+  CONCURRENT_REQUEST_LIMIT: 20, // max number of auction pages to concurrently fetch
 };
 
 // ensure that process.env has all values in defaults, but prefer the process.env value
