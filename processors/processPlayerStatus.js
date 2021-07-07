@@ -33,7 +33,7 @@ module.exports = ({
   online,
   game: {
     type: gameTypes_.get(type) || null,
-    mode: mode === 'LOBBY' ? 'Lobby' : (getMode(type, mode)? getMode(type, mode).name || getMode(type, mode) : null),
+    mode: mode === 'LOBBY' ? 'Lobby' : (getMode(type, mode) ? getMode(type, mode).name || getMode(type, mode) : null),
     map: maps_.has(type) ? maps_.get(type).get(map) || null : map || null,
   },
 });
