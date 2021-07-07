@@ -11,7 +11,7 @@ function getMode(type, mode){
 	let gameObject = modes.find((modeObject) => modeObject.key === type);
 	if (!gameObject) return mode
 	let subGameObject = gameObject.modes.find(
-		(modeObject) => modeObject.key === "DREAMS" || modeObject.key === "lab"
+		({key}) => key === "DREAMS" || key === "lab"
 	);
 	return modes_ = gameObject.modes.find((modeObject) =>
 		modeObject.keys ? modeObject.keys.includes(mode) : modeObject.key == mode
