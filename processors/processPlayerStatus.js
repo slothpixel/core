@@ -13,14 +13,11 @@ function getMode(type, mode){
 	let subGameObject = gameObject.modes.find(
 		({key}) => key === "DREAMS" || key === "lab"
 	);
-	return modes_ = gameObject.modes.find((modeObject) =>
-		modeObject.keys ? modeObject.keys.includes(mode) : modeObject.key == mode
+	return modes_ = gameObject.modes.find(({key,keys}) =>
+		keys ? keys.includes(mode) || key == mode : key == mode
 	)
-	? gameObject.modes.find((modeObject) =>
-		modeObject.keys ? modeObject.keys.includes(mode) : modeObject.key == mode
-	)
-	: subGameObject.modes.find((modeObject) =>
-		modeObject.keys ? modeObject.keys.includes(mode) : modeObject.key == mode
+	|| subGameObject.modes.find(({key, keys}) =>
+		keys ? keys.includes(mode) || key == mode : key == mode
 	)
 }
 
