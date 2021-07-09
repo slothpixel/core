@@ -448,24 +448,27 @@ function invokeInterval(func, delay) {
 * Function to sync intervals with Hypixel API updates/caching
 * Used by auctions and bazaar services
  */
-async function syncInterval(test, fun, interval = 60000) {
+async function syncInterval(test, fun, interval = 60000, retest = false) {
   let lastUpdated = await test();
-  let delta = 60000 - (Date.now() - lastUpdated);
-  let wait = delta * 1;
-  // This may need to be adjusted based on latency to Hypixel API
-  while (delta > 3000) {
-    logger.info(`[syncInterval] Waiting for ${wait / 1000} seconds`);
-    // eslint-disable-next-line no-await-in-loop,no-loop-func
-    await new Promise((resolve) => {
-      setTimeout(resolve, wait);
-    });
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const next = lastUpdated + interval;
+    const wait = next - Date.now();
+    logger.info(`[syncInterval] waiting ${wait / 1000} seconds`);
     // eslint-disable-next-line no-await-in-loop
-    lastUpdated = await fun();
-    delta = 60000 - (Date.now() - lastUpdated);
-    wait = delta * 1;
+    await new Promise((resolve) => setTimeout(resolve, wait));
+    // eslint-disable-next-line no-await-in-loop
+    const returned = await fun();
+    lastUpdated = retest ? await test() : (returned || await test());
   }
-  logger.info(`[syncInterval] Successfully synced, now running every ${interval / 1000} seconds`);
-  setInterval(fun, interval);
+}
+
+function chunkArray(array, maxSize) {
+  const output = [];
+  for (let i = 0; i < array.length; i += maxSize) {
+    output.push(array.slice(i, i + maxSize));
+  }
+  return output;
 }
 
 module.exports = {
@@ -495,4 +498,5 @@ module.exports = {
   invokeInterval,
   syncInterval,
   fromEntries,
+  chunkArray,
 };

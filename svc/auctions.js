@@ -5,10 +5,10 @@
 const { Item, decodeData } = require('skyblock-parser');
 const redis = require('../store/redis');
 const {
-  logger, generateJob, getData, syncInterval,
+  logger, generateJob, getData, syncInterval, chunkArray,
 } = require('../util/utility');
+const config = require('../config');
 
-const activeAuctions = {};
 // Contains uuid - bids key pair
 const auctionCache = new Map();
 
@@ -19,6 +19,11 @@ async function getInventory({ i }) {
     i.deleteProperties(['active', 'stats', 'rarity']);
     return i;
   }));
+}
+
+async function parseItemBytes(bytes) {
+  const json = await decodeData(Buffer.from(bytes, 'base64'));
+  return getInventory(json);
 }
 
 function redisBulk(command, keys, arguments_, prefix) {
@@ -35,52 +40,37 @@ function redisBulk(command, keys, arguments_, prefix) {
 }
 
 /*
-* Add new auctions
+* Update or insert auctions
+* @param {Array} auctions - Array of auction objects to be updated
  */
-async function insertAuctions(auctions) {
-  // Decode item data from item_bytes via skyblock-parser
-  await Promise.all(auctions.map(async (auction) => {
-    const json = await decodeData(Buffer.from(auction.item_bytes, 'base64'));
-    [auction.item] = await getInventory(json);
-  }));
-  // await redis.hset();
-  // const uuidList = auctions.map((a) => a.item.attributes.id);
+function updateAuctions(auctions) {
+  const pipeline = redis.pipeline();
+  auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction).map(([key, value]) => [key, JSON.stringify(value)])));
   const uuidList = auctions.map((a) => a.uuid);
   const binList = auctions.filter((a) => a.bin).map((a) => a.uuid);
-  redis.sadd('auction_ids', uuidList);
-  redis.sadd('auction_bins', binList);
-}
-
-/*
-* Update existing auctions
-* @param {Array} auctions - Array of auctions objects to be updated
- */
-function upsertAuctions(auctions) {
-  const auction = {
-    uuid: '123',
-    highest_bid: 123456,
-    bids: [],
-  };
-  // bids, highest_bid
-  redis.hset();
+  pipeline.sadd('auction_ids', uuidList);
+  pipeline.sadd('auction_bins', binList);
+  pipeline.exec();
 }
 
 /*
 * Remove auctions
-* @param {Array} auctions - Array of auctions objects to be removed
+* @param {Array} auctions - Array of auction objects to be removed
  */
 function removeAuctions(auctions) {
   const idList = auctions.map((a) => a.uuid);
+  redis.del(...auctions.map((a) => `auction:${a}`));
   redis.srem('auction_ids', idList);
   // Most of these are bins anyway so no need to filter
   redis.srem('auction_bins', idList);
 }
 
-function updatePrices(auction) {
+async function updatePrices(auction) {
   const {
     // eslint-disable-next-line camelcase
-    start, end, starting_bid, item, bids, highest_bid_amount, bin = false,
+    start, end, starting_bid, item_bytes, bids, highest_bid_amount, bin = false,
   } = auction;
+  const [item] = await parseItemBytes(item_bytes);
   const data = {
     start,
     end,
@@ -100,15 +90,11 @@ function updatePrices(auction) {
 /*
 * Determine how the auction should be updated to DB
  */
-function getUpdateType(auction) {
+async function getUpdateType(auction) {
   const { uuid } = auction;
-  if (!(uuid in activeAuctions)) return 'full';
-  if ((auction.bids.length > activeAuctions[uuid].bids.length)) return 'partial';
-  // Check if auction has ended and remove from cache
-  if (auction.end < Date.now()) {
-    updatePrices(activeAuctions[uuid]);
-    delete activeAuctions[uuid];
-  }
+  const bids = await redis.hget(`auction:${uuid}`, 'bids');
+  if (!bids) return 'full';
+  if (auction.bids.length > JSON.parse(bids).length) return 'partial';
   return 'none';
 }
 
@@ -118,38 +104,44 @@ function removeAuctionIds(bids) {
 }
 
 async function processAndStoreAuctions(auctions = []) {
+  const updates = [];
   try {
     await Promise.all(auctions.map(async (auction) => {
-      const { uuid } = auction;
-      const update = getUpdateType(auction);
+      const update = await getUpdateType(auction);
       if (update === 'none') {
         return;
       }
       // Insert new auction
       if (update === 'full') {
-        const json = await decodeData(Buffer.from(auction.item_bytes, 'base64'));
-        [auction.item] = await getInventory(json);
-        delete auction.item_bytes;
         auction.bids = removeAuctionIds(auction.bids);
-        activeAuctions[uuid] = auction;
-        return; // upsertDocument(uuid, auction);
+        updates.push(auction);
+        return;
       }
       // Only bids have changed
       if (update === 'partial') {
-        activeAuctions[uuid].bids = removeAuctionIds(auction.bids);
-        activeAuctions[uuid].highest_bid_amount = auction.highest_bid_amount;
-        activeAuctions[uuid].end = auction.end;
+        updates.push({
+          bids: removeAuctionIds(auction.bids),
+          highest_bid_amount: auction.highest_bid_amount,
+          end: auction.end,
+          uuid: auction.uuid,
+        });
       }
     }));
-    // Remove empty elements from array
   } catch (error) {
     return logger.error(`auction processing failed: ${error}`);
   }
+  updateAuctions(updates);
 }
 
 async function processEndedAuctions() {
   const { auctions } = await getData(redis, generateJob('skyblock_auctions_ended').url);
   await removeAuctions(auctions);
+  auctions.forEach((auction) => {
+    auction.end = auction.timestamp;
+    delete auction.timestamp;
+  });
+  // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
+  await Promise.all(auctions.map(updatePrices));
 }
 
 async function getAuctionPage(page) {
@@ -162,27 +154,27 @@ async function getAuctionPage(page) {
 async function updateListings() {
   try {
     await processEndedAuctions();
-    const normalAuctionsStored = (await redis.sdiff('auction_ids', 'auction_bins'));
-    // console.log(normalAuctionsStored);
-    const normalAuctions = await redisBulk('hget', normalAuctionsStored, ['highest_bid'], 'auction');
-    console.log(normalAuctions);
     const {
-      auctions, totalAuctions, totalPages, lastUpdated,
+      auctions, totalPages,
     } = await getAuctionPage(0);
-    insertAuctions(auctions);
-    // processAndStoreAuctions(auctions);
-    logger.info(`[updateListings] Retrieving ${totalAuctions} auctions from ${totalPages} pages.`);
-    logger.info(`Data last updated at ${new Date(lastUpdated).toLocaleString()}, ${(Date.now() - lastUpdated) / 1000} seconds ago`);
-    // Get rest of the pages
-    /*
-    const pages = [...new Array(firstPage.totalPages).keys()].slice(1);
-    await Promise.all(pages.map(async (page) => {
-      await processAndStoreAuctions(await getAuctionPage(page).auctions);
-    }));
-     */
+    const allAuctions = [...auctions];
+    const pages = [...new Array(totalPages).keys()].slice(1);
+    // In some environments, large numbers of concurrent requests are unable to be processed, so should be sent in chunks
+    const chunks = chunkArray(pages, Number.parseInt(config.CONCURRENT_REQUEST_LIMIT)); // eslint-disable-line radix
+    let auctionsLastUpdated;
+    for (const chunk of chunks) {
+      // eslint-disable-next-line no-await-in-loop,no-loop-func
+      await Promise.all(chunk.map(async (page) => new Promise((resolve) => getAuctionPage(page).then(({ auctions, lastUpdated }) => {
+        auctionsLastUpdated = lastUpdated;
+        allAuctions.push(...auctions);
+      }).then(resolve))));
+    }
+    await processAndStoreAuctions(allAuctions);
+    logger.info(`[updateListings] Retrieved ${allAuctions.length} auctions from ${totalPages} pages.`);
+    logger.info(`Data last updated at ${new Date(auctionsLastUpdated).toLocaleString()}, ${(Date.now() - auctionsLastUpdated) / 1000} seconds ago`);
     // Reset cache map so it doesn't take memory
     auctionCache.clear();
-    return lastUpdated;
+    return auctionsLastUpdated;
   } catch (error) {
     logger.error(`Failed to update listings: ${error}`);
   }
@@ -196,15 +188,4 @@ async function test() {
   logger.info(`Data last updated at ${new Date(lastUpdated).toLocaleString()}, ${(Date.now() - lastUpdated) / 1000} seconds ago`);
   return lastUpdated;
 }
-
 syncInterval(test, updateListings);
-
-/*
-(async () => {
-  const delta = 50 * 1000 - (Date.now() - await updateListings());
-  logger.info(`Waiting ${delta / 1000} seconds before starting interval to catch up with Hypixel API`);
-  setTimeout(() => {
-    setInterval(updateListings, 60 * 1000);
-  }, delta);
-})();
- */
