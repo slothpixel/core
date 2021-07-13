@@ -14,9 +14,9 @@ function getMode(type, mode){
   return gameObject.modes.find(({key,keys}) =>
     (keys && keys.includes(mode)) || key == mode
   )
-	|| (subGameObject && subGameObject.modes.find(({key, keys}) =>
+  || (subGameObject && subGameObject.modes.find(({key, keys}) =>
     (keys && keys.includes(mode)) || key == mode
-	))
+  ))
 }
 
 module.exports = ({
