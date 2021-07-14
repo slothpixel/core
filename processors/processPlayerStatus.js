@@ -7,7 +7,7 @@ const maps_ = new Map(Object.entries(maps)
 
 function getMode(type, mode){
   const game = modes.find(({key}) => key === type);
-  if (!game) return mode
+  if (!game) return mode;
   const subGame = game.modes.find(
     ({key}) => key === "DREAMS" || key === "lab"
    );
@@ -16,7 +16,7 @@ function getMode(type, mode){
   )
   || (subGame && subGame.modes.find(({key, keys}) =>
     (keys && keys.includes(mode)) || key == mode
-  ))
+  ));
 }
 
 module.exports = ({
