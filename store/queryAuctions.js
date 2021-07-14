@@ -2,10 +2,9 @@
 /*
 * Allows custom DB queries for auctions API endpoint
  */
-const pify = require('pify');
 const config = require('../config');
 const cachedFunction = require('./cachedFunction');
-const redis = pify(require('./redis'));
+const redis = require('./redis');
 const { logger } = require('../util/utility');
 const {
   min, max, median, average, standardDeviation,
@@ -142,6 +141,26 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
       logger.error(error);
     }
   }, { cacheDuration: 60 });
+}
+
+const auctionMeta = {
+  last_updated: 1621101390424,
+  total_auctions: 78456,
+};
+
+async function getAuctionsV2({ auctionUUID = null, id = null, bin = null }) {
+  const intersection = [];
+  if (auctionUUID) {
+    return redis.hget('auction_ids', auctionUUID);
+  }
+  if (bin) {
+    intersection.push('auction_bins');
+  }
+  if (id) {
+    intersection.push('item_ids');
+  }
+  // filter
+  // sort
 }
 
 module.exports = { getAuctions, queryAuctionId };

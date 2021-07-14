@@ -50,7 +50,7 @@
   "engines": {
     "node": ">=10"
   },
-  "jshintConfig":{
+  "jshintConfig": {
     "esversion": 10
   }
 }

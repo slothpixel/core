@@ -1971,13 +1971,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     '/skyblock/auctions': {
       get: {
         summary: 'Query all skyblock auctions',
-        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
+        description: 'Allows you to query all auctions and filter the results based on things such as item ID, rarity, bin or category.',
         operationId: 'getSkyblockAuctions',
         tags: [
           'skyblock',
         ],
         parameters: [
-          filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam, sortOrderParam, {
+          limitParam, pageParam, auctionUUIDParam, sortOrderParam, {
             name: 'sortBy',
             in: 'query',
             description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
@@ -1993,6 +1993,15 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             required: false,
             schema: {
               type: 'string',
+            },
+          },
+          {
+            name: 'bin',
+            in: 'query',
+            description: 'When `true`, returns only bin auctions and when `false`, returns only normal auctions. Both types are returned if the parmeter is not specified.',
+            required: false,
+            schema: {
+              type: 'boolean',
             },
           },
         ],
@@ -2011,15 +2020,12 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
         route: () => '/skyblock/auctions',
         func: async (request, response) => {
-          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-          /*
-                      try {
-                        const auctions = await getAuctions(request.query);
-                        response.json(auctions);
-                      } catch (error) {
-                        response.status(400).json({ error });
-                      }
-                       */
+          try {
+            const auctions = await getAuctions(request.query);
+            response.json(auctions);
+          } catch (error) {
+            response.status(400).json({ error });
+          }
         },
       },
     },

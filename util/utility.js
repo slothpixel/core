@@ -273,6 +273,11 @@ function generateJob(type, payload) {
         url: `${apiUrl}/skyblock/auctions?page=${payload.page}`,
       };
     },
+    skyblock_auctions_ended() {
+      return {
+        url: `${apiUrl}/skyblock/auctions_ended`,
+      };
+    },
     skyblock_profiles() {
       return {
         url: `${apiUrl}/skyblock/profiles?key=${apiKey}&uuid=${payload.id}`,
@@ -439,6 +444,33 @@ function invokeInterval(func, delay) {
   }());
 }
 
+/*
+* Function to sync intervals with Hypixel API updates/caching
+* Used by auctions and bazaar services
+ */
+async function syncInterval(test, fun, interval = 60000, retest = false) {
+  let lastUpdated = await test();
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const next = lastUpdated + interval;
+    const wait = next - Date.now();
+    logger.info(`[syncInterval] waiting ${wait / 1000} seconds`);
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, wait));
+    // eslint-disable-next-line no-await-in-loop
+    const returned = await fun();
+    lastUpdated = retest ? await test() : (returned || await test());
+  }
+}
+
+function chunkArray(array, maxSize) {
+  const output = [];
+  for (let i = 0; i < array.length; i += maxSize) {
+    output.push(array.slice(i, i + maxSize));
+  }
+  return output;
+}
+
 module.exports = {
   logger,
   betterFormatting,
@@ -464,5 +496,7 @@ module.exports = {
   getMonthlyStat,
   pickKeys,
   invokeInterval,
+  syncInterval,
   fromEntries,
+  chunkArray,
 };

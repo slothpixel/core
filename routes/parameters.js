@@ -100,8 +100,12 @@ module.exports = {
     description: 'Define sort order. `asc` for ascending or `desc` for descending',
     required: false,
     schema: {
-      type: 'string',
+      type: 'enum',
       default: 'desc',
+      enum: [
+        'desc',
+        'asc',
+      ],
     },
   },
   limitParam: {
@@ -137,15 +141,6 @@ module.exports = {
     name: 'auctionUUID',
     in: 'query',
     description: 'Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be"',
-    required: false,
-    schema: {
-      type: 'string',
-    },
-  },
-  itemUUIDParam: {
-    name: 'itemUUID',
-    in: 'query',
-    description: 'Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"',
     required: false,
     schema: {
       type: 'string',
