@@ -48,6 +48,7 @@ module.exports = ({
     'eight_two(?!_rush|_ultimate|_lucky|_voidless|_armed)': 'doubles',
     four_three: '3v3v3v3',
     'four_four(?!_rush|_ultimate|_lucky|_voidless|_armed)': '4v4v4v4',
+    four_two: '4v4',
     eight_one_rush: 'rush_solo',
     eight_two_rush: 'rush_doubles',
     four_four_rush: 'rush_4v4v4v4',
