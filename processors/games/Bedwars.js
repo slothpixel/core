@@ -65,6 +65,10 @@ module.exports = ({
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`^${name}_`));
+    gamemodes[betterModeNames[name]].k_d = getRatio(gamemodes[betterModeNames[name]].kills,gamemodes[betterModeNames[name]].deaths);
+    gamemodes[betterModeNames[name]].w_l = getRatio(gamemodes[betterModeNames[name]].wins,gamemodes[betterModeNames[name]].losses);
+    gamemodes[betterModeNames[name]].final_k_d = getRatio(gamemodes[betterModeNames[name]].final_kills,gamemodes[betterModeNames[name]].final_deaths);
+    gamemodes[betterModeNames[name]].bed_ratio = getRatio(gamemodes[betterModeNames[name]].beds_broken,gamemodes[betterModeNames[name]].beds_lost);
   });
   const bedwarsLevel = getLevelForExp(Experience);
   return ({
