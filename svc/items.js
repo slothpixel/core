@@ -96,7 +96,6 @@ app.delete('/:id', (request, response, _callback) => {
   if (id in itemList) {
     logger.info(`Adding item ${id} to update queue`);
     updateQueue.push(id);
-    updateItemList();
   }
   response.json({ status: 'ok' });
 });
