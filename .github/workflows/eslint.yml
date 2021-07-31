@@ -1,0 +1,13 @@
+# Lint pull requests automatically
+name: ESLint
+
+on: [pull_request]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bradennapier/eslint-plus-action@v3.4.2
+      with:
+        fix: true
