@@ -21,11 +21,11 @@ function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
     playerRank = rank || newPackageRank || packageRank || null;
   }
 
-  if (monthlyPackageRank === 'SUPERSTAR') {
+  if (playerRank === 'SUPERSTAR') {
     playerRank = 'MVP_PLUS_PLUS';
   }
 
-  if (rank === 'NONE') {
+  if (playerRank === 'NONE') {
     playerRank = null;
   }
   return playerRank;
