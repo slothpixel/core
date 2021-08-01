@@ -16,6 +16,7 @@ const port = config.PORT || config.ITEMS_PORT;
 let discoveredItems;
 let bazaarProducts = [];
 let itemList = {};
+const updateQueue = new Set();
 
 (async function init() {
   try {
@@ -71,7 +72,7 @@ app.post('/', (request, response, _callback) => {
   let updates = false;
   items.forEach((item) => {
     const { id } = item;
-    if (!discoveredItems.has(id)) {
+    if (!discoveredItems.has(id) || updateQueue.has(id)) {
       updates = true;
       logger.info(`Found new item ID ${id}`);
       if (item.texture === null) {
@@ -83,6 +84,9 @@ app.post('/', (request, response, _callback) => {
       delete item.id;
       itemList[id] = item;
       discoveredItems.add(id);
+      if (updateQueue.has(id)) {
+        updateQueue.delete(id);
+      }
     }
   });
   if (updates) {
@@ -93,10 +97,8 @@ app.post('/', (request, response, _callback) => {
 app.delete('/:id', (request, response, _callback) => {
   const { id } = request.params;
   if (id in itemList) {
-    logger.info(`Deleting entry for item ${id}`);
-    delete itemList[id];
-    discoveredItems.delete(id);
-    updateItemList();
+    logger.info(`Adding item ${id} to update queue`);
+    updateQueue.add(id);
   }
   response.json({ status: 'ok' });
 });
