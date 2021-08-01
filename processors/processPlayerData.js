@@ -15,10 +15,11 @@ const parseQuests = require('./parseQuests');
 
 function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
   let playerRank;
+  if (monthlyPackageRank === 'NONE') monthlyPackageRank = null
   if (rank === 'NORMAL') {
-    playerRank = newPackageRank || packageRank || null;
+    playerRank = monthlyPackageRank || newPackageRank || packageRank || null;
   } else {
-    playerRank = rank || newPackageRank || packageRank || null;
+    playerRank = rank || monthlyPackageRank || newPackageRank || packageRank || null;
   }
 
   if (playerRank === 'SUPERSTAR') {
