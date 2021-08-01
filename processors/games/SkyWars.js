@@ -2,13 +2,14 @@
 * SkyWars
  */
 const { getLevelForExp } = require('../../util/calculateSkyWarsLevel');
-const { getRatio } = require('../../util/utility');
+const { getRatio, pickKeys } = require('../../util/utility');
 
 module.exports = ({
   coins = 0,
   wins = 0,
   losses = 0,
   skywars_experience = 0,
+  levelFormatted = '', 
   kills = 0,
   deaths = 0,
   assists = 0,
@@ -23,6 +24,7 @@ module.exports = ({
   soul_well = 0,
   soul_well_rares = 0,
   soul_well_legendaries = 0,
+  ...rest
 }) => {
   const getModeStats = (regexp) => pickKeys(rest, {
     regexp,
@@ -30,19 +32,24 @@ module.exports = ({
     keyMap: (key) => key.replace(regexp, '')
       .replace(/^_/, '')
       .replace(' _', '_')
-      .replace('_bedwars', '')
       .replace('__', '_'),
   });
   const gamemodes = {};
   const betterModeNames = {
-    
+    'solo(?!_insane|_normal)': 'solo',
+    solo_insane: 'solo_insane',
+    solo_normal: 'solo_normal',
+    'team(?!_insane|_normal)': 'team',
+    team_insane: 'team_insane',
+    team_normal: 'team_normal',
+    'lab(?!_solo|_team)': 'lab',
+    lab_solo: 'lab_solo',
+    lab_team: 'lab_team',
   };
   Object.keys(betterModeNames).forEach((name) => {
-    gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`^${name}_`));
-    gamemodes[betterModeNames[name]].k_d = getRatio(gamemodes[betterModeNames[name]].kills,gamemodes[betterModeNames[name]].deaths);
-    gamemodes[betterModeNames[name]].w_l = getRatio(gamemodes[betterModeNames[name]].wins,gamemodes[betterModeNames[name]].losses);
-    gamemodes[betterModeNames[name]].final_k_d = getRatio(gamemodes[betterModeNames[name]].final_kills,gamemodes[betterModeNames[name]].final_deaths);
-    gamemodes[betterModeNames[name]].bed_ratio = getRatio(gamemodes[betterModeNames[name]].beds_broken,gamemodes[betterModeNames[name]].beds_lost);
+    gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`_${name}$`));
+    gamemodes[betterModeNames[name]].kill_death_ratio = getRatio(gamemodes[betterModeNames[name]].kills, gamemodes[betterModeNames[name]].deaths);
+    gamemodes[betterModeNames[name]].win_loss_ratio = getRatio(gamemodes[betterModeNames[name]].wins, gamemodes[betterModeNames[name]].losses);
   });
   return ({
     coins,
@@ -51,6 +58,7 @@ module.exports = ({
     win_loss_ratio: getRatio(wins, losses),
     experience: skywars_experience,
     level: getLevelForExp(skywars_experience),
+    levelFormatted: `${levelFormatted.replace(/§[a-f0-9]/g,'$&[')}]`,
     kills,
     deaths,
     assists,
@@ -67,5 +75,6 @@ module.exports = ({
     soul_well_uses: soul_well,
     soul_well_rares,
     soul_well_legendaries,
+    gamemodes,
   });
-}
+};
