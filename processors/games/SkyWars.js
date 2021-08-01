@@ -51,6 +51,11 @@ module.exports = ({
     gamemodes[betterModeNames[name]].kill_death_ratio = getRatio(gamemodes[betterModeNames[name]].kills, gamemodes[betterModeNames[name]].deaths);
     gamemodes[betterModeNames[name]].win_loss_ratio = getRatio(gamemodes[betterModeNames[name]].wins, gamemodes[betterModeNames[name]].losses);
   });
+  Object.keys(gamemodes).forEach(function(name) {
+    const mode = gamemodes[name];
+    mode.kill_death_ratio = getRatio(mode.kills,mode.deaths);
+    mode.kill_death_ratio = getRatio(mode.wins,mode.losses);
+  });
   return ({
     coins,
     wins,
