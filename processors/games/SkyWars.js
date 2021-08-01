@@ -55,13 +55,12 @@ module.exports = ({
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`_${name}$`));
-    gamemodes[betterModeNames[name]].kill_death_ratio = getRatio(gamemodes[betterModeNames[name]].kills, gamemodes[betterModeNames[name]].deaths);
-    gamemodes[betterModeNames[name]].win_loss_ratio = getRatio(gamemodes[betterModeNames[name]].wins, gamemodes[betterModeNames[name]].losses);
   });
   Object.keys(gamemodes).forEach((name) => {
     const mode = gamemodes[name];
     mode.kill_death_ratio = getRatio(mode.kills, mode.deaths);
-    mode.kill_death_ratio = getRatio(mode.wins, mode.losses);
+    mode.win_loss_ratio = getRatio(mode.wins, mode.losses);
+    mode.arrow_hit_miss_ratio = getRatio(mode.arrows_hit, mode.arrows_shot)
   });
   return ({
     coins,
