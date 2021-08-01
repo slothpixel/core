@@ -28,11 +28,7 @@ module.exports = ({
 }) => {
   const getModeStats = (regexp) => pickKeys(rest, {
     regexp,
-    // who named these ;-;
     keyMap: (key) => key.replace(regexp, '')
-      .replace(/^_/, '')
-      .replace(' _', '_')
-      .replace('__', '_'),
   });
   const gamemodes = {};
   const betterModeNames = {
