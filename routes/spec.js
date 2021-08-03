@@ -12,6 +12,7 @@ const buildCounts = require('../store/buildCounts');
 const { queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer, getGuildFromName, getGuildFromID } = require('../store/buildGuild');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
+const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
 const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
@@ -22,7 +23,7 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam, guildNameParam, guildIDParam,
+  profileIdParam, guildNameParam, guildIDParam, calendarEventParam, calendarYearsParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -2282,6 +2283,133 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           } catch (error) {
             callback(error.message);
           }
+        },
+      },
+    },
+    '/skyblock/events': {
+      get: {
+        summary: 'SkyBlock event spec',
+        description: 'Returns SkyBlock events',
+        operationId: 'getSkyblockEvents',
+        tags: [
+          'skyblock',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/events',
+        func: (_, response) => {
+          return response.json(buildSkyblockEvents());
+        },
+      },
+    },
+    '/skyblock/calendar': {
+      get: {
+        summary: 'Get Skyblock calendar information',
+        description: 'Returns information about the SkyBlock calendar',
+        operationId: 'getSkyblockCalendar',
+        tags: [
+          'skyblock',
+        ],
+        parameters: [
+          calendarEventParam, calendarYearsParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    date: {
+                      type: 'string',
+                    },
+                    day: {
+                      type: 'integer',
+                    },
+                    month: {
+                      type: 'string',
+                    },
+                    month_index: {
+                      type: 'integer',
+                    },
+                    year: {
+                      type: 'integer',
+                    },
+                    time: {
+                      type: 'string',
+                    },
+                    hour: {
+                      type: 'integer',
+                    },
+                    minute: {
+                      type: 'integer',
+                    },
+                    next_day_countdown: {
+                      type: 'integer',
+                    },
+                    next_month_countdown: {
+                      type: 'integer',
+                    },
+                    events: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          name: {
+                            description: 'The name of the event',
+                            type: 'string',
+                          },
+                          start_timestamp: {
+                            description: 'The starting timestamp of the event',
+                            type: 'integer',
+                          },
+                          end_timestamp: {
+                            description: 'The ending timestamp of the event',
+                            type: 'integer',
+                          },
+                          starting_in: {
+                            description: 'The amount of ms until the event starts',
+                            type: 'integer',
+                          },
+                          ending_in: {
+                            description: 'The amount of ms until the event ends',
+                            type: 'integer',
+                          },
+                          duration: {
+                            description: 'The amount of ms the event is active',
+                            type: 'integer',
+                          },
+                          pet: {
+                            description: 'The type of pet if the event is a Traveling Zoo',
+                            type: 'string',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/calendar',
+        func: (request, response) => {
+          const { event = '', years = 1 } = request.query;
+          return response.json(buildSkyblockCalendar(event, years));
         },
       },
     },

@@ -335,6 +335,32 @@ type SkyblockQuery {
     """
     item_id: String!
   ): SkyblockBazaar
+
+  """
+  Returns all SkyBlock events found in the calendar
+
+  Equivalent to GET /skyblock/events
+  """
+  events: [String]
+
+  """
+  Get Skyblock calendar information
+
+  Equivalent to GET /skyblock/calendar
+  """
+  calendar(
+    """
+    The event in which you would like to filter. If left blank, it will return
+    every event. All available events can be found on the
+    [events endpoint](https://api.slothpixel.me/api/skyblock/events).
+    """
+    event: String
+
+    """
+    The number of years of data to be returned. Default is 1 year
+    """
+    years: Int
+  ): SkyblockCalendar
 }
 
 """
@@ -2767,6 +2793,20 @@ type SkyblockBazaar {
   quick_status: Quick_status
   sell_summary: [Sell_summaryListItem]
   week_historic: [Week_historicListItem]
+}
+
+type SkyblockCalendar {
+  date: String
+  day: Int
+  month: String
+  month_index: Int
+  year: Int
+  time: String
+  hour: Int
+  minute: Int
+  next_day_countdown: Float
+  next_month_countdown: Float
+  events: [JSON]
 }
 
 """

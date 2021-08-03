@@ -216,4 +216,23 @@ module.exports = {
       type: 'string',
     },
   },
+  calendarEventParam: {
+    name: 'event',
+    in: 'query',
+    description: 'The specific event you want to view stats in. If left blank, will return all events',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
+  calendarYearsParam: {
+    name: 'years',
+    in: 'query',
+    description: 'The amount of Skyblock years to query.',
+    default: 1,
+    required: false,
+    schema: {
+      type: 'integer',
+    },
+  },
 };
