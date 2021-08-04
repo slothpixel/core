@@ -60,7 +60,7 @@ module.exports = ({
     const mode = gamemodes[name];
     mode.kill_death_ratio = getRatio(mode.kills, mode.deaths);
     mode.win_loss_ratio = getRatio(mode.wins, mode.losses);
-    mode.arrow_hit_miss_ratio = getRatio(mode.arrows_hit, mode.arrows_shot)
+    mode.arrow_hit_miss_ratio = getRatio(mode.arrows_hit, mode.arrows_shot);
   });
   return ({
     coins,

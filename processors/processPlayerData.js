@@ -15,7 +15,7 @@ const parseQuests = require('./parseQuests');
 
 function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
   let playerRank;
-  if (monthlyPackageRank === 'NONE') monthlyPackageRank = null
+  if (monthlyPackageRank === 'NONE') monthlyPackageRank = null;
   if (rank === 'NORMAL') {
     playerRank = monthlyPackageRank || newPackageRank || packageRank || null;
   } else {
