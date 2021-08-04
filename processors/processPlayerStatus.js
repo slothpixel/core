@@ -5,18 +5,14 @@ const gameTypes_ = new Map(gameTypes
 const maps_ = new Map(Object.entries(maps)
   .map(([game, maps]) => [game, new Map(Object.entries(maps).map((([map, { name }]) => [map, name])))]));
 
-function getMode(type, mode){
-  const game = modes.find(({key}) => key === type);
+function getMode(type, mode) {
+  const game = modes.find(({ key }) => key === type);
   if (!game) return mode;
   const subGame = game.modes.find(
-    ({key}) => key === "DREAMS" || key === "lab"
-   );
-  return game.modes.find(({key, keys}) =>
-    (keys && keys.includes(mode)) || key == mode
-  )
-  || (subGame && subGame.modes.find(({key, keys}) =>
-    (keys && keys.includes(mode)) || key == mode
-  ));
+    ({ key }) => key === 'DREAMS' || key === 'lab',
+  );
+  return game.modes.find(({ key, keys }) => (keys && keys.includes(mode)) || key === mode)
+  || (subGame && subGame.modes.find(({ key, keys }) => (keys && keys.includes(mode)) || key === mode));
 }
 
 module.exports = ({
