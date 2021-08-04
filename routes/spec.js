@@ -23,7 +23,8 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam, guildNameParam, guildIDParam, calendarEventParam, calendarYearsParam,
+  profileIdParam, guildNameParam, guildIDParam, calendarEventsParam, calendarFromParam, calendarToParam,
+  calendarYearsParam, calendarStopAtYearEndParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -2300,9 +2301,12 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             content: {
               'application/json': {
                 schema: {
-                  type: 'array',
-                  items: {
-                    type: 'string',
+                  type: 'object',
+                  properties: {
+                    EVENT_ENUM: {
+                      description: 'The cleaner name of the event. Use key for the events parameter in /calendar/events endpoint',
+                      type: 'string',
+                    },
                   },
                 },
               },
@@ -2324,7 +2328,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           'skyblock',
         ],
         parameters: [
-          calendarEventParam, calendarYearsParam,
+          calendarEventsParam, calendarFromParam, calendarToParam, calendarYearsParam, calendarStopAtYearEndParam,
         ],
         responses: {
           200: {
@@ -2335,67 +2339,87 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                   type: 'object',
                   properties: {
                     date: {
+                      description: 'The date based on \'from\' parameter, e.g Early Winter 14th',
                       type: 'string',
                     },
                     day: {
+                      description: 'The current day based on \'from\' parameter',
                       type: 'integer',
                     },
                     month: {
+                      description: 'The current month based on \'from\' parameter',
                       type: 'string',
                     },
-                    month_index: {
-                      type: 'integer',
-                    },
                     year: {
+                      description: 'The current year based on \'from\' parameter',
                       type: 'integer',
                     },
                     time: {
+                      description: 'The current time based on \'from\' parameter',
                       type: 'string',
                     },
-                    hour: {
+                    minute: {
+                      description: 'The current minute based on \'from\' parameter',
                       type: 'integer',
                     },
-                    minute: {
+                    hour: {
+                      description: 'The current hour based on \'from\' parameter',
                       type: 'integer',
                     },
                     next_day_countdown: {
+                      description: 'The time until the next day based on \'from\' parameter',
                       type: 'integer',
                     },
                     next_month_countdown: {
+                      description: 'The time until the next month based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    next_year_countdown: {
+                      description: 'The time until the next year based on \'from\' parameter',
                       type: 'integer',
                     },
                     events: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          name: {
-                            description: 'The name of the event',
-                            type: 'string',
-                          },
-                          start_timestamp: {
-                            description: 'The starting timestamp of the event',
-                            type: 'integer',
-                          },
-                          end_timestamp: {
-                            description: 'The ending timestamp of the event',
-                            type: 'integer',
-                          },
-                          starting_in: {
-                            description: 'The amount of ms until the event starts',
-                            type: 'integer',
-                          },
-                          ending_in: {
-                            description: 'The amount of ms until the event ends',
-                            type: 'integer',
-                          },
-                          duration: {
-                            description: 'The amount of ms the event is active',
-                            type: 'integer',
-                          },
-                          pet: {
-                            description: 'The type of pet if the event is a Traveling Zoo',
-                            type: 'string',
+                      type: 'object',
+                      properties: {
+                        EVENT_ENUM: {
+                          type: 'object',
+                          properties: {
+                            name: {
+                              description: 'The cleaner name of the event',
+                              type: 'string',
+                            },
+                            duration: {
+                              description: 'The time the event is active',
+                              type: 'integer',
+                            },
+                            events: {
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  start_timestamp: {
+                                    description: 'The starting timestamp of the event',
+                                    type: 'integer',
+                                  },
+                                  end_timestamp: {
+                                    description: 'The ending timestamp of the event',
+                                    type: 'integer',
+                                  },
+                                  starting_in: {
+                                    description: 'The time until the event starts',
+                                    type: 'integer',
+                                  },
+                                  ending_in: {
+                                    description: 'The time until the event ends',
+                                    type: 'integer',
+                                  },
+                                  pet: {
+                                    description: 'The type of pet if the event is a Traveling Zoo',
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                            },
                           },
                         },
                       },
@@ -2408,8 +2432,15 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
         route: () => '/skyblock/calendar',
         func: (request, response) => {
-          const { event = '', years = 1 } = request.query;
-          return response.json(buildSkyblockCalendar(event, years));
+          const {
+            events, from, to, years, stopatyearend,
+          } = request.query;
+          try {
+            const result = buildSkyblockCalendar(events, from, to, years, stopatyearend);
+            response.json(result);
+          } catch (error) {
+            response.status(500).json({ error: error.message });
+          }
         },
       },
     },

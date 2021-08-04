@@ -216,23 +216,50 @@ module.exports = {
       type: 'string',
     },
   },
-  calendarEventParam: {
-    name: 'event',
+  calendarEventsParam: {
+    name: 'events',
     in: 'query',
-    description: 'The specific event you want to view stats in. If left blank, will return all events',
+    description: 'The specific events you want to view the times. If left blank, will return all events. Multiple events separated by commas.',
     required: false,
     schema: {
       type: 'string',
     },
   },
-  calendarYearsParam: {
-    name: 'years',
+  calendarFromParam: {
+    name: 'from',
     in: 'query',
-    description: 'The amount of Skyblock years to query.',
-    default: 1,
+    description: 'The starting timestamp from which to get events. Uses a unix timestamp.',
     required: false,
     schema: {
       type: 'integer',
+    },
+  },
+  calendarToParam: {
+    name: 'to',
+    in: 'query',
+    description: 'Date to get calendar events until to. Uses a unix timestamp. Must have either \'to\' or \'years\' parameter.',
+    required: false,
+    schema: {
+      type: 'integer',
+    },
+  },
+  calendarYearsParam: {
+    name: 'years',
+    in: 'query',
+    description: 'The amount of Skyblock years to query. Must have either \'to\' or \'years\' parameter.',
+    required: false,
+    schema: {
+      type: 'integer',
+    },
+  },
+  calendarStopAtYearEndParam: {
+    name: 'stopatyearend',
+    in: 'query',
+    description: 'Whether to stop the data at the year end. If true, will only show data until the end of the current Skyblock year, otherwise will return the full year starting from the \'from\' timestamp, possibly including part of the next year.',
+    default: false,
+    required: false,
+    schema: {
+      type: 'boolean',
     },
   },
 };

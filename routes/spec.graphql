@@ -341,7 +341,7 @@ type SkyblockQuery {
 
   Equivalent to GET /skyblock/events
   """
-  events: [String]
+  events: JSON
 
   """
   Get Skyblock calendar information
@@ -350,16 +350,33 @@ type SkyblockQuery {
   """
   calendar(
     """
-    The event in which you would like to filter. If left blank, it will return
+    The events enum in which you would like to filter. If left blank, it will return
     every event. All available events can be found on the
     [events endpoint](https://api.slothpixel.me/api/skyblock/events).
     """
-    event: String
+    events: String
 
     """
-    The number of years of data to be returned. Default is 1 year
+    The starting timestamp from which to get events. Uses a unix timestamp.
+    """
+    from: Float
+
+    """
+    Date to get calendar events until to. Uses a unix timestamp. Must have either a \'to\' or \years\ parameter.
+    """
+    to: Float
+
+    """
+    The amount of Skyblock years to query. Must have either a \'to\' or \years\ parameter.
     """
     years: Int
+
+    """
+    Whether to stop the data at the year end. If true, will only show data until
+    the end of the current Skyblock year, otherwise will return the full year starting
+    from the \'from\' timestamp, possibly including part of the next year.
+    """
+    stopatyearend: Boolean
   ): SkyblockCalendar
 }
 
@@ -2799,14 +2816,14 @@ type SkyblockCalendar {
   date: String
   day: Int
   month: String
-  month_index: Int
   year: Int
   time: String
-  hour: Int
   minute: Int
+  hour: Int
   next_day_countdown: Float
   next_month_countdown: Float
-  events: [JSON]
+  next_year_countdown: Float
+  events: JSON
 }
 
 """

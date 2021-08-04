@@ -149,8 +149,10 @@ class SkyblockResolver {
     return buildSkyblockEvents();
   }
 
-  calendar({ event = '', years = 1 }) {
-    return buildSkyblockCalendar(event, years);
+  calendar({
+    events, from, to, years, stopatyearend,
+  }) {
+    return buildSkyblockCalendar(events, from, to, years, stopatyearend);
   }
 }
 

@@ -42,6 +42,10 @@ function getOffset(month, day) {
   return months.indexOf(month) * monthLength * dayMs + (day - 1) * dayMs;
 }
 
+function timeToSkyblockYear(time) {
+  return Math.floor((time - yearZero) / yearMs) + 1;
+}
+
 function getZooPet(time) {
   const iterations = Math.floor((time - zooStart) / zooTimeLength);
 
@@ -70,8 +74,8 @@ function getJacobEventTimes() {
   return times;
 }
 
-const events = [
-  {
+const eventTimes = {
+  BANK_INTEREST: {
     name: 'Bank Interest',
     times: [
       {
@@ -92,7 +96,7 @@ const events = [
       },
     ],
   },
-  {
+  ELECTION_OVER: {
     name: 'Election Over',
     times: [
       {
@@ -101,7 +105,7 @@ const events = [
       },
     ],
   },
-  {
+  TRAVELING_ZOO: {
     name: 'Traveling Zoo',
     times: [
       {
@@ -114,7 +118,7 @@ const events = [
       },
     ],
   },
-  {
+  ELECTION_BOOTH_OPENS: {
     name: 'Election Booth Opens',
     times: [
       {
@@ -123,7 +127,7 @@ const events = [
       },
     ],
   },
-  {
+  FEAR_MONGERER: {
     name: 'Fear Mongerer',
     times: [
       {
@@ -132,7 +136,7 @@ const events = [
       },
     ],
   },
-  {
+  SPOOKY_FESTIVAL: {
     name: 'Spooky Festival',
     times: [
       {
@@ -141,7 +145,7 @@ const events = [
       },
     ],
   },
-  {
+  JERRYS_WORKSHOP: {
     name: 'Jerry\'s Workshop',
     times: [
       {
@@ -150,7 +154,7 @@ const events = [
       },
     ],
   },
-  {
+  SEASON_OF_JERRY: {
     name: 'Season of Jerry',
     times: [
       {
@@ -159,7 +163,7 @@ const events = [
       },
     ],
   },
-  {
+  NEW_YEAR_CELEBRATION: {
     name: 'New Year Celebration',
     times: [
       {
@@ -168,15 +172,19 @@ const events = [
       },
     ],
   },
-  {
+  JACOBS_CONTEST: {
     name: 'Jacob\'s Farming Contest',
     times: getJacobEventTimes(),
   },
-];
+};
 
-function buildSkyblockCalendar(event, years) {
-  const currentYear = Math.floor((Date.now() - yearZero) / yearMs);
-  const currentOffset = (Date.now() - yearZero) % yearMs;
+function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAtYearEnd = false) {
+  if (Number.isNaN(Number(to)) && Number.isNaN(Number(years))) {
+    throw new TypeError('Must have either \'to\' or \'years\' parameter.');
+  }
+
+  const currentYear = Math.floor((from - yearZero) / yearMs);
+  const currentOffset = (from - yearZero) % yearMs;
 
   const currentMonth = Math.floor(currentOffset / monthMs);
   const currentMonthOffset = (currentOffset - currentMonth * monthMs) % monthMs;
@@ -194,63 +202,97 @@ function buildSkyblockCalendar(event, years) {
 
   const formattedTime = `${currentHour}:${(Math.floor(currentMinute / 10) * 10).toString().padStart(2, '0')}${suffix}`;
 
-  const eventList = [];
+  const eventList = {};
+
+  Object.keys(eventTimes).forEach((key) => {
+    eventList[key] = {
+      name: '',
+      duration: 0,
+      events: [],
+    };
+  });
+
+  // convert 'to' to years for looping
+  if (Number.isNaN(Number(years))) years = timeToSkyblockYear(to) - currentYear;
+  if (years <= 0) throw new Error('Years must be positive');
 
   for (let i = 0; i < years; i++) {
-    for (const { name, times: times_ } of events) {
+    for (const [event, { name, times: times_ }] of Object.entries(eventTimes)) {
+      const duration = times_[0].end - times_[0].start + dayMs;
+
+      eventList[event].name = name;
+      eventList[event].duration = duration;
+
       for (const { start: start_, end: end_ } of times_) {
         const times = {
           start: start_ + yearMs * i,
           end: end_ + yearMs * i,
         };
 
+        /* eslint-disable-next-line no-continue */
+        if (stopAtYearEnd && times.end < currentOffset) continue;
+
         const msTill = times.end < currentOffset
           ? yearMs - currentOffset + times.start
           : times.start - currentOffset;
 
-        const duration = times.end - times.start + dayMs;
-
         const o = {
-          name,
-          start_timestamp: (Math.round(Date.now() / 1000) + Math.round(msTill / 1000)) * 1000,
-          end_timestamp: (Math.round(Date.now() / 1000) + Math.round((msTill + duration) / 1000)) * 1000,
+          start_timestamp: (Math.round(from / 1000) + Math.round(msTill / 1000)) * 1000,
+          end_timestamp: (Math.round(from / 1000) + Math.round((msTill + duration) / 1000)) * 1000,
           starting_in: msTill,
           ending_in: msTill + duration,
-          duration,
         };
 
-        if (name === 'Traveling Zoo') {
-          o.pet = getZooPet(Date.now() + msTill);
-        }
+        if (name === 'Traveling Zoo') o.pet = getZooPet(from + msTill);
 
-        eventList.push(o);
+        eventList[event].events.push(o);
       }
     }
   }
 
-  const filteredEvents = event !== ''
-    ? eventList.filter(({ name }) => name.toLowerCase() === event.replace(/%20/g, ' ').toLowerCase())
-    : eventList;
+  if (!Number.isNaN(Number(to))) {
+    Object.keys(eventList).forEach((key) => {
+      /* eslint-disable-next-line camelcase */
+      eventList[key].events = eventList[key].events.filter(({ start_timestamp }) => start_timestamp < to);
+    });
+  }
+
+  const eventsToFilter = events.split(',');
+
+  const filteredEvents = {};
+  for (const event of eventsToFilter) {
+    filteredEvents[event] = eventList[event];
+  }
 
   return {
     date: `${months[currentMonth]} ${nth(currentDay + 1)}`,
     day: currentDay + 1,
     month: months[currentMonth],
-    month_index: currentMonth,
     year: currentYear + 1,
 
     time: formattedTime,
-    hour: currentHour,
     minute: Math.floor(currentMinute / 10) * 10,
+    hour: currentHour,
 
     next_day_countdown: dayMs - currentDayOffset,
     next_month_countdown: monthMs - currentMonthOffset,
+    next_year_countdown: yearMs - currentOffset,
 
-    events: filteredEvents.sort((a, b) => a.starting_in - b.starting_in),
+    events: eventsToFilter.length === 1 && eventsToFilter[0] === ''
+      ? eventList
+      : filteredEvents,
   };
+}
+
+function buildSkyblockEvents() {
+  const o = {};
+  Object.entries(eventTimes).forEach(([key, { name }]) => {
+    o[key] = name;
+  });
+  return o;
 }
 
 module.exports = {
   buildSkyblockCalendar,
-  buildSkyblockEvents: () => events.map(({ name }) => name),
+  buildSkyblockEvents,
 };
