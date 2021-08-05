@@ -362,12 +362,12 @@ type SkyblockQuery {
     from: Float
 
     """
-    Date to get calendar events until to. Uses a unix timestamp. Must have either a \'to\' or \years\ parameter.
+    Date to get calendar events until to. Uses a unix timestamp. Must have either \'to\' or \years\ parameter.
     """
     to: Float
 
     """
-    The amount of Skyblock years to query. Must have either a \'to\' or \years\ parameter.
+    The amount of Skyblock years to query. Must have either \'to\' or \years\ parameter.
     """
     years: Int
 

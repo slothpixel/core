@@ -74,6 +74,10 @@ function getJacobEventTimes() {
   return times;
 }
 
+function getUniqueListBy(array, key) {
+  return [...new Map(array.map((item) => [item[key], item])).values()];
+}
+
 const eventTimes = {
   BANK_INTEREST: {
     name: 'Bank Interest',
@@ -213,10 +217,13 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
   });
 
   // convert 'to' to years for looping
-  if (Number.isNaN(Number(years))) years = timeToSkyblockYear(to) - currentYear;
-  if (years <= 0) throw new Error('Years must be positive');
+  const toToYears = Number.isNaN(Number(years))
+    ? timeToSkyblockYear(to) - currentYear
+    : years;
 
-  for (let i = 0; i < years; i++) {
+  if (toToYears <= 0) throw new Error('Years must be positive');
+
+  for (let i = 0; i < toToYears; i++) {
     for (const [event, { name, times: times_ }] of Object.entries(eventTimes)) {
       const duration = times_[0].end - times_[0].start + dayMs;
 
@@ -250,7 +257,11 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
     }
   }
 
-  if (!Number.isNaN(Number(to))) {
+  Object.keys(eventList).forEach((key) => {
+    eventList[key].events = getUniqueListBy(eventList[key].events, 'start_timestamp');
+  });
+
+  if (Number.isInteger(Number(to)) && Number.isNaN(Number(years))) {
     Object.keys(eventList).forEach((key) => {
       /* eslint-disable-next-line camelcase */
       eventList[key].events = eventList[key].events.filter(({ start_timestamp }) => start_timestamp < to);
