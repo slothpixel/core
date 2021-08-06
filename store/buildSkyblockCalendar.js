@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
 const { nth } = require('../util/utility');
+const parseTimestamp = require('../util/readableTimestamps');
 
 const months = [
   'Early Spring',
@@ -182,13 +183,24 @@ const eventTimes = {
   },
 };
 
-function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAtYearEnd = false) {
-  if (Number.isNaN(Number(to)) && Number.isNaN(Number(years))) {
-    throw new TypeError('Must have either \'to\' or \'years\' parameter.');
+function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = 'false') {
+  const now = Date.now();
+  let fromDate = from || now;
+
+  if (typeof from === 'string') fromDate = parseTimestamp(from);
+  fromDate = Math.max(fromDate, yearZero);
+
+  let toDate = to || fromDate + yearMs * years || now;
+  if (typeof to === 'string') toDate = parseTimestamp(to);
+
+  if (Number.isNaN(Number(fromDate)) || Number.isNaN(Number(toDate))) {
+    throw new TypeError("Parameters 'from' and 'to' must be integers");
   }
 
-  const currentYear = Math.floor((from - yearZero) / yearMs);
-  const currentOffset = (from - yearZero) % yearMs;
+  if (toDate < fromDate) throw new Error("Parameter 'to' must be greater than 'from'");
+
+  const currentYear = Math.floor((fromDate - yearZero) / yearMs);
+  const currentOffset = (fromDate - yearZero) % yearMs;
 
   const currentMonth = Math.floor(currentOffset / monthMs);
   const currentMonthOffset = (currentOffset - currentMonth * monthMs) % monthMs;
@@ -217,11 +229,15 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
   });
 
   // convert 'to' to years for looping
-  const toToYears = Number.isNaN(Number(years))
-    ? timeToSkyblockYear(to) - currentYear
+  let toToYears = Number.isNaN(Number(years))
+    ? timeToSkyblockYear(toDate) - currentYear
     : years;
 
-  if (toToYears <= 0) throw new Error('Years must be positive');
+  toToYears = Math.min(toToYears, 10);
+
+  if (stopAtYearEnd === 'false') toToYears++;
+
+  if (toToYears <= 0) throw new Error("Parameter 'years' must be positive");
 
   for (let i = 0; i < toToYears; i++) {
     for (const [event, { name, times: times_ }] of Object.entries(eventTimes)) {
@@ -237,20 +253,20 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
         };
 
         /* eslint-disable-next-line no-continue */
-        if (stopAtYearEnd && times.end < currentOffset) continue;
+        if (stopAtYearEnd === 'true' && times.end < currentOffset) continue;
 
         const msTill = times.end < currentOffset
           ? yearMs - currentOffset + times.start
           : times.start - currentOffset;
 
         const o = {
-          start_timestamp: (Math.round(from / 1000) + Math.round(msTill / 1000)) * 1000,
-          end_timestamp: (Math.round(from / 1000) + Math.round((msTill + duration) / 1000)) * 1000,
+          start_timestamp: (Math.round(fromDate / 1000) + Math.round(msTill / 1000)) * 1000,
+          end_timestamp: (Math.round(fromDate / 1000) + Math.round((msTill + duration) / 1000)) * 1000,
           starting_in: msTill,
           ending_in: msTill + duration,
         };
 
-        if (name === 'Traveling Zoo') o.pet = getZooPet(from + msTill);
+        if (name === 'Traveling Zoo') o.pet = getZooPet(fromDate + msTill);
 
         eventList[event].events.push(o);
       }
@@ -259,16 +275,11 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
 
   Object.keys(eventList).forEach((key) => {
     eventList[key].events = getUniqueListBy(eventList[key].events, 'start_timestamp');
+    /* eslint-disable-next-line camelcase */
+    eventList[key].events = eventList[key].events.filter(({ start_timestamp }) => start_timestamp < toDate);
   });
 
-  if (Number.isInteger(Number(to)) && Number.isNaN(Number(years))) {
-    Object.keys(eventList).forEach((key) => {
-      /* eslint-disable-next-line camelcase */
-      eventList[key].events = eventList[key].events.filter(({ start_timestamp }) => start_timestamp < to);
-    });
-  }
-
-  const eventsToFilter = events.split(',');
+  const eventsToFilter = events ? events.split(',') : Object.keys(eventTimes);
 
   const filteredEvents = {};
   for (const event of eventsToFilter) {
@@ -276,6 +287,9 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
   }
 
   return {
+    from: fromDate,
+    to: toDate,
+
     date: `${months[currentMonth]} ${nth(currentDay + 1)}`,
     day: currentDay + 1,
     month: months[currentMonth],
@@ -289,9 +303,7 @@ function buildSkyblockCalendar(events = '', from = Date.now(), to, years, stopAt
     next_month_countdown: monthMs - currentMonthOffset,
     next_year_countdown: yearMs - currentOffset,
 
-    events: eventsToFilter.length === 1 && eventsToFilter[0] === ''
-      ? eventList
-      : filteredEvents,
+    events: filteredEvents,
   };
 }
 

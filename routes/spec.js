@@ -2439,7 +2439,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             const result = buildSkyblockCalendar(events, from, to, years, stopatyearend);
             response.json(result);
           } catch (error) {
-            response.status(500).json({ error: error.message });
+            response.status(400).json({ error: error.message });
           }
         },
       },
