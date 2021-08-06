@@ -235,9 +235,9 @@ function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = 'false')
 
   toToYears = Math.min(toToYears, 10);
 
-  if (stopAtYearEnd === 'false') toToYears++;
-
   if (toToYears <= 0) throw new Error("Parameter 'years' must be positive");
+
+  if (stopAtYearEnd === 'false') toToYears++;
 
   for (let i = 0; i < toToYears; i++) {
     for (const [event, { name, times: times_ }] of Object.entries(eventTimes)) {

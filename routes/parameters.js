@@ -228,7 +228,7 @@ module.exports = {
   calendarFromParam: {
     name: 'from',
     in: 'query',
-    description: 'The starting timestamp from which to get events. Uses a unix timestamp.',
+    description: 'The starting timestamp from which to get events. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
     required: false,
     schema: {
       type: 'integer',
@@ -237,7 +237,7 @@ module.exports = {
   calendarToParam: {
     name: 'to',
     in: 'query',
-    description: 'Date to get calendar events until to. Uses a unix timestamp. Must have either \'to\' or \'years\' parameter.',
+    description: 'Date to get calendar events until to. Must have either \'to\' or \'years\' parameter. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
     required: false,
     schema: {
       type: 'integer',

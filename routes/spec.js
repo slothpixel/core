@@ -2338,6 +2338,14 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    from: {
+                      description: 'The timestamp of the \'from\' parameter',
+                      type: 'integer',
+                    },
+                    to: {
+                      description: 'The timestamp of the \'to\' parameter',
+                      type: 'integer',
+                    },
                     date: {
                       description: 'The date based on \'from\' parameter, e.g Early Winter 14th',
                       type: 'string',
