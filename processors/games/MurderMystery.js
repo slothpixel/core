@@ -29,38 +29,38 @@ module.exports = ({
     regexp,
     keyMap: (key) => key.replace(regexp, ''),
   });
-  const gamemodes = {}
+  const gamemodes = {};
   const mapNames = [
-    "headquarters",
-    "library",
-    "gold_rush",
-    "hypixel_world",
-    "archives",
-    "transport",
-    "ancient_tomb",
-    "mountain",
-    "cruise_ship",
-    "towerfall",
-    "hollywood",
-    "aquarium",
-    "san_peratico",
-    "san_peratico_v2",
-    "library",
-    "darkfall",
-    "widow's_den",
-    "snowfall",
-    "skyway_pier",
-    "spooky_mansion",
-    "snowglobe",
-    "archives_top_floor"
-  ]
+    'headquarters',
+    'library',
+    'gold_rush',
+    'hypixel_world',
+    'archives',
+    'transport',
+    'ancient_tomb',
+    'mountain',
+    'cruise_ship',
+    'towerfall',
+    'hollywood',
+    'aquarium',
+    'san_peratico',
+    'san_peratico_v2',
+    'library',
+    'darkfall',
+    'widow\'s_den',
+    'snowfall',
+    'skyway_pier',
+    'spooky_mansion',
+    'snowglobe',
+    'archives_top_floor',
+  ];
   const betterModeNames = {
-    MURDER_CLASSIC : "murder_classic",
-    MURDER_DOUBLE_UP : "murder_double_up",
-    MURDER_ASSASSINS : "murder_assassins"
+    MURDER_CLASSIC: 'murder_classic',
+    MURDER_DOUBLE_UP: 'murder_double_up',
+    MURDER_ASSASSINS: 'murder_assassins',
   };
   Object.keys(betterModeNames).forEach((name) => {
-    gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`(?<!${mapNames.join("|")})_${name}$`));
+    gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`(?<!${mapNames.join('|')})_${name}$`));
   });
   Object.keys(gamemodes).forEach((name) => {
     const mode = gamemodes[name];
@@ -94,5 +94,5 @@ module.exports = ({
       legendaries: MurderMystery_openedLegendaries,
     },
     gamemodes,
-  })
+  });
 };
