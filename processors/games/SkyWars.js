@@ -52,6 +52,9 @@ module.exports = ({
     'lab(?!_solo|_team)': 'lab',
     lab_solo: 'lab_solo',
     lab_team: 'lab_team',
+    mega_normal: 'mega_normal',
+    mega_doubles: 'mega_doubles',
+    ranked: 'ranked'
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`_${name}$`));
