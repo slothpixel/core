@@ -58,6 +58,7 @@ module.exports = ({
     MURDER_CLASSIC: 'murder_classic',
     MURDER_DOUBLE_UP: 'murder_double_up',
     MURDER_ASSASSINS: 'murder_assassins',
+    MURDER_INFECTION: 'murder_infection'
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`(?<!${mapNames.join('|')})_${name}$`));
