@@ -228,25 +228,27 @@ module.exports = {
   calendarFromParam: {
     name: 'from',
     in: 'query',
-    description: 'The starting timestamp from which to get events. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
+    description: 'Date from which to get events. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
     required: false,
+    default: 'now',
     schema: {
-      type: 'integer',
+      type: 'string',
     },
   },
   calendarToParam: {
     name: 'to',
     in: 'query',
-    description: 'Date to get calendar events until to. Must have either \'to\' or \'years\' parameter. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
+    description: 'Date to get calendar events until to. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to reference the date 3 hours ago, use `now-3h`.',
     required: false,
+    default: 'now',
     schema: {
-      type: 'integer',
+      type: 'string',
     },
   },
   calendarYearsParam: {
     name: 'years',
     in: 'query',
-    description: 'The amount of Skyblock years to query. Must have either \'to\' or \'years\' parameter.',
+    description: 'The amount of Skyblock years to query.',
     required: false,
     schema: {
       type: 'integer',

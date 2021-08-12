@@ -357,17 +357,21 @@ type SkyblockQuery {
     events: String
 
     """
-    The starting timestamp from which to get events. Uses a unix timestamp.
+    Date from which to get events. Uses a 
+    [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters).
+    E.g. to get past 24 hours, use `now-1d`.
     """
-    from: Float
+    from: String
 
     """
-    Date to get calendar events until to. Uses a unix timestamp. Must have either \'to\' or \years\ parameter.
+    Date to get calendar events until to. Uses a
+    [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters).
+    E.g. to reference the date 3 hours ago, use `now-3h`.
     """
-    to: Float
+    to: String
 
     """
-    The amount of Skyblock years to query. Must have either \'to\' or \years\ parameter.
+    The amount of Skyblock years to query.
     """
     years: Int
 
@@ -2813,6 +2817,8 @@ type SkyblockBazaar {
 }
 
 type SkyblockCalendar {
+  from: Float
+  to: Float
   date: String
   day: Int
   month: String

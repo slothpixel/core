@@ -2290,7 +2290,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     '/skyblock/events': {
       get: {
         summary: 'SkyBlock event spec',
-        description: 'Returns SkyBlock events',
+        description: 'Returns SkyBlock events. Use key for the events parameter in /calendar/events endpoint',
         operationId: 'getSkyblockEvents',
         tags: [
           'skyblock',
@@ -2315,7 +2315,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
         route: () => '/skyblock/events',
         func: (_, response) => {
-          return response.json(buildSkyblockEvents());
+          response.json(buildSkyblockEvents());
         },
       },
     },
