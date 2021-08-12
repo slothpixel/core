@@ -216,4 +216,52 @@ module.exports = {
       type: 'string',
     },
   },
+  calendarEventsParam: {
+    name: 'events',
+    in: 'query',
+    description: 'The specific events you want to view the times. If left blank, will return all events. Multiple events separated by commas.',
+    required: false,
+    schema: {
+      type: 'string',
+    },
+  },
+  calendarFromParam: {
+    name: 'from',
+    in: 'query',
+    description: 'Date from which to get events. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to get past 24 hours, use `now-1d`.',
+    required: false,
+    default: 'now',
+    schema: {
+      type: 'string',
+    },
+  },
+  calendarToParam: {
+    name: 'to',
+    in: 'query',
+    description: 'Date to get calendar events until to. Uses a Unix timestamp with milliseconds or a [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters). E.g. to reference the date 3 hours ago, use `now-3h`.',
+    required: false,
+    default: 'now',
+    schema: {
+      type: 'string',
+    },
+  },
+  calendarYearsParam: {
+    name: 'years',
+    in: 'query',
+    description: 'The amount of Skyblock years to query.',
+    required: false,
+    schema: {
+      type: 'integer',
+    },
+  },
+  calendarStopAtYearEndParam: {
+    name: 'stopatyearend',
+    in: 'query',
+    description: 'Whether to stop the data at the year end. If true, will only show data until the end of the current Skyblock year, otherwise will return the full year starting from the \'from\' timestamp, possibly including part of the next year.',
+    default: false,
+    required: false,
+    schema: {
+      type: 'boolean',
+    },
+  },
 };

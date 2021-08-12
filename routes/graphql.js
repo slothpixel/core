@@ -14,6 +14,7 @@ const buildCounts = require('../store/buildCounts');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
+const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
 const { getGuildFromPlayer, getGuildFromName } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
@@ -142,6 +143,16 @@ class SkyblockResolver {
       return filterObject(bazaar, item_id.split(','));
     }
     return bazaar[item_id];
+  }
+
+  events() {
+    return buildSkyblockEvents();
+  }
+
+  calendar({
+    events, from, to, years, stopatyearend,
+  }) {
+    return buildSkyblockCalendar(events, from, to, years, stopatyearend);
   }
 }
 

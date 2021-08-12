@@ -439,6 +439,10 @@ function invokeInterval(func, delay) {
   }());
 }
 
+function nth(n) {
+  return n + ['st', 'nd', 'rd'][((((n + 90) % 100) - 10) % 10) - 1] || `${n}th`;
+}
+
 module.exports = {
   logger,
   betterFormatting,
@@ -465,4 +469,5 @@ module.exports = {
   pickKeys,
   invokeInterval,
   fromEntries,
+  nth,
 };

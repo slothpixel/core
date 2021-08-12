@@ -12,6 +12,7 @@ const buildCounts = require('../store/buildCounts');
 const { queryAuctionId } = require('../store/queryAuctions');
 const { getGuildFromPlayer, getGuildFromName, getGuildFromID } = require('../store/buildGuild');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
+const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
 const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
@@ -22,7 +23,8 @@ const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
   limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
   fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam, guildNameParam, guildIDParam,
+  profileIdParam, guildNameParam, guildIDParam, calendarEventsParam, calendarFromParam, calendarToParam,
+  calendarYearsParam, calendarStopAtYearEndParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -2281,6 +2283,171 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             return response.json(bazaar[itemId]);
           } catch (error) {
             callback(error.message);
+          }
+        },
+      },
+    },
+    '/skyblock/events': {
+      get: {
+        summary: 'SkyBlock event spec',
+        description: 'Returns SkyBlock events. Use key for the events parameter in /calendar/events endpoint',
+        operationId: 'getSkyblockEvents',
+        tags: [
+          'skyblock',
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    EVENT_ENUM: {
+                      description: 'The cleaner name of the event. Use key for the events parameter in /calendar/events endpoint',
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/events',
+        func: (_, response) => {
+          response.json(buildSkyblockEvents());
+        },
+      },
+    },
+    '/skyblock/calendar': {
+      get: {
+        summary: 'Get Skyblock calendar information',
+        description: 'Returns information about the SkyBlock calendar',
+        operationId: 'getSkyblockCalendar',
+        tags: [
+          'skyblock',
+        ],
+        parameters: [
+          calendarEventsParam, calendarFromParam, calendarToParam, calendarYearsParam, calendarStopAtYearEndParam,
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    from: {
+                      description: 'The timestamp of the \'from\' parameter',
+                      type: 'integer',
+                    },
+                    to: {
+                      description: 'The timestamp of the \'to\' parameter',
+                      type: 'integer',
+                    },
+                    date: {
+                      description: 'The date based on \'from\' parameter, e.g Early Winter 14th',
+                      type: 'string',
+                    },
+                    day: {
+                      description: 'The current day based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    month: {
+                      description: 'The current month based on \'from\' parameter',
+                      type: 'string',
+                    },
+                    year: {
+                      description: 'The current year based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    time: {
+                      description: 'The current time based on \'from\' parameter',
+                      type: 'string',
+                    },
+                    minute: {
+                      description: 'The current minute based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    hour: {
+                      description: 'The current hour based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    next_day_countdown: {
+                      description: 'The time until the next day based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    next_month_countdown: {
+                      description: 'The time until the next month based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    next_year_countdown: {
+                      description: 'The time until the next year based on \'from\' parameter',
+                      type: 'integer',
+                    },
+                    events: {
+                      type: 'object',
+                      properties: {
+                        EVENT_ENUM: {
+                          type: 'object',
+                          properties: {
+                            name: {
+                              description: 'The cleaner name of the event',
+                              type: 'string',
+                            },
+                            duration: {
+                              description: 'The time the event is active',
+                              type: 'integer',
+                            },
+                            events: {
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  start_timestamp: {
+                                    description: 'The starting timestamp of the event',
+                                    type: 'integer',
+                                  },
+                                  end_timestamp: {
+                                    description: 'The ending timestamp of the event',
+                                    type: 'integer',
+                                  },
+                                  starting_in: {
+                                    description: 'The time until the event starts',
+                                    type: 'integer',
+                                  },
+                                  ending_in: {
+                                    description: 'The time until the event ends',
+                                    type: 'integer',
+                                  },
+                                  pet: {
+                                    description: 'The type of pet if the event is a Traveling Zoo',
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        route: () => '/skyblock/calendar',
+        func: (request, response) => {
+          const {
+            events, from, to, years, stopatyearend,
+          } = request.query;
+          try {
+            const result = buildSkyblockCalendar(events, from, to, years, stopatyearend);
+            response.json(result);
+          } catch (error) {
+            response.status(400).json({ error: error.message });
           }
         },
       },
