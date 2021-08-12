@@ -121,6 +121,7 @@ function processGuildData({
   ranks = [],
   members = [],
   guildExpByGameType = {},
+  achievements = {},
 }) {
   const expHistory = {};
   const expByGame = changeObjectKeys(guildExpByGameType);
@@ -151,6 +152,7 @@ function processGuildData({
     preferred_games: getPreferredGames(preferredGames),
     ranks: insertDefaultRanks(ranks, created),
     members: processedMembers,
+    achievements,
   };
 }
 
