@@ -55,10 +55,10 @@ module.exports = ({
     'archives_top_floor',
   ];
   const betterModeNames = {
-    MURDER_CLASSIC: 'murder_classic',
-    MURDER_DOUBLE_UP: 'murder_double_up',
-    MURDER_ASSASSINS: 'murder_assassins',
-    MURDER_INFECTION: 'murder_infection'
+    MURDER_CLASSIC: 'classic',
+    MURDER_DOUBLE_UP: 'double_up',
+    MURDER_ASSASSINS: 'assassins',
+    MURDER_INFECTION: 'infection'
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`(?<!${mapNames.join('|')})_${name}$`));
