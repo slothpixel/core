@@ -183,7 +183,7 @@ const eventTimes = {
   },
 };
 
-function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = 'false') {
+function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = false) {
   const now = Date.now();
   let fromDate = from || now;
 
@@ -237,7 +237,10 @@ function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = 'false')
 
   if (toToYears <= 0) throw new Error("Parameter 'years' must be positive");
 
-  if (stopAtYearEnd === 'false') toToYears++;
+  // convert string to boolean
+  const stopBoolean = JSON.parse(stopAtYearEnd);
+
+  if (!stopBoolean) toToYears++;
 
   for (let i = 0; i < toToYears; i++) {
     for (const [event, { name, times: times_ }] of Object.entries(eventTimes)) {
@@ -253,7 +256,7 @@ function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = 'false')
         };
 
         /* eslint-disable-next-line no-continue */
-        if (stopAtYearEnd === 'true' && times.end < currentOffset) continue;
+        if (stopBoolean && times.end < currentOffset) continue;
 
         const msTill = times.end < currentOffset
           ? yearMs - currentOffset + times.start
