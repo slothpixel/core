@@ -58,14 +58,14 @@ module.exports = ({
     MURDER_CLASSIC: 'classic',
     MURDER_DOUBLE_UP: 'double_up',
     MURDER_ASSASSINS: 'assassins',
-    MURDER_INFECTION: 'infection'
+    MURDER_INFECTION: 'infection',
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`(?<!${mapNames.join('|')})_${name}$`));
   });
   Object.keys(gamemodes).forEach((name) => {
     const mode = gamemodes[name];
-    mode.losses = mode.games - mode.wins
+    mode.losses = mode.games - mode.wins;
     mode.kill_death_ratio = getRatio(mode.kills, mode.deaths);
     mode.win_loss_ratio = getRatio(mode.wins, mode.games - mode.wins);
   });
