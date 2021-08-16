@@ -65,6 +65,7 @@ module.exports = ({
   });
   Object.keys(gamemodes).forEach((name) => {
     const mode = gamemodes[name];
+    mode.losses = mode.games - mode.wins
     mode.kill_death_ratio = getRatio(mode.kills, mode.deaths);
     mode.win_loss_ratio = getRatio(mode.wins, mode.games - mode.wins);
   });
