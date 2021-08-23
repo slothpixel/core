@@ -17,7 +17,7 @@ const { playerObject } = require('./objects');
 const { populatePlayers, getPlayer, PlayerError } = require('../store/buildPlayer');
 const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName, getPlayerFields,
+  logger, generateJob, getData, typeToCleanName, getPlayerFields,
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
@@ -611,7 +611,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             try {
               const { games } = await getData(redis, generateJob('recentgames', { id: uuid }).url);
               response.json(games.map((game) => {
-                game.gameType = typeToStandardName(game.gameType);
+                game.gameType = typeToCleanName(game.gameType);
                 return game;
               }));
             } catch (error) {
