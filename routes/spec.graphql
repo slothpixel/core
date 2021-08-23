@@ -203,6 +203,16 @@ type PlayerQuery {
     """
     player_name: String!
   ): PlayerStatus
+
+  """
+  Returns cached basic information about a player.
+  """
+  profile(
+  """
+  Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+  """
+  player_name: String!
+  ): PlayerProfile
 }
 
 type SkyblockQuery {
@@ -357,7 +367,7 @@ type SkyblockQuery {
     events: String
 
     """
-    Date from which to get events. Uses a 
+    Date from which to get events. Uses a
     [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters).
     E.g. to get past 24 hours, use `now-1d`.
     """
@@ -2431,6 +2441,18 @@ type PlayerStatusGame {
 type PlayerStatus {
   online: Boolean
   game: PlayerStatusGame
+}
+
+type PlayerProfile {
+  uuid: String
+  username: String
+  first_login: Float
+  last_login: Float
+  level: Float
+  achievement_points: Int
+  karma: Int
+  rank_formatted: String
+  updated_at: Float
 }
 
 type Quick_status {
