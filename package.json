@@ -44,7 +44,7 @@
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^2.5.1",
     "eslint-plugin-unicorn": "^20.1.0",
-    "mocha": "^7.2.0",
+    "mocha": "^9.1.0",
     "supertest": "^6.0.1"
   },
   "engines": {
