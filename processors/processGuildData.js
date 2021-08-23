@@ -74,7 +74,7 @@ function insertDefaultRanks(ranks, created) {
 }
 
 function getPreferredGames(games) {
-  return games.map((game) => utility.typeToStandardName(game));
+  return games.map((game) => utility.typeToCleanName(game));
 }
 
 function processMember({

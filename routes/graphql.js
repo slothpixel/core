@@ -21,7 +21,7 @@ const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName,
+  logger, generateJob, getData, typeToCleanName,
 } = require('../util/utility');
 
 const leaderboardsAsync = pify(leaderboards);
@@ -79,7 +79,7 @@ class PlayersResolver {
     const data = await getData(redis, generateJob('recentgames', { id: uuid }).url);
 
     return data.games.map((game) => {
-      game.gameType = typeToStandardName(game.gameType);
+      game.gameType = typeToCleanName(game.gameType);
       return game;
     });
   }
