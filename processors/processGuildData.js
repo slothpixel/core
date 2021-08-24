@@ -150,7 +150,7 @@ function processGuildData({
     exp_history: expHistory,
     description,
     preferred_games: getPreferredGames(preferredGames),
-    ranks: insertDefaultRanks(ranks, created).sort(r => -r.priority),
+    ranks: insertDefaultRanks(ranks, created).sort((r) => -r.priority),
     members: processedMembers,
     achievements,
   };

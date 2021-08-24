@@ -1,6 +1,4 @@
 /* eslint-disable consistent-return */
-const async = require('async');
-const pify = require('pify');
 const config = require('../config');
 const processPlayerData = require('../processors/processPlayerData');
 const getUUID = require('./getUUID');

@@ -54,7 +54,7 @@ module.exports = ({
     lab_team: 'lab_team',
     mega_normal: 'mega_normal',
     mega_doubles: 'mega_doubles',
-    ranked: 'ranked'
+    ranked: 'ranked',
   };
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`_${name}$`));
