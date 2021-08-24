@@ -9,8 +9,8 @@ const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildCounts = require('../store/buildCounts');
+const buildGuild = require('../store/buildGuild');
 const { queryAuctionId } = require('../store/queryAuctions');
-const { getGuildFromPlayer, getGuildFromName, getGuildFromID } = require('../store/buildGuild');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
 const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
 const { playerObject } = require('./objects');
@@ -871,8 +871,14 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
         route: () => '/guilds/:player',
         func: async (request, response, callback) => {
+          let id;
           try {
-            const guild = await getGuildFromPlayer(request.params.player, { shouldPopulatePlayers: request.query.populatePlayers });
+            id = await getUUID(request.params.player);
+          } catch {
+            return response.status(404).json({ error: 'Invalid username' });
+          }
+          try {
+            const guild = await buildGuild('player', id, { shouldPopulatePlayers: request.query.populatePlayers });
             if (guild.guild === null) {
               return response.status(404).json(guild);
             }
@@ -1028,7 +1034,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/guilds/name/:name',
         func: async (request, response, callback) => {
           try {
-            const guild = await getGuildFromName(request.params.name, { shouldPopulatePlayers: request.query.populatePlayers });
+            const guild = await buildGuild('name', request.params.name, { shouldPopulatePlayers: request.query.populatePlayers });
             if (guild.guild === null) {
               return response.status(404).json(guild);
             }
@@ -1041,8 +1047,8 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/guilds/id/{guildID}': {
       get: {
-        summary: 'Get guild stats by the name of the guild',
-        description: 'Look up a guild from the its name',
+        summary: 'Get guild stats by the internal ID of the guild',
+        description: 'Look up a guild from the its ID',
         operationId: 'guild',
         tags: [
           'guild',
@@ -1184,7 +1190,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/guilds/id/:id',
         func: async (request, response, callback) => {
           try {
-            const guild = await getGuildFromID(request.params.id, { shouldPopulatePlayers: request.query.populatePlayers });
+            const guild = await buildGuild('id', request.params.id, { shouldPopulatePlayers: request.query.populatePlayers });
             if (guild.guild === null) {
               return response.status(404).json(guild);
             }
