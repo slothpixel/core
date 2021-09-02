@@ -11,7 +11,7 @@
     "lintnofix": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
-    "@sentry/node": "^6.2.0",
+    "@sentry/node": "^6.12.0",
     "@sentry/tracing": "^5.29.0",
     "async": "^3.2.0",
     "body-parser": "^1.19.0",
