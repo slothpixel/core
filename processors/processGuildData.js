@@ -135,6 +135,7 @@ function processGuildData({
   const guildTag = utility.betterFormatting(tag);
   const tag_color = utility.colorNameToCode(tagColor);
   return {
+    guild: true,
     name,
     id: _id,
     created,
@@ -150,7 +151,7 @@ function processGuildData({
     exp_history: expHistory,
     description,
     preferred_games: getPreferredGames(preferredGames),
-    ranks: insertDefaultRanks(ranks, created).sort((r) => -r.priority),
+    ranks: insertDefaultRanks(ranks, created).sort((a, b) => b.priority - a.priority),
     members: processedMembers,
     achievements,
   };
