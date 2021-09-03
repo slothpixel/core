@@ -135,7 +135,7 @@ function processGuildData({
   const guildTag = utility.betterFormatting(tag);
   const tag_color = utility.colorNameToCode(tagColor);
   return {
-    guild: true
+    guild: true,
     name,
     id: _id,
     created,
