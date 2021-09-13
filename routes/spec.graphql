@@ -1613,6 +1613,11 @@ type Guild {
   description: String
 
   """
+  Member object of the guild master
+  """
+  guild_master: MembersListItem
+
+  """
   Total guild xp
   """
   exp: Int
