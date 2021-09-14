@@ -13,7 +13,7 @@ const buildBoosters = require('../store/buildBoosters');
 const buildCounts = require('../store/buildCounts');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
-const { buildProfile } = require('../store/buildSkyBlockProfiles');
+const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
 const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
 const buildGuild = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
@@ -112,7 +112,7 @@ class SkyblockResolver {
   async profiles({ player_name }) {
     const uuid = await getUUID(player_name);
     const profiles = await redis.get(`skyblock_profiles:${uuid}`);
-    return profiles ? JSON.parse(profiles) : {};
+    return profiles ? JSON.parse(profiles) : buildProfileList(uuid);
   }
 
   async profile({ player_name, profile_id }) {
