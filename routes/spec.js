@@ -746,6 +746,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    guild: {
+                      description: 'Value indicating the success, or not, of the operation. Can be either true or null',
+                      type: 'boolean',
+                    },
                     name: {
                       description: 'Guild\'s name',
                       type: 'string',
@@ -938,6 +942,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    guild: {
+                      description: 'Value indicating the success, or not, of the operation. Can be either true or null',
+                      type: 'boolean',
+                    },
                     name: {
                       description: 'Guild\'s name',
                       type: 'string',
@@ -1124,6 +1132,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    guild: {
+                      description: 'Value indicating the success, or not, of the operation. Can be either true or null',
+                      type: 'boolean',
+                    },
                     name: {
                       description: 'Guild\'s name',
                       type: 'string',

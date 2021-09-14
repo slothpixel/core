@@ -1603,6 +1603,11 @@ type Games {
 
 type Guild {
   """
+  Value indicating the success, or not, of the operation. Can be either true or null
+  """
+  guild: Boolean
+
+  """
   Guild creation date
   """
   created: Float
