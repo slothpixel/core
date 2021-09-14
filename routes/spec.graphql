@@ -1603,6 +1603,11 @@ type Games {
 
 type Guild {
   """
+  Value indicating the success, or not, of the operation. Can be either true or null
+  """
+  guild: Boolean
+
+  """
   Guild creation date
   """
   created: Float
@@ -1611,6 +1616,11 @@ type Guild {
   Guild description
   """
   description: String
+
+  """
+  Member object of the guild master
+  """
+  guild_master: MembersListItem
 
   """
   Total guild xp

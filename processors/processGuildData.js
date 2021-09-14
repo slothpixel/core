@@ -149,6 +149,7 @@ function processGuildData({
     level: getLevel(exp),
     exp_by_game: expByGame,
     exp_history: expHistory,
+    guild_master: processedMembers.find((m) => m.rank === 'Guild Master'),
     description,
     preferred_games: getPreferredGames(preferredGames),
     ranks: insertDefaultRanks(ranks, created).sort((a, b) => b.priority - a.priority),

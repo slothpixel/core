@@ -244,9 +244,9 @@ The Slothpixel API provides Hypixel related data.
 Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
 
 Consider supporting The Slothpixel Project on Patreon to help cover the hosting costs.
-    
-[Discord](https://discord.gg/ND9bJKK) | [Patreon](https://patreon.com/slothpixel)  
-    
+
+[Discord](https://discord.gg/ND9bJKK) | [Patreon](https://patreon.com/slothpixel)
+
 # GraphQL
     Slothpixel API supports the use of GraphQL query language, and it is recommended for advanced users. [Read more](https://github.com/slothpixel/core/wiki/GraphQL)
     `,
@@ -263,9 +263,9 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         type: 'apiKey',
         name: 'key',
         description: `Use an API key to remove monthly call limits and to receive higher rate limits.
-      
+
       Usage example: https://api.slothpixel.me/api/players/slothpixel?key=YOUR-API-KEY
-      
+
       API key can also be sent using the authorization header "Authorization: Bearer YOUR-API-KEY"
       `,
         in: 'query',
@@ -746,6 +746,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    guild: {
+                      description: 'Value indicating the success, or not, of the operation. Can be either true or null',
+                      type: 'boolean',
+                    },
                     name: {
                       description: 'Guild\'s name',
                       type: 'string',
@@ -793,6 +797,36 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                     description: {
                       description: 'Guild description',
                       type: 'string',
+                    },
+                    guild_master: {
+                      description: 'Member object of the guild master',
+                      type: 'object',
+                      properties: {
+                        uuid: {
+                          description: 'Player UUID',
+                          type: 'string',
+                        },
+                        rank: {
+                          description: 'Player rank in the guild',
+                          type: 'string',
+                        },
+                        joined: {
+                          description: 'Member join date',
+                          type: 'integer',
+                        },
+                        quest_participation: {
+                          description: 'How many much the member has contributed to guild quests',
+                          type: 'integer',
+                        },
+                        exp_history: {
+                          description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                          type: 'object',
+                        },
+                        muted_till: {
+                          description: 'Date the member is muted until',
+                          type: 'integer',
+                        },
+                      },
                     },
                     preferred_games: {
                       description: 'Array containing the guild\'s preferred games',
@@ -908,6 +942,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    guild: {
+                      description: 'Value indicating the success, or not, of the operation. Can be either true or null',
+                      type: 'boolean',
+                    },
                     name: {
                       description: 'Guild\'s name',
                       type: 'string',
@@ -955,6 +993,36 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                     description: {
                       description: 'Guild description',
                       type: 'string',
+                    },
+                    guild_master: {
+                      description: 'Member object of the guild master',
+                      type: 'object',
+                      properties: {
+                        uuid: {
+                          description: 'Player UUID',
+                          type: 'string',
+                        },
+                        rank: {
+                          description: 'Player rank in the guild',
+                          type: 'string',
+                        },
+                        joined: {
+                          description: 'Member join date',
+                          type: 'integer',
+                        },
+                        quest_participation: {
+                          description: 'How many much the member has contributed to guild quests',
+                          type: 'integer',
+                        },
+                        exp_history: {
+                          description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                          type: 'object',
+                        },
+                        muted_till: {
+                          description: 'Date the member is muted until',
+                          type: 'integer',
+                        },
+                      },
                     },
                     preferred_games: {
                       description: 'Array containing the guild\'s preferred games',
@@ -1064,6 +1132,10 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
+                    guild: {
+                      description: 'Value indicating the success, or not, of the operation. Can be either true or null',
+                      type: 'boolean',
+                    },
                     name: {
                       description: 'Guild\'s name',
                       type: 'string',
@@ -1111,6 +1183,36 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                     description: {
                       description: 'Guild description',
                       type: 'string',
+                    },
+                    guild_master: {
+                      description: 'Member object of the guild master',
+                      type: 'object',
+                      properties: {
+                        uuid: {
+                          description: 'Player UUID',
+                          type: 'string',
+                        },
+                        rank: {
+                          description: 'Player rank in the guild',
+                          type: 'string',
+                        },
+                        joined: {
+                          description: 'Member join date',
+                          type: 'integer',
+                        },
+                        quest_participation: {
+                          description: 'How many much the member has contributed to guild quests',
+                          type: 'integer',
+                        },
+                        exp_history: {
+                          description: 'Contains raw guild xp earned in the past week. Uses format YYYY-MM-DD.',
+                          type: 'object',
+                        },
+                        muted_till: {
+                          description: 'Date the member is muted until',
+                          type: 'integer',
+                        },
+                      },
                     },
                     preferred_games: {
                       description: 'Array containing the guild\'s preferred games',
