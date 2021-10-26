@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index",
     "test": "mocha --exit",
-    "build": "npm install && npm run lintnofix",
+    "build": "npm install",
     "lint": "eslint . --ext .js,.jsx --fix",
     "lintnofix": "eslint . --ext .js,.jsx"
   },
