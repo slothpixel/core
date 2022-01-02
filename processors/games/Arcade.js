@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /*
 * Arcade
  */
@@ -9,7 +10,7 @@ module.exports = ({
   headshots_dayone = 0,
   melee_weapon = null,
   // Dragonwars
-  wins__dragonwars2 = 0,
+  wins_dragonwars2 = 0,
   kills_dragonwars2 = 0,
   // Ender Spleef
   wins_ender = 0,
@@ -234,7 +235,7 @@ module.exports = ({
       lab_escape_wins: lab_escape_round_wins_party,
       lab_escape_best_time: lab_escape_best_time_party,
       lawn_moower_wins: lawn_moower_round_wins_party,
-      lawn_moower_mowed_total_score: lawn_moower_total_score_party,
+      lawn_moower_mowed_total_score: lawn_moower_mowed_total_score_party,
       lawn_moower_best_score: lawn_moower_mowed_best_score_party,
       minecart_racing_wins: minecart_racing_round_wins_party,
       minecart_racing_best_time: minecart_racing_best_time_party,
@@ -246,16 +247,16 @@ module.exports = ({
       the_floor_is_lava_wins: the_floor_is_lava_round_wins_party,
       the_floor_is_lava_best_time: the_floor_is_lava_best_time_party,
       avalanche_wins: avalanche_round_wins_party,
-      volcano_round_wins_party: volcano_round_wins_party,
-      pig_fishing_round_wins_party: pig_fishing_round_wins_party,
-      pig_jousting_round_wins_party: pig_jousting_round_wins_party,
-      trampolinio_round_wins_party: trampolinio_round_wins_party,
-      workshop_round_wins_party: workshop_round_wins_party,
-      shooting_range_round_wins_party: shooting_range_round_wins_party,
-      frozen_floor_round_wins_party: frozen_floor_round_wins_party,
-      cannon_painting_round_wins_party: cannon_painting_round_wins_party,
-      fire_leapers_round_wins_party: fire_leapers_round_wins_party,
-      super_sheep_round_wins_party: super_sheep_round_wins_party,
+      volcano_wins: volcano_round_wins_party,
+      pig_fishing_wins: pig_fishing_round_wins_party,
+      pig_jousting_wins: pig_jousting_round_wins_party,
+      trampolinio_wins: trampolinio_round_wins_party,
+      workshop_wins: workshop_round_wins_party,
+      shooting_range_wins: shooting_range_round_wins_party,
+      frozen_floor_wins: frozen_floor_round_wins_party,
+      cannon_painting_wins: cannon_painting_round_wins_party,
+      fire_leapers_wins: fire_leapers_round_wins_party,
+      super_sheep_wins: super_sheep_round_wins_party,
     },
     pixel_painters: {
       wins: wins_draw_their_thing,
