@@ -2,7 +2,6 @@
 /**
  * Entry point for the application.
  * */
-const cp = require('child_process');
 const pm2 = require('pm2');
 const async = require('async');
 const { apps } = require('./manifest.json');
