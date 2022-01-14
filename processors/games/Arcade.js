@@ -341,18 +341,23 @@ module.exports = ({
       best_round: best_round_zombies,
     },
   };
-  // Totals
-  let wins = 0;
-  let kills = 0;
-  Object.keys(modes).forEach((key) => {
-    const mode = modes[key];
-    if ('wins' in mode) wins += mode.wins;
-    if ('kills' in mode) kills += mode.kills;
-  });
+
+  let totalWins = 0;
+  let totalKills = 0;
+
+  for (const { wins, kills } of Object.values(modes)) {
+    if (wins) {
+      totalWins += wins;
+    }
+    if (kills) {
+      totalKills += kills;
+    }
+  }
+
   return ({
     coins,
-    wins,
-    kills,
+    wins: totalWins,
+    kills: totalKills,
     modes,
   });
 };
