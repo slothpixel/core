@@ -63,8 +63,7 @@ module.exports = ({
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`(?<!${mapNames.join('|')})_${name}$`));
   });
-  Object.keys(gamemodes).forEach((name) => {
-    const mode = gamemodes[name];
+  Object.values(gamemodes).forEach((mode) => {
     mode.kill_death_ratio = getRatio(mode.kills, mode.deaths);
     mode.win_loss_ratio = getRatio(mode.wins, mode.games - mode.wins);
   });
