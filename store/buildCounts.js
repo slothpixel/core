@@ -8,5 +8,5 @@ const redis = require('./redis');
 module.exports = async () => cachedFunction(
   'counts',
   async () => processGameCounts(await getData(redis, generateJob('counts').url)),
-  { cacheDuration: config.COUNTS_CACHE_SECONDS, shouldCache: config.ENABLE_COUNTS_CACHE }
+  { cacheDuration: config.COUNTS_CACHE_SECONDS, shouldCache: config.ENABLE_COUNTS_CACHE },
 );
