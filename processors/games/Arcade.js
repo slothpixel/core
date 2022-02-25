@@ -344,8 +344,7 @@ module.exports = ({
   // Totals
   let wins = 0;
   let kills = 0;
-  Object.keys(modes).forEach((key) => {
-    const mode = modes[key];
+  Object.values(modes).forEach((mode) => {
     if ('wins' in mode) wins += mode.wins;
     if ('kills' in mode) kills += mode.kills;
   });

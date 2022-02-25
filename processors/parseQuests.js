@@ -17,8 +17,8 @@ function parseQuests(quests, challenges) {
     }
   });
   const allTime = challenges.all_time || {};
-  Object.keys(allTime).forEach((challenge) => {
-    object.challenges_completed += allTime[challenge];
+  Object.values(allTime).forEach((challenge) => {
+    object.challenges_completed += challenge;
   });
   return object;
 }

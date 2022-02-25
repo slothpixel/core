@@ -99,11 +99,7 @@ function processMember({
 }
 
 function processMembers(members) {
-  const array = [];
-  members.forEach((member) => {
-    array.push(processMember(member));
-  });
-  return array;
+  return members.map((member) => processMember(member));
 }
 
 function processGuildData({
