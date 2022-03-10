@@ -7,6 +7,7 @@ const { fromPromise } = require('universalify');
 const urllib = require('url');
 const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
+const wait = require('util').promisify(setTimeout);
 const { createLogger, format, transports } = require('winston');
 const got = require('got');
 const config = require('../config');
@@ -452,12 +453,17 @@ async function syncInterval(test, fun, interval = 60000, retest = false) {
   let lastUpdated = await test();
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const next = lastUpdated + interval;
-    const wait = next - Date.now();
-    logger.info(`[syncInterval] waiting ${wait / 1000} seconds`);
-    // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => setTimeout(resolve, wait));
-    // eslint-disable-next-line no-await-in-loop
+    let next = lastUpdated + interval;
+    let waitMs = next - Date.now();
+    while (waitMs < 0) {
+      logger.debug('Cache persisting longer than 60 seconds! Waiting...');
+      await wait(1000);
+      lastUpdated = await test();
+      next = lastUpdated + interval;
+      waitMs = next - Date.now();
+    }
+    logger.info(`[syncInterval] waiting ${waitMs / 1000} seconds`);
+    await wait(waitMs);
     const returned = await fun();
     lastUpdated = retest ? await test() : (returned || await test());
   }
