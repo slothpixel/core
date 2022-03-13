@@ -26,7 +26,7 @@ async function parseItemBytes(bytes) {
   return getInventory(json);
 }
 
-function redisBulk(command, keys, arguments_, prefix) {
+function redisBulk(command, keys, arguments_ = [], prefix) {
   const pipeline = redis.pipeline();
   // pipeline[command](keys[0], ...arguments_);
   // console.log(pipeline._queue);
@@ -45,9 +45,11 @@ function redisBulk(command, keys, arguments_, prefix) {
  */
 function updateAuctions(auctions) {
   const pipeline = redis.pipeline();
-  auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction).map(([key, value]) => [key, JSON.stringify(value)])));
+  auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
+    .map(([key, value]) => [key, JSON.stringify(value)])));
   const uuidList = auctions.map((a) => a.uuid);
-  const binList = auctions.filter((a) => a.bin).map((a) => a.uuid);
+  const binList = auctions.filter((a) => a.bin)
+    .map((a) => a.uuid);
   pipeline.sadd('auction_ids', uuidList);
   pipeline.sadd('auction_bins', binList);
   pipeline.exec();
@@ -58,8 +60,8 @@ function updateAuctions(auctions) {
 * @param {Array} auctions - Array of auction objects to be removed
  */
 function removeAuctions(auctions) {
-  const idList = auctions.map((a) => a.uuid);
-  redis.del(...auctions.map((a) => `auction:${a}`));
+  const idList = auctions.map((a) => a.auction_id);
+  redisBulk('del', idList, [], 'auction');
   redis.srem('auction_ids', idList);
   // Most of these are bins anyway so no need to filter
   redis.srem('auction_bins', idList);
@@ -68,7 +70,13 @@ function removeAuctions(auctions) {
 async function updatePrices(auction) {
   const {
     // eslint-disable-next-line camelcase
-    start, end, starting_bid, item_bytes, bids, highest_bid_amount, bin = false,
+    start,
+    end,
+    starting_bid,
+    item_bytes,
+    bids,
+    highest_bid_amount,
+    bin = false,
   } = auction;
   const [item] = await parseItemBytes(item_bytes);
   const data = {
@@ -88,14 +96,23 @@ async function updatePrices(auction) {
 }
 
 /*
-* Determine how the auction should be updated to DB
+* Determine how the auctions should be updated to DB
  */
-async function getUpdateType(auction) {
-  const { uuid } = auction;
-  const bids = await redis.hget(`auction:${uuid}`, 'bids');
-  if (!bids) return 'full';
-  if (auction.bids.length > JSON.parse(bids).length) return 'partial';
-  return 'none';
+async function getUpdateTypes(auctions) {
+  const ids = auctions.map((a) => a.uuid);
+  const bids = await redisBulk('hget', ids, ['bids'], 'auction');
+  return bids.map(([, bids], index) => {
+    const auction = auctions[index];
+    let type = 'none';
+    if (bids === null) {
+      return 'full';
+    }
+    bids = JSON.parse(bids);
+    if (bids.length < auction.bids.length) {
+      type = 'partial';
+    }
+    return type;
+  });
 }
 
 function removeAuctionIds(bids) {
@@ -104,32 +121,26 @@ function removeAuctionIds(bids) {
 }
 
 async function processAndStoreAuctions(auctions = []) {
-  const updates = [];
-  try {
-    await Promise.all(auctions.map(async (auction) => {
-      const update = await getUpdateType(auction);
-      if (update === 'none') {
-        return;
-      }
-      // Insert new auction
-      if (update === 'full') {
-        auction.bids = removeAuctionIds(auction.bids);
-        updates.push(auction);
-        return;
-      }
-      // Only bids have changed
-      if (update === 'partial') {
-        updates.push({
-          bids: removeAuctionIds(auction.bids),
-          highest_bid_amount: auction.highest_bid_amount,
-          end: auction.end,
-          uuid: auction.uuid,
-        });
-      }
-    }));
-  } catch (error) {
-    return logger.error(`auction processing failed: ${error}`);
-  }
+  const updates = await getUpdateTypes(auctions);
+  logger.info(`Full update: ${updates.filter((n) => n === 'full').length}`);
+  logger.info(`Partial update: ${updates.filter((n) => n === 'partial').length}`);
+  logger.info(`No update: ${updates.filter((n) => n === 'none').length}`);
+
+  updates.forEach((type, index) => {
+    const auction = auctions[index];
+    if (type === 'full') {
+      auction.bids = removeAuctionIds(auction.bids);
+      updates.push(auction);
+    }
+    if (type === 'partial') {
+      updates.push({
+        bids: removeAuctionIds(auction.bids),
+        highest_bid_amount: auction.highest_bid_amount,
+        end: auction.end,
+        uuid: auction.uuid,
+      });
+    }
+  });
   updateAuctions(updates);
 }
 
@@ -155,7 +166,8 @@ async function updateListings() {
   try {
     await processEndedAuctions();
     const {
-      auctions, totalPages,
+      auctions,
+      totalPages,
     } = await getAuctionPage(0);
     const allAuctions = [...auctions];
     const pages = [...new Array(totalPages).keys()].slice(1);
@@ -164,10 +176,15 @@ async function updateListings() {
     let auctionsLastUpdated;
     for (const chunk of chunks) {
       // eslint-disable-next-line no-await-in-loop,no-loop-func
-      await Promise.all(chunk.map(async (page) => new Promise((resolve) => getAuctionPage(page).then(({ auctions, lastUpdated }) => {
-        auctionsLastUpdated = lastUpdated;
-        allAuctions.push(...auctions);
-      }).then(resolve))));
+      await Promise.all(chunk.map(async (page) => new Promise((resolve) => getAuctionPage(page)
+        .then(({
+          auctions,
+          lastUpdated,
+        }) => {
+          auctionsLastUpdated = lastUpdated;
+          allAuctions.push(...auctions);
+        })
+        .then(resolve))));
     }
     await processAndStoreAuctions(allAuctions);
     logger.info(`[updateListings] Retrieved ${allAuctions.length} auctions from ${totalPages} pages.`);
@@ -183,9 +200,10 @@ async function updateListings() {
 /*
 * Test cache state without requesting all pages
  */
-async function test() {
+async function probeCache() {
   const { lastUpdated } = await getData(redis, generateJob('skyblock_auctions_ended').url);
   logger.info(`Data last updated at ${new Date(lastUpdated).toLocaleString()}, ${(Date.now() - lastUpdated) / 1000} seconds ago`);
   return lastUpdated;
 }
-syncInterval(test, updateListings);
+
+syncInterval(probeCache, updateListings);
