@@ -9,9 +9,6 @@ const {
 } = require('../util/utility');
 const config = require('../config');
 
-// Contains uuid - bids key pair
-const auctionCache = new Map();
-
 async function getInventory({ i }) {
   return Promise.all(i.map(async (item) => {
     const i = await new Item(item, false);
@@ -40,10 +37,17 @@ function redisBulk(command, keys, arguments_ = [], prefix) {
 }
 
 /*
-* Update or insert auctions
-* @param {Array} auctions - Array of auction objects to be updated
+* Clears ended dangling auctions due to downtime
  */
-function updateAuctions(auctions) {
+function clearEnded() {
+  // TODO
+}
+
+/*
+* Insert auctions
+* @param {Array} auctions - Array of auction objects to be inserted
+ */
+function insertAuctions(auctions) {
   const pipeline = redis.pipeline();
   auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
     .map(([key, value]) => [key, JSON.stringify(value)])));
@@ -52,6 +56,17 @@ function updateAuctions(auctions) {
     .map((a) => a.uuid);
   pipeline.sadd('auction_ids', uuidList);
   pipeline.sadd('auction_bins', binList);
+  pipeline.exec();
+}
+
+/*
+* Update auctions
+* @param {Array} auctions - Array of auction objects to be updated
+ */
+function updateAuctions(auctions) {
+  const pipeline = redis.pipeline();
+  auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
+    .map(([key, value]) => [key, JSON.stringify(value)])));
   pipeline.exec();
 }
 
@@ -70,13 +85,7 @@ function removeAuctions(auctions) {
 async function updatePrices(auction) {
   const {
     // eslint-disable-next-line camelcase
-    start,
-    end,
-    starting_bid,
-    item_bytes,
-    bids,
-    highest_bid_amount,
-    bin = false,
+    start, end, starting_bid, item_bytes, bids, highest_bid_amount, bin = false,
   } = auction;
   const [item] = await parseItemBytes(item_bytes);
   const data = {
@@ -121,16 +130,19 @@ function removeAuctionIds(bids) {
 }
 
 async function processAndStoreAuctions(auctions = []) {
-  const updates = await getUpdateTypes(auctions);
-  logger.info(`Full update: ${updates.filter((n) => n === 'full').length}`);
-  logger.info(`Partial update: ${updates.filter((n) => n === 'partial').length}`);
-  logger.info(`No update: ${updates.filter((n) => n === 'none').length}`);
+  const updateTypes = await getUpdateTypes(auctions);
+  logger.info(`Full update: ${updateTypes.filter((n) => n === 'full').length}`);
+  logger.info(`Partial update: ${updateTypes.filter((n) => n === 'partial').length}`);
+  logger.info(`No update: ${updateTypes.filter((n) => n === 'none').length}`);
 
-  updates.forEach((type, index) => {
+  const insertions = [];
+  const updates = [];
+
+  updateTypes.forEach((type, index) => {
     const auction = auctions[index];
     if (type === 'full') {
       auction.bids = removeAuctionIds(auction.bids);
-      updates.push(auction);
+      insertions.push(auction);
     }
     if (type === 'partial') {
       updates.push({
@@ -141,6 +153,7 @@ async function processAndStoreAuctions(auctions = []) {
       });
     }
   });
+  insertAuctions(insertions);
   updateAuctions(updates);
 }
 
@@ -187,10 +200,10 @@ async function updateListings() {
         .then(resolve))));
     }
     await processAndStoreAuctions(allAuctions);
-    logger.info(`[updateListings] Retrieved ${allAuctions.length} auctions from ${totalPages} pages.`);
+    const totalAuctions = allAuctions.length;
+    redis.set('auction_meta', JSON.stringify({ lastUpdated: auctionsLastUpdated, totalAuctions }));
+    logger.info(`[updateListings] Retrieved ${totalAuctions} auctions from ${totalPages} pages.`);
     logger.info(`Data last updated at ${new Date(auctionsLastUpdated).toLocaleString()}, ${(Date.now() - auctionsLastUpdated) / 1000} seconds ago`);
-    // Reset cache map so it doesn't take memory
-    auctionCache.clear();
     return auctionsLastUpdated;
   } catch (error) {
     logger.error(`Failed to update listings: ${error}`);
@@ -206,4 +219,5 @@ async function probeCache() {
   return lastUpdated;
 }
 
+clearEnded();
 syncInterval(probeCache, updateListings);

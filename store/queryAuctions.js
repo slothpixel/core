@@ -151,7 +151,8 @@ const auctionMeta = {
 async function getAuctionsV2({ auctionUUID = null, id = null, bin = null }) {
   const intersection = [];
   if (auctionUUID) {
-    return redis.hget('auction_ids', auctionUUID);
+    const auction = await redis.hgetall(`auction:${auctionUUID}`);
+    return [auction];
   }
   if (bin) {
     intersection.push('auction_bins');
@@ -159,8 +160,11 @@ async function getAuctionsV2({ auctionUUID = null, id = null, bin = null }) {
   if (id) {
     intersection.push('item_ids');
   }
+  const ids = await redis.sinter(intersection);
+  console.log(ids);
+  return [];
   // filter
   // sort
 }
 
-module.exports = { getAuctions, queryAuctionId };
+module.exports = { getAuctions: getAuctionsV2, queryAuctionId };
