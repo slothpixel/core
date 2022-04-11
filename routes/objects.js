@@ -66,6 +66,10 @@ const playerObject = {
       description: 'Total coins across all minigames',
       type: 'integer',
     },
+    total_games_played: {
+      description: 'Total games played across all minigames',
+      type: 'integer',
+    },
     mc_version: {
       description: 'Minecraft version the user last logged on Hypixel with',
       type: 'string',
