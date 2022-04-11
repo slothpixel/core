@@ -2350,6 +2350,11 @@ type Player {
   Total coins across all minigames
   """
   total_coins: Int
+  
+  """
+  Total games played across all minigames
+  """
+  total_games_played: Int
 
   """
   Total kills across all minigames
