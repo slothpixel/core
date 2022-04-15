@@ -148,10 +148,12 @@ function processPlayerData({
   let totalKills = 0;
   let totalWins = 0;
   let totalCoins = 0;
+  let totalGamesPlayed = 0;
   Object.keys(statsObject).forEach((game) => {
     totalKills += statsObject[game].kills || 0;
     totalWins += statsObject[game].wins || 0;
     totalCoins += statsObject[game].coins || 0;
+    totalGamesPlayed += statsObject[game].games_played || 0;
   });
   const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);
   const newRankPlusColor = colorNameToCode(rankPlusColor);
@@ -171,6 +173,7 @@ function processPlayerData({
     level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
     achievement_points: achievementPoints === 0 ? achievements_.achievement_points : achievementPoints,
     quests_completed: quests_.quests_completed,
+    total_games_played: totalGamesPlayed,
     total_kills: totalKills,
     total_wins: totalWins,
     total_coins: totalCoins,

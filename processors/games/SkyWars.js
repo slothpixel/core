@@ -6,6 +6,7 @@ const { getRatio, pickKeys } = require('../../util/utility');
 
 module.exports = ({
   coins = 0,
+  games_played_skywars: games_played = 0,
   wins = 0,
   losses = 0,
   skywars_experience = 0,
@@ -67,6 +68,7 @@ module.exports = ({
   });
   return ({
     coins,
+    games_played,
     wins,
     losses,
     win_loss_ratio: getRatio(wins, losses),
