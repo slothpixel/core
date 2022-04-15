@@ -159,6 +159,7 @@ function processPlayerData({
   const newRankPlusColor = colorNameToCode(rankPlusColor);
   const newPrefix = betterFormatting(prefix);
   const rankPlusPlusColor = colorNameToCode(monthlyRankColor);
+  karma = karma.toFixed(0);
   return {
     uuid,
     username: displayname,
@@ -176,7 +177,7 @@ function processPlayerData({
     total_games_played: totalGamesPlayed,
     total_kills: totalKills,
     total_wins: totalWins,
-    total_coins: totalCoins,
+    total_coins: totalCoins.toFixed(0),
     mc_version: mcVersionRp,
     first_login: getFirstLogin(firstLogin, _id),
     last_login: lastLogin,
