@@ -277,9 +277,10 @@ function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = false) {
   }
 
   Object.keys(eventList).forEach((key) => {
-    eventList[key].events = getUniqueListBy(eventList[key].events, 'start_timestamp');
-    /* eslint-disable-next-line camelcase */
-    eventList[key].events = eventList[key].events.filter(({ start_timestamp }) => start_timestamp < toDate);
+    eventList[key].events = getUniqueListBy(eventList[key].events, 'start_timestamp')
+      /* eslint-disable-next-line camelcase */
+      .filter(({ start_timestamp }) => start_timestamp < toDate)
+      .sort((a, b) => a.start_timestamp - b.start_timestamp);
   });
 
   const eventsToFilter = events ? events.split(',') : Object.keys(eventTimes);
