@@ -39,8 +39,8 @@ const pets = [
   'MONKEY',
 ];
 
-function getOffset(month, day) {
-  return months.indexOf(month) * monthLength * dayMs + (day - 1) * dayMs;
+function getOffset(month, day, hour = 0) {
+  return months.indexOf(month) * monthLength * dayMs + (day - 1) * dayMs + hour * hourMs;
 }
 
 function timeToSkyblockYear(time) {
@@ -75,6 +75,20 @@ function getJacobEventTimes() {
   return times;
 }
 
+function getFallenStarCultTimes() {
+  const times = [];
+
+  for (let month = 0; month < 12; month++) {
+    for (let i = 1; i <= 4; i++) {
+      times.push({
+        start: getOffset(months[month], i * 7),
+        end: getOffset(months[month], i * 7, 6),
+      });
+    }
+  }
+  return times;
+}
+
 function getUniqueListBy(array, key) {
   return [...new Map(array.map((item) => [item[key], item])).values()];
 }
@@ -101,12 +115,74 @@ const eventTimes = {
       },
     ],
   },
+  ELECTION_BOOTH_OPENS: {
+    name: 'Election Booth Opens',
+    times: [
+      {
+        start: getOffset('Late Summer', 27),
+        end: getOffset('Late Summer', 27),
+      },
+    ],
+  },
   ELECTION_OVER: {
     name: 'Election Over',
     times: [
       {
         start: getOffset('Late Spring', 27),
         end: getOffset('Late Spring', 27),
+      },
+    ],
+  },
+  FALLEN_STAR_CULT: {
+    name: 'Cult of the Fallen Star',
+    times: getFallenStarCultTimes(),
+  },
+  FEAR_MONGERER: {
+    name: 'Fear Mongerer',
+    times: [
+      {
+        start: getOffset('Autumn', 26),
+        end: getOffset('Late Autumn', 3),
+      },
+    ],
+  },
+  JACOBS_CONTEST: {
+    name: 'Jacob\'s Farming Contest',
+    times: getJacobEventTimes(),
+  },
+  JERRYS_WORKSHOP: {
+    name: 'Jerry\'s Workshop',
+    times: [
+      {
+        start: getOffset('Late Winter', 1),
+        end: getOffset('Late Winter', 31),
+      },
+    ],
+  },
+  NEW_YEAR_CELEBRATION: {
+    name: 'New Year Celebration',
+    times: [
+      {
+        start: getOffset('Late Winter', 29),
+        end: getOffset('Late Winter', 31),
+      },
+    ],
+  },
+  SEASON_OF_JERRY: {
+    name: 'Season of Jerry',
+    times: [
+      {
+        start: getOffset('Late Winter', 24),
+        end: getOffset('Late Winter', 26),
+      },
+    ],
+  },
+  SPOOKY_FESTIVAL: {
+    name: 'Spooky Festival',
+    times: [
+      {
+        start: getOffset('Autumn', 29),
+        end: getOffset('Autumn', 31),
       },
     ],
   },
@@ -122,64 +198,6 @@ const eventTimes = {
         end: getOffset('Early Winter', 3),
       },
     ],
-  },
-  ELECTION_BOOTH_OPENS: {
-    name: 'Election Booth Opens',
-    times: [
-      {
-        start: getOffset('Late Summer', 27),
-        end: getOffset('Late Summer', 27),
-      },
-    ],
-  },
-  FEAR_MONGERER: {
-    name: 'Fear Mongerer',
-    times: [
-      {
-        start: getOffset('Autumn', 26),
-        end: getOffset('Late Autumn', 3),
-      },
-    ],
-  },
-  SPOOKY_FESTIVAL: {
-    name: 'Spooky Festival',
-    times: [
-      {
-        start: getOffset('Autumn', 29),
-        end: getOffset('Autumn', 31),
-      },
-    ],
-  },
-  JERRYS_WORKSHOP: {
-    name: 'Jerry\'s Workshop',
-    times: [
-      {
-        start: getOffset('Late Winter', 1),
-        end: getOffset('Late Winter', 31),
-      },
-    ],
-  },
-  SEASON_OF_JERRY: {
-    name: 'Season of Jerry',
-    times: [
-      {
-        start: getOffset('Late Winter', 24),
-        end: getOffset('Late Winter', 26),
-      },
-    ],
-  },
-  NEW_YEAR_CELEBRATION: {
-    name: 'New Year Celebration',
-    times: [
-      {
-        start: getOffset('Late Winter', 29),
-        end: getOffset('Late Winter', 31),
-      },
-    ],
-  },
-  JACOBS_CONTEST: {
-    name: 'Jacob\'s Farming Contest',
-    times: getJacobEventTimes(),
   },
 };
 
@@ -238,7 +256,7 @@ function buildSkyblockCalendar(events, from, to, years, stopAtYearEnd = false) {
   if (toToYears <= 0) throw new Error("Parameter 'years' must be positive");
 
   // convert string to boolean
-  const stopBoolean = JSON.parse(stopAtYearEnd);
+  const stopBoolean = String(stopAtYearEnd).toLowerCase() === 'true';
 
   if (!stopBoolean) toToYears++;
 
