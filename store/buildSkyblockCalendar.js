@@ -75,6 +75,28 @@ function getJacobEventTimes() {
   return times;
 }
 
+function getDarkAuctionEventTimes() {
+  const times = [];
+
+  for (let month = 0; month < 12; month++) {
+    let day = 1;
+    while (day <= 31) {
+      times.push({
+        start: getOffset(months[month], day),
+        end: getOffset(months[month], day),
+      });
+
+      if (day === 29) break;
+      day += 3;
+      if (day > 31) {
+        day %= 31;
+        month++;
+      }
+    }
+  }
+  return times;
+}
+
 function getFallenStarCultTimes() {
   const times = [];
 
@@ -114,6 +136,10 @@ const eventTimes = {
         end: getOffset('Early Winter', 1),
       },
     ],
+  },
+  DARK_AUCTION: {
+    name: 'Dark Auction',
+    times: getDarkAuctionEventTimes(),
   },
   ELECTION_BOOTH_OPENS: {
     name: 'Election Booth Opens',
