@@ -63,8 +63,9 @@ class PlayersResolver {
   }
 
   async achievements({ player_name }) {
-    const player = await getPlayer(player_name);
-    return player.achievements;
+    const { achievements } = await getPlayer(player_name);
+    achievements.games = Object.keys(achievements.games).map((key) => Object.assign({ name: key }, achievements.games[key]));
+    return achievements
   }
 
   async quests({ player_name }) {

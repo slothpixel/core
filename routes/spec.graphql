@@ -1567,7 +1567,13 @@ type Gamemodes {
   two_v_two: TwoVTwo
 }
 
-type Games {
+type Game {
+
+  """
+  Name of the game, according to the hypixel API
+  """
+  name: String
+
   """
   Total achievements completed in the game
   """
@@ -1587,7 +1593,7 @@ type Games {
   """
   Total achievement points in the game
   """
-  points: Int
+  points_total: Int
 
   """
   Total achievement points from one time achievements in the game
@@ -1598,7 +1604,7 @@ type Games {
   Total achievement points from tiered achievements in the game
   """
   points_tiered: Int
-  tiered: [Int]
+  tiered: JSON
 }
 
 type Guild {
@@ -2422,7 +2428,7 @@ type PlayerAchievements {
   Total achievements completed
   """
   completed_total: Int
-  games: Games
+  games: [Game]
   rewards: JSON
 }
 
