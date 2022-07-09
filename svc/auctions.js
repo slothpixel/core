@@ -32,14 +32,13 @@ function removeAuctionsById(ids) {
 
 /*
 * Clears ended dangling auctions due to downtime
+* @param {Set} active - Set of active auction ids
  */
-async function clearEnded() {
-  const ids = await redis.smembers('auction_ids');
-  const auctions = await redisBulk(redis, 'hmget', ids, ['uuid', 'end'], 'auction');
-  const now = Date.now();
-  const ended = auctions.filter(([, a]) => (a[1] < now) && a[0] !== null).map(([, a]) => a[0].replace(/"/g, ''));
-  logger.info(`Removing ${ended.length} dangling auctions`);
-  removeAuctionsById(ended);
+async function clearEnded(active) {
+  const old = await redis.smembers('auction_ids');
+  const expired = [...new Set(old.filter((id) => !active.has(id)))];
+  logger.info(`Removing ${expired.length} dangling auctions`);
+  removeAuctionsById(expired);
 }
 
 /*
@@ -180,6 +179,8 @@ async function getAuctionPage(page) {
   return getData(redis, url);
 }
 
+let firstStartup = true;
+
 async function updateListings() {
   try {
     await processEndedAuctions();
@@ -204,6 +205,12 @@ async function updateListings() {
         })
         .then(resolve))));
     }
+    if (firstStartup) {
+      const activeIds = new Set(allAuctions.map((a) => a.uuid));
+      // console.log(active_ids);
+      clearEnded(activeIds);
+      firstStartup = false;
+    }
     await processAndStoreAuctions(allAuctions);
     const totalAuctions = allAuctions.length;
     redis.set('auction_meta', JSON.stringify({ lastUpdated: auctionsLastUpdated, totalAuctions }));
@@ -224,5 +231,4 @@ async function probeCache() {
   return lastUpdated;
 }
 
-clearEnded();
 syncInterval(probeCache, updateListings);
