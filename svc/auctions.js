@@ -5,7 +5,7 @@
 const { Item, decodeData } = require('skyblock-parser');
 const redis = require('../store/redis');
 const {
-  logger, generateJob, getData, syncInterval, chunkArray,
+  logger, generateJob, getData, redisBulk, syncInterval, chunkArray,
 } = require('../util/utility');
 const config = require('../config');
 
@@ -23,37 +23,40 @@ async function parseItemBytes(bytes) {
   return getInventory(json);
 }
 
-function redisBulk(command, keys, arguments_ = [], prefix) {
-  const pipeline = redis.pipeline();
-  // pipeline[command](keys[0], ...arguments_);
-  // console.log(pipeline._queue);
-  keys.forEach((key) => {
-    if (prefix) {
-      key = `${prefix}:${key}`;
-    }
-    pipeline[command](key, ...arguments_);
-  });
-  return pipeline.exec();
+function removeAuctionsById(ids) {
+  redisBulk(redis, 'del', ids, [], 'auction');
+  redis.srem('auction_ids', ids);
+  // Most of these are bins anyway so no need to filter
+  redis.srem('auction_bins', ids);
 }
 
 /*
 * Clears ended dangling auctions due to downtime
  */
-function clearEnded() {
-  // TODO
+async function clearEnded() {
+  const ids = await redis.smembers('auction_ids');
+  const auctions = await redisBulk(redis, 'hmget', ids, ['uuid', 'end'], 'auction');
+  const now = Date.now();
+  const ended = auctions.filter(([, a]) => (a[1] < now) && a[0] !== null).map(([, a]) => a[0].replace(/"/g, ''));
+  logger.info(`Removing ${ended.length} dangling auctions`);
+  removeAuctionsById(ended);
 }
 
 /*
 * Insert auctions
 * @param {Array} auctions - Array of auction objects to be inserted
  */
-function insertAuctions(auctions) {
+async function insertAuctions(auctions) {
   const pipeline = redis.pipeline();
   auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
     .map(([key, value]) => [key, JSON.stringify(value)])));
   const uuidList = auctions.map((a) => a.uuid);
   const binList = auctions.filter((a) => a.bin)
     .map((a) => a.uuid);
+  await Promise.all(auctions.map(async (a) => {
+    const data = await parseItemBytes(a.item_bytes);
+    // pipeline.sadd(`auction_item_id:${a.id}`, a.uuid);
+  }));
   pipeline.sadd('auction_ids', uuidList);
   pipeline.sadd('auction_bins', binList);
   pipeline.exec();
@@ -75,13 +78,13 @@ function updateAuctions(auctions) {
 * @param {Array} auctions - Array of auction objects to be removed
  */
 function removeAuctions(auctions) {
-  const idList = auctions.map((a) => a.auction_id);
-  redisBulk('del', idList, [], 'auction');
-  redis.srem('auction_ids', idList);
-  // Most of these are bins anyway so no need to filter
-  redis.srem('auction_bins', idList);
+  const ids = auctions.map((a) => a.auction_id);
+  removeAuctionsById(ids);
 }
 
+// TODO
+// Need to also add filtering for merely expired auctions
+/*
 async function updatePrices(auction) {
   const {
     // eslint-disable-next-line camelcase
@@ -103,13 +106,14 @@ async function updatePrices(auction) {
     }
   });
 }
+ */
 
 /*
 * Determine how the auctions should be updated to DB
  */
 async function getUpdateTypes(auctions) {
   const ids = auctions.map((a) => a.uuid);
-  const bids = await redisBulk('hget', ids, ['bids'], 'auction');
+  const bids = await redisBulk(redis, 'hget', ids, ['bids'], 'auction');
   return bids.map(([, bids], index) => {
     const auction = auctions[index];
     let type = 'none';
@@ -159,13 +163,14 @@ async function processAndStoreAuctions(auctions = []) {
 
 async function processEndedAuctions() {
   const { auctions } = await getData(redis, generateJob('skyblock_auctions_ended').url);
+  logger.info(`Removing ${auctions.length} ended auctions`);
   await removeAuctions(auctions);
   auctions.forEach((auction) => {
     auction.end = auction.timestamp;
     delete auction.timestamp;
   });
   // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
-  await Promise.all(auctions.map(updatePrices));
+  // await Promise.all(auctions.map(updatePrices));
 }
 
 async function getAuctionPage(page) {

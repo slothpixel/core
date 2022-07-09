@@ -13,6 +13,7 @@ const got = require('got');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
+const redis = require('../store/redis');
 
 const logger = createLogger({
   transports: [new transports.Console()],
@@ -469,6 +470,17 @@ async function syncInterval(test, fun, interval = 60000, retest = false) {
   }
 }
 
+function redisBulk(redis, command, keys, arguments_ = [], prefix) {
+  const pipeline = redis.pipeline();
+  keys.forEach((key) => {
+    if (prefix) {
+      key = `${prefix}:${key}`;
+    }
+    pipeline[command](key, ...arguments_);
+  });
+  return pipeline.exec();
+}
+
 function chunkArray(array, maxSize) {
   const output = [];
   for (let i = 0; i < array.length; i += maxSize) {
@@ -492,6 +504,7 @@ module.exports = {
   getStartOfBlockMinutes,
   getEndOfMonth,
   redisCount,
+  redisBulk,
   getRedisCountDay,
   getRedisCountHour,
   removeDashes,

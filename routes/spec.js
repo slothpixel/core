@@ -9,7 +9,10 @@ const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildCounts = require('../store/buildCounts');
-const { queryAuctionId } = require('../store/queryAuctions');
+const {
+  queryAuctionId,
+  getAuctions,
+} = require('../store/queryAuctions');
 const { getGuildFromPlayer, getGuildFromName, getGuildFromID } = require('../store/buildGuild');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
 const { playerObject } = require('./objects');
@@ -2011,8 +2014,22 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             content: {
               'application/json': {
                 schema: {
-                  type: 'array',
-                  items: auctionObject,
+                  type: 'object',
+                  properties: {
+                    last_updated: {
+                      type: 'integer',
+                    },
+                    total_auctions: {
+                      type: 'integer',
+                    },
+                    matching_query: {
+                      type: 'integer',
+                    },
+                    auctions: {
+                      type: 'array',
+                      items: auctionObject,
+                    },
+                  },
                 },
               },
             },

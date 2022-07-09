@@ -2,91 +2,13 @@
 /*
 * Allows custom DB queries for auctions API endpoint
  */
-const config = require('../config');
 const cachedFunction = require('./cachedFunction');
 const redis = require('./redis');
-const { logger } = require('../util/utility');
+const { logger, redisBulk } = require('../util/utility');
 const {
   min, max, median, average, standardDeviation,
 } = require('../util/math');
 const parseTimestamp = require('../util/readableTimestamps');
-
-/*
-* Allows some filtering with simple parameters instead of user
-* having to create MongoDB queries, stringifying and decoding them...
- */
-function createFilterQuery({
-  tier, category, auctionUUID, itemUUID, id,
-}) {
-  const filter = {};
-  if (tier) filter.tier = { $eq: tier };
-  if (category) filter.category = { $eq: category };
-  if (auctionUUID) filter.uuid = { $eq: auctionUUID };
-  if (itemUUID) filter['item.attributes.uuid'] = { $eq: auctionUUID };
-  if (id) filter['item.attributes.id'] = { $eq: id };
-  return filter;
-}
-
-function createQuery({
-  sortBy = 'end', sortOrder = 'desc', limit = 100, filter = '{}', active = true, page = 0,
-}, easyFilter) {
-  let error;
-  let filterObject = {};
-  try {
-    filterObject = Object.assign(easyFilter, JSON.parse(filter));
-  } catch (error_) {
-    error = `Failed to parse filter JSON: ${error_.message}`;
-  }
-  if (active) {
-    filterObject.end = { $gt: Date.now() };
-  }
-  if (limit > 1000) {
-    limit = 1000;
-  }
-  sortOrder = (sortOrder === 'asc')
-    ? 1
-    : -1;
-  return {
-    filter: filterObject,
-    options: {
-      limit: Number(limit),
-      skip: page * limit,
-      sort: {
-        [sortBy]: sortOrder,
-      },
-      maxTimeMS: 30000,
-    },
-    error,
-  };
-}
-
-// Remove _id and __v fields from each entry
-function transformData(data) {
-  return data.map((document) => {
-    const object = document._doc;
-    delete object._id;
-    delete object.__v;
-    return object;
-  });
-}
-
-async function executeQuery(query) {
-  const { error } = createQuery(query, createFilterQuery(query));
-  if (error) {
-    throw new Error(error);
-  }
-
-  try {
-    const result = {}; // await findAuction(filter, null, options)
-    return transformData(result);
-  } catch {
-    throw new Error('Query failed');
-  }
-}
-
-async function getAuctions(query) {
-  return cachedFunction(`auctions:${JSON.stringify(query)}`, async () => executeQuery(query), { shouldCache: config.ENABLE_AUCTION_CACHE, cacheDuration: config.AUCTION_CACHE_SECONDS });
-}
 
 async function queryAuctionId(from, to, showAuctions = false, itemId) {
   const now = Date.now();
@@ -143,13 +65,8 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
   }, { cacheDuration: 60 });
 }
 
-const auctionMeta = {
-  last_updated: 1621101390424,
-  total_auctions: 78456,
-};
-
-async function getAuctionsV2({ auctionUUID = null, id = null, bin = null }) {
-  const intersection = [];
+async function getAuctions({ auctionUUID = null, id = null, bin = null }) {
+  const intersection = ['auction_ids'];
   if (auctionUUID) {
     const auction = await redis.hgetall(`auction:${auctionUUID}`);
     return [auction];
@@ -158,13 +75,25 @@ async function getAuctionsV2({ auctionUUID = null, id = null, bin = null }) {
     intersection.push('auction_bins');
   }
   if (id) {
-    intersection.push('item_ids');
+    intersection.push(`auction_item_id:${id}`);
   }
   const ids = await redis.sinter(intersection);
+  const auctions = await redisBulk(redis, 'hgetall', ids, [], 'auction');
   console.log(ids);
-  return [];
+  let meta = await redis.get('auction_meta');
+  try {
+    meta = JSON.parse(meta);
+  } catch (error) {
+    logger.warn(`Failed parsing auction meta: ${error}`);
+  }
   // filter
   // sort
+  return {
+    last_updated: meta.lastUpdated || null,
+    total_auctions: meta.totalAuctions || 0,
+    matching_query: ids.length,
+    auctions: auctions[0],
+  };
 }
 
-module.exports = { getAuctions: getAuctionsV2, queryAuctionId };
+module.exports = { getAuctions, queryAuctionId };
