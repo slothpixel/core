@@ -179,8 +179,6 @@ async function getAuctionPage(page) {
   return getData(redis, url);
 }
 
-let firstStartup = true;
-
 async function updateListings() {
   try {
     await processEndedAuctions();
@@ -205,12 +203,9 @@ async function updateListings() {
         })
         .then(resolve))));
     }
-    if (firstStartup) {
-      const activeIds = new Set(allAuctions.map((a) => a.uuid));
-      // console.log(active_ids);
-      clearEnded(activeIds);
-      firstStartup = false;
-    }
+    // Not all auctions are marked as ended by Hypixel, so we need manual cleanup
+    const activeIds = new Set(allAuctions.map((a) => a.uuid));
+    clearEnded(activeIds);
     await processAndStoreAuctions(allAuctions);
     const totalAuctions = allAuctions.length;
     redis.set('auction_meta', JSON.stringify({ lastUpdated: auctionsLastUpdated, totalAuctions }));
