@@ -65,7 +65,16 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
   }, { cacheDuration: 60 });
 }
 
-async function getAuctions({ auctionUUID = null, id = null, bin = null }) {
+async function getAuctions({
+  auctionUUID = null,
+  id = null,
+  bin = null,
+  category = null,
+  rarity = null,
+  sortBy = 'end',
+  sortOrder = 'desc',
+  page = 1,
+}) {
   const intersection = ['auction_ids'];
   if (auctionUUID) {
     const auction = await redis.hgetall(`auction:${auctionUUID}`);
@@ -78,21 +87,42 @@ async function getAuctions({ auctionUUID = null, id = null, bin = null }) {
     intersection.push(`auction_item_id:${id}`);
   }
   const ids = await redis.sinter(intersection);
-  const auctions = await redisBulk(redis, 'hgetall', ids, [], 'auction');
-  console.log(ids);
+  let auctions = await redisBulk(redis, 'hgetall', ids, [], 'auction');
+  // Remove empty entries and remove error entries
+  auctions = auctions.filter(([, a]) => a !== null).map(([, a]) => a);
+  // filter
+  if (category) {
+    auctions = auctions.filter((a) => a.category === category);
+  }
+  if (rarity) {
+    auctions = auctions.filter((a) => a.tier === rarity);
+  }
+  // sort
+  function sort(a, b) {
+    if (sortOrder === 'asc') {
+      return a[sortBy] - b[sortBy];
+    }
+    return b[sortBy] - a[sortBy];
+  }
+  if (!(sortBy in auctions[0])) {
+    throw new Error(`Can't sort by ${sortBy}`);
+  }
+  auctions = auctions.sort(sort);
+  // meta
   let meta = await redis.get('auction_meta');
   try {
     meta = JSON.parse(meta);
   } catch (error) {
     logger.warn(`Failed parsing auction meta: ${error}`);
   }
-  // filter
-  // sort
+  // pagination
+  const pageSize = 1000;
+  const result = auctions.slice((page - 1) * pageSize, page * pageSize);
   return {
     last_updated: meta.lastUpdated || null,
     total_auctions: meta.totalAuctions || 0,
-    matching_query: ids.length,
-    auctions: auctions[0],
+    matching_query: auctions.length,
+    auctions: result,
   };
 }
 

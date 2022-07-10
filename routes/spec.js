@@ -1983,10 +1983,11 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           limitParam, pageParam, auctionUUIDParam, sortOrderParam, {
             name: 'sortBy',
             in: 'query',
-            description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
-            required: true,
+            description: 'Which field to sort records by.',
+            required: false,
             schema: {
               type: 'string',
+              default: 'end',
             },
           },
           {
@@ -2005,6 +2006,24 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             required: false,
             schema: {
               type: 'boolean',
+            },
+          },
+          {
+            name: 'rarity',
+            in: 'query',
+            description: 'Filter by item rarity',
+            required: false,
+            schema: {
+              type: 'enum',
+            },
+          },
+          {
+            name: 'category',
+            in: 'query',
+            description: 'Filter by item category',
+            required: false,
+            schema: {
+              type: 'enum',
             },
           },
         ],
@@ -2041,7 +2060,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             const auctions = await getAuctions(request.query);
             response.json(auctions);
           } catch (error) {
-            response.status(400).json({ error });
+            response.status(400).json({ error: error.message });
           }
         },
       },
