@@ -207,22 +207,10 @@ type PlayerQuery {
 
 type SkyblockQuery {
   all_auctions(
-     """
-    Set to false if you want to query historical auctions
-    """
-    active: Boolean
-
     """
     Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be
     """
     auction_uuid: String
-
-    """
-    Filter entries by passing [MongoDB
-    query](https://docs.mongodb.com/manual/reference/operator/query/) filter
-    object as URL encoded JSON string. [Example usage](https://github.com/slothpixel/core/wiki/Using-MongoDB-filters-with-the-Slothpixel-API)
-    """
-    filter: String
 
     """
     Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
@@ -231,12 +219,22 @@ type SkyblockQuery {
     id: String
 
     """
-    Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72
+    Bin status. Not setting the parameter returns both bin and non-bin auctions.
     """
-    item_uuid: String
+    bin: Boolean
 
     """
-    Limit number of records returned. Default is 100 and maximum 1000.
+    Filter by item rarity
+    """
+    rarity: String
+
+    """
+    Filter by item category
+    """
+    category: String
+
+    """
+    Limit number of records returned. Default and maximum is 1000.
     """
     limit: Int
 
@@ -258,32 +256,6 @@ type SkyblockQuery {
     """
     sortOrder: String
   ): [SkyblockAuctionsListItem]
-
-  auctions(
-    """
-    Date from which to get auctions. Uses a Unix timestamp with milliseconds.
-    E.g. to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is
-    from past 24 hours.
-    """
-    from: Float
-
-    """
-    Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the
-    [items endpoint](https://api.slothpixel.me/api/skyblock/items).
-    """
-    item_id: String!
-
-    """
-    Date to get auctions until to. Uses a Unix timestamp with milliseconds. E.g.
-    to get past 24 hours, use Date.now() - 24 * 60 * 60 * 1000. Default is current date.
-    """
-    to: Float
-
-    """
-    Returns the specified auctions individually
-    """
-    show_auctions: Boolean
-  ): SkyblockAuction
 
   """
   Returns all SkyBlock items found in auctions

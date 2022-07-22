@@ -12,7 +12,7 @@ const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildCounts = require('../store/buildCounts');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
-const { getAuctions, queryAuctionId } = require('../store/queryAuctions');
+const { getAuctions } = require('../store/queryAuctions');
 const { buildProfile } = require('../store/buildSkyBlockProfiles');
 const { getGuildFromPlayer, getGuildFromName } = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
@@ -93,12 +93,6 @@ class SkyblockResolver {
     return getAuctions(arguments_);
   }
 
-  auctions({
-    from, to, show_auctions, item_id,
-  }) {
-    return queryAuctionId(from, to, show_auctions, item_id);
-  }
-
   async items() {
     const items = await redis.get('skyblock_items');
     return items ? JSON.parse(items) : {};
@@ -125,7 +119,7 @@ class SkyblockResolver {
   async bazaar({ item_id }) {
     const data = await redis.get('skyblock_bazaar');
     if (data === null) {
-      logger.warn('No profucts found, is the bazaar service running?');
+      logger.warn('No products found, is the bazaar service running?');
       throw new Error('No bazaar items available');
     }
     const bazaar = JSON.parse(data);

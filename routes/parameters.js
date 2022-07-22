@@ -111,10 +111,11 @@ module.exports = {
   limitParam: {
     name: 'limit',
     in: 'query',
-    description: 'Limit number of records returned. Default is 100 and maximum 1000.',
+    description: 'Limit number of records returned. Largest allowed value is 1000.',
     required: false,
     schema: {
       type: 'integer',
+      default: 1000,
     },
   },
   filterParam: {
