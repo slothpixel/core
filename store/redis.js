@@ -11,7 +11,7 @@ const client = new Redis(config.REDIS_URL, {
 });
 
 const numbers = new Set(['start', 'end', 'starting_bid', 'highest_bid_amount', 'last_updated']);
-const jsons = new Set(['coop', 'claimed_bidders', 'bids']);
+const jsons = new Set(['coop', 'claimed_bidders', 'bids', 'item']);
 const bools = new Set(['claimed', 'bin']);
 
 /*

@@ -5,7 +5,7 @@
 const { Item, decodeData } = require('skyblock-parser');
 const redis = require('../store/redis');
 const {
-  logger, generateJob, getData, redisBulk, syncInterval, chunkArray,
+  logger, generateJob, getData, redisBulk, invokeInterval, syncInterval, chunkArray,
 } = require('../util/utility');
 const config = require('../config');
 
@@ -42,20 +42,44 @@ async function clearEnded(active) {
 }
 
 /*
+* Clear item id sets
+ */
+async function clearIds() {
+  const now = Date.now();
+  const stream = redis.scanStream({
+    match: 'auction_item_id:*',
+    type: 'zset',
+  });
+  stream.on('data', (resultKeys) => {
+    for (const resultKey of resultKeys) {
+      logger.info(`Clearing ${resultKey}`);
+      redis.zremrangebyscore(resultKey, 0, now);
+    }
+  });
+  await new Promise((resolve, reject) => stream
+    .on('end', resolve)
+    .on('error', reject));
+}
+
+/*
 * Insert auctions
 * @param {Array} auctions - Array of auction objects to be inserted
  */
-async function insertAuctions(auctions) {
+async function insertAuctions(auctionsRaw) {
   const pipeline = redis.pipeline();
+  const auctions = await Promise.all(auctionsRaw.map(async (a) => {
+    const [data] = await parseItemBytes(a.item_bytes);
+    a.item = JSON.stringify(data);
+    delete a.item_bytes;
+    delete a.item_lore;
+    pipeline.zadd(`auction_item_id:${data.attributes.id}`, a.end, a.uuid);
+    return a;
+  }));
   auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
     .map(([key, value]) => [key, JSON.stringify(value)])));
   const uuidList = auctions.map((a) => a.uuid);
   const binList = auctions.filter((a) => a.bin)
     .map((a) => a.uuid);
-  await Promise.all(auctions.map(async (a) => {
-    const data = await parseItemBytes(a.item_bytes);
-    // pipeline.sadd(`auction_item_id:${a.id}`, a.uuid);
-  }));
   pipeline.sadd('auction_ids', uuidList);
   pipeline.sadd('auction_bins', binList);
   pipeline.exec();
@@ -227,3 +251,4 @@ async function probeCache() {
 }
 
 syncInterval(probeCache, updateListings);
+invokeInterval(clearIds, 1000 * 60 * 60);

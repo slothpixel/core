@@ -87,7 +87,7 @@ async function getAuctions({
   if (id) {
     intersection.push(`auction_item_id:${id}`);
   }
-  const ids = await redis.sinter(intersection);
+  const ids = await redis.zinter(intersection.length, intersection);
   let auctions = await redisBulk(redis, 'hgetall', ids, [], 'auction');
   // Remove empty entries and remove error entries
   auctions = auctions.filter(([, a]) => a !== null).map(([, a]) => a);
