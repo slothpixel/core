@@ -431,18 +431,18 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
 }
 
 function invokeInterval(func, delay) {
-  // invokes the function immediately, waits for callback, waits the delay, and then calls it again
-  (function invoker() {
-    logger.info(`running ${func.name}`);
+  // invokes the function immediately, waits for promise, waits the delay, and then calls it again
+  (async function invoker() {
+    logger.info(`[invokeInterval] Running ${func.name}`);
     const start = Date.now();
-    return func((error) => {
-      if (error) {
-        // log the error, but wait until next interval to retry
-        logger.error(error);
-      }
-      logger.info(`${func.name}: ${Date.now() - start}ms`);
-      setTimeout(invoker, delay);
-    });
+    try {
+      await func();
+    } catch (error) {
+      // log the error, but wait until next interval to retry
+      logger.error(error);
+    }
+    logger.info(`[invokeInterval] ${func.name}: ${Date.now() - start} ms`);
+    setTimeout(invoker, delay);
   }());
 }
 
