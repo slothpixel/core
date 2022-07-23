@@ -36,7 +36,7 @@ Redis.Command.setReplyTransformer('hgetall', (result) => {
         value = Number(value);
       }
       if (bools.has(key)) {
-        value = Boolean(value);
+        value = value === 'true';
       }
       object[key] = value;
     }
