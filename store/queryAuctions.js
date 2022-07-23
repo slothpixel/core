@@ -73,6 +73,7 @@ async function getAuctions({
   rarity = null,
   sortBy = 'end',
   sortOrder = 'desc',
+  limit = 1000,
   page = 1,
 }) {
   const intersection = ['auction_ids'];
@@ -116,7 +117,7 @@ async function getAuctions({
     logger.warn(`Failed parsing auction meta: ${error}`);
   }
   // pagination
-  const pageSize = 1000;
+  const pageSize = Math.min(1000, Number.parseInt(limit, 10));
   const result = auctions.slice((page - 1) * pageSize, page * pageSize);
   return {
     last_updated: meta.lastUpdated || null,
