@@ -81,7 +81,7 @@ async function getAuctions({
     const auction = await redis.hgetall(`auction:${auctionUUID}`);
     return [auction];
   }
-  if (bin) {
+  if (bin === 'true') {
     intersection.push('auction_bins');
   }
   if (id) {
@@ -98,6 +98,9 @@ async function getAuctions({
   if (rarity) {
     auctions = auctions.filter((a) => a.tier === rarity);
   }
+  if (bin === 'false') {
+    auctions = auctions.filter((a) => !a.bin);
+  }
   // sort
   function sort(a, b) {
     if (sortOrder === 'asc') {
@@ -105,7 +108,7 @@ async function getAuctions({
     }
     return b[sortBy] - a[sortBy];
   }
-  if (!(sortBy in auctions[0])) {
+  if (auctions.length > 0 && auctions[0]?.[sortBy] === undefined) {
     throw new Error(`Can't sort by ${sortBy}`);
   }
   auctions = auctions.sort(sort);
