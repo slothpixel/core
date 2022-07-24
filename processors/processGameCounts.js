@@ -17,7 +17,7 @@ function processGameCounts(data) {
   };
   const { games: games_, playerCount } = data;
   for (const [rawGame, data_] of Object.entries(games_)) {
-    const cleanGame = toMode(rawGame.replace(/_LOBBY/, ''), modes);
+    const cleanGame = toMode(rawGame, modes);
     if (data_.modes && Object.keys(data_.modes).length > 1) {
       const modes_ = {};
       for (const [rawMode, count] of Object.entries(data_.modes)) {

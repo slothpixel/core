@@ -1,0 +1,14 @@
+# Lint pull requests automatically
+name: ESLint
+
+on: [pull_request]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: npm ci
+    - name: Run ESLint
+      run: npm run lintnofix

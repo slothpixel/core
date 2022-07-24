@@ -13,14 +13,15 @@ const buildBoosters = require('../store/buildBoosters');
 const buildCounts = require('../store/buildCounts');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
 const { getAuctions } = require('../store/queryAuctions');
-const { buildProfile } = require('../store/buildSkyBlockProfiles');
-const { getGuildFromPlayer, getGuildFromName } = require('../store/buildGuild');
+const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
+const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
+const buildGuild = require('../store/buildGuild');
 const leaderboards = require('../store/leaderboards');
 const redis = require('../store/redis');
 const getUUID = require('../store/getUUID');
 const { getMetadata } = require('../store/queries');
 const {
-  logger, generateJob, getData, typeToStandardName,
+  logger, generateJob, getData, typeToCleanName,
 } = require('../util/utility');
 
 const leaderboardsAsync = pify(leaderboards);
@@ -57,15 +58,14 @@ class BoostersResolver {
 }
 
 class PlayersResolver {
-  player({ player_name /* , fields */ }) {
-    // TODO: Remove 'fields' param from the /players/{player_name} route.
-    // If someone wants specific fields, they should use graphql.
+  player({ player_name }) {
     return getPlayer(player_name);
   }
 
   async achievements({ player_name }) {
-    const player = await getPlayer(player_name);
-    return player.achievements;
+    const { achievements } = await getPlayer(player_name);
+    achievements.games = Object.keys(achievements.games).map((key) => ({ name: key, ...achievements.games[key] }));
+    return achievements;
   }
 
   async quests({ player_name }) {
@@ -78,9 +78,15 @@ class PlayersResolver {
     const data = await getData(redis, generateJob('recentgames', { id: uuid }).url);
 
     return data.games.map((game) => {
-      game.gameType = typeToStandardName(game.gameType);
+      game.gameType = typeToCleanName(game.gameType);
       return game;
     });
+  }
+
+  async profile({ player_name }) {
+    const uuid = await getUUID(player_name);
+    const [{ profile }] = await populatePlayers([{ uuid }]);
+    return profile;
   }
 
   async status({ player_name }) {
@@ -101,7 +107,7 @@ class SkyblockResolver {
   async profiles({ player_name }) {
     const uuid = await getUUID(player_name);
     const profiles = await redis.get(`skyblock_profiles:${uuid}`);
-    return profiles ? JSON.parse(profiles) : {};
+    return profiles ? JSON.parse(profiles) : buildProfileList(uuid);
   }
 
   async profile({ player_name, profile_id }) {
@@ -137,6 +143,16 @@ class SkyblockResolver {
     }
     return bazaar[item_id];
   }
+
+  events() {
+    return buildSkyblockEvents();
+  }
+
+  calendar({
+    events, from, to, years, stopatyearend,
+  }) {
+    return buildSkyblockCalendar(events, from, to, years, stopatyearend);
+  }
 }
 
 const graphql = graphqlHTTP({
@@ -159,12 +175,15 @@ const graphql = graphqlHTTP({
       return leaderboardsAsync(undefined, template);
     },
 
-    guild({ player_name, populate_players }) {
-      return getGuildFromPlayer(player_name, populate_players);
+    async guild({ player_name, populate_players }) {
+      const id = await getUUID(player_name).catch(() => null);
+      if (!id) throw new Error('Player not found');
+
+      return buildGuild('player', id, { shouldPopulatePlayers: populate_players });
     },
 
     guild_by_name({ guild_name, populate_players }) {
-      return getGuildFromName(guild_name, populate_players);
+      return buildGuild('name', guild_name, populate_players);
     },
 
     leaderboards(parameters) {

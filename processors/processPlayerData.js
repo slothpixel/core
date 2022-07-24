@@ -4,7 +4,7 @@ const {
   generateFormattedRank,
   colorNameToCode,
   betterFormatting,
-  typeToStandardName,
+  typeToCleanName,
   isContributor,
 } = require('../util/utility');
 const calculateLevel = require('../util/calculateLevel');
@@ -15,17 +15,18 @@ const parseQuests = require('./parseQuests');
 
 function getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank) {
   let playerRank;
+  if (monthlyPackageRank === 'NONE') monthlyPackageRank = null;
   if (rank === 'NORMAL') {
-    playerRank = newPackageRank || packageRank || null;
+    playerRank = monthlyPackageRank || newPackageRank || packageRank || null;
   } else {
-    playerRank = rank || newPackageRank || packageRank || null;
+    playerRank = rank || monthlyPackageRank || newPackageRank || packageRank || null;
   }
 
-  if (monthlyPackageRank === 'SUPERSTAR') {
+  if (playerRank === 'SUPERSTAR') {
     playerRank = 'MVP_PLUS_PLUS';
   }
 
-  if (rank === 'NONE') {
+  if (playerRank === 'NONE') {
     playerRank = null;
   }
   return playerRank;
@@ -147,15 +148,18 @@ function processPlayerData({
   let totalKills = 0;
   let totalWins = 0;
   let totalCoins = 0;
+  let totalGamesPlayed = 0;
   Object.keys(statsObject).forEach((game) => {
     totalKills += statsObject[game].kills || 0;
     totalWins += statsObject[game].wins || 0;
     totalCoins += statsObject[game].coins || 0;
+    totalGamesPlayed += statsObject[game].games_played || 0;
   });
   const newRank = getPlayerRank(rank, packageRank, newPackageRank, monthlyPackageRank);
   const newRankPlusColor = colorNameToCode(rankPlusColor);
   const newPrefix = betterFormatting(prefix);
   const rankPlusPlusColor = colorNameToCode(monthlyRankColor);
+  karma = karma.toFixed(0);
   return {
     uuid,
     username: displayname,
@@ -170,14 +174,15 @@ function processPlayerData({
     level: Number(calculateLevel.getExactLevel(networkExp).toFixed(2)),
     achievement_points: achievementPoints === 0 ? achievements_.achievement_points : achievementPoints,
     quests_completed: quests_.quests_completed,
+    total_games_played: totalGamesPlayed,
     total_kills: totalKills,
     total_wins: totalWins,
-    total_coins: totalCoins,
+    total_coins: totalCoins.toFixed(0),
     mc_version: mcVersionRp,
     first_login: getFirstLogin(firstLogin, _id),
     last_login: lastLogin,
     last_logout: lastLogout,
-    last_game: typeToStandardName(mostRecentGameType),
+    last_game: typeToCleanName(mostRecentGameType),
     language: userLanguage,
     gifts_sent: realBundlesGiven,
     gifts_received: realBundlesReceived,

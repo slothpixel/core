@@ -2,7 +2,6 @@
 /**
  * Entry point for the application.
  * */
-const cp = require('child_process');
 const pm2 = require('pm2');
 const async = require('async');
 const { apps } = require('./manifest.json');
@@ -10,9 +9,6 @@ const { apps } = require('./manifest.json');
 const arguments_ = process.argv.slice(2);
 const group = arguments_[0] || process.env.GROUP;
 
-if (process.env.PROVIDER === 'gce') {
-  cp.execSync('curl -H "Metadata-Flavor: Google" -L http://metadata.google.internal/computeMetadata/v1/project/attributes/env > /usr/src/.env');
-}
 if (process.env.ROLE) {
   // if role variable is set just run that script
   require(`./svc/${process.env.ROLE}.js`);

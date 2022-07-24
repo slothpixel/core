@@ -21,7 +21,7 @@ function min(array) {
 }
 
 function totalled(array) {
-  return array.reduce((previousValue, currentValue) => previousValue + currentValue, 0); // eslint-disable-line unicorn/no-reduce
+  return array.reduce((previousValue, currentValue) => previousValue + currentValue, 0);
 }
 
 /**

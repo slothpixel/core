@@ -79,7 +79,6 @@ function getMonthlyStat(a, b) {
 }
 
 function fromEntries(array) {
-  // eslint-disable-next-line unicorn/no-reduce
   return array.reduce((object, [key, value]) => {
     object[key] = value;
     return object;
@@ -133,6 +132,14 @@ function DBToStandardName(name = '') {
 function typeToStandardName(name) {
   const result = constants.game_types.find((game) => game.type_name === name);
   return result === undefined ? name : result.standard_name;
+}
+
+/**
+ * Converts minigame types into clean names e.g. TNTGAMES => TNT Games
+ */
+function typeToCleanName(name) {
+  const result = constants.game_types.find((game) => game.type_name === name);
+  return result === undefined ? name : result.clean_name;
 }
 
 /**
@@ -235,24 +242,24 @@ function generateJob(type, payload) {
         url: `${apiUrl}/counts?key=${apiKey}`,
       };
     },
-    findguild() {
+    guildByPlayer() {
       return {
-        url: `${apiUrl}/findguild?key=${apiKey}&byUuid=${payload.id}`,
+        url: `${apiUrl}/guild?key=${apiKey}&player=${payload.id}`,
       };
     },
-    findguildByName() {
+    guildByName() {
       return {
-        url: `${apiUrl}/findguild?key=${apiKey}&byName=${payload.id}`,
+        url: `${apiUrl}/guild?key=${apiKey}&name=${payload.id}`,
+      };
+    },
+    guildById() {
+      return {
+        url: `${apiUrl}/guild?key=${apiKey}&id=${payload.id}`,
       };
     },
     friends() {
       return {
         url: `${apiUrl}/friends?key=${apiKey}&uuid=${payload.id}`,
-      };
-    },
-    guild() {
-      return {
-        url: `${apiUrl}/guild?key=${apiKey}&id=${payload.id}`,
       };
     },
     gamecounts() {
@@ -489,6 +496,10 @@ function chunkArray(array, maxSize) {
   return output;
 }
 
+function nth(n) {
+  return n + ['st', 'nd', 'rd'][((((n + 90) % 100) - 10) % 10) - 1] || `${n}th`;
+}
+
 module.exports = {
   logger,
   betterFormatting,
@@ -496,6 +507,7 @@ module.exports = {
   IDToStandardName,
   DBToStandardName,
   typeToStandardName,
+  typeToCleanName,
   isContributor,
   getNestedObjects,
   getPlayerFields,
@@ -518,4 +530,5 @@ module.exports = {
   syncInterval,
   fromEntries,
   chunkArray,
+  nth,
 };

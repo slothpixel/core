@@ -203,6 +203,16 @@ type PlayerQuery {
     """
     player_name: String!
   ): PlayerStatus
+
+  """
+  Returns cached basic information about a player.
+  """
+  profile(
+  """
+  Username or non-dashed UUID of player. UUID should be used when feasible for better performance.
+  """
+  player_name: String!
+  ): PlayerProfile
 }
 
 type SkyblockQuery {
@@ -307,6 +317,53 @@ type SkyblockQuery {
     """
     item_id: String!
   ): SkyblockBazaar
+
+  """
+  Returns all SkyBlock events found in the calendar
+
+  Equivalent to GET /skyblock/events
+  """
+  events: JSON
+
+  """
+  Get Skyblock calendar information
+
+  Equivalent to GET /skyblock/calendar
+  """
+  calendar(
+    """
+    The events enum in which you would like to filter. If left blank, it will return
+    every event. All available events can be found on the
+    [events endpoint](https://api.slothpixel.me/api/skyblock/events).
+    """
+    events: String
+
+    """
+    Date from which to get events. Uses a
+    [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters).
+    E.g. to get past 24 hours, use `now-1d`.
+    """
+    from: String
+
+    """
+    Date to get calendar events until to. Uses a
+    [custom date string](https://github.com/slothpixel/core/wiki/Using-custom-date-parameters).
+    E.g. to reference the date 3 hours ago, use `now-3h`.
+    """
+    to: String
+
+    """
+    The amount of Skyblock years to query.
+    """
+    years: Int
+
+    """
+    Whether to stop the data at the year end. If true, will only show data until
+    the end of the current Skyblock year, otherwise will return the full year starting
+    from the \'from\' timestamp, possibly including part of the next year.
+    """
+    stopatyearend: Boolean
+  ): SkyblockCalendar
 }
 
 """
@@ -1482,7 +1539,13 @@ type Gamemodes {
   two_v_two: TwoVTwo
 }
 
-type Games {
+type Game {
+
+  """
+  Name of the game, according to slothpixel's standard naming
+  """
+  name: String
+
   """
   Total achievements completed in the game
   """
@@ -1502,7 +1565,7 @@ type Games {
   """
   Total achievement points in the game
   """
-  points: Int
+  points_total: Int
 
   """
   Total achievement points from one time achievements in the game
@@ -1513,10 +1576,15 @@ type Games {
   Total achievement points from tiered achievements in the game
   """
   points_tiered: Int
-  tiered: [Int]
+  tiered: JSON
 }
 
 type Guild {
+  """
+  Value indicating the success, or not, of the operation. Can be either true or null
+  """
+  guild: Boolean
+
   """
   Guild creation date
   """
@@ -1526,6 +1594,11 @@ type Guild {
   Guild description
   """
   description: String
+
+  """
+  Member object of the guild master
+  """
+  guild_master: MembersListItem
 
   """
   Total guild xp
@@ -2255,6 +2328,11 @@ type Player {
   Total coins across all minigames
   """
   total_coins: Int
+  
+  """
+  Total games played across all minigames
+  """
+  total_games_played: Int
 
   """
   Total kills across all minigames
@@ -2322,7 +2400,7 @@ type PlayerAchievements {
   Total achievements completed
   """
   completed_total: Int
-  games: Games
+  games: [Game]
   rewards: JSON
 }
 
@@ -2356,6 +2434,18 @@ type PlayerStatusGame {
 type PlayerStatus {
   online: Boolean
   game: PlayerStatusGame
+}
+
+type PlayerProfile {
+  uuid: String
+  username: String
+  first_login: Float
+  last_login: Float
+  level: Float
+  achievement_points: Int
+  karma: Int
+  rank_formatted: String
+  updated_at: Float
 }
 
 type Quick_status {
@@ -2739,6 +2829,22 @@ type SkyblockBazaar {
   quick_status: Quick_status
   sell_summary: [Sell_summaryListItem]
   week_historic: [Week_historicListItem]
+}
+
+type SkyblockCalendar {
+  from: Float
+  to: Float
+  date: String
+  day: Int
+  month: String
+  year: Int
+  time: String
+  minute: Int
+  hour: Int
+  next_day_countdown: Float
+  next_month_countdown: Float
+  next_year_countdown: Float
+  events: JSON
 }
 
 """

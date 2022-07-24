@@ -1,7 +1,6 @@
 {
   "extends": [
-    "airbnb",
-    "plugin:unicorn/recommended"
+    "airbnb"
   ],
   "parserOptions": {
     "ecmaVersion": 11
@@ -19,25 +18,6 @@
     "no-shadow": 0,
     "no-param-reassign": 0,
     "no-underscore-dangle": 0,
-    "unicorn/filename-case": [
-      "error",
-      {
-        "cases": {
-          "camelCase": true,
-          "pascalCase": true
-        },
-        "ignore": [
-          "MCGO.js",
-          "SpeedUHC.js",
-          "TNTGames.js",
-          "UHC.js",
-          "getUUID.js",
-          "CONTRIBUTORS.js"
-        ]
-      }
-    ],
-    "unicorn/no-null": 0,
-    "unicorn/no-process-exit": 0,
     "no-restricted-syntax": [
       "error",
       {
@@ -54,6 +34,7 @@
       }
     ],
     "consistent-return": 0,
+    "camelcase": 0,
     "no-unused-vars": [
       "error",
       {

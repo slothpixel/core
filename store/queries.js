@@ -4,28 +4,30 @@ const lbTemplates = require('./lbTemplates');
 
 async function cachePlayerProfile(profile) {
   const key = `profile:${profile.uuid}`;
+  profile.updated_at = Date.now();
   logger.debug(`Caching ${key}`);
   try {
-    await redis.set(key, JSON.stringify(profile));
+    await redis.setex(key, 30 * 24 * 60 * 60, JSON.stringify(profile));
   } catch (error) {
     logger.error(error);
   }
   return profile;
 }
 
-function getPlayerProfile(uuid, callback) {
+async function getPlayerProfile(uuid) {
+  let reply = null;
   const key = `profile:${uuid}`;
   logger.debug(`Trying to get profile ${uuid} from cache`);
-  redis.get(key, (error, reply) => {
-    if (error) {
-      logger.error(error);
-    }
-    if (reply) {
-      logger.debug(`Cache hit for profile ${uuid}`);
-      return callback(error, JSON.parse(reply), true);
-    }
-    return callback(null, null, false);
-  });
+  try {
+    reply = await redis.get(key);
+  } catch (error) {
+    logger.error(`Failed to get profile: ${error}`);
+  }
+  if (reply) {
+    logger.debug(`Cache hit for profile ${uuid}`);
+    return JSON.parse(reply);
+  }
+  return reply;
 }
 
 function getMetadata(request, callback) {

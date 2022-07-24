@@ -15,12 +15,13 @@ const config = require('../config');
 const { logger, redisCount } = utility;
 
 const app = express();
-const Sentry = require('../util/sentry')({ expressApp: app });
+// const Sentry = require('../util/sentry')({ expressApp: app });
 
 const whitelistedPaths = new Set([
   '/api', // Docs
   '/api/metadata', // Metadata
   '/api/skyblock/bazaar', // Bazaar
+  '/api/skyblock/items',
 ]);
 
 const pathCosts = {
@@ -28,8 +29,8 @@ const pathCosts = {
 };
 
 // Sentry middleware
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+// app.use(Sentry.Handlers.requestHandler());
+// app.use(Sentry.Handlers.tracingHandler());
 
 app.disable('x-powered-by');
 // Compression middleware
@@ -170,7 +171,7 @@ app.use(cors({
 }));
 app.use('/api', api);
 
-app.use(Sentry.Handlers.errorHandler());
+// app.use(Sentry.Handlers.errorHandler());
 
 // 404 route
 app.use((_, response) => {

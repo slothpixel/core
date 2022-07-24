@@ -8,6 +8,7 @@ module.exports = ({
   wins_bedwars = 0,
   losses_bedwars = 0,
   games_played_bedwars_1 = 0,
+  games_played_bedwars = 0,
   kills_bedwars = 0,
   deaths_bedwars = 0,
   Experience = 0,
@@ -47,6 +48,7 @@ module.exports = ({
     'eight_two(?!_rush|_ultimate|_lucky|_voidless|_armed)': 'doubles',
     four_three: '3v3v3v3',
     'four_four(?!_rush|_ultimate|_lucky|_voidless|_armed)': '4v4v4v4',
+    two_four: '4v4',
     eight_one_rush: 'rush_solo',
     eight_two_rush: 'rush_doubles',
     four_four_rush: 'rush_4v4v4v4',
@@ -64,6 +66,12 @@ module.exports = ({
   Object.keys(betterModeNames).forEach((name) => {
     gamemodes[betterModeNames[name]] = getModeStats(new RegExp(`^${name}_`));
   });
+  Object.values(gamemodes).forEach((mode) => {
+    mode.k_d = getRatio(mode.kills, mode.deaths);
+    mode.w_l = getRatio(mode.wins, mode.losses);
+    mode.final_k_d = getRatio(mode.final_kills, mode.final_deaths);
+    mode.bed_ratio = getRatio(mode.beds_broken, mode.beds_lost);
+  });
   const bedwarsLevel = getLevelForExp(Experience);
   return ({
     coins,
@@ -73,6 +81,7 @@ module.exports = ({
     wins: wins_bedwars,
     losses: losses_bedwars,
     games_played: games_played_bedwars_1,
+    ingame_games_played: games_played_bedwars,
     kills: kills_bedwars,
     deaths: deaths_bedwars,
     k_d: getRatio(kills_bedwars, deaths_bedwars),

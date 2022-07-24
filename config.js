@@ -30,7 +30,6 @@ const defaults = {
   ENABLE_BANS_CACHE: true, // cache bans
   ENABLE_BOOSTERS_CACHE: true, // cache boosters
   ENABLE_COUNTS_STASH: true, // cache counts
-  ENABLE_SESSION_CACHE: true, // cache session
   ENABLE_LEADERBOARD_CACHE: true, // cache leaderboards
   ENABLE_AUCTION_CACHE: true, // cache auctions
   ENABLE_DB_CACHE: true, // set to enable MongoDB cache
@@ -40,7 +39,7 @@ const defaults = {
   BANS_CACHE_SECONDS: 30, // number of seconds to cache bans
   BOOSTERS_CACHE_SECONDS: 30, // number of seconds to cache boosters
   COUNTS_CACHE_SECONDS: 60, // number of seconds to cache counts
-  SESSION_CACHE_SECONDS: 60, // number of seconds to cache session
+  STATUS_CACHE_SECONDS: 60, // number of seconds to cache player status
   LEADERBOARD_CACHE_SECONDS: 900, // number of seconds to cache each leaderboard
   AUCTION_CACHE_SECONDS: 60,
   CONCURRENT_REQUEST_LIMIT: 20, // max number of auction pages to concurrently fetch

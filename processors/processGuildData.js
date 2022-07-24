@@ -74,7 +74,7 @@ function insertDefaultRanks(ranks, created) {
 }
 
 function getPreferredGames(games) {
-  return games.map((game) => utility.typeToStandardName(game));
+  return games.map((game) => utility.typeToCleanName(game));
 }
 
 function processMember({
@@ -99,11 +99,7 @@ function processMember({
 }
 
 function processMembers(members) {
-  const array = [];
-  members.forEach((member) => {
-    array.push(processMember(member));
-  });
-  return array;
+  return members.map((member) => processMember(member));
 }
 
 function processGuildData({
@@ -121,6 +117,7 @@ function processGuildData({
   ranks = [],
   members = [],
   guildExpByGameType = {},
+  achievements = {},
 }) {
   const expHistory = {};
   const expByGame = changeObjectKeys(guildExpByGameType);
@@ -134,6 +131,7 @@ function processGuildData({
   const guildTag = utility.betterFormatting(tag);
   const tag_color = utility.colorNameToCode(tagColor);
   return {
+    guild: true,
     name,
     id: _id,
     created,
@@ -141,16 +139,18 @@ function processGuildData({
     public: publiclyListed,
     tag: guildTag,
     tag_color,
-    tag_formatted: `${tag_color}[${guildTag}]`,
+    tag_formatted: guildTag ? `${tag_color}[${guildTag}]` : null,
     legacy_ranking: legacyRanking + 1,
     exp,
     level: getLevel(exp),
     exp_by_game: expByGame,
     exp_history: expHistory,
+    guild_master: processedMembers.find((m) => m.rank === 'Guild Master'),
     description,
     preferred_games: getPreferredGames(preferredGames),
-    ranks: insertDefaultRanks(ranks, created),
+    ranks: insertDefaultRanks(ranks, created).sort((a, b) => b.priority - a.priority),
     members: processedMembers,
+    achievements,
   };
 }
 

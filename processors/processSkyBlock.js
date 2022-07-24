@@ -11,8 +11,8 @@ async function checkItems(members = {}) {
   }
   let inventories = [];
   // Merge all inventories
-  Object.keys(members).forEach((member) => {
-    inventories = inventories.concat(members[member].inventory || []);
+  Object.values(members).forEach((member) => {
+    inventories = inventories.concat(member.inventory || []);
   });
   // Remove empty inventory slots
   inventories = inventories.filter((i) => 'name' in i);
