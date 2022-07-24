@@ -30,8 +30,8 @@ async function buildGuild(type, id, { shouldPopulatePlayers = false } = {}) {
       case 'name':
         body = await getData(redis, generateJob('guildByName', { id }).url);
         break;
-      default:
       case 'id':
+      default:
         body = await getData(redis, generateJob('guildById', { id }).url);
     }
 

@@ -12,10 +12,10 @@ const config = require('../config');
 const redis = require('../store/redis');
 const processPlayerData = require('../processors/processPlayerData');
 
-const playerApi = require('./data/player');
-const findguildApi = require('./data/findguild');
-const guildApi = require('./data/guild');
-const boosterApi = require('./data/boosters');
+const playerApi = require('./data/player.json');
+const findguildApi = require('./data/findguild.json');
+const guildApi = require('./data/guild.json');
+const boosterApi = require('./data/boosters.json');
 
 // these are loaded later, as the database needs to be created when these are required
 let app;
@@ -59,7 +59,8 @@ function testWhiteListedRoutes(done, key) {
   async.eachSeries(
     [
       `/api${key}`, // Docs
-    ], (i, callback) => {
+    ],
+    (i, callback) => {
       supertest(app).get(i).end((error, response) => {
         if (error) {
           return callback(error);
