@@ -87,17 +87,17 @@ async function getAuctions({
   if (id) {
     intersection.push(`auction_item_id:${id}`);
   }
+  if (category) {
+    intersection.push(`auction_category:${category}`);
+  }
+  if (rarity) {
+    intersection.push(`auction_rarity:${rarity}`);
+  }
   const ids = await redis.zinter(intersection.length, intersection);
   let auctions = await redisBulk(redis, 'hgetall', ids, [], 'auction');
   // Remove empty entries and remove error entries
   auctions = auctions.filter(([, a]) => a !== null).map(([, a]) => a);
   // filter
-  if (category) {
-    auctions = auctions.filter((a) => a.category === category);
-  }
-  if (rarity) {
-    auctions = auctions.filter((a) => a.tier === rarity);
-  }
   if (bin === 'false') {
     auctions = auctions.filter((a) => !a.bin);
   }

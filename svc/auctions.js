@@ -42,12 +42,12 @@ async function clearEnded(active) {
 }
 
 /*
-* Clear item id sets
+* Clear filter sets
  */
-async function clearIds() {
+async function clearSets() {
   const now = Date.now();
   const stream = redis.scanStream({
-    match: 'auction_item_id:*',
+    match: 'auction_*:*',
     type: 'zset',
   });
   stream.on('data', (resultKeys) => {
@@ -72,6 +72,8 @@ async function insertAuctions(auctionsRaw) {
     delete a.item_bytes;
     delete a.item_lore;
     pipeline.zadd(`auction_item_id:${data.attributes.id}`, a.end, a.uuid);
+    pipeline.zadd(`auction_category:${a.category}`, a.end, a.uuid);
+    pipeline.zadd(`auction_rarity:${a.tier}`, a.end, a.uuid);
     return a;
   }));
   auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
@@ -250,4 +252,4 @@ async function probeCache() {
 }
 
 syncInterval(probeCache, updateListings);
-invokeInterval(clearIds, 1000 * 60 * 60);
+invokeInterval(clearSets, 1000 * 60 * 15);
