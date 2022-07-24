@@ -52,7 +52,6 @@ async function clearIds() {
   });
   stream.on('data', (resultKeys) => {
     for (const resultKey of resultKeys) {
-      logger.info(`Clearing ${resultKey}`);
       redis.zremrangebyscore(resultKey, 0, now);
     }
   });
@@ -69,7 +68,7 @@ async function insertAuctions(auctionsRaw) {
   const pipeline = redis.pipeline();
   const auctions = await Promise.all(auctionsRaw.map(async (a) => {
     const [data] = await parseItemBytes(a.item_bytes);
-    a.item = JSON.stringify(data);
+    a.item = data;
     delete a.item_bytes;
     delete a.item_lore;
     pipeline.zadd(`auction_item_id:${data.attributes.id}`, a.end, a.uuid);
