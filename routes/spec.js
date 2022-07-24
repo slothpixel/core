@@ -2015,6 +2015,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             required: false,
             schema: {
               type: 'enum',
+              enum: ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC', 'DIVINE', 'SUPREME', 'SPECIAL', 'VERY_SPECIAL'],
             },
           },
           {
@@ -2024,6 +2025,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             required: false,
             schema: {
               type: 'enum',
+              enum: ['accessories', 'armor', 'blocks', 'consumables', 'misc', 'weapon'],
             },
           },
         ],
