@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, unicorn/prevent-abbreviations */
+/* eslint-disable camelcase */
 /*
 * Arcade
  */
