@@ -24,8 +24,9 @@ async function parseItemBytes(bytes) {
 }
 
 function removeAuctionsById(ids) {
-  redisBulk(redis, 'del', ids, [], 'auction');
-  redis.srem('auction_ids', ids);
+  if (ids.length === 0) return;
+  redisBulk(redis, 'del', ids, 'auction');
+  redis.zrem('auction_ids', ids);
   // Most of these are bins anyway so no need to filter
   redis.srem('auction_bins', ids);
 }
@@ -35,7 +36,7 @@ function removeAuctionsById(ids) {
 * @param {Set} active - Set of active auction ids
  */
 async function clearEnded(active) {
-  const old = await redis.smembers('auction_ids');
+  const old = await redis.zrange('auction_ids', 0, -1);
   const expired = [...new Set(old.filter((id) => !active.has(id)))];
   logger.info(`Removing ${expired.length} dangling auctions`);
   removeAuctionsById(expired);
@@ -55,9 +56,19 @@ async function clearSets() {
       redis.zremrangebyscore(resultKey, 0, now);
     }
   });
+  // eslint-disable-next-line no-promise-executor-return
   await new Promise((resolve, reject) => stream
     .on('end', resolve)
     .on('error', reject));
+}
+
+function updateSets(pipeline, {
+  uuid, end, category, tier,
+}, id) {
+  pipeline.zadd('auction_ids', end, uuid);
+  pipeline.zadd(`auction_item_id:${id}`, end, uuid);
+  pipeline.zadd(`auction_category:${category}`, end, uuid);
+  pipeline.zadd(`auction_rarity:${tier}`, end, uuid);
 }
 
 /*
@@ -66,22 +77,23 @@ async function clearSets() {
  */
 async function insertAuctions(auctionsRaw) {
   const pipeline = redis.pipeline();
+
   const auctions = await Promise.all(auctionsRaw.map(async (a) => {
     const [data] = await parseItemBytes(a.item_bytes);
     a.item = data;
     delete a.item_bytes;
     delete a.item_lore;
-    pipeline.zadd(`auction_item_id:${data.attributes.id}`, a.end, a.uuid);
-    pipeline.zadd(`auction_category:${a.category}`, a.end, a.uuid);
-    pipeline.zadd(`auction_rarity:${a.tier}`, a.end, a.uuid);
+    updateSets(pipeline, a, data.attributes.id);
     return a;
   }));
-  auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
-    .map(([key, value]) => [key, JSON.stringify(value)])));
-  const uuidList = auctions.map((a) => a.uuid);
+
+  auctions.forEach((auction) => {
+    pipeline.hmset(`auction:${auction.uuid}`, { json: JSON.stringify(auction), bids: auction.bids.length });
+  });
+
   const binList = auctions.filter((a) => a.bin)
     .map((a) => a.uuid);
-  pipeline.sadd('auction_ids', uuidList);
+
   pipeline.sadd('auction_bins', binList);
   pipeline.exec();
 }
@@ -92,8 +104,14 @@ async function insertAuctions(auctionsRaw) {
  */
 function updateAuctions(auctions) {
   const pipeline = redis.pipeline();
-  auctions.forEach((auction) => pipeline.hset(`auction:${auction.uuid}`, ...Object.entries(auction)
-    .map(([key, value]) => [key, JSON.stringify(value)])));
+
+  auctions.forEach(([auction, bids, endChanged]) => {
+    pipeline.hmset(`auction:${auction.uuid}`, { json: JSON.stringify(auction), bids });
+    if (endChanged) {
+      updateSets(pipeline, auction, auction.item.attributes.id);
+    }
+  });
+
   pipeline.exec();
 }
 
@@ -137,17 +155,22 @@ async function updatePrices(auction) {
  */
 async function getUpdateTypes(auctions) {
   const ids = auctions.map((a) => a.uuid);
-  const bids = await redisBulk(redis, 'hget', ids, ['bids'], 'auction');
-  return bids.map(([, bids], index) => {
+  const storedAuctions = await redisBulk(redis, 'hmget', ids, 'auction', ['bids', 'json']);
+
+  return storedAuctions.map((data, index) => {
+    const [bids, json] = data[1];
     const auction = auctions[index];
-    let type = 'none';
+
+    let type = ['none'];
+
     if (bids === null) {
-      return 'full';
+      return ['full'];
     }
-    bids = JSON.parse(bids);
-    if (bids.length < auction.bids.length) {
-      type = 'partial';
+
+    if (bids < auction.bids.length) {
+      type = ['partial', JSON.parse(json)];
     }
+
     return type;
   });
 }
@@ -159,28 +182,40 @@ function removeAuctionIds(bids) {
 
 async function processAndStoreAuctions(auctions = []) {
   const updateTypes = await getUpdateTypes(auctions);
-  logger.info(`Full update: ${updateTypes.filter((n) => n === 'full').length}`);
-  logger.info(`Partial update: ${updateTypes.filter((n) => n === 'partial').length}`);
-  logger.info(`No update: ${updateTypes.filter((n) => n === 'none').length}`);
 
   const insertions = [];
   const updates = [];
 
-  updateTypes.forEach((type, index) => {
+  updateTypes.forEach(([type, data], index) => {
     const auction = auctions[index];
+
     if (type === 'full') {
       auction.bids = removeAuctionIds(auction.bids);
       insertions.push(auction);
     }
+
     if (type === 'partial') {
-      updates.push({
-        bids: removeAuctionIds(auction.bids),
-        highest_bid_amount: auction.highest_bid_amount,
-        end: auction.end,
-        uuid: auction.uuid,
-      });
+      data.bids = removeAuctionIds(auction.bids);
+      data.highest_bid_amount = auction.highest_bid_amount;
+
+      const endChanged = data.end < auction.end;
+      data.end = auction.end;
+
+      updates.push([
+        data,
+        auction.bids.length,
+        endChanged,
+      ]);
     }
   });
+
+  const insertionCount = insertions.length;
+  const updateCount = updates.length;
+
+  logger.info(`Full update: ${insertionCount}`);
+  logger.info(`Partial update: ${updateCount}`);
+  logger.info(`No update: ${auctions.length - insertionCount - updateCount}`);
+
   insertAuctions(insertions);
   updateAuctions(updates);
 }
@@ -189,12 +224,13 @@ async function processEndedAuctions() {
   const { auctions } = await getData(redis, generateJob('skyblock_auctions_ended').url);
   logger.info(`Removing ${auctions.length} ended auctions`);
   await removeAuctions(auctions);
+  /*
   auctions.forEach((auction) => {
     auction.end = auction.timestamp;
     delete auction.timestamp;
   });
-  // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
-  // await Promise.all(auctions.map(updatePrices));
+  await Promise.all(auctions.map(updatePrices));
+   */
 }
 
 async function getAuctionPage(page) {
@@ -207,17 +243,21 @@ async function getAuctionPage(page) {
 async function updateListings() {
   try {
     await processEndedAuctions();
+
     const {
       auctions,
       totalPages,
     } = await getAuctionPage(0);
+
     const allAuctions = [...auctions];
     const pages = [...new Array(totalPages).keys()].slice(1);
-    // In some environments, large numbers of concurrent requests are unable to be processed, so should be sent in chunks
-    const chunks = chunkArray(pages, Number.parseInt(config.CONCURRENT_REQUEST_LIMIT)); // eslint-disable-line radix
+
+    // In some environments, large numbers of concurrent requests are unable to be processed, so they should be sent in chunks
+    const chunks = chunkArray(pages, Number.parseInt(config.CONCURRENT_REQUEST_LIMIT, 10));
+
     let auctionsLastUpdated;
     for (const chunk of chunks) {
-      // eslint-disable-next-line no-await-in-loop,no-loop-func
+      // eslint-disable-next-line no-await-in-loop,no-loop-func,no-promise-executor-return
       await Promise.all(chunk.map(async (page) => new Promise((resolve) => getAuctionPage(page)
         .then(({
           auctions,
@@ -228,12 +268,16 @@ async function updateListings() {
         })
         .then(resolve))));
     }
+
     // Not all auctions are marked as ended by Hypixel, so we need manual cleanup
     const activeIds = new Set(allAuctions.map((a) => a.uuid));
     clearEnded(activeIds);
+
     await processAndStoreAuctions(allAuctions);
+
     const totalAuctions = allAuctions.length;
     redis.set('auction_meta', JSON.stringify({ lastUpdated: auctionsLastUpdated, totalAuctions }));
+
     logger.info(`[updateListings] Retrieved ${totalAuctions} auctions from ${totalPages} pages.`);
     logger.info(`Data last updated at ${new Date(auctionsLastUpdated).toLocaleString()}, ${(Date.now() - auctionsLastUpdated) / 1000} seconds ago`);
     return auctionsLastUpdated;

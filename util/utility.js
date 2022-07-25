@@ -477,7 +477,7 @@ async function syncInterval(test, fun, interval = 60000, retest = false) {
   }
 }
 
-function redisBulk(redis, command, keys, arguments_ = [], prefix) {
+function redisBulk(redis, command, keys, prefix, arguments_ = []) {
   const pipeline = redis.pipeline();
   keys.forEach((key) => {
     if (prefix) {

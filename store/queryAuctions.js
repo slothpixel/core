@@ -65,6 +65,22 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
   }, { cacheDuration: 60 });
 }
 
+async function returnWithMeta(result, matching) {
+  let meta = await redis.get('auction_meta');
+  try {
+    meta = JSON.parse(meta);
+  } catch (error) {
+    logger.warn(`Failed parsing auction meta: ${error}`);
+  }
+
+  return {
+    last_updated: meta.lastUpdated || null,
+    total_auctions: meta.totalAuctions || 0,
+    matching_query: matching,
+    auctions: result,
+  };
+}
+
 async function getAuctions({
   auctionUUID = null,
   id = null,
@@ -76,11 +92,15 @@ async function getAuctions({
   limit = 1000,
   page = 1,
 }) {
+  const pageSize = Math.min(1000, Number.parseInt(limit, 10));
   const intersection = ['auction_ids'];
+
   if (auctionUUID) {
-    const auction = await redis.hgetall(`auction:${auctionUUID}`);
-    return [auction];
+    const auction = JSON.parse(await redis.hget(`auction:${auctionUUID}`, 'json'));
+    const result = auction !== null ? [auction] : [];
+    return returnWithMeta(result, result.length);
   }
+
   if (bin === 'true') {
     intersection.push('auction_bins');
   }
@@ -93,14 +113,29 @@ async function getAuctions({
   if (rarity) {
     intersection.push(`auction_rarity:${rarity}`);
   }
-  const ids = await redis.zinter(intersection.length, intersection);
-  let auctions = await redisBulk(redis, 'hgetall', ids, [], 'auction');
+
+  let ids = await redis.zinter(intersection.length, intersection);
+  let matching = ids.length;
+
+  // The zset `auction_ids` is sorted by end date automatically
+  if (sortBy === 'end') {
+    if (sortOrder === 'asc') {
+      ids.reverse();
+    }
+    ids = ids.slice((page - 1) * pageSize, page * pageSize);
+  }
+
+  let auctions = await redisBulk(redis, 'hget', ids, 'auction', ['json']);
+
   // Remove empty entries and remove error entries
-  auctions = auctions.filter(([, a]) => a !== null).map(([, a]) => a);
+  auctions = auctions.filter(([, a]) => a !== null).map(([, a]) => JSON.parse(a));
+
   // filter
   if (bin === 'false') {
     auctions = auctions.filter((a) => !a.bin);
+    matching = auctions.length;
   }
+
   // sort
   function sort(a, b) {
     if (sortOrder === 'asc') {
@@ -108,26 +143,16 @@ async function getAuctions({
     }
     return b[sortBy] - a[sortBy];
   }
-  if (auctions.length > 0 && auctions[0]?.[sortBy] === undefined) {
-    throw new Error(`Can't sort by ${sortBy}`);
+
+  if (sortBy !== 'end') {
+    if (auctions.length > 0 && auctions[0]?.[sortBy] === undefined) {
+      throw new Error(`Can't sort by ${sortBy}`);
+    }
+    auctions = auctions.sort(sort);
+    auctions = auctions.slice((page - 1) * pageSize, page * pageSize);
   }
-  auctions = auctions.sort(sort);
-  // meta
-  let meta = await redis.get('auction_meta');
-  try {
-    meta = JSON.parse(meta);
-  } catch (error) {
-    logger.warn(`Failed parsing auction meta: ${error}`);
-  }
-  // pagination
-  const pageSize = Math.min(1000, Number.parseInt(limit, 10));
-  const result = auctions.slice((page - 1) * pageSize, page * pageSize);
-  return {
-    last_updated: meta.lastUpdated || null,
-    total_auctions: meta.totalAuctions || 0,
-    matching_query: auctions.length,
-    auctions: result,
-  };
+
+  return returnWithMeta(auctions, matching);
 }
 
 module.exports = { getAuctions, queryAuctionId };
