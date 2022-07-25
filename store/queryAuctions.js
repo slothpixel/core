@@ -2,14 +2,15 @@
 /*
 * Allows custom DB queries for auctions API endpoint
  */
-const cachedFunction = require('./cachedFunction');
+// const cachedFunction = require('./cachedFunction');
 const redis = require('./redis');
 const { logger, redisBulk } = require('../util/utility');
-const {
-  min, max, median, average, standardDeviation,
-} = require('../util/math');
-const parseTimestamp = require('../util/readableTimestamps');
+// const {
+//   min, max, median, average, standardDeviation,
+// } = require('../util/math');
+// const parseTimestamp = require('../util/readableTimestamps');
 
+/*
 async function queryAuctionId(from, to, showAuctions = false, itemId) {
   const now = Date.now();
   let fromDate = from || (now - 24 * 60 * 60 * 1000);
@@ -64,6 +65,7 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
     }
   }, { cacheDuration: 60 });
 }
+ */
 
 async function returnWithMeta(result, matching) {
   let meta = await redis.get('auction_meta');
@@ -155,4 +157,4 @@ async function getAuctions({
   return returnWithMeta(auctions, matching);
 }
 
-module.exports = { getAuctions, queryAuctionId };
+module.exports = { getAuctions };

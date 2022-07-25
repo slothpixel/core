@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /**
  * Provides utility functions.
  * All functions should have external dependencies (DB, etc.) passed as parameters
@@ -13,7 +14,6 @@ const got = require('got');
 const config = require('../config');
 const contributors = require('../CONTRIBUTORS');
 const profileFields = require('../store/profileFields');
-const redis = require('../store/redis');
 
 const logger = createLogger({
   transports: [new transports.Console()],
