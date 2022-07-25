@@ -21,10 +21,9 @@ const {
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
-  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
-  fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam, guildNameParam, guildIDParam, calendarEventsParam, calendarFromParam, calendarToParam,
-  calendarYearsParam, calendarStopAtYearEndParam,
+  limitParam, significantParam, populatePlayersParam, templateParam, bazaarItemIdParam,
+  auctionUUIDParam, pageParam, sortOrderParam, profileIdParam, guildNameParam, guildIDParam,
+  calendarEventsParam, calendarFromParam, calendarToParam, calendarYearsParam, calendarStopAtYearEndParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -1061,7 +1060,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                       },
                     },
                     members: {
-                      description: 'Array playerof players on the guild',
+                      description: 'Array of players in the guild',
                       type: 'array',
                       items: {
                         type: 'object',
@@ -2080,8 +2079,8 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/skyblock/auctions': {
       get: {
-        summary: 'Query all skyblock auctions',
-        description: 'Allows you to query all auctions and filter the results based on things such as item ID, rarity, bin or category.',
+        summary: 'Query active skyblock auctions',
+        description: 'Allows you to query active auctions and filter the results based on things such as item ID, rarity, bin or category.',
         operationId: 'getSkyblockAuctions',
         tags: [
           'skyblock',
@@ -2090,7 +2089,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           limitParam, pageParam, auctionUUIDParam, sortOrderParam, {
             name: 'sortBy',
             in: 'query',
-            description: 'Which field to sort records by.',
+            description: 'Which field to sort records by. Choosing to sort by a custom field may lead to slow queries.',
             required: false,
             schema: {
               type: 'string',
@@ -2100,7 +2099,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           {
             name: 'id',
             in: 'query',
-            description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
+            description: 'Item id, e.g. NEW_YEAR_CAKE. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
             required: false,
             schema: {
               type: 'string',
