@@ -95,7 +95,7 @@ class PlayersResolver {
 }
 
 class SkyblockResolver {
-  all_auctions(arguments_) {
+  auctions(arguments_) {
     return getAuctions(arguments_);
   }
 

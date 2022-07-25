@@ -216,7 +216,7 @@ type PlayerQuery {
 }
 
 type SkyblockQuery {
-  all_auctions(
+  auctions(
     """
     Auction uuid, e.g. "7314f4f14c324342933e6c8c46a600be
     """
@@ -252,7 +252,7 @@ type SkyblockQuery {
     Pages allow you to split the data using the `limit` param. For example, if
     there are 23 auctions matching your query and you set the limit to 10, each
     page will return up to the next 10 consecutive results. With 23 results, you
-    would expect pages 0 and 1 to each have 20 results and page 2 to have the remaining 3.
+    would expect pages 1 and 2 to each have 20 results and page 2 to have the remaining 3.
     """
     page: Int
 
@@ -265,7 +265,7 @@ type SkyblockQuery {
     Define sort order. `asc` for ascending or `desc` for descending
     """
     sortOrder: String
-  ): [SkyblockAuctionsListItem]
+  ): SkyblockAuction
 
   """
   Returns all SkyBlock items found in auctions
@@ -1722,29 +1722,31 @@ type Hypixelgp {
   win_ratio: Float
 }
 
+"""
 type Item {
   attributes: Attributes
 
-  """
+  \"""
   How many items are for sale in the auction
-  """
+  \"""
   count: Int
 
-  """
+  \"""
   Item's minecraft id
-  """
+  \"""
   item_id: Int
 
-  """
+  \"""
   Array of strings containing item's lore with formatting
-  """
+  \"""
   lore: [String]
 
-  """
+  \"""
   Item name with formatting
-  """
+  \"""
   name: String
 }
+"""
 
 type ITEM_ID {
   """
@@ -2328,7 +2330,7 @@ type Player {
   Total coins across all minigames
   """
   total_coins: Int
-  
+
   """
   Total games played across all minigames
   """
@@ -2736,48 +2738,16 @@ type Skills {
   utility: String
 }
 
-type SkyblockAuction {
-  auctions: JSON
-
-  """
-  Starting bid of the auction
-  """
-  starting_bid: Int
-
-  """
-  Average price in the selected time period
-  """
-  average_price: Float
-
-  """
-  Largest price in the selected time period
-  """
-  max_price: Float
-
-  """
-  Median price in the selected time period
-  """
-  median_price: Float
-
-  """
-  Lowest price in the selected time period
-  """
-  min_price: Float
-
-  """
-  Total sold items in the selected time period
-  """
-  sold: Int
-
-  """
-  Standard deviation of prices in the selected time period
-  """
-  standard_deviation: Int
-}
-
 """
 Auction object
 """
+type SkyblockAuction {
+  last_updated: Int
+  total_auctions: Int
+  matching_query: Int
+  auctions: [JSON]
+}
+
 type SkyblockAuctionsListItem {
   """
   All current bids
@@ -2785,23 +2755,21 @@ type SkyblockAuctionsListItem {
   bids: [BidsListItem]
 
   """
-  Item category, e.g. "misc
+  Item category, e.g. "misc"
   """
   category: String
 
   """
   UNIX timestamp of auction end date
   """
-  end: Float
+  end: Int
 
   highest_bid_amount: Float
-
-  item: Item
 
   """
   UNIX timestamp of auction start date
   """
-  start: Float
+  start: Int
 
   starting_bid: String
 
@@ -2819,6 +2787,11 @@ type SkyblockAuctionsListItem {
   Auctioneer uuid
   """
   auctioneer: String
+
+  """
+  Item data
+  """
+  item: JSON
 }
 
 type SkyblockBazaar {
