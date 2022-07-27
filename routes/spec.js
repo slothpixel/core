@@ -2108,7 +2108,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
           {
             name: 'bin',
             in: 'query',
-            description: 'When `true`, returns only bin auctions and when `false`, returns only normal auctions. Both types are returned if the parmeter is not specified.',
+            description: 'When `true`, returns only bin auctions and when `false`, returns only normal auctions. Both types are returned if the parameter is not specified.',
             required: false,
             schema: {
               type: 'boolean',
