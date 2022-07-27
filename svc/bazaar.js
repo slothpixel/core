@@ -1,5 +1,5 @@
 /*
-* Worker to peridically fetch bazaar data
+* Worker to periodically fetch bazaar data
  */
 const { skyblock_bazaar: constants } = require('hypixelconstants');
 const redis = require('../store/redis');
@@ -7,7 +7,7 @@ const {
   logger, generateJob, getData, invokeInterval,
 } = require('../util/utility');
 
-async function updateBazaar(callback) {
+async function updateBazaar() {
   try {
     const { products } = await getData(redis, generateJob('bazaar_products').url);
     Object.keys(constants).forEach((key) => {
@@ -20,7 +20,6 @@ async function updateBazaar(callback) {
   } catch (error) {
     logger.error(`Failed to update bazaar listings: ${error}`);
   }
-  callback();
 }
 
 invokeInterval(updateBazaar, 60 * 1000);
