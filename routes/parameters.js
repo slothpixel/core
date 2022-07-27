@@ -100,17 +100,22 @@ module.exports = {
     description: 'Define sort order. `asc` for ascending or `desc` for descending',
     required: false,
     schema: {
-      type: 'string',
+      type: 'enum',
       default: 'desc',
+      enum: [
+        'desc',
+        'asc',
+      ],
     },
   },
   limitParam: {
     name: 'limit',
     in: 'query',
-    description: 'Limit number of records returned. Default is 100 and maximum 1000.',
+    description: 'Limit number of records returned. Largest allowed value is 1000.',
     required: false,
     schema: {
       type: 'integer',
+      default: 1000,
     },
   },
   filterParam: {
@@ -142,15 +147,6 @@ module.exports = {
       type: 'string',
     },
   },
-  itemUUIDParam: {
-    name: 'itemUUID',
-    in: 'query',
-    description: 'Item uuid, e.g. "b8b9b051-e17f-4eb8-8b57-0a41a7d8eb72"',
-    required: false,
-    schema: {
-      type: 'string',
-    },
-  },
   activeParam: {
     name: 'active',
     in: 'query',
@@ -167,15 +163,6 @@ module.exports = {
     required: false,
     schema: {
       type: 'integer',
-    },
-  },
-  itemIdParam: {
-    name: 'itemId',
-    in: 'path',
-    description: 'Item id, e.g. BAT_RING. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
-    required: true,
-    schema: {
-      type: 'string',
     },
   },
   bazaarItemIdParam: {

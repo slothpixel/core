@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /**
  * Provides utility functions.
  * All functions should have external dependencies (DB, etc.) passed as parameters
@@ -7,6 +8,7 @@ const { fromPromise } = require('universalify');
 const urllib = require('url');
 const { v4: uuidV4 } = require('uuid');
 const moment = require('moment');
+const wait = require('util').promisify(setTimeout);
 const { createLogger, format, transports } = require('winston');
 const got = require('got');
 const config = require('../config');
@@ -280,6 +282,11 @@ function generateJob(type, payload) {
         url: `${apiUrl}/skyblock/auctions?page=${payload.page}`,
       };
     },
+    skyblock_auctions_ended() {
+      return {
+        url: `${apiUrl}/skyblock/auctions_ended`,
+      };
+    },
     skyblock_profiles() {
       return {
         url: `${apiUrl}/skyblock/profiles?key=${apiKey}&uuid=${payload.id}`,
@@ -431,19 +438,62 @@ function generateFormattedRank(rank, plusColor, prefix, plusPlusColor) {
 }
 
 function invokeInterval(func, delay) {
-  // invokes the function immediately, waits for callback, waits the delay, and then calls it again
-  (function invoker() {
-    logger.info(`running ${func.name}`);
+  // invokes the function immediately, waits for promise, waits the delay, and then calls it again
+  (async function invoker() {
+    logger.info(`[invokeInterval] Running ${func.name}`);
     const start = Date.now();
-    return func((error) => {
-      if (error) {
-        // log the error, but wait until next interval to retry
-        logger.error(error);
-      }
-      logger.info(`${func.name}: ${Date.now() - start}ms`);
-      setTimeout(invoker, delay);
-    });
+    try {
+      await func();
+    } catch (error) {
+      // log the error, but wait until next interval to retry
+      logger.error(error);
+    }
+    logger.info(`[invokeInterval] ${func.name}: ${Date.now() - start} ms`);
+    setTimeout(invoker, delay);
   }());
+}
+
+/*
+* Function to sync intervals with Hypixel API updates/caching
+* Used by auctions and bazaar services
+ */
+async function syncInterval(test, fun, interval = 60000, retest = false) {
+  let lastUpdated = await test();
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let next = lastUpdated + interval;
+    let waitMs = next - Date.now();
+    while (waitMs < 0) {
+      logger.debug('Cache persisting longer than 60 seconds! Waiting...');
+      await wait(1000);
+      lastUpdated = await test();
+      next = lastUpdated + interval;
+      waitMs = next - Date.now();
+    }
+    logger.info(`[syncInterval] waiting ${waitMs / 1000} seconds`);
+    await wait(waitMs);
+    const returned = await fun();
+    lastUpdated = retest ? await test() : (returned || await test());
+  }
+}
+
+function redisBulk(redis, command, keys, prefix, arguments_ = []) {
+  const pipeline = redis.pipeline();
+  keys.forEach((key) => {
+    if (prefix) {
+      key = `${prefix}:${key}`;
+    }
+    pipeline[command](key, ...arguments_);
+  });
+  return pipeline.exec();
+}
+
+function chunkArray(array, maxSize) {
+  const output = [];
+  for (let i = 0; i < array.length; i += maxSize) {
+    output.push(array.slice(i, i + maxSize));
+  }
+  return output;
 }
 
 function nth(n) {
@@ -466,6 +516,7 @@ module.exports = {
   getStartOfBlockMinutes,
   getEndOfMonth,
   redisCount,
+  redisBulk,
   getRedisCountDay,
   getRedisCountHour,
   removeDashes,
@@ -476,6 +527,8 @@ module.exports = {
   getMonthlyStat,
   pickKeys,
   invokeInterval,
+  syncInterval,
   fromEntries,
+  chunkArray,
   nth,
 };

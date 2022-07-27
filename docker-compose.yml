@@ -4,7 +4,7 @@
 version: '3'
 services:
   redis:
-    image: redis:5
+    image: redis:7
     container_name: slothpixel-redis
   core:
       build:

@@ -9,6 +9,7 @@ logger.info(`connecting ${config.REDIS_URL}`);
 const client = new Redis(config.REDIS_URL, {
   enableAutoPipelining: true,
 });
+
 client.on('error', (error) => {
   logger.error(error);
   process.exit(1);

@@ -2,93 +2,15 @@
 /*
 * Allows custom DB queries for auctions API endpoint
  */
-const pify = require('pify');
-const config = require('../config');
-const cachedFunction = require('./cachedFunction');
-const redis = pify(require('./redis'));
-const { logger } = require('../util/utility');
-const {
-  min, max, median, average, standardDeviation,
-} = require('../util/math');
-const parseTimestamp = require('../util/readableTimestamps');
+// const cachedFunction = require('./cachedFunction');
+const redis = require('./redis');
+const { logger, redisBulk } = require('../util/utility');
+// const {
+//   min, max, median, average, standardDeviation,
+// } = require('../util/math');
+// const parseTimestamp = require('../util/readableTimestamps');
 
 /*
-* Allows some filtering with simple parameters instead of user
-* having to create MongoDB queries, stringifying and decoding them...
- */
-function createFilterQuery({
-  tier, category, auctionUUID, itemUUID, id,
-}) {
-  const filter = {};
-  if (tier) filter.tier = { $eq: tier };
-  if (category) filter.category = { $eq: category };
-  if (auctionUUID) filter.uuid = { $eq: auctionUUID };
-  if (itemUUID) filter['item.attributes.uuid'] = { $eq: auctionUUID };
-  if (id) filter['item.attributes.id'] = { $eq: id };
-  return filter;
-}
-
-function createQuery({
-  sortBy = 'end', sortOrder = 'desc', limit = 100, filter = '{}', active = true, page = 0,
-}, easyFilter) {
-  let error;
-  let filterObject = {};
-  try {
-    filterObject = Object.assign(easyFilter, JSON.parse(filter));
-  } catch (error_) {
-    error = `Failed to parse filter JSON: ${error_.message}`;
-  }
-  if (active) {
-    filterObject.end = { $gt: Date.now() };
-  }
-  if (limit > 1000) {
-    limit = 1000;
-  }
-  sortOrder = (sortOrder === 'asc')
-    ? 1
-    : -1;
-  return {
-    filter: filterObject,
-    options: {
-      limit: Number(limit),
-      skip: page * limit,
-      sort: {
-        [sortBy]: sortOrder,
-      },
-      maxTimeMS: 30000,
-    },
-    error,
-  };
-}
-
-// Remove _id and __v fields from each entry
-function transformData(data) {
-  return data.map((document) => {
-    const object = document._doc;
-    delete object._id;
-    delete object.__v;
-    return object;
-  });
-}
-
-async function executeQuery(query) {
-  const { error } = createQuery(query, createFilterQuery(query));
-  if (error) {
-    throw new Error(error);
-  }
-
-  try {
-    const result = {}; // await findAuction(filter, null, options)
-    return transformData(result);
-  } catch {
-    throw new Error('Query failed');
-  }
-}
-
-async function getAuctions(query) {
-  return cachedFunction(`auctions:${JSON.stringify(query)}`, async () => executeQuery(query), { shouldCache: config.ENABLE_AUCTION_CACHE, cacheDuration: config.AUCTION_CACHE_SECONDS });
-}
-
 async function queryAuctionId(from, to, showAuctions = false, itemId) {
   const now = Date.now();
   let fromDate = from || (now - 24 * 60 * 60 * 1000);
@@ -143,5 +65,96 @@ async function queryAuctionId(from, to, showAuctions = false, itemId) {
     }
   }, { cacheDuration: 60 });
 }
+ */
 
-module.exports = { getAuctions, queryAuctionId };
+async function returnWithMeta(result, matching) {
+  let meta = await redis.get('auction_meta');
+  try {
+    meta = JSON.parse(meta);
+  } catch (error) {
+    logger.warn(`Failed parsing auction meta: ${error}`);
+  }
+
+  return {
+    last_updated: meta.lastUpdated || null,
+    total_auctions: meta.totalAuctions || 0,
+    matching_query: matching,
+    auctions: result,
+  };
+}
+
+async function getAuctions({
+  auctionUUID = null,
+  id = null,
+  bin = null,
+  category = null,
+  rarity = null,
+  sortBy = 'end',
+  sortOrder = 'desc',
+  limit = 1000,
+  page = 1,
+}) {
+  const pageSize = Math.min(1000, Number.parseInt(limit, 10));
+  const intersection = ['auction_ids'];
+
+  if (auctionUUID) {
+    const auction = JSON.parse(await redis.hget(`auction:${auctionUUID}`, 'json'));
+    const result = auction !== null ? [auction] : [];
+    return returnWithMeta(result, result.length);
+  }
+
+  if (bin === 'true') {
+    intersection.push('auction_bins');
+  }
+  if (id) {
+    intersection.push(`auction_item_id:${id}`);
+  }
+  if (category) {
+    intersection.push(`auction_category:${category}`);
+  }
+  if (rarity) {
+    intersection.push(`auction_rarity:${rarity}`);
+  }
+
+  let ids = await redis.zinter(intersection.length, intersection);
+  let matching = ids.length;
+
+  // The zset `auction_ids` is sorted by end date automatically
+  if (sortBy === 'end') {
+    if (sortOrder === 'asc') {
+      ids.reverse();
+    }
+    ids = ids.slice((page - 1) * pageSize, page * pageSize);
+  }
+
+  let auctions = await redisBulk(redis, 'hget', ids, 'auction', ['json']);
+
+  // Remove empty entries and remove error entries
+  auctions = auctions.filter(([, a]) => a !== null).map(([, a]) => JSON.parse(a));
+
+  // filter
+  if (bin === 'false') {
+    auctions = auctions.filter((a) => !a.bin);
+    matching = auctions.length;
+  }
+
+  // sort
+  function sort(a, b) {
+    if (sortOrder === 'asc') {
+      return a[sortBy] - b[sortBy];
+    }
+    return b[sortBy] - a[sortBy];
+  }
+
+  if (sortBy !== 'end') {
+    if (auctions.length > 0 && auctions[0]?.[sortBy] === undefined) {
+      throw new Error(`Can't sort by ${sortBy}`);
+    }
+    auctions = auctions.sort(sort);
+    auctions = auctions.slice((page - 1) * pageSize, page * pageSize);
+  }
+
+  return returnWithMeta(auctions, matching);
+}
+
+module.exports = { getAuctions };

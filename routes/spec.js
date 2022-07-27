@@ -9,8 +9,8 @@ const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
 const buildCounts = require('../store/buildCounts');
+const { getAuctions } = require('../store/queryAuctions');
 const buildGuild = require('../store/buildGuild');
-const { queryAuctionId } = require('../store/queryAuctions');
 const { buildProfileList, buildProfile } = require('../store/buildSkyBlockProfiles');
 const { buildSkyblockCalendar, buildSkyblockEvents } = require('../store/buildSkyblockCalendar');
 const { playerObject } = require('./objects');
@@ -21,10 +21,9 @@ const {
 } = require('../util/utility');
 const {
   playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
-  limitParam, significantParam, populatePlayersParam, templateParam, itemIdParam, bazaarItemIdParam,
-  fromParam, toParam, auctionUUIDParam, itemUUIDParam, activeParam, pageParam, sortOrderParam,
-  profileIdParam, guildNameParam, guildIDParam, calendarEventsParam, calendarFromParam, calendarToParam,
-  calendarYearsParam, calendarStopAtYearEndParam,
+  limitParam, significantParam, populatePlayersParam, templateParam, bazaarItemIdParam,
+  auctionUUIDParam, pageParam, sortOrderParam, profileIdParam, guildNameParam, guildIDParam,
+  calendarEventsParam, calendarFromParam, calendarToParam, calendarYearsParam, calendarStopAtYearEndParam,
 } = require('./parameters');
 const packageJson = require('../package.json');
 
@@ -1061,7 +1060,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                       },
                     },
                     members: {
-                      description: 'Array playerof players on the guild',
+                      description: 'Array of players in the guild',
                       type: 'array',
                       items: {
                         type: 'object',
@@ -2080,77 +2079,59 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/skyblock/auctions': {
       get: {
-        summary: 'Query all skyblock auctions',
-        description: 'Allows you to query all auctions and filter the results based on things such as item, rarity, enchantments or date.',
+        summary: 'Query active skyblock auctions',
+        description: 'Allows you to query active auctions and filter the results based on things such as item ID, rarity, bin or category.',
         operationId: 'getSkyblockAuctions',
         tags: [
           'skyblock',
         ],
         parameters: [
-          filterParam, limitParam, pageParam, activeParam, auctionUUIDParam, itemUUIDParam, sortOrderParam, {
+          limitParam, pageParam, auctionUUIDParam, sortOrderParam, {
             name: 'sortBy',
             in: 'query',
-            description: 'Which stat to sort records by. Requires the full path when used with nested objects like stats.Arcade.wins',
-            required: true,
+            description: 'Which field to sort records by. Choosing to sort by a custom field may lead to slow queries.',
+            required: false,
             schema: {
               type: 'string',
+              default: 'end',
             },
           },
           {
             name: 'id',
             in: 'query',
-            description: 'Item id, e.g. HOT_POTATO_BOOK. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
+            description: 'Item id, e.g. NEW_YEAR_CAKE. All available item ids can be found on the [items endpoint](https://api.slothpixel.me/api/skyblock/items).',
             required: false,
             schema: {
               type: 'string',
             },
           },
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'array',
-                  items: auctionObject,
-                },
-              },
-            },
-          },
-        },
-        route: () => '/skyblock/auctions',
-        func: async (request, response) => {
-          return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-          /*
-                      try {
-                        const auctions = await getAuctions(request.query);
-                        response.json(auctions);
-                      } catch (error) {
-                        response.status(400).json({ error });
-                      }
-                       */
-        },
-      },
-    },
-    '/skyblock/auctions/{itemId}': {
-      get: {
-        summary: 'Query past skyblock auctions and their stats by item',
-        description: 'Allows you to query past auctions for an item within specified time range. Also returns some statistical constants for this data.',
-        operationId: 'getSkyblockAuctionItem',
-        tags: [
-          'skyblock',
-        ],
-        parameters: [
-          itemIdParam, fromParam, toParam,
           {
-            name: 'showAuctions',
+            name: 'bin',
             in: 'query',
-            description: 'Returns the specified auctions individually',
+            description: 'When `true`, returns only bin auctions and when `false`, returns only normal auctions. Both types are returned if the parmeter is not specified.',
             required: false,
-            default: false,
             schema: {
               type: 'boolean',
+            },
+          },
+          {
+            name: 'rarity',
+            in: 'query',
+            description: 'Filter by item rarity',
+            required: false,
+            schema: {
+              type: 'enum',
+              enum: ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC', 'DIVINE', 'SUPREME', 'SPECIAL', 'VERY_SPECIAL'],
+            },
+          },
+          {
+            name: 'category',
+            in: 'query',
+            description: 'Filter by item category',
+            required: false,
+            schema: {
+              type: 'enum',
+              enum: ['accessories', 'armor', 'blocks', 'consumables', 'misc', 'weapon'],
             },
           },
         ],
@@ -2162,43 +2143,18 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 schema: {
                   type: 'object',
                   properties: {
-                    average_price: {
-                      description: 'Average price in the selected time period',
+                    last_updated: {
                       type: 'integer',
                     },
-                    median_price: {
-                      description: 'Median price in the selected time period',
+                    total_auctions: {
                       type: 'integer',
                     },
-                    standard_deviation: {
-                      description: 'Standard deviation of prices in the selected time period',
-                      type: 'integer',
-                    },
-                    min_price: {
-                      description: 'Lowest price in the selected time period',
-                      type: 'integer',
-                    },
-                    max_price: {
-                      description: 'Largest price in the selected time period',
-                      type: 'integer',
-                    },
-                    lowest_bin: {
-                      description: 'Lowest price in the selected time period on Buy It Now',
-                      type: 'integer',
-                    },
-                    sold: {
-                      description: 'Total sold items in the selected time period',
+                    matching_query: {
                       type: 'integer',
                     },
                     auctions: {
-                      description: '',
-                      type: 'object',
-                      properties: {
-                        1577033426093: {
-                          type: 'object',
-                          description: 'Auction object',
-                        },
-                      },
+                      type: 'array',
+                      items: auctionObject,
                     },
                   },
                 },
@@ -2206,14 +2162,13 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             },
           },
         },
-        route: () => '/skyblock/auctions/:id',
-        func: async (request, response, callback) => {
-          const { from, to, showAuctions } = request.query;
+        route: () => '/skyblock/auctions',
+        func: async (request, response) => {
           try {
-            const result = await queryAuctionId(from, to, showAuctions, request.params.id);
-            response.json(result);
+            const auctions = await getAuctions(request.query);
+            response.json(auctions);
           } catch (error) {
-            callback(response.status(404).json({ error: error.message }));
+            response.status(400).json({ error: error.message });
           }
         },
       },
