@@ -290,10 +290,6 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
       description: 'SkyBlock related data',
     },
     {
-      name: 'leaderboards',
-      description: 'Player leaderboards',
-    },
-    {
       name: 'boosters',
       description: 'List of Boosters',
     },
@@ -305,6 +301,11 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
       name: 'counts',
       description: 'Player counts',
     },
+    /*
+    {
+      name: 'leaderboards',
+      description: 'Player leaderboards',
+    },
     {
       name: 'metadata',
       description: 'Serivce metadata',
@@ -313,6 +314,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
       name: 'health',
       description: 'Service health',
     },
+     */
   ],
   paths: {
     '/players/{playerName}': {
