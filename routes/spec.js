@@ -2515,6 +2515,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
       },
     },
+    /*
     '/leaderboards': {
       get: {
         summary: 'Allows query of dynamic leaderboards',
@@ -2545,14 +2546,12 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/leaderboards',
         func: (request, response) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-          /*
                       leaderboards(request.query, null, (error, lb) => {
                         if (error) {
                           return response.status(400).json({ error });
                         }
                         return response.json(lb);
                       });
-                       */
         },
       },
     },
@@ -2586,17 +2585,16 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         route: () => '/leaderboards/:template',
         func: (request, response, callback) => {
           return response.status(503).json({ error: 'Endpoint disabled for maintenance' });
-          /*
                       leaderboards(request.query, request.params.template, (error, lb) => {
                         if (error) {
                           return callback(response.status(400).json({ error }));
                         }
                         return response.json(lb);
                       });
-                       */
         },
       },
     },
+    */
     '/boosters': {
       get: {
         summary: 'Get list of network boosters',
@@ -2863,6 +2861,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
       },
     },
+    /*
     '/metadata': {
       get: {
         summary: 'GET /metadata',
@@ -2930,6 +2929,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
         },
       },
     },
+     */
   },
 };
 
