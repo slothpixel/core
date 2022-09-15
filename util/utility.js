@@ -339,7 +339,7 @@ const getData = fromPromise(async (redis, url) => {
 
   const urlData = urllib.parse(url.url, true);
   const isHypixelApi = urlData.host === 'api.hypixel.net';
-  const isMojangApi = urlData.host === 'playerdb.co';
+  const isMojangApi = urlData.host === 'ashcon.app';
 
   const target = urllib.format(urlData);
 

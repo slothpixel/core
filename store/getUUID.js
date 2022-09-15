@@ -18,15 +18,14 @@ async function getUUID(name) {
   }
 
   return cachedFunction(`uuid:${name.toLowerCase()}`, async () => {
-    const url = `https://playerdb.co/api/player/minecraft/${name}`;
+    const url = `https://api.ashcon.app/mojang/v2/user/${name}`;
 
     const response = await getData(redis, url);
     if (!response) {
       throw new Error('Invalid username!');
     }
 
-    const { data } = response;
-    return data.player.raw_id;
+    return removeDashes(response.uuid);
   }, { cacheDuration: config.UUID_CACHE_SECONDS, shouldCache: config.ENABLE_UUID_CACHE });
 }
 
