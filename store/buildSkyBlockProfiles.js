@@ -7,9 +7,8 @@ const processSkyBlock = require('../processors/processSkyBlock');
 // const { insertSkyBlockProfile } = require('./queries');
 const { logger, generateJob, getData } = require('../util/utility');
 
-function getLatestProfile(uuid, profiles) {
-  return Object.entries(profiles)
-    .sort((a, b) => b[1].members[uuid].last_save - a[1].members[uuid].last_save)[0];
+function getLatestProfile(profiles) {
+  return Object.entries(profiles).find((profile) => profiles[profile].selected);
 }
 
 async function updateProfileList(key, profiles) {
@@ -57,7 +56,7 @@ async function buildProfile(uuid, id = null) {
   }
   // If no id is specified, use last played profile
   if (id === null) {
-    [profile_id] = getLatestProfile(uuid, profiles);
+    [profile_id] = getLatestProfile(profiles);
   } else if (id.length < 32) {
     profile_id = Object.keys(profiles).find((profile) => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
   }
