@@ -75,7 +75,7 @@ function processPlayerData({
   mcVersionRp = null,
   mostRecentGameType = null,
   userLanguage = 'ENGLISH',
-  giftingMeta: { realBundlesGiven = 0, realBundlesReceived = 0 } = {},
+  giftingMeta: { realBundlesGiven = 0, realBundlesReceived = 0, ranksGiven = 0 } = {},
   rewardScore = 0,
   rewardHighScore = 0,
   totalRewards = 0,
@@ -184,6 +184,7 @@ function processPlayerData({
     language: userLanguage,
     gifts_sent: realBundlesGiven,
     gifts_received: realBundlesReceived,
+    ranks_sent: ranksGiven,
     is_contributor: isContributor(uuid),
     rewards: {
       streak_current: rewardScore,
