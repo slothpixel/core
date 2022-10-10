@@ -98,6 +98,10 @@ const playerObject = {
       description: 'Total gifts received from other players',
       type: 'integer',
     },
+    ranks_sent: {
+      description: 'Total ranks sent to other players',
+      type: 'integer'
+    },
     is_contributor: {
       description: 'Whether player is a contributor to Slothpixel',
       type: 'boolean',
