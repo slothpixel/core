@@ -2062,7 +2062,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
               // TODO: Update when buildProfile changed
               const profile = await buildProfile(uuid, request.params.profile);
               try {
-                const players = await populatePlayers(Object.keys(profile.members).map((uuid) => ({ uuid })));
+                const players = await populatePlayers(Object.keys(profile.members || {}).map((uuid) => ({ uuid })));
                 players.forEach((player) => {
                   profile.members[player.profile.uuid].player = player.profile;
                 });

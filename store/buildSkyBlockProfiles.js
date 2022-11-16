@@ -8,7 +8,7 @@ const processSkyBlock = require('../processors/processSkyBlock');
 const { logger, generateJob, getData } = require('../util/utility');
 
 function getLatestProfile(profiles) {
-  return Object.entries(profiles).find((profile) => profiles[profile].selected);
+  return Object.entries(profiles).find(([profile]) => profiles[profile].selected);
 }
 
 async function updateProfileList(key, profiles) {
@@ -53,6 +53,9 @@ async function buildProfile(uuid, id = null) {
     profiles = JSON.parse(result);
   } else {
     profiles = await buildProfileList(uuid);
+  }
+  if (Object.entries(profiles).length === 0) {
+    return {};
   }
   // If no id is specified, use last played profile
   if (id === null) {
