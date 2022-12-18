@@ -1846,6 +1846,11 @@ type Links {
   Link to YouTube channel
   """
   YOUTUBE: String
+  
+  """
+  Link to TikTok profile
+  """
+  TIKTOK: String
 }
 
 """

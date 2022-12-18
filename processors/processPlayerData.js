@@ -109,6 +109,7 @@ function processPlayerData({
     TWITCH: null,
     DISCORD: null,
     HYPIXEL: null,
+    TIKTOK: null,
   };
   const defaultStatsObject = {
     Arcade: {},
