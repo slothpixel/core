@@ -178,6 +178,10 @@ const playerObject = {
           description: 'Link to Hypixel Forums profile',
           type: 'string',
         },
+        TIKTOK: {
+          description: 'Link to TikTok profile',
+          type: 'string',
+        },
       },
     },
     stats: {
