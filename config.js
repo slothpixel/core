@@ -17,10 +17,8 @@ const defaults = {
   FRONTEND_PORT: 5000,
   ITEMS_PORT: 5100,
   MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
-  ITEMS_HOST: 'http://localhost:5100', // host of the items server
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
   SENTRY_URL: '',
-  ITEMS_PERCENT: 1, // probability of submitting skyblock inventories to item service
   API_FREE_LIMIT: 50000, // number of api requests per month before 429 is returned.
   NO_API_KEY_PER_MIN_LIMIT: 60, // Rate limit per minute if not using an API key
   DEFAULT_DELAY: 1000, // delay between API requests

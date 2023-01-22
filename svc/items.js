@@ -1,111 +1,72 @@
 /*
-* Worker to generate SkyBlock item schema from inventories processed by web
+* Worker to generate SkyBlock item schema
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-const compression = require('compression');
-const config = require('../config');
+const bukkitToId = require('../util/bukkitToId.json');
 const redis = require('../store/redis');
 const {
-  logger, invokeInterval,
+  logger, invokeInterval, generateJob, getData,
 } = require('../util/utility');
 
-const app = express();
-const port = config.PORT || config.ITEMS_PORT;
-
-let discoveredItems;
-let bazaarProducts = [];
-let itemList = {};
-const updateQueue = new Set();
-
-(async function init() {
+// TODO - expose this in sb-parser
+function getSkinHash(base64) {
+  let texture = null;
   try {
-    itemList = JSON.parse(await redis.get('skyblock_items')) || {};
-    const items = Object.keys(itemList);
-    logger.info(`Caching existing ${items.length} item IDs`);
-    discoveredItems = new Set(items);
-  } catch (error) {
-    logger.error(`Failed retrieving skyblock_items from redis: ${error}`);
+    texture = JSON.parse(Buffer.from(base64, 'base64').toString()).textures.SKIN.url.split('/').pop();
+  } catch (e) {
+    // do nothing
   }
-}());
+  return texture;
+}
 
+/*
+* Retrieve items resource from Hypixel API and do some processing
+ */
 async function updateItemList() {
+  const itemsObject = {};
+  const { url } = generateJob('skyblock_items');
+  const { items } = await getData(redis, url);
+  items.forEach((item) => {
+    const {
+      id, name, tier, category, skin, durability, ...rest
+    } = item;
+    const obj = {
+      id,
+      name,
+      item_id: bukkitToId[item?.material] || 0,
+      ...rest,
+    };
+    if (tier) {
+      obj.tier = tier.toLowerCase();
+    }
+    if (category) {
+      obj.category = category.toLowerCase();
+    }
+    if (durability) {
+      obj.damage = durability;
+    }
+    if (skin) {
+      obj.texture = getSkinHash(skin);
+    }
+    itemsObject[id] = obj;
+  });
+  // Get bazaar status
+  try {
+    const data = await redis.get('skyblock_bazaar');
+    const bazaarProducts = Object.keys(JSON.parse(data));
+    bazaarProducts.forEach((id) => {
+      if (Object.hasOwn(itemsObject, id)) {
+        itemsObject[id].bazaar = true;
+      }
+    });
+  } catch (error) {
+    logger.error(`Failed getting bazaar data: ${error}`);
+  }
   try {
     logger.info('Updating item list to redis...');
-    await redis.set('skyblock_items', JSON.stringify(itemList));
+    await redis.set('skyblock_items', JSON.stringify(itemsObject));
   } catch (error) {
     logger.error(`Failed updating skyblock_items: ${error}`);
   }
 }
 
-async function updateBazaar() {
-  try {
-    const data = await redis.get('skyblock_bazaar');
-    bazaarProducts = Object.keys(JSON.parse(data));
-    try {
-      logger.info('[Bazaar] Updated item IDs');
-      let changes = 0;
-      discoveredItems.forEach((id) => {
-        if (bazaarProducts.includes(id)) {
-          itemList[id].bazaar = true;
-          changes += 1;
-        }
-      });
-      if (changes > 0) {
-        logger.info(`Discovered ${changes} new bazaar items!`);
-        updateItemList();
-      }
-    } catch (error) {
-      logger.error(error.message);
-    }
-  } catch (error) {
-    logger.error(`Failed updating bazaar products: ${error}`);
-  }
-}
-
-invokeInterval(updateBazaar, 60 * 60 * 1000);
-
-app.use(compression());
-app.use(bodyParser.json());
-app.post('/', (request, response, _callback) => {
-  const items = request.body;
-  let updates = false;
-  items.forEach((item) => {
-    const { id } = item;
-    if (!discoveredItems.has(id) || updateQueue.has(id)) {
-      updates = true;
-      logger.info(`Found new item ID ${id}`);
-      if (item.texture === null) {
-        delete item.texture;
-      }
-      if (item.damage === null || item.texture) {
-        delete item.damage;
-      }
-      delete item.id;
-      itemList[id] = item;
-      discoveredItems.add(id);
-      if (updateQueue.has(id)) {
-        updateQueue.delete(id);
-      }
-    }
-  });
-  if (updates) {
-    updateItemList();
-  }
-  response.json({ status: 'ok' });
-});
-app.delete('/:id', (request, response, _callback) => {
-  const { id } = request.params;
-  if (id in itemList) {
-    logger.info(`Adding item ${id} to update queue`);
-    updateQueue.add(id);
-  }
-  response.json({ status: 'ok' });
-});
-app.use((error, _, response) => response.status(500).json({
-  error,
-}));
-const server = app.listen(port, () => {
-  const host = server.address().address;
-  logger.info(`[ITEMS] listening at http://${host}:${port}`);
-});
+invokeInterval(updateItemList, 15 * 60 * 1000);

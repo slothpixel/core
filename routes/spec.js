@@ -20,8 +20,7 @@ const {
   logger, generateJob, getData, typeToCleanName, getPlayerFields,
 } = require('../util/utility');
 const {
-  playerNameParam, gameNameParam, typeParam, columnParam, filterParam, sortByParam,
-  limitParam, significantParam, populatePlayersParam, templateParam, bazaarItemIdParam,
+  playerNameParam, gameNameParam, limitParam, populatePlayersParam, bazaarItemIdParam,
   auctionUUIDParam, pageParam, sortOrderParam, profileIdParam, guildNameParam, guildIDParam,
   calendarEventsParam, calendarFromParam, calendarToParam, calendarYearsParam, calendarStopAtYearEndParam,
 } = require('./parameters');

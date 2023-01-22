@@ -297,6 +297,11 @@ function generateJob(type, payload) {
         url: `${apiUrl}/skyblock/profile?key=${apiKey}&profile=${payload.id}`,
       };
     },
+    skyblock_items() {
+      return {
+        url: `${apiUrl}/resources/skyblock/items`,
+      };
+    },
     status() {
       return {
         url: `${apiUrl}/status?key=${apiKey}&uuid=${payload.id}`,
