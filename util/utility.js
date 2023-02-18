@@ -257,11 +257,6 @@ function generateJob(type, payload) {
         url: `${apiUrl}/guild?key=${apiKey}&id=${payload.id}`,
       };
     },
-    friends() {
-      return {
-        url: `${apiUrl}/friends?key=${apiKey}&uuid=${payload.id}`,
-      };
-    },
     gamecounts() {
       return {
         url: `${apiUrl}/gamecounts?key=${apiKey}`,

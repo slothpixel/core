@@ -15,8 +15,6 @@ const defaults = {
   GROUP: '', // for specifying the group of apps that should be run when entry point is invoked
   NODE_ENV: 'development',
   FRONTEND_PORT: 5000,
-  ITEMS_PORT: 5100,
-  MOJANG_STATUS_INTERVAL: 15000, // Interval between refreshing Mojang status in milliseconds
   REDIS_URL: 'redis://127.0.0.1:6379/0', // connection string for Redis
   SENTRY_URL: '',
   API_FREE_LIMIT: 50000, // number of api requests per month before 429 is returned.
@@ -30,7 +28,6 @@ const defaults = {
   ENABLE_COUNTS_STASH: true, // cache counts
   ENABLE_LEADERBOARD_CACHE: true, // cache leaderboards
   ENABLE_AUCTION_CACHE: true, // cache auctions
-  ENABLE_DB_CACHE: true, // set to enable MongoDB cache
   UUID_CACHE_SECONDS: 21600, // number of seconds to cache username-uuid pairs
   PLAYER_CACHE_SECONDS: 600, // number of seconds to cache players
   GUILD_CACHE_SECONDS: 600, // number of seconds to cache guilds

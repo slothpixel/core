@@ -4,7 +4,6 @@ const filterObject = require('filter-obj');
 const constants = require('hypixelconstants');
 const redis = require('../store/redis');
 const buildPlayerStatus = require('../store/buildPlayerStatus');
-const buildPlayerFriends = require('../store/buildPlayerFriends');
 const getUUID = require('../store/getUUID');
 const buildBans = require('../store/buildBans');
 const buildBoosters = require('../store/buildBoosters');
@@ -614,57 +613,6 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
                 game.gameType = typeToCleanName(game.gameType);
                 return game;
               }));
-            } catch (error) {
-              callback(error.message);
-            }
-          } catch (error) {
-            response.status(404).json({ error: error.message });
-          }
-        },
-      },
-    },
-    '/players/{playerName}/friends': {
-      get: {
-        summary: 'Get friends for a given player',
-        description: 'Returns friendships for given player.',
-        operationId: 'getPlayerFriends',
-        tags: [
-          'player',
-        ],
-        parameters: [
-          playerNameParam,
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      uuid: {
-                        type: 'string',
-                      },
-                      sent_by: {
-                        type: 'string',
-                      },
-                      started: {
-                        type: 'integer',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        route: () => '/players/:player/friends',
-        func: async (request, response, callback) => {
-          try {
-            try {
-              response.json(await buildPlayerFriends(request.params.player));
             } catch (error) {
               callback(error.message);
             }
