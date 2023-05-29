@@ -60,11 +60,11 @@ async function buildProfile(uuid, id = null) {
   // If no id is specified, use last played profile
   if (id === null) {
     [profile_id] = getLatestProfile(profiles);
-  } else if (id.length < 32) {
+  } else if (id.length < 36) {
     profile_id = Object.keys(profiles).find((profile) => profiles[profile].cute_name.toLowerCase() === id.toLowerCase()) || null;
   }
 
-  if (profile_id === null || profile_id.length !== 32) {
+  if (profile_id === null || profile_id.length !== 36) {
     throw new Error('Profile not found!');
   }
 
