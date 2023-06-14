@@ -235,7 +235,10 @@ const spec = {
     },
   ],
   info: {
-    description: `# Introduction
+    description: `# IMPORTANT:
+Due to changes to Hypixel API policy, we will be retiring all endpoints that require us to use an API key. The affected endpoints have been marked as 'deprecated'. These changes will go into effect in August 2023.    
+    
+# Introduction
 The Slothpixel API provides Hypixel related data.
 
 Currently the API has a rate limit of **60 requests/minute** and **50,000 requests per month**. If you have higher data needs contact the admins on discord.
@@ -317,6 +320,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
   paths: {
     '/players/{playerName}': {
       get: {
+        deprecated: true,
         summary: 'Get player stats by name or uuid',
         description: 'Returns player stats of one or up to 16 players. Multiple `playerName`s must be separated by a comma.',
         operationId: 'getPlayer',
@@ -376,6 +380,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/players/{playerName}/achievements': {
       get: {
+        deprecated: true,
         summary: 'In-depth achievement stats',
         description: 'Returns player achievement stats',
         operationId: 'getPlayerAchievements',
@@ -509,6 +514,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/players/{playerName}/quests': {
       get: {
+        deprecated: true,
         summary: 'In-depth quest data',
         description: 'Returns player quest completions',
         operationId: 'getPlayerQuests',
@@ -565,6 +571,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/players/{playerName}/recentGames': {
       get: {
+        deprecated: true,
         summary: 'Get recent games played',
         description: 'Returns up to 100 most recent games played by player. Games are stored for 3 days and may be hidden by the player.',
         operationId: 'getPlayerRecentGames',
@@ -624,6 +631,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/players/{playerName}/status': {
       get: {
+        deprecated: true,
         summary: 'Get current player activity',
         description: 'Returns the current online status and game for a player.',
         operationId: 'getPlayerStatus',
@@ -677,6 +685,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/guilds/{playerName}': {
       get: {
+        deprecated: true,
         summary: 'Get guild stats by user\'s username or uuid',
         description: 'Look up a guild from the name of one of it\'s members',
         operationId: 'getGuildFromPlayer',
@@ -873,6 +882,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/guilds/name/{guildName}': {
       get: {
+        deprecated: true,
         summary: 'Get guild stats by the name of the guild',
         description: 'Look up a guild from the its name',
         operationId: 'getGuildFromName',
@@ -1063,6 +1073,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/guilds/id/{guildID}': {
       get: {
+        deprecated: true,
         summary: 'Get guild stats by the internal ID of the guild',
         description: 'Look up a guild from the its ID',
         operationId: 'guild',
@@ -1339,6 +1350,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
             */
     '/skyblock/profiles/{playerName}': {
       get: {
+        deprecated: true,
         summary: 'Get list of player\'s skyblock profiles',
         description: 'Gets all skyblock profiles for the specified player',
         operationId: 'getSkyblockProfiles',
@@ -1411,6 +1423,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/skyblock/profile/{playerName}/{profileId}': {
       get: {
+        deprecated: true,
         summary: 'Return a skyblock profile',
         description: 'If no profile is specified, the last played profile is returned',
         operationId: 'getSkyblockPlayerProfile',
@@ -2546,6 +2559,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     */
     '/boosters': {
       get: {
+        deprecated: true,
         summary: 'Get list of network boosters',
         description: 'Returns a list of boosters for all server gamemodes',
         operationId: 'getBoosters',
@@ -2619,6 +2633,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/boosters/{game}': {
       get: {
+        deprecated: true,
         summary: 'Get boosters for a specified game',
         description: 'Returns a list of active boosters for the specified game',
         operationsId: 'getGameBoosters',
@@ -2694,6 +2709,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/bans': {
       get: {
+        deprecated: true,
         summary: 'Get network ban information',
         description: 'Returns information about the number of staff and watchdog server bans',
         operationId: 'getBans',
@@ -2756,6 +2772,7 @@ Consider supporting The Slothpixel Project on Patreon to help cover the hosting 
     },
     '/counts': {
       get: {
+        deprecated: true,
         summary: 'Get network player counts',
         description: 'Returns information about player counts in each game',
         operationId: 'getCounts',
