@@ -23,6 +23,8 @@ const whitelistedPaths = new Set([
   '/api/skyblock/bazaar', // Bazaar
   '/api/skyblock/items',
   '/api/skyblock/auctions', // Auctions
+  '/api/skyblock/calendar',
+  '/api/skyblock/events',
 ]);
 
 const pathCosts = {
