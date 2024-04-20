@@ -172,6 +172,15 @@ const eventTimes = {
       },
     ],
   },
+  HOPPITYS_HUNT: {
+    name: 'Hoppity\'s Hunt',
+    times: [
+      {
+        start: getOffset('Early Spring', 1),
+        end: getOffset('Late Spring', 31),
+      },
+    ],
+  },
   JACOBS_CONTEST: {
     name: 'Jacob\'s Farming Contest',
     times: getJacobEventTimes(),
