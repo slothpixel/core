@@ -45,7 +45,7 @@ async function updateItemList() {
       obj.damage = durability;
     }
     if (skin) {
-      obj.texture = getSkinHash(skin);
+      obj.texture = getSkinHash(skin.value);
     }
     itemsObject[id] = obj;
   });
